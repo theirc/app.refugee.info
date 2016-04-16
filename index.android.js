@@ -3,48 +3,104 @@
  * https://github.com/facebook/react-native
  */
 
+import Navigate from './src/utils/Navigate';
+import { Toolbar } from './src/components';
+import Navigation from './src/scenes/Navigation';
+import Welcome from './src/scenes/Welcome';
+
 import React, {
   AppRegistry,
   Component,
+  Navigator, 
+  DrawerLayoutAndroid, 
+  ScrollView,
   StyleSheet,
   Text,
   View
 } from 'react-native';
 
 class RefugeeInfoApp extends Component {
+
+  static childContextTypes = {
+    drawer: React.PropTypes.object,
+    navigator: React.PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      drawer: null,
+      navigator: null
+    };
+  }
+
+  getChildContext = () => {
+    return {
+      drawer: this.state.drawer,
+      navigator: this.state.navigator
+    }
+  };
+
+  setDrawer = (drawer) => {
+    this.setState({
+      drawer
+    });
+  };
+
+  setNavigator = (navigator) => {
+    this.setState({
+      navigator: new Navigate(navigator)
+    });
+  };
+
   render() {
+    const { drawer, navigator } = this.state;
+    const navView = React.createElement(Navigation);
+
+
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Shake or press menu button for dev menu
-        </Text>
-      </View>
+      <DrawerLayoutAndroid
+        drawerWidth={300}
+        drawerPosition={DrawerLayoutAndroid.positions.Left}
+        renderNavigationView={() => {
+                    if (drawer && navigator) {
+                        return navView;
+                    }
+                    return null;
+                }}
+        ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null }}
+      >
+        {drawer &&
+        <Navigator
+          initialRoute={Navigate.getInitialRoute()}
+          navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
+          configureScene={() => {
+                            return Navigator.SceneConfigs.FadeAndroid;
+                        }}
+          ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null }}
+          renderScene={(route) => {
+                        if (this.state.navigator && route.component) {
+                            return (
+                                <View
+                                    style={styles.scene}
+                                    showsVerticalScrollIndicator={false}>
+                                  <route.component title={route.title} path={route.path} {...route.props} />
+                                </View>
+                            );
+                        }
+                    }}
+        />
+        }
+      </DrawerLayoutAndroid>
     );
+
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scene: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+    marginTop: 56
   },
 });
 
