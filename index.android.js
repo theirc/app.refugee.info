@@ -6,102 +6,104 @@
 import Navigate from './src/utils/Navigate';
 import { Toolbar } from './src/components';
 import Navigation from './src/scenes/Navigation';
-import Welcome from './src/scenes/Welcome';
 
 import React, {
-  AppRegistry,
-  Component,
-  Navigator, 
-  DrawerLayoutAndroid, 
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
+    AppRegistry,
+    Component,
+    Navigator,
+    DrawerLayoutAndroid,
+    StyleSheet,
+    View
 } from 'react-native';
 
 class RefugeeInfoApp extends Component {
 
-  static childContextTypes = {
-    drawer: React.PropTypes.object,
-    navigator: React.PropTypes.object
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      drawer: null,
-      navigator: null
+    static childContextTypes = {
+        drawer: React.PropTypes.object,
+        navigator: React.PropTypes.object
     };
-  }
 
-  getChildContext = () => {
-    return {
-      drawer: this.state.drawer,
-      navigator: this.state.navigator
+    constructor(props) {
+        super(props);
+        this.state = {
+            drawer: null,
+            navigator: null
+        };
     }
-  };
 
-  setDrawer = (drawer) => {
-    this.setState({
-      drawer
-    });
-  };
+    getChildContext = () => {
+        return {
+            drawer: this.state.drawer,
+            navigator: this.state.navigator
+        }
+    };
 
-  setNavigator = (navigator) => {
-    this.setState({
-      navigator: new Navigate(navigator)
-    });
-  };
+    setDrawer = (drawer) => {
+        this.setState({
+            drawer
+        });
+    };
 
-  render() {
-    const { drawer, navigator } = this.state;
-    const navView = React.createElement(Navigation);
+    setNavigator = (navigator) => {
+        this.setState({
+            navigator: new Navigate(navigator)
+        });
+    };
+
+    render() {
+        const { drawer, navigator } = this.state;
+        const navView = React.createElement(Navigation);
 
 
-    return (
-      <DrawerLayoutAndroid
-        drawerWidth={300}
-        drawerPosition={DrawerLayoutAndroid.positions.Left}
-        renderNavigationView={() => {
+        return (
+            <DrawerLayoutAndroid
+                drawerPosition={DrawerLayoutAndroid.positions.Left}
+                drawerWidth={300}
+                ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null }}
+                renderNavigationView={() => {
                     if (drawer && navigator) {
                         return navView;
                     }
                     return null;
                 }}
-        ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null }}
-      >
-        {drawer &&
-        <Navigator
-          initialRoute={Navigate.getInitialRoute()}
-          navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
-          configureScene={() => {
-                            return Navigator.SceneConfigs.FadeAndroid;
-                        }}
-          ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null }}
-          renderScene={(route) => {
+            >
+                {drawer &&
+                <Navigator
+                    configureScene={() => {
+                        return Navigator.SceneConfigs.FadeAndroid;
+                    }}
+                    initialRoute={Navigate.getInitialRoute()}
+                    navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
+                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null }}
+                    renderScene={(route) => {
                         if (this.state.navigator && route.component) {
                             return (
                                 <View
+                                    showsVerticalScrollIndicator={false}
                                     style={styles.scene}
-                                    showsVerticalScrollIndicator={false}>
-                                  <route.component title={route.title} path={route.path} {...route.props} />
+                                >
+                                    <route.component
+                                        path={route.path}
+                                        title={route.title}
+                                        {...route.props}
+                                    />
                                 </View>
                             );
                         }
                     }}
-        />
-        }
-      </DrawerLayoutAndroid>
-    );
+                />
+                }
+            </DrawerLayoutAndroid>
+        );
 
-  }
+    }
 }
 
 const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-    marginTop: 56
-  },
+    scene: {
+        flex: 1,
+        marginTop: 56
+    }
 });
 
 AppRegistry.registerComponent('RefugeeInfoApp', () => RefugeeInfoApp);

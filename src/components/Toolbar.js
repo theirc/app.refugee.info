@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, Text, View } from 'react-native';
+import React, { Component, PropTypes } from 'react-native';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 
 export default class Toolbar extends Component {
@@ -20,17 +20,16 @@ export default class Toolbar extends Component {
 
     render() {
         const { navigator } = this.context;
-        const { counter } = this.state;
         const { onIconPress } = this.props;
 
         return (
             <MaterialToolbar
-                title={navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Welcome'}
                 icon={navigator && navigator.isChild ? 'keyboard-backspace' : 'menu'}
-                onIconPress={() => navigator && navigator.isChild ? navigator.back() : onIconPress()}
+                onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress()}}
                 rightIconStyle={{
                     margin: 10
                 }}
+                title={navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Welcome'}
             />
         );
     }

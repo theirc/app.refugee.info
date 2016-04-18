@@ -1,6 +1,6 @@
-import React, { Component, PropTypes, View, Text, Image } from 'react-native';
+import React, { Component, PropTypes } from 'react-native';
 
-import { Avatar, Drawer, Divider, COLOR, TYPO } from 'react-native-material-design';
+import { Drawer } from 'react-native-material-design';
 
 export default class Navigation extends Component {
 
@@ -30,7 +30,7 @@ export default class Navigation extends Component {
         const { route } = this.state;
 
         return (
-            <Drawer theme='light'>
+            <Drawer theme="light">
                 <Drawer.Section
                     items={[{
                         icon: 'home',
@@ -42,7 +42,6 @@ export default class Navigation extends Component {
                 />
 
                 <Drawer.Section
-                    title="Refugee Info"
                     items={[{
                         icon: 'list',
                         value: 'List Services',
@@ -61,20 +60,12 @@ export default class Navigation extends Component {
                         active: route === 'info',
                         onPress: () => this.changeScene('info'),
                         onLongPress: () => this.changeScene('info')
-                    },
+                    }
                     ]}
+                    title="Refugee Info"
                 />
 
             </Drawer>
         );
     }
 }
-
-const styles = {
-    header: {
-        paddingTop: 16
-    },
-    text: {
-        marginTop: 20
-    }
-};

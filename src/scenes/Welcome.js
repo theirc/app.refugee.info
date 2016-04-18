@@ -1,5 +1,4 @@
-import React, { Component, PropTypes, View, Text, Image, IntentAndroid } from 'react-native';
-import { Card, Button, COLOR, TYPO } from 'react-native-material-design';
+import React, { Component, PropTypes, View, Text } from 'react-native';
 
 export default class Welcome extends Component {
 

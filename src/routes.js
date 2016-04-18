@@ -4,7 +4,7 @@ export default {
         initialRoute: true,
 
         title: 'Refugee Info',
-        component: require('./scenes/Welcome').default,
+        component: require('./scenes/Welcome').default
     },
 
     services: {
@@ -20,5 +20,5 @@ export default {
     info: {
         title: 'General Information',
         component: require('./scenes/GeneralInformation').default
-    },
+    }
 }

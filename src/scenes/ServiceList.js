@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, View, Text, Image, IntentAndroid } from 'react-native';
+import React, { Component, PropTypes, View, Text } from 'react-native';
 
 export default class ServiceList extends Component {
 
