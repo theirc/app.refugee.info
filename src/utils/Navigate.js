@@ -1,3 +1,4 @@
+/*eslint-disable */
 import { BackAndroid } from 'react-native';
 
 let routes = null;

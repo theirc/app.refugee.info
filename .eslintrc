@@ -8,10 +8,10 @@
     "react"
   ],
   "rules": {
-    "indent": [2, 2],
+    "indent": [2, 4],
     "quotes": [2, "single"],
     "linebreak-style": [2, "unix"],
-    "comma-dangle": [1, "always-multiline"],
+    "comma-dangle": [1],
     "constructor-super": 2,
     "no-confusing-arrow": 2,
     "no-constant-condition": 2,
@@ -31,7 +31,7 @@
     "react/jsx-curly-spacing": 1,
     "react/jsx-indent-props": 1,
     "react/jsx-max-props-per-line": 1,
-    "react/jsx-no-bind": 1,
+    "react/jsx-no-bind": [1, {"allowArrowFunctions": true}],
     "react/jsx-no-duplicate-props": 1,
     "react/jsx-no-undef": 1,
     "react/sort-prop-types": 1,
