@@ -1,4 +1,6 @@
-import React, { Component, PropTypes, View, Text } from 'react-native';
+import React, { AsyncStorage, Component, PropTypes, View, Picker } from 'react-native';
+
+import RegionDrillDown from '../components/RegionDrillDown';
 
 export default class Welcome extends Component {
 
@@ -6,12 +8,15 @@ export default class Welcome extends Component {
         navigator: PropTypes.object.isRequired
     };
 
-    render() {
-        const { navigator } = this.context;
+    _onPress(region) {
+        AsyncStorage.setItem('region', JSON.stringify(region));
+        this.context.navigator.to('info');
+    }
 
+    render() {
         return (
             <View>
-                <Text>Welcome</Text>
+                <RegionDrillDown onPress={this._onPress.bind(this)} />
             </View>
         );
     }
