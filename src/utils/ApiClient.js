@@ -20,4 +20,10 @@ export default class ApiClient {
         return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}&level=3`)
             .then((response) => response.json());
     }
+
+    getLocationByPosition(longitude, latitude, level) {
+        return fetch(`${this.apiRoot}region/?format=json&point=${latitude},${longitude}&level=${level}`)
+            .then((response) => response.json());
+    }
+
 }
