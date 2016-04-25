@@ -20,7 +20,16 @@ export default class RegionDrillDown extends Component {
     }
 
     async _loadInitialState() {
-        const countries = await this.apiClient.getRootLocations();
+        let countries;
+        try {
+            countries = await this.apiClient.getRootLocations();
+        } catch(e) {
+            alert('There is a problem with your Internet connection');
+            this.setState({loading: false});
+            return;
+        }
+
+
         this._setCountries(countries);
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         const changes = {loading: false};

@@ -64,6 +64,12 @@ export default class ServiceList extends Component {
                     loaded: true
                 });
             })
+            .catch((error) => {
+                alert('There is a problem with your Internet connection');
+                this.setState({
+                    loaded: true
+                });
+            })
             .done();
     }
 
