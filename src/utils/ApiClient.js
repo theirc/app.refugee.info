@@ -11,6 +11,11 @@ export default class ApiClient {
             .then((response) => response.json());
     }
 
+    getLocations(parentId) {
+        return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}`)
+            .then((response) => response.json());
+    }
+
     getRegions(parentId) {
         return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}&level=2`)
             .then((response) => response.json());
@@ -26,4 +31,18 @@ export default class ApiClient {
             .then((response) => response.json());
     }
 
+    getServiceTypes() {
+        return fetch(`${this.apiRoot}servicetypes/?format=json`)
+            .then((response) => response.json());
+    }
+
+    getServices(locationSlug) {
+        return fetch(`${this.apiRoot}services/search/?format=json&geographic_region=${locationSlug}`)
+            .then((response) => response.json());
+    }
+
+    getFeedbacks(service) {
+        return fetch(`${this.apiRoot}feedback/?format=json&service=${service}&extra_comments=2`)
+            .then((response) => response.json());
+    }
 }

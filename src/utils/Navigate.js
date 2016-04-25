@@ -1,5 +1,5 @@
 /*eslint-disable */
-import { BackAndroid } from 'react-native';
+import { BackAndroid, Alert } from 'react-native';
 
 let routes = null;
 
@@ -172,6 +172,11 @@ export default class Navigate {
 		if (!obj) {
 			console.warn(`[Navigate.back()] No component exists for the parent of ${current}`);
 		} else {
+			if (!!props) {
+				props['savedState'] = savedInstance;
+			} else {
+				props = {'savedState': savedInstance};
+			}
 			this.isChild = path.split('.').length > 1;
 			const route = {
 				// title: title ? title : (obj.title || this._getPathPrettyName(path)),
@@ -200,12 +205,18 @@ export default class Navigate {
 		if (!currentObject.children || !Object.keys(currentObject.children).length) {
 			console.warn(`[Navigate.forward()] No child components exists for ${current}`);
 		} else {
+			this._saveInstanceState(current, savedInstanceState);
 			this.isChild = true;
 			if (child) {
 				const obj = this._getRouteObject(`${current}.${child}`);
 				if (!obj) {
 					console.warn(`[Navigate.forward(${child})] Child component ${child} does not exist on ${current}`);
 				} else {
+					if (!!props) {
+						props['parentState'] = savedInstanceState;
+					} else {
+						props = {'parentState': savedInstanceState};
+					}
 					const route = {
 						title: title ? title : (obj.title || this._getPathPrettyName(`${current}.${child}`)),
 						path: `${current}.${child}`,
@@ -217,6 +228,11 @@ export default class Navigate {
 					this.navigator.replace(route);
 				}
 			} else {
+				if (!!props) {
+					props['parentState'] = savedInstanceState;
+				} else {
+					props = {'parentState': savedInstanceState};
+				}
 				const path = `${current}.${Object.keys(currentObject.children)[0]}`;
 				const obj = this._getRouteObject(path);
 				const route = {
