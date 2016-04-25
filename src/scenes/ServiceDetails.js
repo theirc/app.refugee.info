@@ -8,7 +8,9 @@ import React, {
     ListView,
     View
 } from 'react-native';
+import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 
+import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 
 const styles = StyleSheet.create({
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#EEE'
     },
     feedbackContainer: {
-
+        marginTop: 10
     },
     details: {
         margin: 5
@@ -42,6 +44,18 @@ const styles = StyleSheet.create({
     textCenter: {
         textAlign: 'center',
         textAlignVertical: 'center'
+    },
+    commentBox: {
+        flexDirection: 'row',
+        flex: 1
+    },
+    comment: {
+        flex: 8
+    },
+    commentIcon: {
+        flex: 1,
+        alignSelf: 'center',
+        marginLeft: 15
     }
 });
 
@@ -84,8 +98,27 @@ export default class ServiceDetails extends Component {
     }
 
     renderFeedback(row) {
+        let stars = [...Array(5)].map((x, i) => (
+            <Icon
+                color={(row.quality >= i + 1) ? "black" : "white"}
+                key={i}
+                name="star"
+                size={12}
+            />
+        ));
         return (
-            <Text>{row.extra_comments}</Text>
+            <View style={styles.commentBox}>
+                <Icon
+                    color="black"
+                    name="user"
+                    size={32}
+                    style={styles.commentIcon}
+                />
+                <View style={styles.comment}>
+                    <Text style={styles.comment}>{row.extra_comments}</Text>
+                    <Text style={styles.comment}>{Messages.RATING}: {stars}</Text>
+                </View>
+            </View>
         )
     }
 
@@ -103,13 +136,13 @@ export default class ServiceDetails extends Component {
                 </TouchableHighlight>
                 {service.cost_of_service &&
                     <Text style={styles.details}>
-                        Cost of service:
+                        {Messages.COST_OF_SERVICE}:
                         {'\n' + service.cost_of_service}
                     </Text>
                 }
                 {service.selection_criteria.length > 0 &&
                     <Text style={styles.details}>
-                        Selection Criteria:
+                        {Messages.SELECTION_CRITERIA}:
                         {service.selection_criteria.map((criteria, i) => (
                             '\n - ' + criteria
                         ))}
@@ -120,14 +153,14 @@ export default class ServiceDetails extends Component {
                     style={styles.button}
                     underlayColor="#EEE"
                 >
-                    <Text style={styles.textCenter}>Get directions</Text>
+                    <Text style={styles.textCenter}>{Messages.GET_DIRECTIONS}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress={this.call.bind(this, service)}
                     style={styles.button}
                     underlayColor="#EEE"
                 >
-                    <Text style={styles.textCenter}>Call</Text>
+                    <Text style={styles.textCenter}>{Messages.CALL}</Text>
                 </TouchableHighlight>
                 {this.state.loaded ?
                     (<ListView
@@ -135,8 +168,10 @@ export default class ServiceDetails extends Component {
                         enableEmptySections
                         renderRow={this.renderFeedback.bind(this)}
                         style={styles.feedbackContainer}
-                    />) :
-                    <Text>Loading comments...</Text>
+                     />) :
+                    <Text style={styles.feedbackContainer}>
+                        {Messages.LOADING_COMMENTS}...
+                    </Text>
                 }
             </ScrollView>
         )
