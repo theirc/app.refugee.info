@@ -9,7 +9,14 @@ export default {
 
     services: {
         title: 'Service List',
-        component: require('./scenes/ServiceList').default
+        component: require('./scenes/ServiceList').default,
+
+        children: {
+            details: {
+                title: 'Service Details',
+                component: require('./scenes/ServiceDetails').default
+            }
+        }
     },
 
     map: {
