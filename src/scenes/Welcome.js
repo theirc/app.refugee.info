@@ -42,8 +42,11 @@ export default class Welcome extends Component {
                 }
             },
             (error) => {
+                if (error === 'No available location provider.') {
+                    alert('Unable to determine location. Please enable GPS.');
+                }
                 this.setState({detecting: false});
-            }, {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+            }, {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
         );
     }
 

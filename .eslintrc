@@ -9,6 +9,7 @@
   ],
   "globals": {
     "fetch": true,
+    "navigator": true
   },
   "rules": {
     "indent": [2, 4],
