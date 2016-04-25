@@ -8,6 +8,8 @@ import React, {
     TouchableHighlight
 } from 'react-native';
 
+import Messages from '../constants/Messages';
+
 const REQUEST_URL = 'http://api.refugee.info/v1/services/search/?format=json';
 
 const styles = StyleSheet.create({
@@ -36,7 +38,7 @@ export default class ServiceList extends Component {
     static renderLoadingView() {
         return (
             <View>
-                <Text>Loading services...</Text>
+                <Text>{Messages.LOADING_SERVICES}</Text>
             </View>
         );
     }
@@ -65,7 +67,7 @@ export default class ServiceList extends Component {
                 });
             })
             .catch((error) => {
-                alert('There is a problem with your Internet connection');
+                alert(Messages.NETWORK_PROBLEM);
                 this.setState({
                     loaded: true
                 });
