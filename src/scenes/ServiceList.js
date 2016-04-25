@@ -9,13 +9,10 @@ import React, {
     AsyncStorage,
     Image
 } from 'react-native';
-
-import Messages from '../constants/Messages';
-
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
-
 import { default as _ } from 'lodash';
 
+import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 
 const styles = StyleSheet.create({
@@ -123,7 +120,7 @@ export default class ServiceList extends Component {
                      style={styles.icon}
                  />
                 <Text>{row.name}</Text>
-                <Text>Rating: {stars}</Text>
+                <Text>{Messages.RATING}: {stars}</Text>
                 <Text>{locationName}</Text>
             </View>
         );
@@ -139,7 +136,7 @@ export default class ServiceList extends Component {
     }
 
     renderHeader() {
-        return (<Text style={styles.header}>Latest services in {this.state.region.name}</Text>);
+        return (<Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>);
     }
 
     render() {

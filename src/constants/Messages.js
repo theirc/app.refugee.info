@@ -12,5 +12,12 @@ export default {
     REFUGEES_INFO: 'Refugee Info',
     SELECT_COUNTRY: 'Select Country',
     LOADING: 'Loading...',
-    SELECT: 'Select'
+    SELECT: 'Select',
+    LATEST_SERVICES: 'Latest services in',
+    COST_OF_SERVICE: 'Cost of service',
+    SELECTION_CRITERIA: 'Selection Criteria',
+    GET_DIRECTIONS: 'Get directions',
+    CALL: 'Call',
+    RATING: 'Rating',
+    LOADING_COMMENTS: 'Loading comments'
 }

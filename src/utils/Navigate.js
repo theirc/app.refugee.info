@@ -1,5 +1,5 @@
 /*eslint-disable */
-import { BackAndroid, Alert } from 'react-native';
+import { BackAndroid } from 'react-native';
 
 let routes = null;
 
