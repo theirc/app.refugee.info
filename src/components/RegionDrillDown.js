@@ -1,5 +1,6 @@
 import React, { AsyncStorage, Component, StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
 import ApiClient from '../utils/ApiClient';
+import Messages from '../constants/Messages'
 
 export default class RegionDrillDown extends Component {
 
@@ -24,7 +25,7 @@ export default class RegionDrillDown extends Component {
         try {
             countries = await this.apiClient.getRootLocations();
         } catch(e) {
-            alert('There is a problem with your Internet connection');
+            alert(Messages.NETWORK_PROBLEM);
             this.setState({loading: false});
             return;
         }
@@ -46,7 +47,7 @@ export default class RegionDrillDown extends Component {
 
     _setCountries(countries) {
         let defaultOption = [
-            {id: '', name: 'Select Country'}
+            {id: '', name: Messages.SELECT_COUNTRY}
         ];
 
         this.setState({
@@ -112,7 +113,7 @@ export default class RegionDrillDown extends Component {
 
     loading() {
         if (this.state.loading) {
-            return (<Text style={styles.loading}>Loading...</Text>);
+            return (<Text style={styles.loading}>{Messages.LOADING}</Text>);
         }
     }
 
@@ -150,7 +151,7 @@ export default class RegionDrillDown extends Component {
                 style={styles.button}
                 underlayColor="white"
             >
-                    <Text style={styles.buttonText}>Select {region.name}</Text>
+                    <Text style={styles.buttonText}>{Messages.SELECT} {region.name}</Text>
             </TouchableHighlight>
         )
     }

@@ -2,6 +2,7 @@ import React, { AsyncStorage, StyleSheet, Component, PropTypes, View, TouchableH
 
 import RegionDrillDown from '../components/RegionDrillDown';
 import ApiClient from '../utils/ApiClient';
+import Messages from '../constants/Messages';
 
 export default class Welcome extends Component {
 
@@ -37,13 +38,13 @@ export default class Welcome extends Component {
                     await AsyncStorage.setItem('region', JSON.stringify(location[0]));
                     this.context.navigator.to('info');
                 } else {
-                    alert("Sorry, we can't find your location. Please choose location from the list");
+                    alert(Messages.CANT_FIND_LOCATION);
                     this.setState({detecting: false});
                 }
             },
             (error) => {
                 if (error === 'No available location provider.') {
-                    alert('Unable to determine location. Please enable GPS.');
+                    alert(Messages.GPS_DISABLED);
                 }
                 this.setState({detecting: false});
             }, {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
@@ -52,11 +53,11 @@ export default class Welcome extends Component {
 
     _detectButton() {
         if (this.state.detecting) {
-            return <Text>Detecting...</Text>;
+            return <Text>{Messages.DETECTING_LOCATION}</Text>;
         }
         return (
             <TouchableHighlight style={styles.button} onPress={this._onDetectLocationPress.bind(this)} underlayColor="white">
-                <Text style={styles.buttonText}>Detect Location</Text>
+                <Text style={styles.buttonText}>{Messages.DETECT_LOCATION}</Text>
             </TouchableHighlight>
         );
     }
