@@ -149,7 +149,7 @@ export default class Welcome extends Component {
 
     render() {
         return (
-            <View>
+            <View testID="test-id-location-view" >
                 {this._detectButton()}
                 <Text>{this.state.location}</Text>
                 <RegionDrillDown
