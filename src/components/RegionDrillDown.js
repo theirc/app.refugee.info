@@ -1,170 +1,101 @@
-import React, { AsyncStorage, Component, StyleSheet, View, Picker, Text, TouchableHighlight, Alert } from 'react-native';
-import ApiClient from '../utils/ApiClient';
+import React, { Component, StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
 import Messages from '../constants/Messages'
 
 export default class RegionDrillDown extends Component {
-
-    constructor() {
-        super();
-        this.state = {
-            countries: [],
-            cities: [],
-            countryId: null,
-            cityId: null,
-            loading: true
-        };
-        this.apiClient = new ApiClient();
-    }
-
-    componentDidMount() {
-        this._loadInitialState();
-    }
-
-    async _loadInitialState() {
-        let countries;
-        try {
-            countries = await this.apiClient.getRootLocations();
-        } catch(e) {
-            Alert.alert(Messages.NETWORK_PROBLEM);
-            this.setState({loading: false});
-            return;
-        }
-
-
-        this._setCountries(countries);
-        let region = JSON.parse(await AsyncStorage.getItem('region'));
-        const changes = {loading: false};
-        if (region) {
-            changes['countryId'] = region.countryId;
-            await this._onCountryChange(region.countryId).done();
-            if (region.countryId != region.id) {
-                changes['cityId'] = region.id;
-            }
-        }
-        this.setState(changes);
-
-    }
-
-    _setCountries(countries) {
-        let defaultOption = [
-            {id: '', name: Messages.SELECT_COUNTRY}
-        ];
-
-        this.setState({
-            countries: defaultOption.concat(countries)
-        });
+    constructor(props) {
+        super(props);
     }
 
     getCountries() {
-        return this.state.countries.map(
-            (country, idx) => <Picker.Item key={idx} label={country.name} value={country.id}/>
-        )
-    }
+        const defaultElement = [{
+            name: 'Select country',
+            id: ''
+        }];
 
-    getCities() {
-        return this.state.cities.map(
-            (city, idx) => <Picker.Item key={idx} label={city.name} value={city.id}/>
-        )
+        return defaultElement.concat(this.props.countries).map(
+            (country, idx) => <Picker.Item key={idx} label={country.name} value={country.id}/>
+        );
     }
 
     countryPicker() {
         return (
-            <Picker onValueChange={this._onCountryChange.bind(this)}
-                selectedValue={this.state.countryId}
-            >
+            <Picker selectedValue={this.props.selectedCountry} onValueChange={this.props.onCountryChange}>
                 {this.getCountries()}
             </Picker>
         );
     }
 
+    getCities() {
+        return this.props.cities.map(
+            (city, idx) => <Picker.Item key={idx} label={city.name} value={city.id}/>
+        )
+    }
+
     cityPicker() {
-        if (!this.state.countryId) {
+        if (!this.props.selectedCountry) {
             return;
         }
         return (
-            <Picker selectedValue={this.state.cityId} onValueChange={(value) => this.setState({cityId: value})}>
+            <Picker selectedValue={this.props.selectedCity} onValueChange={this.props.onCityChange}>
                 {this.getCities()}
             </Picker>
         );
     }
 
-    async _onCountryChange(value) {
-        try {
-            this.setState({countryId: value, cities: [], cityId: null, loading: true});
-            let regions = await this.apiClient.getRegions(value);
-
-            let cities = [];
-            const children = await this.apiClient.getCities(value);
-            cities = cities.concat(children);
-            for (let region of regions) {
-                cities = cities.concat(await this.apiClient.getCities(region.id));
-            }
-
-            const defaultOption = [
-                {id: '', name: '-----'}
-            ];
-
-            this.setState({cities: defaultOption.concat(cities), loading: false});
-        } catch (e) {
-            this.setState({loading: false});
-        }
-
-    }
-
-    loading() {
-        if (this.state.loading) {
-            return (<Text style={styles.loading}>{Messages.LOADING}</Text>);
-        }
-    }
-
     _getRegionById(regionId) {
-        const allRegions = this.state.cities.concat(this.state.countries);
+        const allRegions = this.props.cities.concat(this.props.countries);
         return allRegions.find((x) => x.id === regionId);
     }
 
     _selectedId() {
-        let selectedId = this.state.countryId;
-        if (this.state.cityId) {
-            selectedId = this.state.cityId;
-        } else if (this.state.regionId) {
-            selectedId = this.state.regionId;
+        return this.props.selectedCity;
+    }
+
+    _selectedLocation() {
+        const selectedId = this._selectedId();
+        if (!selectedId) {
+            return;
         }
-        return selectedId;
+        return this._getRegionById(this._selectedId());
     }
 
     onPress() {
-        const region = this._getRegionById(this._selectedId());
-        region.countryId = this.state.countryId;
+        const region = this._selectedLocation();
+        region.countryId = this.props.selectedCountry;
         this.props.onPress(region);
     }
 
     selectButton() {
-        const region = this._getRegionById(this._selectedId());
-
-        if (!region || this.state.loading) {
+        const selectedLocation = this._selectedLocation();
+        if (!selectedLocation) {
             return;
         }
-
         return (
             <TouchableHighlight
                 onPress={this.onPress.bind(this)}
                 style={styles.button}
                 underlayColor="#EEE"
             >
-                    <Text style={styles.buttonText}>{Messages.SELECT} {region.name}</Text>
+                    <Text style={styles.buttonText}>{Messages.SELECT} {selectedLocation.name}</Text>
             </TouchableHighlight>
         )
     }
 
+    loading() {
+        if (this.props.loading) {
+            return (<Text style={styles.loading}>{Messages.LOADING}</Text>);
+        }
+    }
+
     render() {
         return (
-            <View style={styles.container}>
+            <View>
                 {this.countryPicker()}
                 {this.cityPicker()}
                 {this.loading()}
                 {this.selectButton()}
             </View>
-        );
+        )
     }
 }
 
