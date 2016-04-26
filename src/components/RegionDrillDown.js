@@ -1,4 +1,4 @@
-import React, { AsyncStorage, Component, StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
+import React, { AsyncStorage, Component, StyleSheet, View, Picker, Text, TouchableHighlight, Alert } from 'react-native';
 import ApiClient from '../utils/ApiClient';
 import Messages from '../constants/Messages'
 
@@ -25,7 +25,7 @@ export default class RegionDrillDown extends Component {
         try {
             countries = await this.apiClient.getRootLocations();
         } catch(e) {
-            alert(Messages.NETWORK_PROBLEM);
+            Alert.alert(Messages.NETWORK_PROBLEM);
             this.setState({loading: false});
             return;
         }

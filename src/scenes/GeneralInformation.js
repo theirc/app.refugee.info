@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, View, Text, AsyncStorage, Alert } from 'react-native';
+import React, { Component, PropTypes, View, Text, AsyncStorage } from 'react-native';
 
 export default class GeneralInformation extends Component {
 

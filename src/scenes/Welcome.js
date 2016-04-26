@@ -1,4 +1,4 @@
-import React, { AsyncStorage, StyleSheet, Component, PropTypes, View, TouchableHighlight, Text} from 'react-native';
+import React, { AsyncStorage, StyleSheet, Component, PropTypes, View, TouchableHighlight, Text, Alert} from 'react-native';
 
 import RegionDrillDown from '../components/RegionDrillDown';
 import ApiClient from '../utils/ApiClient';
@@ -38,13 +38,13 @@ export default class Welcome extends Component {
                     await AsyncStorage.setItem('region', JSON.stringify(location[0]));
                     this.context.navigator.to('info');
                 } else {
-                    alert(Messages.CANT_FIND_LOCATION);
+                    Alert.alert(Messages.CANT_FIND_LOCATION);
                     this.setState({detecting: false});
                 }
             },
             (error) => {
                 if (error === 'No available location provider.') {
-                    alert(Messages.GPS_DISABLED);
+                    Alert.alert(Messages.GPS_DISABLED);
                 }
                 this.setState({detecting: false});
             }, {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
