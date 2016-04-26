@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     feedbackContainer: {
         marginTop: 10
     },
-    details: {
+    detailsContainer: {
         margin: 5
     },
     button: {
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
         marginLeft: 15
     }
 });
+const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export default class ServiceDetails extends Component {
 
@@ -125,6 +126,10 @@ export default class ServiceDetails extends Component {
     render() {
         const { navigator } = this.context;
         let service = this.state.props.row;
+        let weekDay = days[new Date().getDay()];
+        let open = service[`${weekDay}_open`];
+        let close = service[`${weekDay}_close`];
+        let openingHours = (!!open && !!close) ? `${open} - ${close}` : null;
 
         return (
             <ScrollView style={styles.container}>
@@ -134,20 +139,34 @@ export default class ServiceDetails extends Component {
                 >
                     <View>{this.state.props.rowContent}</View>
                 </TouchableHighlight>
-                {service.cost_of_service &&
-                    <Text style={styles.details}>
-                        {Messages.COST_OF_SERVICE}:
-                        {'\n' + service.cost_of_service}
-                    </Text>
-                }
-                {service.selection_criteria.length > 0 &&
-                    <Text style={styles.details}>
-                        {Messages.SELECTION_CRITERIA}:
-                        {service.selection_criteria.map((criteria, i) => (
-                            '\n - ' + criteria
-                        ))}
-                    </Text>
-                }
+                <View style={styles.detailsContainer}>
+                    {service.description &&
+                        <Text>
+                            {Messages.DESCRIPTION}:
+                            {`\n${service.description}`}
+                        </Text>
+                    }
+                    {openingHours &&
+                        <Text>
+                            {Messages.OPENING_HOURS}:
+                            {`\n${openingHours}`}
+                        </Text>
+                    }
+                    {service.cost_of_service &&
+                        <Text>
+                            {Messages.COST_OF_SERVICE}:
+                            {`\n${service.cost_of_service}`}
+                        </Text>
+                    }
+                    {service.selection_criteria.length > 0 &&
+                        <Text>
+                            {Messages.SELECTION_CRITERIA}:
+                            {service.selection_criteria.map((criteria, i) => (
+                                `\n - ${criteria}`
+                            ))}
+                        </Text>
+                    }
+                </View>
                 <TouchableHighlight
                     onPress={this.getDirections.bind(this, service)}
                     style={styles.button}
