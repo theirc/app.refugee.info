@@ -19,5 +19,7 @@ export default {
     GET_DIRECTIONS: 'Get directions',
     CALL: 'Call',
     RATING: 'Rating',
-    LOADING_COMMENTS: 'Loading comments'
+    LOADING_COMMENTS: 'Loading comments',
+    OPENING_HOURS: 'Opening hours',
+    DESCRIPTION: 'Description'
 }
