@@ -56,7 +56,11 @@ export default class Welcome extends Component {
             return <Text>{Messages.DETECTING_LOCATION}</Text>;
         }
         return (
-            <TouchableHighlight style={styles.button} onPress={this._onDetectLocationPress.bind(this)} underlayColor="white">
+            <TouchableHighlight
+                onPress={this._onDetectLocationPress.bind(this)}
+                style={styles.button}
+                underlayColor="#EEE"
+            >
                 <Text style={styles.buttonText}>{Messages.DETECT_LOCATION}</Text>
             </TouchableHighlight>
         );
@@ -76,7 +80,11 @@ export default class Welcome extends Component {
 
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: '#EEE'
+        borderRadius: 5,
+        borderColor: 'black',
+        borderWidth: 2,
+        margin: 5,
+        marginBottom: 0
     },
     buttonText: {
         alignSelf: 'center',

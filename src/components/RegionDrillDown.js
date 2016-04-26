@@ -149,7 +149,7 @@ export default class RegionDrillDown extends Component {
             <TouchableHighlight
                 onPress={this.onPress.bind(this)}
                 style={styles.button}
-                underlayColor="white"
+                underlayColor="#EEE"
             >
                     <Text style={styles.buttonText}>{Messages.SELECT} {region.name}</Text>
             </TouchableHighlight>
@@ -178,7 +178,11 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     button: {
-        backgroundColor: '#EEE'
+        borderRadius: 5,
+        borderColor: 'black',
+        borderWidth: 2,
+        margin: 5,
+        marginBottom: 0
     },
     buttonText: {
         alignSelf: 'center',
