@@ -2,47 +2,44 @@
 
 export default class ApiClient {
 
-    constructor(api_root='http://api.refugee.info/v1/') {
+    constructor(api_root='http://api.refugee.info') {
         this.apiRoot = api_root;
     }
 
-    getRootLocations() {
-        return fetch(`${this.apiRoot}region/?format=json&level=1`)
+    fetch(relativeUrl) {
+        return fetch(`${this.apiRoot}${relativeUrl}`)
             .then((response) => response.json());
+    }
+
+    getRootLocations() {
+        return this.fetch('/v1/region/?format=json&level=1');
     }
 
     getLocations(parentId) {
-        return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/region/?format=json&parent=${parentId}`);
     }
 
     getRegions(parentId) {
-        return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}&level=2`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=2`);
     }
-    
+
     getCities(parentId) {
-        return fetch(`${this.apiRoot}region/?format=json&parent=${parentId}&level=3`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=3`);
     }
 
     getLocationByPosition(longitude, latitude, level) {
-        return fetch(`${this.apiRoot}region/?format=json&point=${latitude},${longitude}&level=${level}`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/region/?format=json&point=${latitude},${longitude}&level=${level}`);
     }
 
     getServiceTypes() {
-        return fetch(`${this.apiRoot}servicetypes/?format=json`)
-            .then((response) => response.json());
+        return this.fetch('/v1/servicetypes/?format=json');
     }
 
     getServices(locationSlug) {
-        return fetch(`${this.apiRoot}services/search/?format=json&geographic_region=${locationSlug}`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`);
     }
 
     getFeedbacks(service) {
-        return fetch(`${this.apiRoot}feedback/?format=json&service=${service}&extra_comments=2`)
-            .then((response) => response.json());
+        return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`);
     }
 }

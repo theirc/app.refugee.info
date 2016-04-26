@@ -6,7 +6,8 @@ import React, {
     StyleSheet,
     Text,
     ListView,
-    View
+    View,
+    Linking
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 
@@ -40,6 +41,14 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         margin: 5,
         marginBottom: 0
+    },
+    buttonInactive: {
+        borderRadius: 5,
+        borderColor: 'black',
+        borderWidth: 2,
+        margin: 5,
+        marginBottom: 0,
+        backgroundColor: '#EEE'
     },
     textCenter: {
         textAlign: 'center',
@@ -85,23 +94,29 @@ export default class ServiceDetails extends Component {
     }
 
     async fetchData() {
-        let feedbacks = await this.apiClient.getFeedbacks(this.state.props.row.id);
+        let service = this.state.props.row;
+        let feedbacks = await this.apiClient.getFeedbacks(service.id);
+        let provider = await this.apiClient.fetch(service.provider_fetch_url);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(feedbacks),
-            loaded: true
+            loaded: true,
+            provider
         });
     }
 
     getDirections(service) {
+        // TODO
     }
 
-    call(service) {
+    call() {
+        let provider = this.state.provider;
+        Linking.openURL(`tel:${provider.phone_number}`);
     }
 
     renderFeedback(row) {
-        let stars = [...Array(5)].map((x, i) => (
+        let stars = [...new Array(5)].map((x, i) => (
             <Icon
-                color={(row.quality >= i + 1) ? "black" : "white"}
+                color={(row.quality >= i + 1) ? 'black' : 'white'}
                 key={i}
                 name="star"
                 size={12}
@@ -124,12 +139,13 @@ export default class ServiceDetails extends Component {
     }
 
     render() {
-        const { navigator } = this.context;
         let service = this.state.props.row;
         let weekDay = days[new Date().getDay()];
         let open = service[`${weekDay}_open`];
         let close = service[`${weekDay}_close`];
-        let openingHours = (!!open && !!close) ? `${open} - ${close}` : null;
+        let openingHours = (!!open && !!close) ?
+            `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
+        let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         return (
             <ScrollView style={styles.container}>
@@ -169,14 +185,14 @@ export default class ServiceDetails extends Component {
                 </View>
                 <TouchableHighlight
                     onPress={this.getDirections.bind(this, service)}
-                    style={styles.button}
+                    style={styles.buttonInactive}
                     underlayColor="#EEE"
                 >
                     <Text style={styles.textCenter}>{Messages.GET_DIRECTIONS}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    onPress={this.call.bind(this, service)}
-                    style={styles.button}
+                    onPress={hasPhoneNumber ? this.call.bind(this) : null}
+                    style={hasPhoneNumber ? styles.button : styles.buttonInactive}
                     underlayColor="#EEE"
                 >
                     <Text style={styles.textCenter}>{Messages.CALL}</Text>
