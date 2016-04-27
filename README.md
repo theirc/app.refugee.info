@@ -86,3 +86,17 @@ react-native start
 ```
 - Reload JS
 - For faster development enable live & hot reload in the Dev Console
+
+### Tests
+- Installing tests environment
+```sh
+npm install -g appium  # get appium
+pip install Appium-Python-Client
+pip install pytest
+```
+
+- Running tests
+```sh
+appium &               # start appium
+py.test tests/android_simple.py
+```

@@ -24,6 +24,7 @@ export default class Toolbar extends Component {
 
         return (
             <MaterialToolbar
+                testID="test-id-toolbar"
                 icon={navigator && navigator.isChild ? 'keyboard-backspace' : 'menu'}
                 onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress()}}
                 rightIconStyle={{
