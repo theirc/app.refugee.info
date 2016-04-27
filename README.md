@@ -31,6 +31,8 @@ android &
 - Extras
 - - Android Support Repository
 - - Android Support Library
+- - Google Play services
+- - Google Repository
 - - Intel x86 Emulator Accelerator
 
 
@@ -74,7 +76,7 @@ android &
 ```
 - go to Device Definitions, edit desired device, set Buttons property to "Hardware"
 - Create new Android Virtual Device, select previously edited device definition
-- Set target to Android 6.0, CPU: Intel Atom (x86), Skin with dynamic hardware controls
+- Set target to Android 6.0, CPU: Google APIs Intel Atom (x86), Skin with dynamic hardware controls
 
 
 ### Starting up application

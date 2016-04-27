@@ -105,9 +105,9 @@ export default class ServiceList extends Component {
             return type.url == row.type;
         });
         let locationName = (location) ? location.name : '';
-        let stars = [...Array(5)].map((x, i) => (
+        let stars = [...new Array(5)].map((x, i) => (
             <Icon
-                color={(row.rating >= i + 1) ? "black" : "white"}
+                color={(row.rating >= i + 1) ? 'black' : 'white'}
                 key={i}
                 name="star"
                 size={12}
