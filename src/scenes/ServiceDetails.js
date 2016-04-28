@@ -10,9 +10,12 @@ import React, {
     Linking
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
+import MapView from 'react-native-maps';
 
 import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
+
+const RADIUS = 0.01;
 
 const styles = StyleSheet.create({
     container: {
@@ -70,6 +73,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         margin: 10
+    },
+    map: {
+        flex: 1,
+        height: 120
     }
 });
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -145,12 +152,17 @@ export default class ServiceDetails extends Component {
 
     render() {
         let service = this.state.props.row;
+        let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
+
+        let location = service.location.match(/[\d\.]+/g);
+        let lat = parseFloat(location[1]),
+            long = parseFloat(location[0]);
+
         let weekDay = days[new Date().getDay()];
         let open = service[`${weekDay}_open`];
         let close = service[`${weekDay}_close`];
         let openingHours = (!!open && !!close) ?
             `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
-        let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         return (
             <ScrollView style={styles.container}>
@@ -160,6 +172,22 @@ export default class ServiceDetails extends Component {
                 >
                     <View>{this.state.props.rowContent}</View>
                 </TouchableHighlight>
+                <MapView
+                    initialRegion={{
+                        latitude: lat,
+                        longitude: long,
+                        latitudeDelta: RADIUS,
+                        longitudeDelta: RADIUS
+                    }}
+                    style={styles.map}
+                >
+                    <MapView.Marker
+                        coordinate={{
+                            latitude: lat,
+                            longitude: long
+                        }}
+                    />
+                </MapView>
                 <View style={styles.detailsContainer}>
                     {service.description &&
                         <Text>
