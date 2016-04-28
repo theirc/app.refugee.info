@@ -179,8 +179,7 @@ export default class Navigate {
 			}
 			this.isChild = path.split('.').length > 1;
 			const route = {
-				// title: title ? title : (obj.title || this._getPathPrettyName(path)),
-				title: title ? title : (this.previousRoute ? this.previousRoute.title : (obj.title || this._getPathPrettyName(path))),
+				title: title ? title : (obj.title || this._getPathPrettyName(path)),
 				path,
 				component: obj.component,
 				props

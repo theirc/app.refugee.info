@@ -21,7 +21,14 @@ export default {
 
     map: {
         title: 'Service Map',
-        component: require('./scenes/ServiceMap').default
+        component: require('./scenes/ServiceMap').default,
+
+        children: {
+            details: {
+                title: 'Service Details',
+                component: require('./scenes/ServiceDetails').default
+            }
+        }
     },
 
     info: {

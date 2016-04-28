@@ -8,6 +8,7 @@ import React, {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { default as _ } from 'lodash';
 
 import ApiClient from '../utils/ApiClient';
 
@@ -56,12 +57,16 @@ export default class ServiceMap extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2
-            }),
-            loaded: false
-        };
+        if (props.hasOwnProperty('savedState') && props.savedState) {
+            this.state = props.savedState;
+        } else {
+            this.state = {
+                dataSource: new ListView.DataSource({
+                    rowHasChanged: (row1, row2) => row1 !== row2
+                }),
+                loaded: false
+            };
+        }
         this.apiClient = new ApiClient();
     }
 
@@ -74,27 +79,50 @@ export default class ServiceMap extends Component {
     async fetchData() {
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         if (!region) {
-            this.setState({loaded: true});
+            this.setState({
+                loaded: true
+            });
             return;
         }
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
+        let locations = await this.apiClient.getLocations(region.id);
+        locations.push(region);
         let markers = services.map(service => {
             let location = service.location.match(/[\d\.]+/g);
             return {
                 latitude: parseFloat(location[1]),
                 longitude: parseFloat(location[0]),
                 description: service.description,
-                title: service.name
+                title: service.name,
+                service: service
             }
         });
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,
+            region: ServiceMap.getInitialRegion(markers),
+            markers,
             serviceTypes,
-            region,
-            markers
+            locations,
+            services
         });
+    }
+
+    onCalloutPress(marker) {
+        let service = marker.service;
+        let location = _.find(this.state.locations, function(loc) {
+            return loc.id == service.region;
+        });
+        let serviceType = _.find(this.state.serviceTypes, function(type) {
+            return type.url == service.type;
+        });
+        const { navigator } = this.context;
+        navigator.forward(null, null, {service, location, serviceType}, this.state);
+    }
+
+    onRegionChange(region) {
+        this.setState({ region });
     }
 
     render() {
@@ -104,7 +132,8 @@ export default class ServiceMap extends Component {
         return (
             <View style={styles.container}>
                 <MapView
-                    initialRegion={this.state.markers && ServiceMap.getInitialRegion(this.state.markers)}
+                    onRegionChangeComplete={this.onRegionChange.bind(this)}
+                    region={this.state.region}
                     style={styles.map}
                 >
                     {this.state.markers && this.state.markers.map((marker, i) => (
@@ -115,6 +144,7 @@ export default class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
+                            onCalloutPress={this.onCalloutPress.bind(this, marker)}
                             title={marker.title}
                         />
                     ))}

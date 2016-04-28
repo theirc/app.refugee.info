@@ -14,6 +14,7 @@ import MapView from 'react-native-maps';
 
 import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
+import ServiceCommons from '../utils/ServiceCommons';
 
 const RADIUS = 0.01;
 
@@ -97,6 +98,7 @@ export default class ServiceDetails extends Component {
             props
         };
         this.apiClient = new ApiClient();
+        this.serviceCommons = new ServiceCommons();
     }
 
     componentDidMount() {
@@ -106,7 +108,7 @@ export default class ServiceDetails extends Component {
     }
 
     async fetchData() {
-        let service = this.state.props.row;
+        let service = this.state.props.service;
         let feedbacks = await this.apiClient.getFeedbacks(service.id);
         let provider = await this.apiClient.fetch(service.provider_fetch_url);
         this.setState({
@@ -149,14 +151,13 @@ export default class ServiceDetails extends Component {
             </View>
         )
     }
-
     render() {
-        let service = this.state.props.row;
+        let service = this.state.props.service;
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
-        let location = service.location.match(/[\d\.]+/g);
-        let lat = parseFloat(location[1]),
-            long = parseFloat(location[0]);
+        let coordinates = service.location.match(/[\d\.]+/g);
+        let lat = parseFloat(coordinates[1]),
+            long = parseFloat(coordinates[0]);
 
         let weekDay = days[new Date().getDay()];
         let open = service[`${weekDay}_open`];
@@ -164,13 +165,16 @@ export default class ServiceDetails extends Component {
         let openingHours = (!!open && !!close) ?
             `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
 
+        let rowContent = this.serviceCommons.renderRowContent(
+            service, this.state.props.serviceType, this.state.props.location
+        );
         return (
             <ScrollView style={styles.container}>
                 <TouchableHighlight
                     style={styles.buttonContainer}
                     underlayColor="white"
                 >
-                    <View>{this.state.props.rowContent}</View>
+                    <View>{rowContent}</View>
                 </TouchableHighlight>
                 <MapView
                     initialRegion={{
