@@ -15,6 +15,7 @@ export default {
     SELECT: 'Select',
     LATEST_SERVICES: 'Latest services in',
     COST_OF_SERVICE: 'Cost of service',
+    CHOOSE_REGION: 'Please choose region on home page',
     SELECTION_CRITERIA: 'Selection Criteria',
     GET_DIRECTIONS: 'Get directions',
     CALL: 'Call',

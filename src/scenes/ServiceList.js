@@ -79,6 +79,12 @@ export default class ServiceList extends Component {
 
     async fetchData() {
         let region = JSON.parse(await AsyncStorage.getItem('region'));
+        if (!region) {
+            this.setState({
+                loaded: true
+            });
+            return;
+        }
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let locations = await this.apiClient.getLocations(region.id);
@@ -142,6 +148,9 @@ export default class ServiceList extends Component {
     render() {
         if (!this.state.loaded) {
             return ServiceList.renderLoadingView();
+        }
+        else if (!this.state.region) {
+            return <Text>{Messages.CHOOSE_REGION}</Text>
         } else {
             return (
               <View style={styles.container}>

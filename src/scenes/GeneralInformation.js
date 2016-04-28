@@ -21,6 +21,9 @@ export default class GeneralInformation extends Component {
 
     async _loadInitialState() {
         let region = JSON.parse(await AsyncStorage.getItem('region'));
+        if (!region) {
+            return;
+        }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content)
         });
