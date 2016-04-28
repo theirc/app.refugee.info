@@ -65,6 +65,11 @@ const styles = StyleSheet.create({
         flex: 1,
         alignSelf: 'center',
         marginLeft: 15
+    },
+    loading: {
+        justifyContent: 'center',
+        alignSelf: 'center',
+        margin: 10
     }
 });
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -204,8 +209,8 @@ export default class ServiceDetails extends Component {
                         renderRow={this.renderFeedback.bind(this)}
                         style={styles.feedbackContainer}
                      />) :
-                    <Text style={styles.feedbackContainer}>
-                        {Messages.LOADING_COMMENTS}...
+                    <Text style={styles.loading}>
+                        {Messages.LOADING}
                     </Text>
                 }
             </ScrollView>

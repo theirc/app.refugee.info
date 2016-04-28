@@ -7,6 +7,7 @@ import React, {
     AsyncStorage
 } from 'react-native';
 import MapView from 'react-native-maps';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import ApiClient from '../utils/ApiClient';
 
@@ -26,6 +27,17 @@ export default class ServiceMap extends Component {
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };
+
+    static renderLoadingView() {
+        return (
+            <View style={{ flex: 1 }}>
+                <Spinner
+                    overlayColor="#EEE"
+                    visible
+                />
+            </View>
+        );
+    }
 
     static getInitialRegion(markers) {
         let lats = markers.map(marker => marker.latitude),
@@ -86,6 +98,9 @@ export default class ServiceMap extends Component {
     }
 
     render() {
+        if (!this.state.loaded) {
+            return ServiceMap.renderLoadingView();
+        }
         return (
             <View style={styles.container}>
                 <MapView

@@ -11,6 +11,7 @@ import React, {
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import { default as _ } from 'lodash';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
@@ -48,8 +49,11 @@ export default class ServiceList extends Component {
 
     static renderLoadingView() {
         return (
-            <View>
-                <Text>{Messages.LOADING_SERVICES}</Text>
+            <View style={{ flex: 1 }}>
+                <Spinner
+                    overlayColor="#EEE"
+                    visible
+                />
             </View>
         );
     }
@@ -151,18 +155,17 @@ export default class ServiceList extends Component {
         }
         else if (!this.state.region) {
             return <Text>{Messages.CHOOSE_REGION}</Text>
-        } else {
-            return (
-              <View style={styles.container}>
-                  <ListView
-                      dataSource={this.state.dataSource}
-                      enableEmptySections
-                      renderHeader={this.renderHeader.bind(this)}
-                      renderRow={this.renderRow.bind(this)}
-                      style={styles.listViewContainer}
-                  />
-              </View>
-            )
         }
+        return (
+            <View style={styles.container}>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    renderHeader={this.renderHeader.bind(this)}
+                    renderRow={this.renderRow.bind(this)}
+                    style={styles.listViewContainer}
+                />
+            </View>
+        )
     }
 }
