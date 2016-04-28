@@ -66,8 +66,8 @@ export default class ServiceMap extends Component {
         let markers = services.map(service => {
             let latlng = service.location.match(/[\d\.]+/g);
             return {
-                latitude: parseFloat(latlng[0]),
-                longitude: parseFloat(latlng[1]),
+                latitude: parseFloat(latlng[1]),
+                longitude: parseFloat(latlng[0]),
                 description: service.description,
                 title: service.name
             }
