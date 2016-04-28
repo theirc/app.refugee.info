@@ -64,10 +64,10 @@ export default class ServiceMap extends Component {
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let markers = services.map(service => {
-            let latlng = service.location.match(/[\d\.]+/g);
+            let location = service.location.match(/[\d\.]+/g);
             return {
-                latitude: parseFloat(latlng[0]),
-                longitude: parseFloat(latlng[1]),
+                latitude: parseFloat(location[1]),
+                longitude: parseFloat(location[0]),
                 description: service.description,
                 title: service.name
             }
