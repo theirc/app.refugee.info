@@ -7,7 +7,8 @@ import React, {
     StyleSheet,
     TouchableHighlight,
     AsyncStorage,
-    Image
+    Image,
+    TextInput
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import { default as _ } from 'lodash';
@@ -98,7 +99,8 @@ export default class ServiceList extends Component {
             loaded: true,
             serviceTypes,
             locations,
-            region
+            region,
+            services
         });
     }
 
@@ -145,8 +147,21 @@ export default class ServiceList extends Component {
         );
     }
 
+    _onChangeText(text) {
+        const services = this.state.services;
+        const filteredServices = services.filter((x) => x.name.indexOf(text) !== -1);
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(filteredServices)
+        });
+    }
+
     renderHeader() {
-        return (<Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>);
+        return (
+            <View>
+                <Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>
+                <TextInput placeholder="Search..." onChangeText={this._onChangeText.bind(this)}/>
+            </View>
+        );
     }
 
     render() {
