@@ -61,6 +61,10 @@ export default class ServiceMap extends Component {
 
     async fetchData() {
         let region = JSON.parse(await AsyncStorage.getItem('region'));
+        if (!region) {
+            this.setState({loaded: true});
+            return;
+        }
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let markers = services.map(service => {
