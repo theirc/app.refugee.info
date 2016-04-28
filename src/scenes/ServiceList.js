@@ -7,15 +7,14 @@ import React, {
     StyleSheet,
     TouchableHighlight,
     AsyncStorage,
-    Image,
     TextInput
 } from 'react-native';
-import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import { default as _ } from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import Messages from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
+import ServiceCommons from '../utils/ServiceCommons';
 
 const styles = StyleSheet.create({
     container: {
@@ -73,6 +72,7 @@ export default class ServiceList extends Component {
             };
         }
         this.apiClient = new ApiClient();
+        this.serviceCommons = new ServiceCommons();
     }
 
 
@@ -109,36 +109,17 @@ export default class ServiceList extends Component {
         navigator.forward(null, null, params, this.state);
     }
 
-    renderRow(row) {
+    renderRow(service) {
         let location = _.find(this.state.locations, function(loc) {
-            return loc.id == row.region;
+            return loc.id == service.region;
         });
         let serviceType = _.find(this.state.serviceTypes, function(type) {
-            return type.url == row.type;
+            return type.url == service.type;
         });
-        let locationName = (location) ? location.name : '';
-        let stars = [...new Array(5)].map((x, i) => (
-            <Icon
-                color={(row.rating >= i + 1) ? 'black' : 'white'}
-                key={i}
-                name="star"
-                size={12}
-            />
-          ));
-        let rowContent = (
-            <View>
-                 <Image
-                     source={{uri: serviceType.icon_url}}
-                     style={styles.icon}
-                 />
-                <Text>{row.name}</Text>
-                <Text>{Messages.RATING}: {stars}</Text>
-                <Text>{locationName}</Text>
-            </View>
-        );
+        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
         return (
             <TouchableHighlight
-                onPress={this.onClick.bind(this, {row, location, serviceType, rowContent})}
+                onPress={this.onClick.bind(this, {service, serviceType, location})}
                 style={styles.buttonContainer}
                 underlayColor="white"
             >
