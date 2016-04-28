@@ -149,7 +149,7 @@ export default class ServiceList extends Component {
 
     _onChangeText(text) {
         const services = this.state.services;
-        const filteredServices = services.filter((x) => x.name.indexOf(text) !== -1);
+        const filteredServices = services.filter((x) => x.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(filteredServices)
         });
