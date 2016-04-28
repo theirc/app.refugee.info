@@ -1,4 +1,4 @@
-import React, { Component, PropTypes, View, Text, AsyncStorage } from 'react-native';
+import React, {Component, PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight} from 'react-native';
 
 export default class GeneralInformation extends Component {
 
@@ -9,28 +9,67 @@ export default class GeneralInformation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            region: ''
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2
+            })
         };
     }
 
     componentDidMount() {
-        this._loadInitialState().done();
+        this._loadInitialState();
     }
 
     async _loadInitialState() {
-        let region = await AsyncStorage.getItem('region');
-        this.setState({region: JSON.parse(region)});
+        let region = JSON.parse(await AsyncStorage.getItem('region'));
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(region.content)
+        });
     }
 
-    render() {
+    onClick(title, section) {
         const { navigator } = this.context;
+        navigator.forward(null, title, {section}, this.state);
+    }
 
+    renderRow(rowData) {
         return (
-            <View>
-                <Text>General Info</Text>
-                <Text>{this.state.region.name}</Text>
-            </View>
+            <TouchableHighlight
+                onPress={this.onClick.bind(this, rowData.title, rowData.section)}
+                style={styles.buttonContainer}
+                underlayColor="white"
+            >
+                <Text>{rowData.title}</Text>
+            </TouchableHighlight>
         );
     }
 
+    render() {
+        return (
+            <View style={styles.container}>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    renderRow={this.renderRow.bind(this)}
+                    style={styles.listViewContainer}
+                />
+            </View>
+        );
+    }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    listViewContainer: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    buttonContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        padding: 15,
+        backgroundColor: '#EEE'
+    }
+});
