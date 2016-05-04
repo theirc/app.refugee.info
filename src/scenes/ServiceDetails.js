@@ -114,12 +114,14 @@ export default class ServiceDetails extends Component {
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(feedbacks),
             loaded: true,
-            provider
+            provider,
+            service
         });
     }
 
-    getDirections(service) {
-        // TODO
+    getDirections(lat, long) {
+        let location = `${lat},${long}`;
+        Linking.openURL(`geo:${location}?q=${location}`)
     }
 
     call() {
@@ -193,19 +195,19 @@ export default class ServiceDetails extends Component {
                     />
                 </MapView>
                 <View style={styles.detailsContainer}>
-                    {service.description &&
+                    {!!service.description &&
                         <Text>
                             {Messages.DESCRIPTION}:
                             {`\n${service.description}`}
                         </Text>
                     }
-                    {openingHours &&
+                    {!!openingHours &&
                         <Text>
                             {Messages.OPENING_HOURS}:
                             {`\n${openingHours}`}
                         </Text>
                     }
-                    {service.cost_of_service &&
+                    {!!service.cost_of_service &&
                         <Text>
                             {Messages.COST_OF_SERVICE}:
                             {`\n${service.cost_of_service}`}
@@ -221,8 +223,8 @@ export default class ServiceDetails extends Component {
                     }
                 </View>
                 <TouchableHighlight
-                    onPress={this.getDirections.bind(this, service)}
-                    style={styles.buttonInactive}
+                    onPress={this.getDirections.bind(this, lat, long)}
+                    style={styles.button}
                     underlayColor="#EEE"
                 >
                     <Text style={styles.textCenter}>{Messages.GET_DIRECTIONS}</Text>
