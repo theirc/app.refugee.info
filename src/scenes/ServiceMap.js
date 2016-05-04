@@ -41,6 +41,9 @@ export default class ServiceMap extends Component {
     }
 
     static getInitialRegion(markers) {
+        if (markers.length == 0) {
+            return null;
+        }
         let lats = markers.map(marker => marker.latitude),
             longs = markers.map(marker => marker.longitude);
         let minLat = Math.min.apply(null, lats), minLong = Math.min.apply(null, longs);
