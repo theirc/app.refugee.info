@@ -1,7 +1,7 @@
-import React, {
+import React, { Component } from 'react';
+import {
     AsyncStorage,
     StyleSheet,
-    Component,
     PropTypes,
     View,
     TouchableHighlight,

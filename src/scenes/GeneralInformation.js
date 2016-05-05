@@ -1,4 +1,5 @@
-import React, {Component, PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight} from 'react-native';
+import React, { Component } from 'react';
+import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight} from 'react-native';
 
 export default class GeneralInformation extends Component {
 

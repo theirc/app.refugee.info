@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react-native';
+import React, { Component } from 'react';
+import { PropTypes } from 'react-native';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 
 export default class Toolbar extends Component {

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react-native';
+import React, { Component } from 'react';
+import { PropTypes } from 'react-native';
 
 import { Drawer } from 'react-native-material-design';
 
