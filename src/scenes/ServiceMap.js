@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { default as _ } from 'lodash';
 
 import ApiClient from '../utils/ApiClient';
 
@@ -98,7 +97,7 @@ export default class ServiceMap extends Component {
                 longitude: parseFloat(location[0]),
                 description: service.description,
                 title: service.name,
-                service: service
+                service
             }
         });
         this.setState({
@@ -114,10 +113,10 @@ export default class ServiceMap extends Component {
 
     onCalloutPress(marker) {
         let service = marker.service;
-        let location = _.find(this.state.locations, function(loc) {
+        let location = this.state.locations.find(function(loc) {
             return loc.id == service.region;
         });
-        let serviceType = _.find(this.state.serviceTypes, function(type) {
+        let serviceType = this.state.serviceTypes.find(function(type) {
             return type.url == service.type;
         });
         const { navigator } = this.context;
@@ -135,7 +134,7 @@ export default class ServiceMap extends Component {
         return (
             <View style={styles.container}>
                 <MapView
-                    onRegionChangeComplete={this.onRegionChange.bind(this)}
+                    onRegionChangeComplete={(region) => this.onRegionChange(region)}
                     region={this.state.region}
                     style={styles.map}
                 >
@@ -147,7 +146,7 @@ export default class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
-                            onCalloutPress={this.onCalloutPress.bind(this, marker)}
+                            onCalloutPress={() => this.onCalloutPress(marker)}
                             title={marker.title}
                         />
                     ))}
