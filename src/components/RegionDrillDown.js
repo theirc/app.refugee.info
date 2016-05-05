@@ -1,4 +1,5 @@
-import React, { Component, StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
 import Messages from '../constants/Messages'
 
 export default class RegionDrillDown extends Component {

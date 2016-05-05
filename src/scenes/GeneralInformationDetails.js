@@ -1,4 +1,5 @@
-import React, {Component, PropTypes, View, WebView} from 'react-native';
+import React, { Component } from 'react';
+import {View, WebView} from 'react-native';
 
 
 export default class GeneralInformationDetails extends Component {
