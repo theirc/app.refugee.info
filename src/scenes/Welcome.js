@@ -129,13 +129,19 @@ export default class Welcome extends Component {
         const regions = await this.apiClient.getRegions(countryId);
         const children = await this.apiClient.getCities(countryId);
         cities = cities.concat(children);
+        const promises = [];
         for (let region of regions) {
-            cities = cities.concat(await this.apiClient.getCities(region.id));
+            promises.push(this.apiClient.getCities(region.id));
         }
-        this.formatLocations(cities);
-        this.setState({
-            cities,
-            loading: false
+        Promise.all(promises).then((citiesList) => {
+            for (let _cities of citiesList) {
+                cities = cities.concat(_cities);
+            }
+            this.formatLocations(cities);
+            this.setState({
+                cities,
+                loading: false
+            });
         });
     }
 
