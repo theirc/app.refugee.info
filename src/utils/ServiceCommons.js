@@ -45,7 +45,7 @@ export default class ServiceCommons {
             <View style={styles.container}>
                 <View style={styles.iconContainer}>
                     <Image
-                        source={{uri: service.icon_url}}
+                        source={{uri: serviceType.icon_url}}
                         style={styles.icon}
                     />
                 </View>
