@@ -88,14 +88,27 @@ export default class ServiceDetails extends Component {
         navigator: PropTypes.object.isRequired
     };
 
+    static propTypes = {
+        location: PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            name: PropTypes.string.isRequired
+        }),
+        service: PropTypes.shape({
+            id: PropTypes.number,
+            provider_fetch_url: PropTypes.string.isRequired
+        }),
+        serviceType: PropTypes.shape({
+            icon_url: PropTypes.string
+        })
+    };
+
     constructor(props) {
         super(props);
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded: false.valueOf(),
-            props
+            loaded: false.valueOf()
         };
         this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
@@ -108,7 +121,7 @@ export default class ServiceDetails extends Component {
     }
 
     async fetchData() {
-        let service = this.state.props.service;
+        let service = this.props.service;
         let feedbacks = await this.apiClient.getFeedbacks(service.id);
         let provider = await this.apiClient.fetch(service.provider_fetch_url);
         this.setState({
@@ -154,7 +167,7 @@ export default class ServiceDetails extends Component {
         )
     }
     render() {
-        let service = this.state.props.service;
+        let service = this.props.service;
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         let coordinates = service.location.match(/[\d\.]+/g);
@@ -168,7 +181,7 @@ export default class ServiceDetails extends Component {
             `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
 
         let rowContent = this.serviceCommons.renderRowContent(
-            service, this.state.props.serviceType, this.state.props.location
+            service, this.props.serviceType, this.props.location
         );
         return (
             <ScrollView style={styles.container}>
@@ -223,7 +236,7 @@ export default class ServiceDetails extends Component {
                     }
                 </View>
                 <TouchableHighlight
-                    onPress={this.getDirections.bind(this, lat, long)}
+                    onPress={() => this.getDirections(lat, long)}
                     style={styles.button}
                     underlayColor="#EEE"
                 >
@@ -240,7 +253,7 @@ export default class ServiceDetails extends Component {
                     (<ListView
                         dataSource={this.state.dataSource}
                         enableEmptySections
-                        renderRow={this.renderFeedback.bind(this)}
+                        renderRow={(row) => this.renderFeedback(row)}
                         style={styles.feedbackContainer}
                      />) :
                     <Text style={styles.loading}>

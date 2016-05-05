@@ -9,7 +9,6 @@ import {
     AsyncStorage,
     TextInput
 } from 'react-native';
-import { default as _ } from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import Messages from '../constants/Messages';
@@ -45,6 +44,10 @@ export default class ServiceList extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
+    };
+
+    static propTypes = {
+        savedState: React.PropTypes.object //eslint-disable-line react/forbid-prop-types
     };
 
     static renderLoadingView() {
@@ -110,16 +113,16 @@ export default class ServiceList extends Component {
     }
 
     renderRow(service) {
-        let location = _.find(this.state.locations, function(loc) {
+        let location = this.state.locations.find(function(loc) {
             return loc.id == service.region;
         });
-        let serviceType = _.find(this.state.serviceTypes, function(type) {
+        let serviceType = this.state.serviceTypes.find(function(type) {
             return type.url == service.type;
         });
         let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
         return (
             <TouchableHighlight
-                onPress={this.onClick.bind(this, {service, serviceType, location})}
+                onPress={() => this.onClick({service, serviceType, location})}
                 style={styles.buttonContainer}
                 underlayColor="white"
             >
@@ -140,7 +143,10 @@ export default class ServiceList extends Component {
         return (
             <View>
                 <Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>
-                <TextInput placeholder="Search..." onChangeText={this._onChangeText.bind(this)}/>
+                <TextInput
+                    onChangeText={(text) => this._onChangeText(text)}
+                    placeholder="Search..."
+                />
             </View>
         );
     }
@@ -157,8 +163,8 @@ export default class ServiceList extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderHeader={this.renderHeader.bind(this)}
-                    renderRow={this.renderRow.bind(this)}
+                    renderHeader={() => this.renderHeader()}
+                    renderRow={(service) => this.renderRow(service)}
                     style={styles.listViewContainer}
                 />
             </View>
