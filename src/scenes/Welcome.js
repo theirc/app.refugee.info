@@ -25,14 +25,18 @@ export default class Welcome extends Component {
         this.state = {
             position: {},
             detecting: false,
-            location: '',
-            selectedCountry: '',
-            selectedCity: '',
+            location: null,
+            selectedCountry: null,
+            selectedCity: null,
             countries: [],
             cities: [],
             loading: true
         };
         this.apiClient = new ApiClient();
+    }
+
+    async componentDidMount() {
+        this.initialState();
     }
 
     async initialState() {
@@ -49,24 +53,11 @@ export default class Welcome extends Component {
         this.setState(changes);
     }
 
-    async componentDidMount() {
-        this.initialState();
-    }
-
     async _onPress(region) {
         region.detected = false;
         region.coords = {};
         await AsyncStorage.setItem('region', JSON.stringify(region));
         this.context.navigator.to('info');
-    }
-
-    async _getCountryId(city) {
-        let parent = await this.apiClient.getLocation(city.parent);
-        if (!parent.parent) {
-            return parent.id;
-        }
-        parent = await this.apiClient.getLocation(parent.parent);
-        return parent.id;
     }
 
     _onDetectLocationPress() {
@@ -101,7 +92,7 @@ export default class Welcome extends Component {
         }
         return (
             <TouchableHighlight
-                onPress={this._onDetectLocationPress.bind(this)}
+                onPress={() => this._onDetectLocationPress()}
                 style={styles.button}
                 underlayColor="#EEE"
             >
@@ -132,11 +123,8 @@ export default class Welcome extends Component {
             cities = cities.concat(await this.apiClient.getCities(region.id));
         }
 
-        const defaultOption = [
-            {id: '', name: 'Select city'}
-        ];
         this.setState({
-            cities: defaultOption.concat(cities),
+            cities,
             loading: false
         });
     }
@@ -156,11 +144,11 @@ export default class Welcome extends Component {
                     cities={this.state.cities}
                     countries={this.state.countries}
                     loading={this.state.loading}
-                    onCountryChange={this._onCountryChange.bind(this)}
-                    onCityChange={this._onCityChange.bind(this)}
-                    onPress={this._onPress.bind(this)}
-                    selectedCountry={this.state.selectedCountry}
+                    onCityChange={(cityId) => this._onCityChange(cityId)}
+                    onCountryChange={(countryId) => this._onCountryChange(countryId)}
+                    onPress={(region) => this._onPress(region)}
                     selectedCity={this.state.selectedCity}
+                    selectedCountry={this.state.selectedCountry}
                 />
             </View>
         );

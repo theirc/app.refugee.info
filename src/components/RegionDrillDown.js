@@ -2,45 +2,55 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
 import Messages from '../constants/Messages'
 
+const LocationPicker = ({selectedLocation, onLocationChange, locations}) => {
+    return (
+        <Picker onValueChange={onLocationChange}
+            selectedValue={selectedLocation}
+        >
+            {locations.map(
+                (country, idx) => (
+                    <Picker.Item
+                        key={idx}
+                        label={country.name}
+                        value={country.id}
+                    />
+                )
+            )}
+        </Picker>
+    );
+};
+
+LocationPicker.propTypes = {
+    locations: React.PropTypes.arrayOf(React.PropTypes.shape({
+        id: React.PropTypes.number,
+        name: React.PropTypes.string.isRequired
+    })),
+    onLocationChange: React.PropTypes.func.isRequired,
+    selectedLocation: React.PropTypes.number
+};
+
 export default class RegionDrillDown extends Component {
-    constructor(props) {
-        super(props);
-    }
+
+    static propTypes = {
+        cities: React.PropTypes.arrayOf(React.PropTypes.shape({
+            id: React.PropTypes.number.isRequired,
+            name: React.PropTypes.string.isRequired
+        })),
+        countries: React.PropTypes.arrayOf(React.PropTypes.shape({
+            id: React.PropTypes.number,
+            name: React.PropTypes.string.isRequired
+        })),
+        loading: React.PropTypes.bool.isRequired,
+        onCityChange: React.PropTypes.func.isRequired,
+        onCountryChange: React.PropTypes.func.isRequired,
+        onPress: React.PropTypes.func.isRequired,
+        selectedCity: React.PropTypes.number,
+        selectedCountry: React.PropTypes.number
+    };
+
 
     getCountries() {
-        const defaultElement = [{
-            name: 'Select country',
-            id: ''
-        }];
-
-        return defaultElement.concat(this.props.countries).map(
-            (country, idx) => <Picker.Item key={idx} label={country.name} value={country.id}/>
-        );
-    }
-
-    countryPicker() {
-        return (
-            <Picker selectedValue={this.props.selectedCountry} onValueChange={this.props.onCountryChange}>
-                {this.getCountries()}
-            </Picker>
-        );
-    }
-
-    getCities() {
-        return this.props.cities.map(
-            (city, idx) => <Picker.Item key={idx} label={city.name} value={city.id}/>
-        )
-    }
-
-    cityPicker() {
-        if (!this.props.selectedCountry) {
-            return;
-        }
-        return (
-            <Picker selectedValue={this.props.selectedCity} onValueChange={this.props.onCityChange}>
-                {this.getCities()}
-            </Picker>
-        );
+        return [{name: 'Select country', id: null}, ...this.props.countries];
     }
 
     _getRegionById(regionId) {
@@ -73,7 +83,7 @@ export default class RegionDrillDown extends Component {
         }
         return (
             <TouchableHighlight
-                onPress={this.onPress.bind(this)}
+                onPress={() => this.onPress()}
                 style={styles.button}
                 underlayColor="#EEE"
             >
@@ -91,8 +101,16 @@ export default class RegionDrillDown extends Component {
     render() {
         return (
             <View>
-                {this.countryPicker()}
-                {this.cityPicker()}
+                <LocationPicker
+                    locations={this.getCountries()}
+                    onLocationChange={this.props.onCountryChange}
+                    selectedLocation={this.props.selectedCountry}
+                />
+                <LocationPicker
+                    locations={this.props.cities}
+                    onLocationChange={this.props.onCityChange}
+                    selectedLocation={this.props.selectedCity}
+                />
                 {this.loading()}
                 {this.selectButton()}
             </View>

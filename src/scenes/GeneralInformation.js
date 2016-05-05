@@ -38,7 +38,7 @@ export default class GeneralInformation extends Component {
     renderRow(rowData) {
         return (
             <TouchableHighlight
-                onPress={this.onClick.bind(this, rowData.title, rowData.section)}
+                onPress={() => this.onClick(rowData.title, rowData.section)}
                 style={styles.buttonContainer}
                 underlayColor="white"
             >
@@ -53,7 +53,7 @@ export default class GeneralInformation extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderRow={this.renderRow.bind(this)}
+                    renderRow={(rowData) => this.renderRow(rowData)}
                     style={styles.listViewContainer}
                 />
             </View>
