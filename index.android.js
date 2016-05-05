@@ -35,7 +35,7 @@ class RefugeeInfoApp extends Component {
         return {
             drawer: this.state.drawer,
             navigator: this.state.navigator
-        }
+        };
     };
 
     setDrawer = (drawer) => {

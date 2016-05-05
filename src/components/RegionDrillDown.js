@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
-import Messages from '../constants/Messages'
+import Messages from '../constants/Messages';
 
 const LocationPicker = ({selectedLocation, onLocationChange, locations}) => {
     return (
@@ -89,7 +89,7 @@ export default class RegionDrillDown extends Component {
             >
                     <Text style={styles.buttonText}>{Messages.SELECT} {selectedLocation.name}</Text>
             </TouchableHighlight>
-        )
+        );
     }
 
     loading() {
@@ -114,7 +114,7 @@ export default class RegionDrillDown extends Component {
                 {this.loading()}
                 {this.selectButton()}
             </View>
-        )
+        );
     }
 }
 
