@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { default as _ } from 'lodash';
 
 import ApiClient from '../utils/ApiClient';
 
@@ -98,7 +99,7 @@ export default class ServiceMap extends Component {
                 description: service.description,
                 title: service.name,
                 service
-            }
+            };
         });
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),

@@ -16,6 +16,6 @@ export default class GeneralInformationDetails extends Component {
                     style={{marginBottom: 50}}
                 />
             </View>
-        )
+        );
     }
 }

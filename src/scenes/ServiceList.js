@@ -9,6 +9,7 @@ import {
     AsyncStorage,
     TextInput
 } from 'react-native';
+import { default as _ } from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import Messages from '../constants/Messages';
@@ -145,7 +146,7 @@ export default class ServiceList extends Component {
                 <Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
-                    placeholder="Search..."
+                    placeholder={Messages.SEARCH}
                 />
             </View>
         );
@@ -168,6 +169,6 @@ export default class ServiceList extends Component {
                     style={styles.listViewContainer}
                 />
             </View>
-        )
+        );
     }
 }

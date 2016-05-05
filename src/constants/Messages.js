@@ -21,5 +21,6 @@ export default {
     CALL: 'Call',
     RATING: 'Rating',
     OPENING_HOURS: 'Opening hours',
-    DESCRIPTION: 'Description'
-}
+    DESCRIPTION: 'Description',
+    SEARCH: 'Search...'
+};

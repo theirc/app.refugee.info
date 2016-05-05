@@ -108,7 +108,7 @@ export default class ServiceDetails extends Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded: false.valueOf()
+            loaded: false
         };
         this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
@@ -134,7 +134,7 @@ export default class ServiceDetails extends Component {
 
     getDirections(lat, long) {
         let location = `${lat},${long}`;
-        Linking.openURL(`geo:${location}?q=${location}`)
+        Linking.openURL(`geo:${location}?q=${location}`);
     }
 
     call() {
@@ -164,7 +164,7 @@ export default class ServiceDetails extends Component {
                     <Text style={styles.comment}>{Messages.RATING}: {stars}</Text>
                 </View>
             </View>
-        )
+        );
     }
     render() {
         let service = this.props.service;
@@ -261,6 +261,6 @@ export default class ServiceDetails extends Component {
                     </Text>
                 }
             </ScrollView>
-        )
+        );
     }
 }
