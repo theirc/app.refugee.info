@@ -40,7 +40,9 @@ export default class Welcome extends Component {
     }
 
     async initialState() {
-        const countries = await this.apiClient.getRootLocations();
+        let countries = await this.apiClient.getRootLocations();
+
+        this.formatLocations(countries);
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         const changes = {loading: false, countries};
         if (region) {
@@ -51,6 +53,14 @@ export default class Welcome extends Component {
             }
         }
         this.setState(changes);
+    }
+
+    formatLocations(locations) {
+        for (let location of locations) {
+            location.name = location.name[0].toLocaleUpperCase() + location.name.slice(1);
+        }
+
+        locations.sort((x, y) => x.name.localeCompare(y.name));
     }
 
     async _onPress(region) {
@@ -122,7 +132,7 @@ export default class Welcome extends Component {
         for (let region of regions) {
             cities = cities.concat(await this.apiClient.getCities(region.id));
         }
-
+        this.formatLocations(cities);
         this.setState({
             cities,
             loading: false
