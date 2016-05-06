@@ -4,7 +4,8 @@ import {
     View,
     ListView,
     StyleSheet,
-    AsyncStorage
+    AsyncStorage,
+    Image
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -19,6 +20,10 @@ let styles = StyleSheet.create({
     },
     map: {
         flex: 1
+    },
+    icon: {
+        width: 32,
+        height: 32
     }
 });
 
@@ -92,11 +97,15 @@ export default class ServiceMap extends Component {
         locations.push(region);
         let markers = services.map(service => {
             let location = service.location.match(/[\d\.]+/g);
+            let serviceType = serviceTypes.find(function(type) {
+                return type.url == service.type;
+            });
             return {
                 latitude: parseFloat(location[1]),
                 longitude: parseFloat(location[0]),
                 description: service.description,
                 title: service.name,
+                icon_url: serviceType.icon_url,
                 service
             };
         });
@@ -148,7 +157,16 @@ export default class ServiceMap extends Component {
                             key={i}
                             onCalloutPress={() => this.onCalloutPress(marker)}
                             title={marker.title}
-                        />
+                        >
+                            {!!marker.icon_url &&
+                                <View>
+                                    <Image
+                                        source={{uri: marker.icon_url}}
+                                        style={styles.icon}
+                                    />
+                                </View>
+                            }
+                        </MapView.Marker>
                     ))}
                 </MapView>
             </View>
