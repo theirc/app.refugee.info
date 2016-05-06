@@ -41,7 +41,6 @@ export default class Welcome extends Component {
 
     async initialState() {
         let countries = await this.apiClient.getRootLocations();
-
         this.formatLocations(countries);
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         const changes = {loading: false, countries};
@@ -138,8 +137,13 @@ export default class Welcome extends Component {
                 cities = cities.concat(_cities);
             }
             this.formatLocations(cities);
+            let selectedCity = null;
+            if (cities.length > 0) {
+                selectedCity = cities[0].id;
+            }
             this.setState({
                 cities,
+                selectedCity,
                 loading: false
             });
         });

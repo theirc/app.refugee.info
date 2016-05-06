@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
-import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight} from 'react-native';
+import React, {Component} from 'react';
+import {PropTypes, View, ScrollView, Text, AsyncStorage, StyleSheet} from 'react-native';
+import Accordion from 'react-native-collapsible/Accordion';
+import WebView from '../nativeComponents/android/ExtendedWebView';
 
 export default class GeneralInformation extends Component {
 
@@ -10,9 +12,7 @@ export default class GeneralInformation extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1 !== row2
-            })
+            content: []
         };
     }
 
@@ -26,37 +26,44 @@ export default class GeneralInformation extends Component {
             return;
         }
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(region.content)
+            content: region.content
         });
     }
 
     onClick(title, section) {
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         navigator.forward(null, title, {section}, this.state);
     }
 
-    renderRow(rowData) {
+    _renderHeader(section) {
         return (
-            <TouchableHighlight
-                onPress={() => this.onClick(rowData.title, rowData.section)}
-                style={styles.buttonContainer}
-                underlayColor="white"
-            >
-                <Text>{rowData.title}</Text>
-            </TouchableHighlight>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>{section.title}</Text>
+            </View>
+        );
+    }
+
+    _renderContent(section) {
+        return (
+            <View style={styles.content}>
+                <WebView
+                    contentInset={{left: 10, bottom: 30}}
+                    source={{html: section.section}}
+                />
+            </View>
         );
     }
 
     render() {
         return (
-            <View style={styles.container}>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    enableEmptySections
-                    renderRow={(rowData) => this.renderRow(rowData)}
-                    style={styles.listViewContainer}
+            <ScrollView style={styles.container}>
+                <Accordion
+                    duration={400}
+                    renderContent={this._renderContent}
+                    renderHeader={this._renderHeader}
+                    sections={this.state.content}
                 />
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -75,5 +82,27 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         padding: 15,
         backgroundColor: '#EEE'
+    },
+    title: {
+        textAlign: 'center',
+        fontSize: 22,
+        fontWeight: '300',
+        marginBottom: 20
+    },
+    header: {
+        backgroundColor: '#F5FCFF',
+        padding: 10
+    },
+    headerText: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '500'
+    },
+    content: {
+        flex: 1,
+        paddingRight: 60,
+        paddingLeft: 30,
+        backgroundColor: '#fff',
+        height: 500
     }
 });

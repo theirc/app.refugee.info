@@ -33,12 +33,6 @@ export default {
 
     info: {
         title: 'General Information',
-        component: require('./scenes/GeneralInformation').default,
-        children: {
-            details: {
-                title: '',
-                component: require('./scenes/GeneralInformationDetails').default
-            }
-        }
+        component: require('./scenes/GeneralInformation').default
     }
 };
