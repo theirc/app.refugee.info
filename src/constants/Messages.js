@@ -22,5 +22,11 @@ export default {
     RATING: 'Rating',
     OPENING_HOURS: 'Opening hours',
     DESCRIPTION: 'Description',
-    SEARCH: 'Search...'
+    SEARCH: 'Search...',
+    SUBMIT: 'Submit',
+    RATE_THIS_SERVICE: 'Rate this service',
+    YOUR_RATING: 'Your rating',
+    COMMENT: 'Comment',
+    NAME: 'Name',
+    CLOSE: 'Close'
 };

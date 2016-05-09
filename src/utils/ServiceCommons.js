@@ -31,16 +31,20 @@ const styles = StyleSheet.create({
 
 export default class ServiceCommons {
 
-    renderRowContent(service, serviceType, location) {
-        let locationName = (location) ? location.name : '';
-        let stars = [...new Array(5)].map((x, i) => (
+    renderStars(rating) {
+        return ([...new Array(5)].map((x, i) => (
             <Icon
-                color={(service.rating >= i + 1) ? 'black' : 'white'}
                 key={i}
-                name="star"
+                name={(rating >= i + 1) ? 'star' : 'star-o'}
                 size={12}
             />
-          ));
+          )));
+    }
+
+    renderRowContent(service, serviceType, location) {
+        let locationName = (location) ? location.name : '';
+        let stars = this.renderStars(service.rating);
+
         return (
             <View style={styles.container}>
                 <View style={styles.iconContainer}>
