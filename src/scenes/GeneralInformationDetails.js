@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {View, WebView} from 'react-native';
+import {View} from 'react-native';
+import WebView from '../nativeComponents/android/ExtendedWebView';
 
 
 export default class GeneralInformationDetails extends Component {
