@@ -7,7 +7,9 @@ import {
     Text,
     ListView,
     View,
-    Linking
+    Linking,
+    TextInput,
+    Modal
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
@@ -20,10 +22,6 @@ const RADIUS = 0.01;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    listViewContainer: {
         flex: 1,
         flexDirection: 'column'
     },
@@ -58,9 +56,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textAlignVertical: 'center'
     },
+    textRight: {
+        textAlign: 'right'
+    },
+    title: {
+        fontWeight: 'bold'
+    },
     commentBox: {
         flexDirection: 'row',
-        flex: 1
+        flex: 1,
+        marginBottom: 10
+    },
+    commentForm: {
+        marginTop: 5,
+        padding: 5
     },
     comment: {
         flex: 8
@@ -78,6 +87,32 @@ const styles = StyleSheet.create({
     map: {
         flex: 1,
         height: 120
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    modalInnerContainer: {
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        padding: 20
+    },
+    starContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        margin: 5,
+        marginLeft: 25
+    },
+    flex: {
+        flex: 1
+    },
+    modalButtonContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        marginLeft: 5,
+        marginRight: 10
     }
 });
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -108,7 +143,8 @@ export default class ServiceDetails extends Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded: false
+            loaded: false,
+            modalVisible: false
         };
         this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
@@ -118,6 +154,18 @@ export default class ServiceDetails extends Component {
         if (!this.state.loaded) {
             this.fetchData().done();
         }
+    }
+
+    _setModalVisible(visible) {
+        this.setState({modalVisible: visible});
+    }
+
+    _setRating(rating) {
+        this.setState({rating});
+    }
+
+    _setLoaded(loaded) {
+        this.setState({loaded});
     }
 
     async fetchData() {
@@ -142,15 +190,23 @@ export default class ServiceDetails extends Component {
         Linking.openURL(`tel:${provider.phone_number}`);
     }
 
+    postComment() {
+        let name = this.state.name;
+        let rating = this.state.rating;
+        let comment = this.state.comment;
+        if (!!name && !!rating && !!comment) {
+            this.apiClient.postFeedback(this.state.service, name, rating, comment).then(
+                (response) => {
+                    this._setModalVisible(false);
+                    this._setLoaded(false);
+                    this.fetchData();
+                }
+            );
+        }
+    }
+
     renderFeedback(row) {
-        let stars = [...new Array(5)].map((x, i) => (
-            <Icon
-                color={(row.quality >= i + 1) ? 'black' : 'white'}
-                key={i}
-                name="star"
-                size={12}
-            />
-        ));
+        let stars = this.serviceCommons.renderStars(row.quality);
         return (
             <View style={styles.commentBox}>
                 <Icon
@@ -166,6 +222,94 @@ export default class ServiceDetails extends Component {
             </View>
         );
     }
+
+    renderFeedbackContainer() {
+        let rateStars = [...new Array(5)].map((x, i) => (
+            <Icon
+                key={i}
+                name={(this.state.rating >= i + 1) ? 'star' : 'star-o'}
+                onPress={() => {
+                    this._setModalVisible(true);
+                    this._setRating(i + 1);
+                }}
+                size={24}
+                style={styles.flex}
+            />
+        ));
+        return (
+            <View>
+                <Modal
+                    animated={this.state.animated}
+                    onRequestClose={() => this._setModalVisible(false)}
+                    transparent={this.state.transparent}
+                    visible={this.state.modalVisible}
+                >
+                    <View style={[styles.modalContainer]}>
+                        <View style={[styles.modalInnerContainer]}>
+                            <Text style={[styles.title, styles.textCenter]}>
+                                {Messages.YOUR_RATING}
+                            </Text>
+                            <View style={styles.starContainer}>
+                                {rateStars}
+                            </View>
+                            <TextInput
+                                onChangeText={
+                                    (text) => this.setState({name: text})
+                                }
+                                placeholder={Messages.NAME}
+                                value={this.state.name}
+                            />
+                            <TextInput
+                                multiline
+                                onChangeText={
+                                    (text) => this.setState({comment: text})
+                                }
+                                placeholder={Messages.COMMENT}
+                                value={this.state.comment}
+                            />
+                            <View style={styles.modalButtonContainer}>
+                                <TouchableHighlight
+                                    onPress={() => {
+                                        this._setModalVisible(false);
+                                    }}
+                                    style={styles.flex}
+                                >
+                                    <Text>
+                                        {Messages.CLOSE}
+                                    </Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight
+                                    onPress={() => this.postComment()}
+                                    style={styles.flex}
+                                >
+                                    <Text style={styles.textRight}>
+                                        {Messages.SUBMIT}
+                                    </Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    renderRow={(row) => this.renderFeedback(row)}
+                    style={styles.feedbackContainer}
+                />
+                <View
+                    style={styles.commentForm}
+                >
+                    <Text style={[styles.title, styles.textCenter]}>
+                        {Messages.RATE_THIS_SERVICE}
+                    </Text>
+                    <View style={styles.starContainer}>
+                        {rateStars}
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
     render() {
         let service = this.props.service;
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
@@ -183,6 +327,7 @@ export default class ServiceDetails extends Component {
         let rowContent = this.serviceCommons.renderRowContent(
             service, this.props.serviceType, this.props.location
         );
+
         return (
             <ScrollView style={styles.container}>
                 <TouchableHighlight
@@ -250,12 +395,7 @@ export default class ServiceDetails extends Component {
                     <Text style={styles.textCenter}>{Messages.CALL}</Text>
                 </TouchableHighlight>
                 {this.state.loaded ?
-                    (<ListView
-                        dataSource={this.state.dataSource}
-                        enableEmptySections
-                        renderRow={(row) => this.renderFeedback(row)}
-                        style={styles.feedbackContainer}
-                     />) :
+                    (this.renderFeedbackContainer()) :
                     <Text style={styles.loading}>
                         {Messages.LOADING}
                     </Text>
