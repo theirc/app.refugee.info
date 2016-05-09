@@ -138,8 +138,13 @@ export default class Welcome extends Component {
                 cities = cities.concat(_cities);
             }
             this.formatLocations(cities);
+            let selectedCity = null;
+            if (cities.length > 0) {
+                selectedCity = cities[0].id;
+            }
             this.setState({
                 cities,
+                selectedCity,
                 loading: false
             });
         });
