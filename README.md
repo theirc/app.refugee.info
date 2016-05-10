@@ -100,5 +100,5 @@ pip install pytest
 - Running tests
 ```sh
 appium &               # start appium
-py.test tests/android_simple.py
+py.test tests/*.py     # run all tests
 ```
