@@ -112,7 +112,13 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         marginLeft: 5,
-        marginRight: 10
+        marginRight: 10,
+        marginTop: 5
+    },
+    validationText: {
+        color: '#a94442',
+        fontSize: 12,
+        marginTop: -5
     }
 });
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -160,12 +166,24 @@ export default class ServiceDetails extends Component {
         this.setState({modalVisible: visible});
     }
 
+    _setFormDirty(dirty) {
+        this.setState({isFormDirty: dirty});
+    }
+
     _setRating(rating) {
         this.setState({rating});
     }
 
     _setLoaded(loaded) {
         this.setState({loaded});
+    }
+
+    _isNameInvalid() {
+        return this.state.isFormDirty && !this.state.name;
+    }
+
+    _isCommentInvalid() {
+        return this.state.isFormDirty && !this.state.comment;
     }
 
     async fetchData() {
@@ -191,11 +209,11 @@ export default class ServiceDetails extends Component {
     }
 
     postComment() {
-        let name = this.state.name;
+        this._setFormDirty(true);
         let rating = this.state.rating;
-        let comment = this.state.comment;
-        if (!!name && !!rating && !!comment) {
-            this.apiClient.postFeedback(this.state.service, name, rating, comment).then(
+
+        if (!this._isNameInvalid() && !this._isCommentInvalid() && !!rating) {
+            this.apiClient.postFeedback(this.state.service, this.state.name, rating, this.state.comment).then(
                 (response) => {
                     this._setModalVisible(false);
                     this._setLoaded(false);
@@ -229,6 +247,7 @@ export default class ServiceDetails extends Component {
                 key={i}
                 name={(this.state.rating >= i + 1) ? 'star' : 'star-o'}
                 onPress={() => {
+                    this._setFormDirty(false);
                     this._setModalVisible(true);
                     this._setRating(i + 1);
                 }}
@@ -257,16 +276,28 @@ export default class ServiceDetails extends Component {
                                     (text) => this.setState({name: text})
                                 }
                                 placeholder={Messages.NAME}
+                                placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
                             />
+                            {this._isNameInvalid() &&
+                                <Text style={styles.validationText}>
+                                    {Messages.FIELD_REQUIRED}
+                                </Text>
+                            }
                             <TextInput
                                 multiline
                                 onChangeText={
                                     (text) => this.setState({comment: text})
                                 }
                                 placeholder={Messages.COMMENT}
+                                placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
                             />
+                            {this._isCommentInvalid() &&
+                                <Text style={styles.validationText}>
+                                    {Messages.FIELD_REQUIRED}
+                                </Text>
+                            }
                             <View style={styles.modalButtonContainer}>
                                 <TouchableHighlight
                                     onPress={() => {

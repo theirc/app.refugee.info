@@ -28,5 +28,6 @@ export default {
     YOUR_RATING: 'Your rating',
     COMMENT: 'Comment',
     NAME: 'Name',
-    CLOSE: 'Close'
+    CLOSE: 'Close',
+    FIELD_REQUIRED: 'This field is required'
 };
