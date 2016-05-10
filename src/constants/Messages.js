@@ -2,6 +2,7 @@ import I18n from 'react-native-i18n';
 export default I18n;
 
 I18n.fallbacks = true;
+I18n.defaultLocale = 'en';
 
 I18n.translations = {
     en: {
@@ -35,6 +36,14 @@ I18n.translations = {
         COMMENT: 'Comment',
         NAME: 'Name',
         CLOSE: 'Close',
-        FIELD_REQUIRED: 'This field is required'
+        FIELD_REQUIRED: 'This field is required',
+        LANGUAGE: 'Language',
+        ENGLISH: 'English',
+        FRENCH: 'French'
+    },
+    fr: {
+        WELCOME: 'Bienvenue',
+        LANGUAGE: 'La langue',
+        DETECT_LOCATION: 'Détecter l\'emplacement'
     }
 };

@@ -12,11 +12,41 @@ export default class Navigation extends Component {
         navigator: PropTypes.object.isRequired
     };
 
+    static _getBaseLangCode(code) {
+        return code.split('-')[0];
+    }
+
+    static _isFallback() {
+        let code = Navigation._getBaseLangCode(I18n.locale);
+        return !(code in I18n.translations);
+    }
+
+    static _isActiveLanguage(langCode) {
+        let code = Navigation._getBaseLangCode(langCode);
+        return I18n.locale.startsWith(code) ||
+            (code == I18n.defaultLocale && Navigation._isFallback());
+    }
+
     constructor(props) {
         super(props);
         this.state = {
             route: null
         };
+    }
+
+    _getLanguageMenuItem(code, name) {
+        return {
+            icon: 'language',
+            value: I18n.t(name),
+            active: Navigation._isActiveLanguage(code),
+            onPress: () => this.changeLanguage(code),
+            onLongPress: () => this.changeLanguage(code)
+        };
+    }
+
+    changeLanguage(code) {
+        I18n.locale = code;
+        this.changeScene('welcome');
     }
 
     changeScene = (path, name) => {
@@ -66,6 +96,14 @@ export default class Navigation extends Component {
                     }
                     ]}
                     title={I18n.t('REFUGEES_INFO')}
+                />
+
+                <Drawer.Section
+                    items={[
+                        this._getLanguageMenuItem('en', 'ENGLISH'),
+                        this._getLanguageMenuItem('fr', 'FRENCH')
+                    ]}
+                    title={I18n.t('LANGUAGE')}
                 />
 
             </Drawer>
