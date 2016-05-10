@@ -4,6 +4,7 @@ import com.AirMaps.AirPackage;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.i18n.reactnativei18n.ReactNativeI18n;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +38,7 @@ public class MainActivity extends ReactActivity {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new AirPackage(),
+            new ReactNativeI18n(),
             new RefugeeInfoPackage()
         );
     }

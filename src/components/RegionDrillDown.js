@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Picker, Text, TouchableHighlight } from 'react-native';
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 
 const LocationPicker = ({selectedLocation, onLocationChange, locations}) => {
     return (
@@ -87,14 +87,14 @@ export default class RegionDrillDown extends Component {
                 style={styles.button}
                 underlayColor="#EEE"
             >
-                    <Text style={styles.buttonText}>{Messages.SELECT} {selectedLocation.name}</Text>
+                    <Text style={styles.buttonText}>{I18n.t('SELECT')} {selectedLocation.name}</Text>
             </TouchableHighlight>
         );
     }
 
     loading() {
         if (this.props.loading) {
-            return (<Text style={styles.loading}>{Messages.LOADING}</Text>);
+            return (<Text style={styles.loading}>{I18n.t('LOADING')}</Text>);
         }
     }
 

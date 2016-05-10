@@ -3,7 +3,7 @@ import { PropTypes } from 'react-native';
 
 import { Drawer } from 'react-native-material-design';
 
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 
 export default class Navigation extends Component {
 
@@ -16,7 +16,7 @@ export default class Navigation extends Component {
         super(props);
         this.state = {
             route: null
-        }
+        };
     }
 
     changeScene = (path, name) => {
@@ -37,7 +37,7 @@ export default class Navigation extends Component {
                 <Drawer.Section
                     items={[{
                         icon: 'home',
-                        value: Messages.HOME,
+                        value: I18n.t('HOME'),
                         active: !route || route === 'welcome',
                         onPress: () => this.changeScene('welcome'),
                         onLongPress: () => this.changeScene('welcome')
@@ -47,25 +47,25 @@ export default class Navigation extends Component {
                 <Drawer.Section
                     items={[{
                         icon: 'list',
-                        value: Messages.LIST_SERVICES,
+                        value: I18n.t('LIST_SERVICES'),
                         active: route === 'services',
                         onPress: () => this.changeScene('services'),
                         onLongPress: () => this.changeScene('services')
                     }, {
                         icon: 'map',
-                        value: Messages.EXPLORE_MAP,
+                        value: I18n.t('EXPLORE_MAP'),
                         active: route === 'map',
                         onPress: () => this.changeScene('map'),
                         onLongPress: () => this.changeScene('map')
                     }, {
                         icon: 'info',
-                        value: Messages.GENERAL_INFO,
+                        value: I18n.t('GENERAL_INFO'),
                         active: route === 'info',
                         onPress: () => this.changeScene('info'),
                         onLongPress: () => this.changeScene('info')
                     }
                     ]}
-                    title={Messages.REFUGEES_INFO}
+                    title={I18n.t('REFUGEES_INFO')}
                 />
 
             </Drawer>

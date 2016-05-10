@@ -14,7 +14,7 @@ import {
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 
@@ -235,7 +235,7 @@ export default class ServiceDetails extends Component {
                 />
                 <View style={styles.comment}>
                     <Text style={styles.comment}>{row.extra_comments}</Text>
-                    <Text style={styles.comment}>{Messages.RATING}: {stars}</Text>
+                    <Text style={styles.comment}>{I18n.t('RATING')}: {stars}</Text>
                 </View>
             </View>
         );
@@ -266,7 +266,7 @@ export default class ServiceDetails extends Component {
                     <View style={[styles.modalContainer]}>
                         <View style={[styles.modalInnerContainer]}>
                             <Text style={[styles.title, styles.textCenter]}>
-                                {Messages.YOUR_RATING}
+                                {I18n.t('YOUR_RATING')}
                             </Text>
                             <View style={styles.starContainer}>
                                 {rateStars}
@@ -275,13 +275,13 @@ export default class ServiceDetails extends Component {
                                 onChangeText={
                                     (text) => this.setState({name: text})
                                 }
-                                placeholder={Messages.NAME}
+                                placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
                             />
                             {this._isNameInvalid() &&
                                 <Text style={styles.validationText}>
-                                    {Messages.FIELD_REQUIRED}
+                                    {I18n.t('FIELD_REQUIRED')}
                                 </Text>
                             }
                             <TextInput
@@ -289,13 +289,13 @@ export default class ServiceDetails extends Component {
                                 onChangeText={
                                     (text) => this.setState({comment: text})
                                 }
-                                placeholder={Messages.COMMENT}
+                                placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
                             />
                             {this._isCommentInvalid() &&
                                 <Text style={styles.validationText}>
-                                    {Messages.FIELD_REQUIRED}
+                                    {I18n.t('FIELD_REQUIRED')}
                                 </Text>
                             }
                             <View style={styles.modalButtonContainer}>
@@ -306,7 +306,7 @@ export default class ServiceDetails extends Component {
                                     style={styles.flex}
                                 >
                                     <Text>
-                                        {Messages.CLOSE}
+                                        {I18n.t('CLOSE')}
                                     </Text>
                                 </TouchableHighlight>
                                 <TouchableHighlight
@@ -314,7 +314,7 @@ export default class ServiceDetails extends Component {
                                     style={styles.flex}
                                 >
                                     <Text style={styles.textRight}>
-                                        {Messages.SUBMIT}
+                                        {I18n.t('SUBMIT')}
                                     </Text>
                                 </TouchableHighlight>
                             </View>
@@ -331,7 +331,7 @@ export default class ServiceDetails extends Component {
                     style={styles.commentForm}
                 >
                     <Text style={[styles.title, styles.textCenter]}>
-                        {Messages.RATE_THIS_SERVICE}
+                        {I18n.t('RATE_THIS_SERVICE')}
                     </Text>
                     <View style={styles.starContainer}>
                         {rateStars}
@@ -386,25 +386,25 @@ export default class ServiceDetails extends Component {
                 <View style={styles.detailsContainer}>
                     {!!service.description &&
                         <Text>
-                            {Messages.DESCRIPTION}:
+                            {I18n.t('DESCRIPTION')}:
                             {`\n${service.description}`}
                         </Text>
                     }
                     {!!openingHours &&
                         <Text>
-                            {Messages.OPENING_HOURS}:
+                            {I18n.t('OPENING_HOURS')}:
                             {`\n${openingHours}`}
                         </Text>
                     }
                     {!!service.cost_of_service &&
                         <Text>
-                            {Messages.COST_OF_SERVICE}:
+                            {I18n.t('COST_OF_SERVICE')}:
                             {`\n${service.cost_of_service}`}
                         </Text>
                     }
                     {service.selection_criteria.length > 0 &&
                         <Text>
-                            {Messages.SELECTION_CRITERIA}:
+                            {I18n.t('SELECTION_CRITERIA')}:
                             {service.selection_criteria.map((criteria, i) => (
                                 `\n - ${criteria}`
                             ))}
@@ -416,19 +416,19 @@ export default class ServiceDetails extends Component {
                     style={styles.button}
                     underlayColor="#EEE"
                 >
-                    <Text style={styles.textCenter}>{Messages.GET_DIRECTIONS}</Text>
+                    <Text style={styles.textCenter}>{I18n.t('GET_DIRECTIONS')}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress={hasPhoneNumber ? this.call.bind(this) : null}
                     style={hasPhoneNumber ? styles.button : styles.buttonInactive}
                     underlayColor="#EEE"
                 >
-                    <Text style={styles.textCenter}>{Messages.CALL}</Text>
+                    <Text style={styles.textCenter}>{I18n.t('CALL')}</Text>
                 </TouchableHighlight>
                 {this.state.loaded ?
                     (this.renderFeedbackContainer()) :
                     <Text style={styles.loading}>
-                        {Messages.LOADING}
+                        {I18n.t('LOADING')}
                     </Text>
                 }
             </ScrollView>
