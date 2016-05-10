@@ -59,7 +59,7 @@ class RefugeeInfoApp extends Component {
             <DrawerLayoutAndroid
                 drawerPosition={DrawerLayoutAndroid.positions.Left}
                 drawerWidth={300}
-                ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null }}
+                ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null; }}
                 renderNavigationView={() => {
                     if (drawer && navigator) {
                         return navView;
@@ -74,7 +74,7 @@ class RefugeeInfoApp extends Component {
                     }}
                     initialRoute={Navigate.getInitialRoute()}
                     navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
-                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null }}
+                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
                     renderScene={(route) => {
                         if (this.state.navigator && route.component) {
                             return (

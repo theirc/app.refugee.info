@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 
 const styles = StyleSheet.create({
     icon: {
@@ -55,7 +55,7 @@ export default class ServiceCommons {
                 </View>
                 <View style={styles.detailsContainer}>
                     <Text>{service.name}</Text>
-                    <Text>{Messages.RATING}: {stars}</Text>
+                    <Text>{I18n.t('RATING')}: {stars}</Text>
                     <Text>{locationName}</Text>
                 </View>
             </View>

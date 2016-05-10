@@ -12,7 +12,7 @@ import {
 import RegionDrillDown from '../components/RegionDrillDown';
 
 import ApiClient from '../utils/ApiClient';
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 
 export default class Welcome extends Component {
 
@@ -83,13 +83,13 @@ export default class Welcome extends Component {
                     await AsyncStorage.setItem('region', JSON.stringify(location[0]));
                     this.context.navigator.to('info');
                 } else {
-                    Alert.alert(Messages.CANT_FIND_LOCATION);
+                    Alert.alert(I18n.t('CANT_FIND_LOCATION'));
                     this.setState({detecting: false});
                 }
             },
             (error) => {
                 if (error === 'No available location provider.') {
-                    Alert.alert(Messages.GPS_DISABLED);
+                    Alert.alert(I18n.t('GPS_DISABLED'));
                 }
                 this.setState({detecting: false});
             }, {enableHighAccuracy: false, timeout: 20000, maximumAge: 1000}
@@ -98,7 +98,7 @@ export default class Welcome extends Component {
 
     _detectButton() {
         if (this.state.detecting) {
-            return <Text>{Messages.DETECTING_LOCATION}</Text>;
+            return <Text>{I18n.t('DETECTING_LOCATION')}</Text>;
         }
         return (
             <TouchableHighlight
@@ -106,7 +106,7 @@ export default class Welcome extends Component {
                 style={styles.button}
                 underlayColor="#EEE"
             >
-                <Text style={styles.buttonText}>{Messages.DETECT_LOCATION}</Text>
+                <Text style={styles.buttonText}>{I18n.t('DETECT_LOCATION')}</Text>
             </TouchableHighlight>
         );
     }

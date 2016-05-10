@@ -12,7 +12,7 @@ import {
 import { default as _ } from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-import Messages from '../constants/Messages';
+import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 
@@ -143,10 +143,10 @@ export default class ServiceList extends Component {
     renderHeader() {
         return (
             <View>
-                <Text style={styles.header}>{Messages.LATEST_SERVICES} {this.state.region.name}</Text>
+                <Text style={styles.header}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
-                    placeholder={Messages.SEARCH}
+                    placeholder={I18n.t('SEARCH')}
                 />
             </View>
         );
@@ -157,7 +157,7 @@ export default class ServiceList extends Component {
             return ServiceList.renderLoadingView();
         }
         else if (!this.state.region) {
-            return <Text>{Messages.CHOOSE_REGION}</Text>
+            return <Text>{I18n.t('CHOOSE_REGION')}</Text>
         }
         return (
             <View style={styles.container}>
