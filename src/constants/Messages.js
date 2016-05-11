@@ -17,7 +17,6 @@ I18n.translations = {
         DETECTING_LOCATION: 'Detecting...',
         DETECT_LOCATION: 'Detect Location',
         REFUGEES_INFO: 'Refugee Info',
-        SELECT_COUNTRY: 'Select Country',
         LOADING: 'Loading...',
         SELECT: 'Select',
         LATEST_SERVICES: 'Latest services in',
@@ -39,7 +38,9 @@ I18n.translations = {
         FIELD_REQUIRED: 'This field is required',
         LANGUAGE: 'Language',
         ENGLISH: 'English',
-        FRENCH: 'French'
+        FRENCH: 'French',
+        SELECT_COUNTRY: 'Please choose the country where you are',
+        SELECT_LOCATION: 'Please choose your location'
     },
     fr: {
         WELCOME: 'Bienvenue',

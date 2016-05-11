@@ -31,7 +31,7 @@ export default class Toolbar extends Component {
                     margin: 10
                 }}
                 testID="test-id-toolbar"
-                title={navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Welcome'}
+                title={navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Refugee Info'}
             />
         );
     }
