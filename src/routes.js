@@ -4,7 +4,14 @@ export default {
         initialRoute: true,
 
         title: 'Refugee Info',
-        component: require('./scenes/Welcome').default
+        component: require('./scenes/CountryChoice').default,
+
+        children: {
+            cityChoice: {
+                title: 'Refugee Info',
+                component: require('./scenes/CityChoice').default
+            }
+        }
     },
 
     services: {
