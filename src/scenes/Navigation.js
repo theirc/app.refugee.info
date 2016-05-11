@@ -105,7 +105,6 @@ export default class Navigation extends Component {
                     ]}
                     title={I18n.t('LANGUAGE')}
                 />
-
             </Drawer>
         );
     }
