@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListView, View } from 'react-native';
+import { AsyncStorage, View } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import LocationListView from '../components/LocationListView';
@@ -22,7 +22,39 @@ export default class CountryChoice extends Component {
     }
 
     componentDidMount() {
-        this._loadInitialState();
+        this.detectLocation();
+    }
+
+    async _getLocation(position, level) {
+        const location = await this.apiClient.getLocationByPosition(position.coords.longitude, position.coords.latitude, level);
+        if (location.length > 0) {
+            const detectedLocation = location[0];
+            detectedLocation.detected = true;
+            detectedLocation.coords = position.coords;
+            return detectedLocation;
+        }
+    }
+
+    async detectLocation() {
+        navigator.geolocation.getCurrentPosition(
+            async(position) => {
+                let location = await this._getLocation(position, 3);
+                if (location) {
+                    await AsyncStorage.setItem('region', JSON.stringify(location));
+                    this.context.navigator.to('info');
+                } else {
+                    location = await this._getLocation(position, 1);
+                    if (location) {
+                        this.context.navigator.forward(null, '', {countryId: location.id}, this.state);
+                    } else {
+                        this._loadInitialState();
+                    }
+                }
+            },
+            (error) => {
+                this._loadInitialState();
+            }, {enableHighAccuracy: false, timeout: 4000, maximumAge: 1000}
+        );
     }
 
     async _loadInitialState() {
