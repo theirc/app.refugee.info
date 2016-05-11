@@ -35,6 +35,14 @@ class PixelRatio extends Component {
  */
 ReactNative.View = View;
 ReactNative.ScrollView = View;
+ReactNative.ListView = {
+    DataSource: function(params) {
+        this.cloneWithRows = function(rows) {
+            return rows;
+        };
+    }
+};
+
 ReactNative.Text = View;
 ReactNative.TouchableOpacity = View;
 ReactNative.TouchableHighlight = View;
