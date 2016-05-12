@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View } from 'react-native';
+import { AsyncStorage, View, StyleSheet, Text, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Button  from 'react-native-button';
 
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
@@ -53,7 +54,7 @@ export default class CityChoice extends Component {
 
     renderLoadingView() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <Spinner
                     overlayColor="#EEE"
                     visible
@@ -72,14 +73,72 @@ export default class CityChoice extends Component {
     render() {
         if (this.state.loaded) {
             return (
-                <LocationListView
-                    header={I18n.t('SELECT_LOCATION')}
-                    onPress={(rowData) => this._onPress(rowData)}
-                    rows={this.state.cities}
-                />
+                <View style={styles.container}>
+                    <Image
+                        style={styles.icon}
+                        source={require('../graphics/earthsmall.png')}
+                        resizeMode={Image.resizeMode.stretch}
+                    />
+                    <LocationListView
+                        header={I18n.t('SELECT_LOCATION')}
+                        onPress={(rowData) => this._onPress(rowData)}
+                        rows={this.state.cities}
+                    />
+                    <View style={styles.selectBlockWrapper}>
+                        <View style={styles.selectLeft}></View>
+                        <View style={styles.selectWrapper}>
+                            <Button
+                              style={styles.select}
+                              containerStyle={styles.selectContainer}
+                              //onPress={this._handlePress}
+                            >
+                                Submit
+                            </Button>
+                        </View>
+                        <View style={styles.selectRight}></View>
+                    </View>
+                </View>
             );
         } else {
             return this.renderLoadingView();
         }
     }
 }
+
+const styles = StyleSheet.create({
+    container : {
+      flex: 1,
+      flexDirection: 'column'
+    },
+    icon : {
+      flex: 0.33,
+      height: null,
+      width: null
+    },
+    selectBlockWrapper : {
+      backgroundColor: '#F5F5F5',
+      flex: 0.08,
+      flexDirection: 'row'
+    },
+    selectWrapper : {
+      flex: 0.2
+    },
+    selectLeft : {
+      flex: 0.79,
+    },
+    selectRight : {
+      flex: 0.01,
+    },
+    select : {
+      flex: 0.05,
+      color: 'white',
+      fontSize: 14,
+    },
+    selectContainer : {
+      padding: 7,
+      overflow: 'hidden',
+      borderRadius: 20,
+      backgroundColor: '#606060',
+      marginTop: 3
+    }
+});

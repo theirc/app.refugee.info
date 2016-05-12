@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
 
 
 export default class LocationListView extends Component {
@@ -25,7 +25,11 @@ export default class LocationListView extends Component {
     }
 
     renderHeader() {
-        return (<Text>{this.props.header}</Text>);
+        return (
+            <View style={styles.header}>
+              <Text style={styles.headerText}>{this.props.header}</Text>
+            </View>
+          );
     }
 
     renderRow(rowData) {
@@ -35,7 +39,7 @@ export default class LocationListView extends Component {
                 style={styles.buttonContainer}
                 underlayColor="white"
             >
-                <Text>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
+                <Text style={styles.buttonText}>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
             </TouchableHighlight>
         );
     }
@@ -43,11 +47,15 @@ export default class LocationListView extends Component {
     render() {
         if (this.props.rows.length === 0) {
             return (
-                <Text>There are no locations</Text>
+                <Text
+                    style={styles.container}>
+                        There are no locations
+                </Text>
             );
         } else {
             return (
                 <ListView
+                    style={styles.container}
                     dataSource={this.dataSource.cloneWithRows(this.props.rows)}
                     enableEmptySections
                     renderHeader={() => this.renderHeader()}
@@ -61,17 +69,34 @@ export default class LocationListView extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: 'column'
+        flex: 0.59,
+        flexDirection: 'column',
+        backgroundColor: '#F5F5F5'
     },
     listViewContainer: {
         flex: 1,
         flexDirection: 'column'
     },
+    header : {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+        padding: 15,
+    },
+    headerText : {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: '#313131',
+    },
     buttonContainer: {
         flex: 1,
         flexDirection: 'column',
         padding: 15,
-        backgroundColor: '#EEE'
+        backgroundColor: '#F5F5F5',
+    },
+    buttonText: {
+        color: '#555556',
+        fontWeight: 'bold',
     }
 });
