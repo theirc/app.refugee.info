@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View, StyleSheet, Image, Text,  } from 'react-native';
+import { AsyncStorage, View, StyleSheet, Image  } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import Button  from 'react-native-button';
 
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
@@ -35,12 +34,23 @@ export default class CountryChoice extends Component {
             return detectedLocation;
         }
     }
+    
+    async _getCountryId(location) {
+        const parent = await this.apiClient.getLocation(location.parent);
+        if (parent.parent) {
+            return await this.apiClient.getLocation(parent.parent);
+        } else {
+            return parent;
+        }
+        
+    }
 
     async detectLocation() {
         navigator.geolocation.getCurrentPosition(
             async(position) => {
                 let location = await this._getLocation(position, 3);
                 if (location) {
+                    location.country = await this._getCountryId(location);
                     await AsyncStorage.setItem('region', JSON.stringify(location));
                     this.context.navigator.to('info');
                 } else {
@@ -96,19 +106,6 @@ export default class CountryChoice extends Component {
                         onPress={(rowData) => this.onPress(rowData)}
                         rows={this.state.locations}
                     />
-                    <View style={styles.selectBlockWrapper}>
-                        <View style={styles.selectLeft}></View>
-                        <View style={styles.selectWrapper}>
-                            <Button
-                              style={styles.select}
-                              containerStyle={styles.selectContainer}
-                              //onPress={this._handlePress}
-                            >
-                                Submit
-                            </Button>
-                        </View>
-                        <View style={styles.selectRight}></View>
-                    </View>
                 </View>
             );
         } else {
@@ -118,39 +115,14 @@ export default class CountryChoice extends Component {
 }
 
 const styles = StyleSheet.create({
-    container : {
-      flex: 1,
-      flexDirection: 'column'
+    container: {
+        flex: 1,
+        flexDirection: 'column'
     },
-    icon : {
-      flex: 0.33,
-      height: null,
-      width: null
-    },
-    selectBlockWrapper : {
-      backgroundColor: '#F5F5F5',
-      flex: 0.08,
-      flexDirection: 'row'
-    },
-    selectWrapper : {
-      flex: 0.2
-    },
-    selectLeft : {
-      flex: 0.79,
-    },
-    selectRight : {
-      flex: 0.01,
-    },
-    select : {
-      flex: 0.05,
-      color: 'white',
-      fontSize: 14,
-    },
-    selectContainer : {
-      padding: 7,
-      overflow: 'hidden',
-      borderRadius: 20,
-      backgroundColor: '#606060',
-      marginTop: 3
+    icon: {
+        flex: 0.33,
+        height: null,
+        width: null
     }
 });
+
