@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View } from 'react-native';
+import { AsyncStorage, View, StyleSheet, Image  } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import LocationListView from '../components/LocationListView';
@@ -34,12 +34,23 @@ export default class CountryChoice extends Component {
             return detectedLocation;
         }
     }
+    
+    async _getCountryId(location) {
+        const parent = await this.apiClient.getLocation(location.parent);
+        if (parent.parent) {
+            return await this.apiClient.getLocation(parent.parent);
+        } else {
+            return parent;
+        }
+        
+    }
 
     async detectLocation() {
         navigator.geolocation.getCurrentPosition(
             async(position) => {
                 let location = await this._getLocation(position, 3);
                 if (location) {
+                    location.country = await this._getCountryId(location);
                     await AsyncStorage.setItem('region', JSON.stringify(location));
                     this.context.navigator.to('info');
                 } else {
@@ -72,7 +83,7 @@ export default class CountryChoice extends Component {
 
     renderLoadingView() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <Spinner
                     overlayColor="#EEE"
                     visible
@@ -84,14 +95,34 @@ export default class CountryChoice extends Component {
     render() {
         if (this.state.loaded) {
             return (
-                <LocationListView
-                    header={I18n.t('SELECT_COUNTRY')}
-                    onPress={(rowData) => this.onPress(rowData)}
-                    rows={this.state.locations}
-                />
+                <View style={styles.container}>
+                    <Image
+                        style={styles.icon}
+                        source={require('../graphics/earthsmall.png')}
+                        resizeMode={Image.resizeMode.stretch}
+                    />
+                    <LocationListView
+                        header={I18n.t('SELECT_COUNTRY')}
+                        onPress={(rowData) => this.onPress(rowData)}
+                        rows={this.state.locations}
+                    />
+                </View>
             );
         } else {
             return this.renderLoadingView();
         }
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    icon: {
+        flex: 0.33,
+        height: null,
+        width: null
+    }
+});
+

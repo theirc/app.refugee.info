@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View } from 'react-native';
+
+import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import LocationListView from '../components/LocationListView';
@@ -53,7 +54,7 @@ export default class CityChoice extends Component {
 
     renderLoadingView() {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={styles.container}>
                 <Spinner
                     overlayColor="#EEE"
                     visible
@@ -65,6 +66,7 @@ export default class CityChoice extends Component {
     async _onPress(city) {
         city.detected = false;
         city.coords = {};
+        city.country = await this.apiClient.getLocation(this.props.countryId);
         await AsyncStorage.setItem('region', JSON.stringify(city));
         this.context.navigator.to('info');
     }
@@ -72,14 +74,34 @@ export default class CityChoice extends Component {
     render() {
         if (this.state.loaded) {
             return (
-                <LocationListView
-                    header={I18n.t('SELECT_LOCATION')}
-                    onPress={(rowData) => this._onPress(rowData)}
-                    rows={this.state.cities}
-                />
+                <View style={styles.container}>
+                    <Image
+                        resizeMode={Image.resizeMode.stretch}
+                        source={require('../graphics/earthsmall.png')}
+                        style={styles.icon}
+                    />
+                    <LocationListView
+                        header={I18n.t('SELECT_LOCATION')}
+                        onPress={(rowData) => this._onPress(rowData)}
+                        rows={this.state.cities}
+                    />
+                </View>
             );
         } else {
             return this.renderLoadingView();
         }
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    icon: {
+        flex: 0.33,
+        height: null,
+        width: null
+    }
+});
+
