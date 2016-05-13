@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import Button  from 'react-native-button';
-import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 
 
 export default class LocationListView extends Component {
@@ -32,40 +31,31 @@ export default class LocationListView extends Component {
     renderHeader() {
         return (
             <View style={styles.header}>
-              <Text style={styles.headerText}>{this.props.header}</Text>
+                <Text style={styles.headerText}>{this.props.header}</Text>
             </View>
           );
     }
 
     renderRow(rowData) {
-        const buttonContainerStyle = {
-            flex: 1,
-            flexDirection: 'column',
-            padding: 15,
-            backgroundColor: (this.state.selected && rowData.id === this.state.selected.id) ? 'white' : '#F5F5F5'
-        };
+        let buttonIsSelectedStyle;
+        let buttonIsSelectedTextStyle;
+
+        if (this.state.selected && rowData.id === this.state.selected.id) {
+            buttonIsSelectedStyle = styles.buttonContainerSelected;
+            buttonIsSelectedTextStyle = styles.buttonTextSelected;
+        }
+        else {
+            buttonIsSelectedStyle = styles.buttonContainerNormal;
+            buttonIsSelectedTextStyle = styles.buttonTextNormal;
+        }
+
         return (
             <TouchableHighlight
-                onPress={() => {
-                    if (this.state.selected && this.state.selected.id === rowData.id) {
-                        this.setState({selected: null});
-                    } else {
-                        this.setState({selected: rowData});
-                    }
-                }}
-                style={buttonContainerStyle}
+                onPress={() => this.setState({selected: rowData})}
+                style={[styles.buttonContainer, buttonIsSelectedStyle]}
                 underlayColor="white"
             >
-                <View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-                    <Text style={styles.buttonText}>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
-                    {(this.state.selected && this.state.selected.id === rowData.id) ? <Icon
-                        color="black"
-                        name="check"
-                        size={16}
-                        style={{justifyContent: 'flex-end'}}
-                    /> : null}
-
-                </View>
+                <Text style={[styles.buttonText, buttonIsSelectedTextStyle]}>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
             </TouchableHighlight>
         );
     }
@@ -73,11 +63,13 @@ export default class LocationListView extends Component {
     render() {
         if (this.props.rows.length === 0) {
             return (
-                <Text
-                    style={styles.container}
-                >
-                        There are no locations
-                </Text>
+                <View style={styles.noLocationsContainer}>
+                    <Text
+                        style={styles.noLocationsText}
+                    >
+                            There are no locations
+                    </Text>
+                </View>
             );
         } else {
             return (
@@ -87,7 +79,7 @@ export default class LocationListView extends Component {
                         enableEmptySections
                         renderHeader={() => this.renderHeader()}
                         renderRow={(rowData) => this.renderRow(rowData)}
-                        style={styles.container}
+                        style={styles.listViewContainer}
                     />
                     <View style={styles.selectBlockWrapper}>
                         <View style={styles.selectLeft} />
@@ -97,8 +89,9 @@ export default class LocationListView extends Component {
                                 disabled={this.state.selected === null}
                                 onPress={() => this.props.onPress(this.state.selected)}
                                 style={styles.select}
+                                styleDisabled={styles.selectDisabled}
                             >
-                                Submit
+                                    Select
                             </Button>
                         </View>
                         <View style={styles.selectRight} />
@@ -112,33 +105,45 @@ export default class LocationListView extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 0.59,
+        flex: 0.67,
+        flexDirection: 'column',
+        backgroundColor: '#F5F5F5'
+    },
+    noLocationsContainer: {
+        flex: 0.67,
         flexDirection: 'column',
         backgroundColor: '#F5F5F5'
     },
     listViewContainer: {
-        flex: 1,
+        flex: 0.88,
         flexDirection: 'column'
     },
-    header : {
+    header: {
         flex: 1,
         backgroundColor: '#F5F5F5',
         padding: 15
     },
-    headerText : {
+    headerText: {
         flex: 1,
         backgroundColor: '#F5F5F5',
         fontWeight: 'bold',
         fontSize: 15,
         color: '#313131'
     },
+    noLocationsText: {
+        flex: 1,
+        fontWeight: 'bold',
+        fontSize: 15,
+        color: '#313131',
+        textAlign: 'center',
+        marginTop: 12
+    },
     buttonText: {
-        color: '#555556',
         fontWeight: 'bold'
     },
     selectBlockWrapper: {
+        flex: 0.12,
         backgroundColor: '#F5F5F5',
-        flex: 0.08,
         flexDirection: 'row'
     },
     selectWrapper: {
@@ -161,5 +166,25 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         backgroundColor: '#606060',
         marginTop: 3
+    },
+    selectDisabled: {
+        color: '#c0c0c0'
+    },
+    buttonContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        padding: 15
+    },
+    buttonContainerSelected: {
+        backgroundColor: '#E1E0E0'
+    },
+    buttonContainerNormal: {
+        backgroundColor: '#F5F5F5'
+    },
+    buttonTextNormal: {
+        color: '#555556'
+    },
+    buttonTextSelected: {
+        color: '#313131'
     }
 });
