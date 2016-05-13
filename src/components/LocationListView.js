@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
 import Button  from 'react-native-button';
+import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 
 
 export default class LocationListView extends Component {
@@ -45,11 +46,26 @@ export default class LocationListView extends Component {
         };
         return (
             <TouchableHighlight
-                onPress={() => this.setState({selected: rowData})}
+                onPress={() => {
+                    if (this.state.selected && this.state.selected.id === rowData.id) {
+                        this.setState({selected: null});
+                    } else {
+                        this.setState({selected: rowData});
+                    }
+                }}
                 style={buttonContainerStyle}
                 underlayColor="white"
             >
-                <Text style={styles.buttonText}>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
+                <View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
+                    <Text style={styles.buttonText}>{rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}</Text>
+                    {(this.state.selected && this.state.selected.id === rowData.id) ? <Icon
+                        color="black"
+                        name="check"
+                        size={16}
+                        style={{justifyContent: 'flex-end'}}
+                    /> : null}
+
+                </View>
             </TouchableHighlight>
         );
     }
