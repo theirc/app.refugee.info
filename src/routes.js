@@ -14,6 +14,11 @@ export default {
         }
     },
 
+    cityChoice: {
+        title: 'Refugee Info',
+        component: require('./scenes/CityChoice').default
+    },
+
     services: {
         title: 'Service List',
         component: require('./scenes/ServiceList').default,

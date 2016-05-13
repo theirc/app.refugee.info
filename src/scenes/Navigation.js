@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'react-native';
+import { AsyncStorage, PropTypes, Text } from 'react-native';
 
 import { Drawer } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
+import {capitalize} from '../utils/helpers';
+import regionStore from '../stores/regionStore';
 
 export default class Navigation extends Component {
 
@@ -27,10 +29,22 @@ export default class Navigation extends Component {
             (code == I18n.defaultLocale && Navigation._isFallback());
     }
 
+    componentDidMount() {
+        this._loadInitialState();
+    }
+
+    async _loadInitialState() {
+        regionStore.subscribe(() => this.setState(regionStore.getState()));
+        this.setState({
+            region: JSON.parse(await AsyncStorage.getItem('region'))
+        });
+    }
+
     constructor(props) {
         super(props);
         this.state = {
-            route: null
+            route: null,
+            region: null
         };
     }
 
@@ -49,18 +63,22 @@ export default class Navigation extends Component {
         this.changeScene('welcome');
     }
 
-    changeScene = (path, name) => {
+    changeScene = (path, name, props={}) => {
         const { drawer, navigator } = this.context;
 
         this.setState({
             route: path
         });
-        navigator.to(path, name);
+        navigator.to(path, name, props);
         drawer.closeDrawer();
     };
-
+    
     render() {
         const { route } = this.state;
+
+        if (!this.state.region) {
+            return <Text>Choose location first</Text>;
+        }
 
         return (
             <Drawer theme="light">
@@ -69,9 +87,10 @@ export default class Navigation extends Component {
                         icon: 'home',
                         value: I18n.t('HOME'),
                         active: !route || route === 'welcome',
-                        onPress: () => this.changeScene('welcome'),
-                        onLongPress: () => this.changeScene('welcome')
+                        onPress: () => this.changeScene('cityChoice', null, {countryId: (this.state.region) ? this.state.region.country.id : null}),
+                        onLongPress: () => this.changeScene('cityChoice', null, {countryId: (this.state.region) ? this.state.region.country.id : null})
                     }]}
+                    title={this.state.region && `${capitalize(this.state.region.country.name)}, ${capitalize(this.state.region.name)}`}
                 />
 
                 <Drawer.Section

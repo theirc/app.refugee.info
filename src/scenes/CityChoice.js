@@ -6,6 +6,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
+import regionStore from '../stores/regionStore';
 
 
 export default class CityChoice extends Component {
@@ -67,6 +68,7 @@ export default class CityChoice extends Component {
         city.detected = false;
         city.coords = {};
         city.country = await this.apiClient.getLocation(this.props.countryId);
+        regionStore.dispatch({type: 'REGION_CHANGED', payload: city});
         await AsyncStorage.setItem('region', JSON.stringify(city));
         this.context.navigator.to('info');
     }

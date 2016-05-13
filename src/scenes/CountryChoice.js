@@ -5,6 +5,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
+import regionStore from '../stores/regionStore';
 
 
 export default class CountryChoice extends Component {
@@ -46,11 +47,18 @@ export default class CountryChoice extends Component {
     }
 
     async detectLocation() {
+        const location = await AsyncStorage.getItem('region');
+        if (location) {
+            this.context.navigator.to('info');
+            return;
+        }
+
         navigator.geolocation.getCurrentPosition(
             async(position) => {
                 let location = await this._getLocation(position, 3);
                 if (location) {
                     location.country = await this._getCountryId(location);
+                    regionStore.dispatch({type: 'REGION_CHANGED', payload: location});
                     await AsyncStorage.setItem('region', JSON.stringify(location));
                     this.context.navigator.to('info');
                 } else {
