@@ -3,6 +3,7 @@ import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-nati
 import Button  from 'react-native-button';
 
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
+import I18n from '../constants/Messages';
 
 
 export default class LocationListView extends Component {
@@ -110,7 +111,7 @@ export default class LocationListView extends Component {
                                 style={styles.select}
                                 styleDisabled={styles.selectDisabled}
                             >
-                                    Select
+                                {I18n.t('SELECT')}
                             </Button>
                         </View>
                         <View style={styles.selectRight} />

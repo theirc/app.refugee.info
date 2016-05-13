@@ -6,7 +6,7 @@ I18n.defaultLocale = 'en';
 
 I18n.translations = {
     en: {
-        HOME: 'Home',
+        HOME: 'Change City',
         LIST_SERVICES: 'List Services',
         EXPLORE_MAP: 'Explore Services on Map',
         GENERAL_INFO: 'General Information',
