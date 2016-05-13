@@ -23,6 +23,7 @@ ReactNative.StyleSheet = {
     }
 };
 class View extends Component {
+    static propTypes = {};
     render() { return false; }
 }
 class PixelRatio extends Component {
@@ -51,7 +52,7 @@ ReactNative.ToolbarAndroid = View;
 ReactNative.Image = View;
 ReactNative.PixelRatio = PixelRatio;
 ReactNative.Picker = View;
-ReactNative.NativeModules= {};
+ReactNative.NativeModules= {RNI18n: {locale: 'en'}};
 
 ReactNative.Platform = {};
 module.exports = ReactNative;

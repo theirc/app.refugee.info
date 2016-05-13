@@ -3,7 +3,7 @@
 jest.autoMockOff();
 
 import React from 'react';
-import { ListView } from 'react-native';
+import { View } from 'react-native';
 import TestUtils from 'react-addons-test-utils';
 
 jest.dontMock('../src/components/LocationListView');
@@ -22,6 +22,6 @@ describe('LocationListView component', () => {
           onPress={() => null}
       />);
       const output = renderer.getRenderOutput();
-      expect(output.type).toEqual(ListView);
+      expect(output.type).toEqual(View);
   });
 });
