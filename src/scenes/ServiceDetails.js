@@ -346,8 +346,8 @@ export default class ServiceDetails extends Component {
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         let coordinates = service.location.match(/[\d\.]+/g);
-        let lat = parseFloat(coordinates[1]),
-            long = parseFloat(coordinates[0]);
+        let lat = parseFloat(coordinates[2]),
+            long = parseFloat(coordinates[1]);
 
         let weekDay = days[new Date().getDay()];
         let open = service[`${weekDay}_open`];
