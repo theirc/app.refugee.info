@@ -101,8 +101,8 @@ export default class ServiceMap extends Component {
                 return type.url == service.type;
             });
             return {
-                latitude: parseFloat(location[1]),
-                longitude: parseFloat(location[0]),
+                latitude: parseFloat(location[2]),
+                longitude: parseFloat(location[1]),
                 description: service.description,
                 title: service.name,
                 icon_url: serviceType.icon_url,
