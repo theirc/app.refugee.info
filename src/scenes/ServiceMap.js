@@ -5,7 +5,7 @@ import {
     ListView,
     StyleSheet,
     AsyncStorage,
-    Image
+    Image,
 } from 'react-native';
 import MapView from 'react-native-maps';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -71,9 +71,11 @@ export default class ServiceMap extends Component {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1 !== row2
                 }),
-                loaded: false
+                loaded: false,
+                markers: []
             };
         }
+        this.icons = {};
         this.apiClient = new ApiClient();
     }
 
@@ -91,6 +93,7 @@ export default class ServiceMap extends Component {
             });
             return;
         }
+
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let locations = await this.apiClient.getLocations(region.id);
@@ -100,6 +103,7 @@ export default class ServiceMap extends Component {
             let serviceType = serviceTypes.find(function(type) {
                 return type.url == service.type;
             });
+            this.icons[serviceType.icon_url] = false;
             return {
                 latitude: parseFloat(location[2]),
                 longitude: parseFloat(location[1]),
@@ -109,6 +113,7 @@ export default class ServiceMap extends Component {
                 service
             };
         });
+
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,
@@ -136,6 +141,16 @@ export default class ServiceMap extends Component {
         this.setState({ region });
     }
 
+    onLoadEnd(iconUrl) {
+        //TODO Find better way to make sure that images are rendered in marker.
+        this.icons[iconUrl] = true;
+        if (Object.values(this.icons).filter((x) => !x).length === 0) {
+            this.setState({
+                markers: this.state.markers.reverse() //HACK Force update of UI, forceUpdate method is not working.
+            });
+        }
+    }
+
     render() {
         if (!this.state.loaded) {
             return ServiceMap.renderLoadingView();
@@ -147,7 +162,7 @@ export default class ServiceMap extends Component {
                     region={this.state.region}
                     style={styles.map}
                 >
-                    {this.state.markers && this.state.markers.map((marker, i) => (
+                    {this.state.markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
                                 latitude: marker.latitude,
@@ -161,6 +176,7 @@ export default class ServiceMap extends Component {
                             {!!marker.icon_url &&
                                 <View>
                                     <Image
+                                        onLoadEnd={() => this.onLoadEnd(marker.icon_url)}
                                         source={{uri: marker.icon_url}}
                                         style={styles.icon}
                                     />
