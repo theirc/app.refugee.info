@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight} from 'react-native';
+import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput} from 'react-native';
+import I18n from '../constants/Messages';
 
 export default class GeneralInformation extends Component {
 
@@ -26,13 +27,34 @@ export default class GeneralInformation extends Component {
             return;
         }
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(region.content)
+            dataSource: this.state.dataSource.cloneWithRows(region.content),
+            generalInfo: region.content
         });
     }
 
     onClick(title, section) {
         const { navigator } = this.context;
         navigator.forward(null, title, {section}, this.state);
+    }
+
+    _onChangeText(text) {
+        const generalInfo = this.state.generalInfo;
+        const filteredGeneralInfo = generalInfo.filter((x) => x.section.toLowerCase()
+            .replace(/(<(?:.|\n)*?>|\s)/gm, '').indexOf(text.toLowerCase().replace(/\s/gm, '')) !== -1);
+        this.setState({
+            dataSource: this.state.dataSource.cloneWithRows(filteredGeneralInfo)
+        });
+    }
+
+    renderHeader() {
+        return (
+            <View>
+                <TextInput
+                    onChangeText={(text) => this._onChangeText(text)}
+                    placeholder={I18n.t('SEARCH')}
+                />
+            </View>
+        );
     }
 
     renderRow(rowData) {
@@ -53,6 +75,7 @@ export default class GeneralInformation extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
+                    renderHeader={() => this.renderHeader()}
                     renderRow={(rowData) => this.renderRow(rowData)}
                     style={styles.listViewContainer}
                 />
