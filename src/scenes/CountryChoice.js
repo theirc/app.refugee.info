@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { AsyncStorage, View, StyleSheet, Image  } from 'react-native';
+import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
-import regionStore from '../stores/regionStore';
 
 
 export default class CountryChoice extends Component {
@@ -55,10 +55,11 @@ export default class CountryChoice extends Component {
 
         navigator.geolocation.getCurrentPosition(
             async(position) => {
+                const { dispatch } = this.props;
                 let location = await this._getLocation(position, 3);
                 if (location) {
                     location.country = await this._getCountryId(location);
-                    regionStore.dispatch({type: 'REGION_CHANGED', payload: location});
+                    dispatch({type: 'REGION_CHANGED', payload: location});
                     await AsyncStorage.setItem('region', JSON.stringify(location));
                     this.context.navigator.to('info');
                 } else {
@@ -133,4 +134,6 @@ const styles = StyleSheet.create({
         width: null
     }
 });
+
+export default connect()(CountryChoice);
 

@@ -15,6 +15,12 @@ import {
     StyleSheet,
     View
 } from 'react-native';
+import {Provider} from 'react-redux';
+
+import store from './src/store';
+import { fetchRegionFromStorage } from './src/actions/region';
+
+store.dispatch(fetchRegionFromStorage());
 
 class RefugeeInfoApp extends Component {
 
@@ -46,7 +52,7 @@ class RefugeeInfoApp extends Component {
 
     setNavigator = (navigator) => {
         this.setState({
-            navigator: new Navigate(navigator)
+            navigator: new Navigate(navigator, store)
         });
     };
 
@@ -56,44 +62,46 @@ class RefugeeInfoApp extends Component {
 
 
         return (
-            <DrawerLayoutAndroid
-                drawerPosition={DrawerLayoutAndroid.positions.Left}
-                drawerWidth={300}
-                ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null; }}
-                renderNavigationView={() => {
-                    if (drawer && navigator) {
-                        return navView;
-                    }
-                    return null;
-                }}
-            >
-                {drawer &&
-                <Navigator
-                    configureScene={() => {
-                        return Navigator.SceneConfigs.FadeAndroid;
-                    }}
-                    initialRoute={Navigate.getInitialRoute()}
-                    navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
-                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
-                    renderScene={(route) => {
-                        if (this.state.navigator && route.component) {
-                            return (
-                                <View
-                                    showsVerticalScrollIndicator={false}
-                                    style={styles.scene}
-                                >
-                                    <route.component
-                                        path={route.path}
-                                        title={route.title}
-                                        {...route.props}
-                                    />
-                                </View>
-                            );
+            <Provider store={store}>
+                <DrawerLayoutAndroid
+                    drawerPosition={DrawerLayoutAndroid.positions.Left}
+                    drawerWidth={300}
+                    ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null; }}
+                    renderNavigationView={() => {
+                        if (drawer && navigator) {
+                            return navView;
                         }
+                        return null;
                     }}
-                />
-                }
-            </DrawerLayoutAndroid>
+                >
+                    {drawer &&
+                    <Navigator
+                        configureScene={() => {
+                            return Navigator.SceneConfigs.FadeAndroid;
+                        }}
+                        initialRoute={Navigate.getInitialRoute()}
+                        navigationBar={<Toolbar onIconPress={drawer.openDrawer} />}
+                        ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
+                        renderScene={(route) => {
+                            if (this.state.navigator && route.component) {
+                                return (
+                                    <View
+                                        showsVerticalScrollIndicator={false}
+                                        style={styles.scene}
+                                    >
+                                        <route.component
+                                            path={route.path}
+                                            title={route.title}
+                                            {...route.props}
+                                        />
+                                    </View>
+                                );
+                            }
+                        }}
+                    />
+                    }
+                </DrawerLayoutAndroid>
+            </Provider>
         );
 
     }

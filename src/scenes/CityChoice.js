@@ -1,15 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 
 import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
+import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
-import regionStore from '../stores/regionStore';
 
 
-export default class CityChoice extends Component {
+class CityChoice extends Component {
 
     static propTypes = {
         countryId: React.PropTypes.number.isRequired
@@ -65,10 +65,12 @@ export default class CityChoice extends Component {
     }
 
     async _onPress(city) {
+        const { dispatch } = this.props;
+
         city.detected = false;
         city.coords = {};
         city.country = await this.apiClient.getLocation(this.props.countryId);
-        regionStore.dispatch({type: 'REGION_CHANGED', payload: city});
+        dispatch({type: 'REGION_CHANGED', payload: city});
         await AsyncStorage.setItem('region', JSON.stringify(city));
         this.context.navigator.to('info');
     }
@@ -107,3 +109,4 @@ const styles = StyleSheet.create({
     }
 });
 
+export default connect()(CityChoice);

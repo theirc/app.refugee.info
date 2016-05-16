@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { AsyncStorage, PropTypes, Text } from 'react-native';
+import { connect } from 'react-redux';
 
 import { Drawer } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
-import regionStore from '../stores/regionStore';
 
-export default class Navigation extends Component {
+class Navigation extends Component {
 
     static contextTypes = {
         drawer: PropTypes.object.isRequired,
@@ -34,7 +34,6 @@ export default class Navigation extends Component {
     }
 
     async _loadInitialState() {
-        regionStore.subscribe(() => this.setState(regionStore.getState()));
         this.setState({
             region: JSON.parse(await AsyncStorage.getItem('region'))
         });
@@ -65,18 +64,17 @@ export default class Navigation extends Component {
 
     changeScene = (path, name, props={}) => {
         const { drawer, navigator } = this.context;
+        const { dispatch } = this.props;
 
-        this.setState({
-            route: path
-        });
         navigator.to(path, name, props);
+        dispatch({type: 'CHANGE_ROUTE', payload: path});
         drawer.closeDrawer();
     };
     
     render() {
-        const { route } = this.state;
+        const route = this.props.route;
 
-        if (!this.state.region) {
+        if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
 
@@ -87,10 +85,10 @@ export default class Navigation extends Component {
                         icon: 'home',
                         value: I18n.t('HOME'),
                         active: !route || route === 'welcome',
-                        onPress: () => this.changeScene('cityChoice', null, {countryId: (this.state.region) ? this.state.region.country.id : null}),
-                        onLongPress: () => this.changeScene('cityChoice', null, {countryId: (this.state.region) ? this.state.region.country.id : null})
+                        onPress: () => this.changeScene('cityChoice', null, {countryId: (this.props.region) ? this.props.region.country.id : null}),
+                        onLongPress: () => this.changeScene('cityChoice', null, {countryId: (this.props.region) ? this.props.region.country.id : null})
                     }]}
-                    title={this.state.region && `${capitalize(this.state.region.country.name)}, ${capitalize(this.state.region.name)}`}
+                    title={this.props.region && `${capitalize(this.props.region.country.name)}, ${capitalize(this.props.region.name)}`}
                 />
 
                 <Drawer.Section
@@ -128,3 +126,12 @@ export default class Navigation extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        route: state.navigation,
+        region: state.region
+    };
+};
+
+export default connect(mapStateToProps)(Navigation);
