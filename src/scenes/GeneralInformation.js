@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput} from 'react-native';
 import I18n from '../constants/Messages';
+import MapButton from '../components/MapButton';
 
 export default class GeneralInformation extends Component {
 
@@ -79,6 +80,7 @@ export default class GeneralInformation extends Component {
                     renderRow={(rowData) => this.renderRow(rowData)}
                     style={styles.listViewContainer}
                 />
+                <MapButton/>
             </View>
         );
     }

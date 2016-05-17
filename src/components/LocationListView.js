@@ -40,40 +40,32 @@ export default class LocationListView extends Component {
     }
 
     renderRow(rowData) {
-        let buttonIsSelectedStyle;
-        let buttonIsSelectedTextStyle;
-
-        if (this.state.selected && rowData.id === this.state.selected.id) {
-            buttonIsSelectedStyle = styles.buttonContainerSelected;
-            buttonIsSelectedTextStyle = styles.buttonTextSelected;
-        }
-        else {
-            buttonIsSelectedStyle = styles.buttonContainerNormal;
-            buttonIsSelectedTextStyle = styles.buttonTextNormal;
-        }
+        let buttonIsSelected = (this.state.selected && this.state.selected.id === rowData.id);
 
         return (
             <TouchableHighlight
                 onPress={() => {
-                    if (this.state.selected && this.state.selected.id === rowData.id) {
+                    if (buttonIsSelected) {
                         this.setState({selected: null});
                     } else {
                         this.setState({selected: rowData});
                     }
                 }}
-                style={[styles.buttonContainer, buttonIsSelectedStyle]}
+                style={[styles.buttonContainer, buttonIsSelected?
+                                                    styles.buttonContainerSelected : '']}
                 underlayColor="white"
             >
-                <View style={{flex: 1, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-                    <Text style={[styles.buttonText, buttonIsSelectedTextStyle]}>
+                <View style={styles.rowWrapper}>
+                    <Text style={[styles.buttonText, buttonIsSelected?
+                                                        styles.buttonTextSelected : '']}>
                         {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
                     </Text>
-                    {(this.state.selected && this.state.selected.id === rowData.id) ?
+                    {(buttonIsSelected) ?
                         <Icon
                             color="black"
                             name="check"
                             size={16}
-                            style={{justifyContent: 'flex-end'}}
+                            style={styles.icon}
                         /> : null}
                 </View>
             </TouchableHighlight>
@@ -156,7 +148,8 @@ const styles = StyleSheet.create({
         marginTop: 12
     },
     buttonText: {
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: '#555556'
     },
     selectBlockWrapper: {
         flex: 0.12,
@@ -190,18 +183,22 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flex: 1,
         flexDirection: 'column',
-        padding: 15
+        padding: 15,
+        backgroundColor: '#F5F5F5'
     },
     buttonContainerSelected: {
         backgroundColor: '#E1E0E0'
     },
-    buttonContainerNormal: {
-        backgroundColor: '#F5F5F5'
-    },
-    buttonTextNormal: {
-        color: '#555556'
-    },
     buttonTextSelected: {
         color: '#313131'
+    },
+    icon: {
+        justifyContent: 'flex-end'
+    },
+    rowWrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between'
     }
 });
