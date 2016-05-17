@@ -47,12 +47,13 @@ export default class Navigate {
 		}
 	};
 
-	constructor(navigator) {
+	constructor(navigator, store) {
 		this.navigator = navigator;
 		this.savedInstanceStates = new Map();
 		this.currentRoute = null;
 		this.previousRoute = null;
 		this.isChild = false;
+		this.store = store;
 		BackAndroid.addEventListener('hardwareBackPress', this._hardwareBackPress);
 	}
 
@@ -154,6 +155,7 @@ export default class Navigate {
 				this.previousRoute = this.currentRoute;
 				this.currentRoute = route;
 				this.navigator.replace(route);
+				this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});
 			}
 		}
 	};
