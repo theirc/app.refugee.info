@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
-import Button  from 'react-native-button';
+import { Button } from 'react-native-material-design';
 
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import I18n from '../constants/Messages';
@@ -105,14 +105,11 @@ export default class LocationListView extends Component {
                         <View style={styles.selectLeft} />
                         <View style={styles.selectWrapper}>
                             <Button
-                                containerStyle={styles.selectContainer}
+                                text={I18n.t('SELECT')}
+                                raised={true}
                                 disabled={this.state.selected === null}
                                 onPress={() => this.props.onPress(this.state.selected)}
-                                style={styles.select}
-                                styleDisabled={styles.selectDisabled}
-                            >
-                                {I18n.t('SELECT')}
-                            </Button>
+                            />
                         </View>
                         <View style={styles.selectRight} />
                     </View>
@@ -170,7 +167,7 @@ const styles = StyleSheet.create({
         flex: 0.2
     },
     selectLeft: {
-        flex: 0.79
+        flex: 0.59
     },
     selectRight: {
         flex: 0.01
