@@ -1,50 +1,52 @@
+import I18n from './constants/Messages';
+
 export default {
 
     welcome: {
         initialRoute: true,
 
-        title: 'Refugee Info',
+        title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/CountryChoice').default,
 
         children: {
             cityChoice: {
-                title: 'Refugee Info',
+                title: I18n.t('REFUGEE_INFO'),
                 component: require('./scenes/CityChoice').default
             }
         }
     },
 
     cityChoice: {
-        title: 'Refugee Info',
+        title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/CityChoice').default
     },
 
     services: {
-        title: 'Service List',
+        title: I18n.t('SERVICE_LIST'),
         component: require('./scenes/ServiceList').default,
 
         children: {
             details: {
-                title: 'Service Details',
+                title: I18n.t('SERVICE_DETAILS'),
                 component: require('./scenes/ServiceDetails').default
             }
         }
     },
 
     map: {
-        title: 'Service Map',
+        title: I18n.t('SERVICE_MAP'),
         component: require('./scenes/ServiceMap').default,
 
         children: {
             details: {
-                title: 'Service Details',
+                title: I18n.t('SERVICE_DETAILS'),
                 component: require('./scenes/ServiceDetails').default
             }
         }
     },
 
     info: {
-        title: 'General Information',
+        title: I18n.t('GENERAL_INFO'),
         component: require('./scenes/GeneralInformation').default,
         children: {
             details: {
