@@ -11,6 +11,7 @@ import {
     TextInput,
     Modal
 } from 'react-native';
+import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 
@@ -36,21 +37,6 @@ const styles = StyleSheet.create({
     },
     detailsContainer: {
         margin: 5
-    },
-    button: {
-        borderRadius: 5,
-        borderColor: 'black',
-        borderWidth: 2,
-        margin: 5,
-        marginBottom: 0
-    },
-    buttonInactive: {
-        borderRadius: 5,
-        borderColor: 'black',
-        borderWidth: 2,
-        margin: 5,
-        marginBottom: 0,
-        backgroundColor: '#EEE'
     },
     textCenter: {
         textAlign: 'center',
@@ -411,20 +397,16 @@ export default class ServiceDetails extends Component {
                         </Text>
                     }
                 </View>
-                <TouchableHighlight
+                <Button
+                    text={I18n.t('GET_DIRECTIONS')}
+                    raised={true}
                     onPress={() => this.getDirections(lat, long)}
-                    style={styles.button}
-                    underlayColor="#EEE"
-                >
-                    <Text style={styles.textCenter}>{I18n.t('GET_DIRECTIONS')}</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
+                />
+                <Button
+                    text={I18n.t('CALL')}
+                    raised={true}
                     onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                    style={hasPhoneNumber ? styles.button : styles.buttonInactive}
-                    underlayColor="#EEE"
-                >
-                    <Text style={styles.textCenter}>{I18n.t('CALL')}</Text>
-                </TouchableHighlight>
+                />
                 {this.state.loaded ?
                     (this.renderFeedbackContainer()) :
                     <Text style={styles.loading}>
