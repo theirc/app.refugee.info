@@ -16,7 +16,7 @@ I18n.translations = {
         CANT_FIND_LOCATION: 'Sorry, we can\'t find your location. Please choose location from the list',
         DETECTING_LOCATION: 'Detecting...',
         DETECT_LOCATION: 'Detect Location',
-        REFUGEES_INFO: 'Refugee Info',
+        REFUGEE_INFO: 'Refugee Info',
         LOADING: 'Loading...',
         SELECT: 'Select',
         LATEST_SERVICES: 'Latest services in',
@@ -39,12 +39,18 @@ I18n.translations = {
         LANGUAGE: 'Language',
         ENGLISH: 'English',
         FRENCH: 'French',
+        ARABIC: 'Arabic',
         SELECT_COUNTRY: 'Please choose the country where you are',
-        SELECT_LOCATION: 'Please choose your location'
+        SELECT_LOCATION: 'Please choose your location',
+        SERVICE_LIST: 'Service List',
+        SERVICE_DETAILS: 'Service Details',
+        SERVICE_MAP: 'Service Map'
+
     },
     fr: {
-        WELCOME: 'Bienvenue',
-        LANGUAGE: 'La langue',
-        DETECT_LOCATION: 'Détecter l\'emplacement'
+        LANGUAGE: 'La langue'
+    },
+    ar: {
+        LANGUAGE: 'لغة'
     }
 };

@@ -47,10 +47,11 @@ class Navigation extends Component {
         };
     }
 
-    _getLanguageMenuItem(code, name) {
+    _getLanguageMenuItem(code, name, flag) {
         return {
-            icon: 'language',
             value: I18n.t(name),
+            image: flag,
+            imageStyle: {position: 'absolute', top: 8},
             active: Navigation._isActiveLanguage(code),
             onPress: () => this.changeLanguage(code),
             onLongPress: () => this.changeLanguage(code)
@@ -112,13 +113,14 @@ class Navigation extends Component {
                         onLongPress: () => this.changeScene('info')
                     }
                     ]}
-                    title={I18n.t('REFUGEES_INFO')}
+                    title={I18n.t('REFUGEE_INFO')}
                 />
 
                 <Drawer.Section
                     items={[
-                        this._getLanguageMenuItem('en', 'ENGLISH'),
-                        this._getLanguageMenuItem('fr', 'FRENCH')
+                        this._getLanguageMenuItem('en', 'ENGLISH', require('../assets/flags/gb.png')),
+                        this._getLanguageMenuItem('fr', 'FRENCH', require('../assets/flags/fr.png')),
+                        this._getLanguageMenuItem('ar', 'ARABIC', require('../assets/flags/_Arab_League.png'))
                     ]}
                     title={I18n.t('LANGUAGE')}
                 />

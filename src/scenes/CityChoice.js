@@ -81,7 +81,7 @@ class CityChoice extends Component {
                 <View style={styles.container}>
                     <Image
                         resizeMode={Image.resizeMode.stretch}
-                        source={require('../graphics/earthsmall.png')}
+                        source={require('../assets/earthsmall.png')}
                         style={styles.icon}
                     />
                     <LocationListView

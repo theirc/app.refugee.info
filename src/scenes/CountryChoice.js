@@ -107,7 +107,7 @@ export default class CountryChoice extends Component {
                 <View style={styles.container}>
                     <Image
                         style={styles.icon}
-                        source={require('../graphics/earthsmall.png')}
+                        source={require('../assets/earthsmall.png')}
                         resizeMode={Image.resizeMode.stretch}
                     />
                     <LocationListView
