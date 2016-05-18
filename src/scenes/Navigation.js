@@ -18,48 +18,32 @@ class Navigation extends Component {
         return code.split('-')[0];
     }
 
-    static _isFallback() {
-        let code = Navigation._getBaseLangCode(I18n.locale);
+    _isFallback() {
+        let code = Navigation._getBaseLangCode(this.props.code);
         return !(code in I18n.translations);
     }
 
-    static _isActiveLanguage(langCode) {
-        let code = Navigation._getBaseLangCode(langCode);
-        return I18n.locale.startsWith(code) ||
-            (code == I18n.defaultLocale && Navigation._isFallback());
+    _isActiveLanguage(langCode) {
+        const code = Navigation._getBaseLangCode(langCode);
+        return this.props.code.startsWith(code) ||
+            (code == I18n.defaultLocale && this._isFallback());
     }
-
-    componentDidMount() {
-        this._loadInitialState();
-    }
-
-    async _loadInitialState() {
-        this.setState({
-            region: JSON.parse(await AsyncStorage.getItem('region'))
-        });
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            route: null,
-            region: null
-        };
-    }
-
+    
     _getLanguageMenuItem(code, name, flag) {
         return {
             value: I18n.t(name),
             image: flag,
             imageStyle: {position: 'absolute', top: 8},
-            active: Navigation._isActiveLanguage(code),
+            active: this._isActiveLanguage(code),
             onPress: () => this.changeLanguage(code),
             onLongPress: () => this.changeLanguage(code)
         };
     }
 
     changeLanguage(code) {
+        const { dispatch } = this.props;
         I18n.locale = code;
+        dispatch({type: 'CHANGE_LANGUAGE', payload: code});
         this.changeScene(this.props.route);
     }
 
@@ -132,7 +116,8 @@ class Navigation extends Component {
 const mapStateToProps = (state) => {
     return {
         route: state.navigation,
-        region: state.region
+        region: state.region,
+        code: state.language
     };
 };
 
