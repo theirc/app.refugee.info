@@ -9,12 +9,12 @@ import {
     AsyncStorage,
     TextInput
 } from 'react-native';
-import { default as _ } from 'lodash';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
+import MapButton from '../components/MapButton';
 
 const styles = StyleSheet.create({
     container: {
@@ -168,6 +168,7 @@ export default class ServiceList extends Component {
                     renderRow={(service) => this.renderRow(service)}
                     style={styles.listViewContainer}
                 />
+                <MapButton />
             </View>
         );
     }
