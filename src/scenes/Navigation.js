@@ -60,7 +60,7 @@ class Navigation extends Component {
 
     changeLanguage(code) {
         I18n.locale = code;
-        this.changeScene('welcome');
+        this.changeScene(this.props.route);
     }
 
     changeScene = (path, name, props={}) => {
