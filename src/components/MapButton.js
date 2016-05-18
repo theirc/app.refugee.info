@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { View, StyleSheet, TouchableHighlight, Image } from 'react-native';
+import { StyleSheet, TouchableHighlight, Image } from 'react-native';
 
 export default class MapButton extends Component {
 
@@ -7,17 +7,9 @@ export default class MapButton extends Component {
         navigator: PropTypes.object.isRequired
     };
 
-    static propTypes = {
-
-    };
-
-    constructor(props) {
-        super(props);
-    }
-
     onClick() {
         const { navigator } = this.context;
-        this.context.navigator.to('map');
+        navigator.to('map');
     }
 
     render() {
