@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'react-native';
-import { Toolbar as MaterialToolbar } from 'react-native-material-design';
+import { PropTypes, ToolbarAndroid, StyleSheet } from 'react-native';
 
 export default class Toolbar extends Component {
 
@@ -23,16 +22,28 @@ export default class Toolbar extends Component {
         const { navigator } = this.context;
         const { onIconPress } = this.props;
 
+        this.title = navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Refugee Info'
         return (
-            <MaterialToolbar
-                icon={navigator && navigator.isChild ? 'keyboard-backspace' : 'menu'}
-                onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
-                rightIconStyle={{
-                    margin: 10
-                }}
-                testID="test-id-toolbar"
-                title={navigator && navigator.currentRoute ? navigator.currentRoute.title : 'Refugee Info'}
+            <ToolbarAndroid
+                navIcon={require('../res/ic_menu_white_24dp.png')}
+                onIconClicked={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
+                style={styles.toolbar}
+                title={this.title}
+                titleColor='white'
+                logo={(this.title == 'Refugee Info') ? require('../res/RI-logo.png') : null }
+                contentInsetEnd={50}
             />
         );
     }
 }
+
+var styles = StyleSheet.create({
+    toolbar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: 56,
+        backgroundColor: '#1e90ff',
+    },
+});
