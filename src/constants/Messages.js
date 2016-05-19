@@ -44,7 +44,8 @@ I18n.translations = {
         SELECT_LOCATION: 'Please choose your location',
         SERVICE_LIST: 'Service List',
         SERVICE_DETAILS: 'Service Details',
-        SERVICE_MAP: 'Service Map'
+        SERVICE_MAP: 'Service Map',
+        THEMES: 'Themes'
 
     },
     fr: {

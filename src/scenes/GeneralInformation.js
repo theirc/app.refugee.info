@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput} from 'react-native';
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
+import { Button } from 'react-native-material-design';
+import AppStore from '../stores/AppStore';
 
 export default class GeneralInformation extends Component {
 
@@ -59,14 +61,16 @@ export default class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
+        let primary = AppStore.getState().primary;
+        let theme = AppStore.getState().theme;
         return (
-            <TouchableHighlight
+            <Button
+                primary={primary}
+                theme={theme}
+                raised={true}
+                text={rowData.title}
                 onPress={() => this.onClick(rowData.title, rowData.section)}
-                style={styles.buttonContainer}
-                underlayColor="white"
-            >
-                <Text>{rowData.title}</Text>
-            </TouchableHighlight>
+            />
         );
     }
 
