@@ -6,7 +6,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
-
+import {getCountryFlag} from '../utils/helpers';
 
 export default class CountryChoice extends Component {
 
@@ -106,12 +106,13 @@ export default class CountryChoice extends Component {
             return (
                 <View style={styles.container}>
                     <Image
-                        style={styles.icon}
-                        source={require('../assets/earthsmall.png')}
                         resizeMode={Image.resizeMode.stretch}
+                        source={require('../assets/earthsmall.png')}
+                        style={styles.icon}
                     />
                     <LocationListView
                         header={I18n.t('SELECT_COUNTRY')}
+                        image={(countryName) => getCountryFlag(countryName)}
                         onPress={(rowData) => this.onPress(rowData)}
                         rows={this.state.locations}
                     />
@@ -136,4 +137,3 @@ const styles = StyleSheet.create({
 });
 
 export default connect()(CountryChoice);
-
