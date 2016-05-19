@@ -1,3 +1,8 @@
+Refugee Info App
+----------------------
+![Build status](https://www.bitrise.io/app/b46df223a0d613c0.svg?token=29M7JzXlf6QZJVQ_DgL4Dg&branch=master)
+
+
 Installing
 ----------------------
 
