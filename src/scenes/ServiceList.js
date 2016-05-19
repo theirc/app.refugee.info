@@ -10,11 +10,14 @@ import {
     TextInput
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { Subheader, Divider } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
+import { connect } from 'react-redux';
+
 
 const styles = StyleSheet.create({
     container: {
@@ -28,16 +31,14 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flex: 1,
         flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#EEE'
+        padding: 15
     },
     header: {
         flex: 0,
         flexDirection: 'column',
         textAlign: 'center',
         textAlignVertical: 'center',
-        padding: 10,
-        backgroundColor: '#387ef5'
+        padding: 10
     }
 });
 
@@ -77,6 +78,7 @@ export default class ServiceList extends Component {
         }
         this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
+
     }
 
 
@@ -121,14 +123,18 @@ export default class ServiceList extends Component {
             return type.url == service.type;
         });
         let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
+        const theme = this.props.theme;
         return (
-            <TouchableHighlight
-                onPress={() => this.onClick({service, serviceType, location})}
-                style={styles.buttonContainer}
-                underlayColor="white"
-            >
-                {rowContent}
-            </TouchableHighlight>
+            <View>
+                <TouchableHighlight
+                    onPress={() => this.onClick({service, serviceType, location})}
+                    style={styles.buttonContainer}
+                    underlayColor= {theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                >
+                    {rowContent}
+                </TouchableHighlight>
+                <Divider />
+            </View>
         );
     }
 
@@ -144,10 +150,12 @@ export default class ServiceList extends Component {
         return (
             <View>
                 <Text style={styles.header}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
+                <Divider/>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
                 />
+                <Divider/>
             </View>
         );
     }
@@ -157,7 +165,7 @@ export default class ServiceList extends Component {
             return ServiceList.renderLoadingView();
         }
         else if (!this.state.region) {
-            return <Text>{I18n.t('CHOOSE_REGION')}</Text>
+            return <Text>{I18n.t('CHOOSE_REGION')}</Text>;
         }
         return (
             <View style={styles.container}>
@@ -173,3 +181,11 @@ export default class ServiceList extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(ServiceList);

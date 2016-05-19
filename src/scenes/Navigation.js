@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { AsyncStorage, PropTypes, Text } from 'react-native';
 import { connect } from 'react-redux';
-
 import { Drawer } from 'react-native-material-design';
-
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
 
@@ -47,6 +45,14 @@ class Navigation extends Component {
         this.changeScene(this.props.route);
     }
 
+
+    changeTheme(theme, color) {
+        const { dispatch } = this.props;
+        dispatch({payload: theme, type: 'THEME_CHANGED'});
+        dispatch({payload: color, type: 'PRIMARY_CHANGED'});
+        this.changeScene('welcome');
+    }
+
     changeScene = (path, name, props={}) => {
         const { drawer, navigator } = this.context;
         const { dispatch } = this.props;
@@ -57,14 +63,14 @@ class Navigation extends Component {
     };
     
     render() {
-        const route = this.props.route;
+        let {theme, route} = this.props;
 
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
 
         return (
-            <Drawer theme="light">
+            <Drawer theme={theme}>
                 <Drawer.Section
                     items={[{
                         icon: 'home',
@@ -108,6 +114,22 @@ class Navigation extends Component {
                     ]}
                     title={I18n.t('LANGUAGE')}
                 />
+
+                <Drawer.Section
+                    items={[{
+                        icon: theme == 'light' ? 'radio-button-checked': 'radio-button-unchecked',
+                        value: 'Light',
+                        onPress: () => this.changeTheme('light', 'googleBlue'),
+                        onLongPress: () => this.changeTheme('light', 'googleBlue')
+                    },
+                    {
+                        icon: theme == 'dark' ? 'radio-button-checked': 'radio-button-unchecked',
+                        value: 'Dark',
+                        onPress: () => this.changeTheme('dark', 'paperGrey800'),
+                        onLongPress: () => this.changeTheme('dark', 'paperGrey800')
+                    }]}
+                    title={I18n.t('THEMES')}
+                />
             </Drawer>
         );
     }
@@ -117,7 +139,8 @@ const mapStateToProps = (state) => {
     return {
         route: state.navigation,
         region: state.region,
-        code: state.language
+        code: state.language,
+        theme: state.theme.theme
     };
 };
 

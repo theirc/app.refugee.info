@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'react-native';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
+import { connect } from 'react-redux';
 
 export default class Toolbar extends Component {
 
@@ -22,13 +23,14 @@ export default class Toolbar extends Component {
 
     render() {
         const { navigator } = this.context;
-        const { onIconPress } = this.props;
+        const { onIconPress, primary } = this.props;
         let title = require('../assets/RI-logo.png');
         if (navigator && navigator.currentRoute && navigator.currentRoute.title != I18n.t('REFUGEE_INFO')) {
             title = navigator.currentRoute.title;
         }
         return (
             <MaterialToolbar
+                primary={primary}
                 icon={navigator && navigator.isChild ? 'keyboard-backspace' : require('../assets/ic_menu_white_24dp.png')}
                 onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
                 rightIconStyle={{
@@ -46,3 +48,11 @@ export default class Toolbar extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary
+    };
+};
+
+export default connect(mapStateToProps)(Toolbar);
