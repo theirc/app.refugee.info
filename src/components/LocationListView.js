@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { View, ListView, StyleSheet, Text, TouchableHighlight } from 'react-native';
+import { View, ListView, StyleSheet, Text, TouchableHighlight, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
 
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
@@ -19,7 +19,8 @@ export default class LocationListView extends Component {
         rows: PropTypes.arrayOf(React.PropTypes.shape({
             id: PropTypes.number,
             name: PropTypes.string.isRequired
-        }))
+        })),
+        image: PropTypes.func
     };
 
     constructor(props) {
@@ -42,7 +43,10 @@ export default class LocationListView extends Component {
 
     renderRow(rowData) {
         let buttonIsSelected = (this.state.selected && this.state.selected.id === rowData.id);
-
+        let image = null;
+        if (this.props.image) {
+            image = this.props.image(rowData.name);
+        }
         return (
             <TouchableHighlight
                 onPress={() => {
@@ -57,10 +61,17 @@ export default class LocationListView extends Component {
                 underlayColor="white"
             >
                 <View style={styles.rowWrapper}>
-                    <Text style={[styles.buttonText, buttonIsSelected?
-                                                        styles.buttonTextSelected : '']}>
-                        {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
-                    </Text>
+                    <View style={styles.rowHeader}>
+                        {image &&
+                        <Image
+                            source={image}
+                            style={styles.image}
+                        />}
+                        <Text style={[styles.buttonText, buttonIsSelected?
+                                                            styles.buttonTextSelected : '']}>
+                            {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
+                        </Text>
+                    </View>
                     {(buttonIsSelected) ?
                         <Icon
                             color="black"
@@ -211,7 +222,15 @@ const styles = StyleSheet.create({
     rowWrapper: {
         flex: 1,
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        alignItems: 'center',
         justifyContent: 'space-between'
+    },
+    rowHeader: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    image: {
+        marginRight: 5
     }
 });
