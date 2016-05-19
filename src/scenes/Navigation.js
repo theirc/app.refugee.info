@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { Drawer } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
-import AppActions from '../actions/AppActions';
-import AppStore from '../stores/AppStore';
 
 class Navigation extends Component {
 
@@ -49,8 +47,9 @@ class Navigation extends Component {
 
 
     changeTheme(theme, color) {
-        AppActions.updateTheme(theme);
-        AppActions.updatePrimary(color);
+        const { dispatch } = this.props;
+        dispatch({payload: theme, type: 'THEME_CHANGED'});
+        dispatch({payload: color, type: 'PRIMARY_CHANGED'});
         this.changeScene('welcome');
     }
 
@@ -64,8 +63,7 @@ class Navigation extends Component {
     };
     
     render() {
-        let route = this.props.route;
-        let theme = AppStore.getState().theme;
+        let {theme, route} = this.props;
 
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
@@ -123,13 +121,13 @@ class Navigation extends Component {
                         value: 'Light',
                         onPress: () => this.changeTheme('light', 'googleBlue'),
                         onLongPress: () => this.changeTheme('light', 'googleBlue')
-                    }, {
+                    },
+                    {
                         icon: theme == 'dark' ? 'radio-button-checked': 'radio-button-unchecked',
                         value: 'Dark',
                         onPress: () => this.changeTheme('dark', 'paperGrey800'),
                         onLongPress: () => this.changeTheme('dark', 'paperGrey800')
-                        }
-                    ]}
+                    }]}
                     title={I18n.t('THEMES')}
                 />
             </Drawer>
@@ -141,7 +139,8 @@ const mapStateToProps = (state) => {
     return {
         route: state.navigation,
         region: state.region,
-        code: state.language
+        code: state.language,
+        theme: state.theme.theme
     };
 };
 

@@ -4,7 +4,7 @@ import { Button } from 'react-native-material-design';
 
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import I18n from '../constants/Messages';
-import AppStore from '../stores/AppStore';
+import { connect } from 'react-redux';
 
 
 export default class LocationListView extends Component {
@@ -74,7 +74,7 @@ export default class LocationListView extends Component {
     }
 
     render() {
-        let primary = AppStore.getState().primary;
+        const primary = this.props.primary;
         if (this.props.rows.length === 0) {
             return (
                 <View style={styles.noLocationsContainer}>
@@ -114,6 +114,16 @@ export default class LocationListView extends Component {
 
     }
 }
+
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary
+    };
+};
+
+export default connect(mapStateToProps)(LocationListView);
+
 
 const styles = StyleSheet.create({
     container: {

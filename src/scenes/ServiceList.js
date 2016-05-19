@@ -16,7 +16,7 @@ import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
-import AppStore from '../stores/AppStore';
+import { connect } from 'react-redux';
 
 
 const styles = StyleSheet.create({
@@ -123,7 +123,7 @@ export default class ServiceList extends Component {
             return type.url == service.type;
         });
         let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
-        var theme = AppStore.getState().theme;
+        const theme = this.props.theme;
         return (
             <View>
                 <TouchableHighlight
@@ -165,7 +165,7 @@ export default class ServiceList extends Component {
             return ServiceList.renderLoadingView();
         }
         else if (!this.state.region) {
-            return <Text>{I18n.t('CHOOSE_REGION')}</Text>
+            return <Text>{I18n.t('CHOOSE_REGION')}</Text>;
         }
         return (
             <View style={styles.container}>
@@ -181,3 +181,11 @@ export default class ServiceList extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(ServiceList);

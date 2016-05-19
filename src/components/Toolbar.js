@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'react-native';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
-import AppStore from '../stores/AppStore';
+import { connect } from 'react-redux';
 
 export default class Toolbar extends Component {
 
@@ -23,12 +23,11 @@ export default class Toolbar extends Component {
 
     render() {
         const { navigator } = this.context;
-        const { onIconPress } = this.props;
+        const { onIconPress, primary } = this.props;
         let title = require('../assets/RI-logo.png');
         if (navigator && navigator.currentRoute && navigator.currentRoute.title != I18n.t('REFUGEE_INFO')) {
             title = navigator.currentRoute.title;
         }
-        let primary = AppStore.getState().primary;
         return (
             <MaterialToolbar
                 primary={primary}
@@ -49,3 +48,11 @@ export default class Toolbar extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary
+    };
+};
+
+export default connect(mapStateToProps)(Toolbar);

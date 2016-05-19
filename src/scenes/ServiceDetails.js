@@ -18,7 +18,7 @@ import MapView from 'react-native-maps';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
-import AppStore from '../stores/AppStore';
+import { connect } from 'react-redux';
 
 const RADIUS = 0.01;
 
@@ -345,8 +345,7 @@ export default class ServiceDetails extends Component {
         let rowContent = this.serviceCommons.renderRowContent(
             service, this.props.serviceType, this.props.location
         );
-        let theme = AppStore.getState().theme;
-        let primary = AppStore.getState().primary;
+        const { theme, primary } = this.props;
 
         return (
             <ScrollView style={styles.container}>
@@ -424,3 +423,12 @@ export default class ServiceDetails extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary,
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(ServiceDetails);

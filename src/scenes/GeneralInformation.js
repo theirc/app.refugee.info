@@ -3,7 +3,7 @@ import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHigh
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
-import AppStore from '../stores/AppStore';
+import { connect } from 'react-redux';
 
 export default class GeneralInformation extends Component {
 
@@ -61,8 +61,7 @@ export default class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
-        let primary = AppStore.getState().primary;
-        let theme = AppStore.getState().theme;
+        const {primary, theme} = this.props;
         return (
             <Button
                 primary={primary}
@@ -89,6 +88,17 @@ export default class GeneralInformation extends Component {
         );
     }
 }
+
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary,
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(GeneralInformation);
+
 
 const styles = StyleSheet.create({
     container: {
