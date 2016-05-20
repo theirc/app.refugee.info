@@ -5,6 +5,10 @@ import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
 
+import LoadingView from '../components/LoadingView';
+import ApiClient from '../utils/ApiClient';
+
+
 export default class GeneralInformation extends Component {
 
     static contextTypes = {
@@ -16,8 +20,11 @@ export default class GeneralInformation extends Component {
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
-            })
+            }),
+            loaded: false
         };
+
+        this.apiClient = new ApiClient();
     }
 
     componentDidMount() {
@@ -29,9 +36,12 @@ export default class GeneralInformation extends Component {
         if (!region) {
             return;
         }
+
+        region = await this.apiClient.getLocation(region.id);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
-            generalInfo: region.content
+            generalInfo: region.content,
+            loaded: true
         });
     }
 
@@ -74,6 +84,9 @@ export default class GeneralInformation extends Component {
     }
 
     render() {
+        if (!this.state.loaded) {
+            return <LoadingView />;
+        }
         return (
             <View style={styles.container}>
                 <ListView
