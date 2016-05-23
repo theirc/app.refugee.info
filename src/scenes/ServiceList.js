@@ -10,7 +10,7 @@ import {
     TextInput
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Subheader, Divider } from 'react-native-material-design';
+import { Divider } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';

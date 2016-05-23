@@ -20,7 +20,7 @@ export default class MapButton extends Component {
                 underlayColor="white"
             >
                 <Image
-                    source={require('../graphics/mapbutton.png')}
+                    source={require('../assets/mapbutton.png')}
                 />
             </TouchableHighlight>
         );

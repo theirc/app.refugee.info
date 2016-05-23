@@ -2,9 +2,14 @@ import I18n from './constants/Messages';
 
 export default {
 
-    welcome: {
+    languageSelection: {
         initialRoute: true,
 
+        title: I18n.t('REFUGEE_INFO'),
+        component: require('./scenes/LanguageSelection').default
+    },
+
+    countryChoice: {
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/CountryChoice').default,
 
