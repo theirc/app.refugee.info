@@ -1,4 +1,4 @@
-export default (state = 'welcome', action) => {
+export default (state = 'languageSelection', action) => {
     switch (action.type) {
     case 'CHANGE_ROUTE':
         return action.payload;

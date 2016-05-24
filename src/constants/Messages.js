@@ -6,7 +6,7 @@ I18n.defaultLocale = 'en';
 
 I18n.translations = {
     en: {
-        HOME: 'Change City',
+        HOME: 'Home',
         LIST_SERVICES: 'List Services',
         EXPLORE_MAP: 'Explore Services on Map',
         GENERAL_INFO: 'General Information',
@@ -45,7 +45,9 @@ I18n.translations = {
         SERVICE_LIST: 'Service List',
         SERVICE_DETAILS: 'Service Details',
         SERVICE_MAP: 'Service Map',
-        THEMES: 'Themes'
+        THEME: 'Theme',
+        CHANGE_CITY: 'Change City',
+        SET_COUNTRY: 'Set Country'
 
     },
     fr: {

@@ -15,12 +15,12 @@ export default class LocationListView extends Component {
 
     static propTypes = {
         header: PropTypes.string.isRequired,
+        image: PropTypes.func,
         onPress: PropTypes.func.isRequired,
         rows: PropTypes.arrayOf(React.PropTypes.shape({
             id: PropTypes.number,
             name: PropTypes.string.isRequired
-        })),
-        image: PropTypes.func
+        }))
     };
 
     constructor(props) {
@@ -68,7 +68,8 @@ export default class LocationListView extends Component {
                             style={styles.image}
                         />}
                         <Text style={[styles.buttonText, buttonIsSelected?
-                                                            styles.buttonTextSelected : '']}>
+                                                            styles.buttonTextSelected : '']}
+                        >
                             {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
                         </Text>
                     </View>
@@ -110,11 +111,11 @@ export default class LocationListView extends Component {
                         <View style={styles.selectLeft} />
                         <View style={styles.selectWrapper}>
                             <Button
-                                primary={primary}
-                                text={I18n.t('SELECT')}
-                                raised={true}
                                 disabled={this.state.selected === null}
                                 onPress={() => this.props.onPress(this.state.selected)}
+                                primary={primary}
+                                raised
+                                text={I18n.t('SELECT')}
                             />
                         </View>
                         <View style={styles.selectRight} />
