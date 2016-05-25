@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         flex: 1,
-        right: 10,
-        bottom: 10,
+        right: 20,
+        bottom: 20,
         borderWidth: 1,
         borderRadius: 50,
         opacity: 0.7
