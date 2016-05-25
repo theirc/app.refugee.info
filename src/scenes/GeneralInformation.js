@@ -47,6 +47,10 @@ export default class GeneralInformation extends Component {
 
     onClick(title, section) {
         const { navigator } = this.context;
+        if (this.state.searchText) {
+            let reg = new RegExp(`(${this.state.searchText})`, 'ig');
+            section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
+        }
         navigator.forward(null, title, {section}, this.state);
     }
 
@@ -55,6 +59,7 @@ export default class GeneralInformation extends Component {
         const filteredGeneralInfo = generalInfo.filter((x) => x.section.toLowerCase()
             .replace(/(<(?:.|\n)*?>|\s)/gm, '').indexOf(text.toLowerCase().replace(/\s/gm, '')) !== -1);
         this.setState({
+            searchText: text,
             dataSource: this.state.dataSource.cloneWithRows(filteredGeneralInfo)
         });
     }
