@@ -12,7 +12,7 @@ def get_desired_capabilities():
         'platformVersion': '6.0',
         'deviceName': 'test',
         'app': PATH('../android/app/build/outputs/apk/app-debug.apk'),
-        'newCommandTimeout': 120,
+        'newCommandTimeout': 10,
         'orientation': 'PORTRAIT'
     }
 
