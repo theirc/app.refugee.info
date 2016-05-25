@@ -72,6 +72,7 @@ export default class ServiceMap extends Component {
                     rowHasChanged: (row1, row2) => row1 !== row2
                 }),
                 loaded: false,
+                iconsLoaded: false,
                 markers: []
             };
         }
@@ -144,9 +145,10 @@ export default class ServiceMap extends Component {
     onLoadEnd(iconUrl) {
         //TODO Find better way to make sure that images are rendered in marker.
         this.icons[iconUrl] = true;
-        if (Object.values(this.icons).filter((x) => !x).length === 0) {
+        if (Object.values(this.icons).filter((x) => !x).length === 0 && !this.state.iconsLoaded) {
             this.setState({
-                markers: this.state.markers.reverse() //HACK Force update of UI, forceUpdate method is not working.
+                markers: this.state.markers.reverse(), //HACK Force update of UI, forceUpdate method is not working.
+                iconsLoaded: true
             });
         }
     }
