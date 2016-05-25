@@ -394,7 +394,7 @@ export default class ServiceDetails extends Component {
                         <Text>
                             {I18n.t('SELECTION_CRITERIA')}:
                             {service.selection_criteria.map((criteria, i) => (
-                                `\n - ${criteria}`
+                                `\n - ${criteria.text}`
                             ))}
                         </Text>
                     }
