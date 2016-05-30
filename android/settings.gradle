@@ -1,5 +1,6 @@
 rootProject.name = 'RefugeeInfoApp'
 
-include ':app', ':react-native-maps', ':react-native-i18n'
+include ':app', ':react-native-maps', ':react-native-i18n', ':react-native-share'
 project(':react-native-maps').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-maps/android')
 project(':react-native-i18n').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-i18n/android')
+project(':react-native-share').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-share/android')
