@@ -7,7 +7,6 @@ I18n.defaultLocale = 'en';
 I18n.translations = {
     en: {
         HOME: 'Home',
-        LIST_SERVICES: 'List Services',
         EXPLORE_MAP: 'Explore Services on Map',
         GENERAL_INFO: 'General Information',
         GPS_DISABLED: 'Unable to determine location. Please enable GPS.',
