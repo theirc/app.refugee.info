@@ -44,7 +44,7 @@ class Navigation extends Component {
                 <Drawer.Section
                     items={[{
                         icon: 'list',
-                        value: I18n.t('LIST_SERVICES'),
+                        value: I18n.t('SERVICE_LIST'),
                         active: route === 'services',
                         onPress: () => this.drawerCommons.changeScene('services'),
                         onLongPress: () => this.drawerCommons.changeScene('services')
