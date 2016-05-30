@@ -73,7 +73,7 @@ export default class CountryChoice extends Component {
             },
             (error) => {
                 this._loadInitialState();
-            }, {enableHighAccuracy: false, timeout: 4000, maximumAge: 1000}
+            }, {enableHighAccuracy: true, timeout: 5000, maximumAge: 1000}
         );
     }
 
