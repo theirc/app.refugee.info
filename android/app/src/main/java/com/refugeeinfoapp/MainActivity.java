@@ -2,6 +2,7 @@ package com.refugeeinfoapp;
 
 import com.AirMaps.AirPackage;
 import com.facebook.react.ReactActivity;
+import cl.json.RNSharePackage;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
@@ -37,6 +38,7 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new RNSharePackage(),
             new AirPackage(),
             new ReactNativeI18n(),
             new RefugeeInfoPackage()

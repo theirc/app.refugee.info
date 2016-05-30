@@ -19,6 +19,7 @@ import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import { connect } from 'react-redux';
+import Share from 'react-native-share';
 
 const RADIUS = 0.01;
 
@@ -193,6 +194,15 @@ export default class ServiceDetails extends Component {
     call() {
         let provider = this.state.provider;
         Linking.openURL(`tel:${provider.phone_number}`);
+    }
+
+    onShareClick() {
+        Share.open({
+            share_URL: 'http://refugeeinfo.org',
+            title: 'Refugee Info'
+        },(e) => {
+            console.log(e);
+        });
     }
 
     postComment() {
@@ -413,6 +423,13 @@ export default class ServiceDetails extends Component {
                     text={I18n.t('CALL')}
                     raised={true}
                     onPress={hasPhoneNumber ? this.call.bind(this) : null}
+                />
+                <Button
+                    theme={theme}
+                    primary={primary}
+                    text={I18n.t('SHARE')}
+                    raised={true}
+                    onPress={() => this.onShareClick()}
                 />
                 {this.state.loaded ?
                     (this.renderFeedbackContainer()) :
