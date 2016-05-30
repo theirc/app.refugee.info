@@ -76,13 +76,13 @@ export default class ServiceList extends Component {
                 loaded: false
             };
         }
-        this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
 
     }
 
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -99,6 +99,9 @@ export default class ServiceList extends Component {
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let locations = await this.apiClient.getLocations(region.id);
+        if (!services || !locations) {
+            return;
+        }
         locations.push(region);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),

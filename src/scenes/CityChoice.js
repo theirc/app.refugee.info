@@ -25,10 +25,10 @@ class CityChoice extends Component {
             cities: [],
             loaded: false
         };
-        this.apiClient = new ApiClient();
     }
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         this._loadInitialState();
     }
 

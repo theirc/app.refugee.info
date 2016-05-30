@@ -146,13 +146,21 @@ export default class Navigate {
 				console.warn(`[Navigate.to(${path})] No component exists at this path`);
 			} else {
 				this.isChild = path.split('.').length > 1;
+				const previousPath = (this.previousRoute) ? this.previousRoute.path : Navigate.getInitialRoute().path;
+				if (!!props) {
+					props['previousPath'] = previousPath;
+				} else {
+					props = {'previousPath': previousPath};
+				}
 				const route = {
 					title: title ? title : (obj.title ? obj.title : path),
 					path,
 					component: obj.component,
 					props
 				};
-				this.previousRoute = this.currentRoute;
+				if (this.currentRoute && path != this.currentRoute.path) {
+					this.previousRoute = this.currentRoute;
+				}
 				this.currentRoute = route;
 				this.navigator.replace(route);
 				this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});

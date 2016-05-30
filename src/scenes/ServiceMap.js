@@ -77,10 +77,10 @@ export default class ServiceMap extends Component {
             };
         }
         this.icons = {};
-        this.apiClient = new ApiClient();
     }
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -98,7 +98,9 @@ export default class ServiceMap extends Component {
         let serviceTypes = await this.apiClient.getServiceTypes();
         let services = await this.apiClient.getServices(region.slug);
         let locations = await this.apiClient.getLocations(region.id);
-        locations.push(region);
+        if (!services || !locations) {
+            return;
+        }
         let markers = services.map(service => {
             let location = service.location.match(/[\d\.]+/g);
             let serviceType = serviceTypes.find(function(type) {

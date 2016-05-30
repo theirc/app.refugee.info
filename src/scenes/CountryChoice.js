@@ -19,10 +19,10 @@ export default class CountryChoice extends Component {
         this.state = {
             locations: []
         };
-        this.apiClient = new ApiClient();
     }
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         this.detectLocation();
     }
 

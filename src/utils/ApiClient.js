@@ -2,13 +2,17 @@
 
 export default class ApiClient {
 
-    constructor(api_root='http://api.refugee.info') {
+    constructor(context, api_root='http://api.refugee.info') {
+        this.navigator = context.navigator;
         this.apiRoot = api_root;
     }
 
     fetch(relativeUrl) {
         return fetch(`${this.apiRoot}${relativeUrl}`)
-            .then((response) => response.json());
+            .then((response) => response.json())
+            .catch((error) => {
+                this.navigator.to('networkFailure');
+            });
     }
 
     post(relativeUrl, data) {
@@ -19,7 +23,10 @@ export default class ApiClient {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-        }).then((response) => response);
+        }).then((response) => response)
+        .catch((error) => {
+            this.navigator.to('networkFailure');
+        });
     }
 
     getRootLocations() {

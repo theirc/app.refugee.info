@@ -47,7 +47,9 @@ I18n.translations = {
         THEME: 'Theme',
         CHANGE_CITY: 'Change City',
         SET_COUNTRY: 'Set Country',
-        SHARE: 'Share'
+        SHARE: 'Share',
+        NETWORK_FAILURE: 'Network failure',
+        RETRY: 'Retry'
 
     },
     fr: {
