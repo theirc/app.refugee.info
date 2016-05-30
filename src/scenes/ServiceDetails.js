@@ -140,11 +140,11 @@ export default class ServiceDetails extends Component {
             loaded: false,
             modalVisible: false
         };
-        this.apiClient = new ApiClient();
         this.serviceCommons = new ServiceCommons();
     }
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -178,6 +178,9 @@ export default class ServiceDetails extends Component {
         let service = this.props.service;
         let feedbacks = await this.apiClient.getFeedbacks(service.id);
         let provider = await this.apiClient.fetch(service.provider_fetch_url);
+        if (!feedbacks) {
+            return;
+        }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(feedbacks),
             loaded: true,

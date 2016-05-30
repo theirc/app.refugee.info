@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {PropTypes, View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput} from 'react-native';
+import {PropTypes, View, AsyncStorage, StyleSheet, ListView, TextInput} from 'react-native';
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
@@ -23,11 +23,10 @@ export default class GeneralInformation extends Component {
             }),
             loaded: false
         };
-
-        this.apiClient = new ApiClient();
     }
 
     componentDidMount() {
+        this.apiClient = new ApiClient(this.context);
         this._loadInitialState();
     }
 
@@ -38,6 +37,9 @@ export default class GeneralInformation extends Component {
         }
 
         region = await this.apiClient.getLocation(region.id);
+        if (!region) {
+            return;
+        }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
             generalInfo: region.content,
