@@ -221,6 +221,7 @@ export default class ServiceDetails extends Component {
                     style={styles.commentIcon}
                 />
                 <View style={styles.comment}>
+                    <Text style={styles.comment}>{row.name}</Text>
                     <Text style={styles.comment}>{row.extra_comments}</Text>
                     <Text style={styles.comment}>{I18n.t('RATING')}: {stars}</Text>
                 </View>
