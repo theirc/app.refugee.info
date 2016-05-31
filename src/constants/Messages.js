@@ -45,6 +45,7 @@ I18n.translations = {
         SERVICE_DETAILS: 'Service Details',
         SERVICE_MAP: 'Service Map',
         THEME: 'Theme',
+        CHANGE_COUNTRY: 'Change Country',
         CHANGE_CITY: 'Change City',
         SET_COUNTRY: 'Set Country',
         SHARE: 'Share',

@@ -47,12 +47,6 @@ export default class CountryChoice extends Component {
     }
 
     async detectLocation() {
-        const location = await AsyncStorage.getItem('region');
-        if (location) {
-            this.context.navigator.to('info');
-            return;
-        }
-
         navigator.geolocation.getCurrentPosition(
             async(position) => {
                 const { dispatch } = this.props;

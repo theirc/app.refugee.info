@@ -31,7 +31,13 @@ class Navigation extends Component {
                 <Drawer.Section
                     items={
                     [{
-                        icon: 'home',
+                        icon: 'public',
+                        value: I18n.t('CHANGE_COUNTRY'),
+                        active: !route || route === 'countryChoice',
+                        onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
+                        onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})
+                    },{
+                        icon: 'location-city',
                         value: I18n.t('CHANGE_CITY'),
                         active: !route || route === 'cityChoice',
                         onPress: () => this.drawerCommons.changeScene('cityChoice', null, {countryId}),
