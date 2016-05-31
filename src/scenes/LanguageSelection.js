@@ -44,6 +44,8 @@ class LanguageSelection extends Component {
         const code = await AsyncStorage.getItem('langCode');
         const theme = await AsyncStorage.getItem('theme');
         const color = await AsyncStorage.getItem('color');
+        const location = await AsyncStorage.getItem('region');
+
         this.setState({'loaded': true});
         if (JSON.parse(isLanguageSelected)) {
             if (code) {
@@ -52,7 +54,12 @@ class LanguageSelection extends Component {
             if (theme && color) {
                 this.drawerCommons.changeTheme(theme, color, false);
             }
-            this.context.navigator.to('countryChoice');
+
+            if (location) {
+                this.context.navigator.to('info');
+            } else {
+                this.context.navigator.to('countryChoice');
+            }
         }
     }
 
