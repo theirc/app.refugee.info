@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View, StyleSheet, Image  } from 'react-native';
+import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -73,7 +73,7 @@ export default class CountryChoice extends Component {
             },
             (error) => {
                 this._loadInitialState();
-            }, {enableHighAccuracy: true, timeout: 5000, maximumAge: 1000}
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
         );
     }
 
