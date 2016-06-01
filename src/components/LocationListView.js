@@ -107,9 +107,6 @@ export default class LocationListView extends Component {
                         renderRow={(rowData) => this.renderRow(rowData)}
                         style={styles.listViewContainer}
                     />
-                    <View style={styles.selectBlockWrapper}>
-                        <View style={styles.selectLeft} />
-                        <View style={styles.selectWrapper}>
                             <Button
                                 disabled={this.state.selected === null}
                                 onPress={() => this.props.onPress(this.state.selected)}
@@ -117,9 +114,6 @@ export default class LocationListView extends Component {
                                 raised
                                 text={I18n.t('SELECT')}
                             />
-                        </View>
-                        <View style={styles.selectRight} />
-                    </View>
                  </View>
             );
         }
@@ -175,35 +169,6 @@ const styles = StyleSheet.create({
     buttonText: {
         fontWeight: 'bold',
         color: '#555556'
-    },
-    selectBlockWrapper: {
-        flex: 0.12,
-        backgroundColor: '#F5F5F5',
-        flexDirection: 'row'
-    },
-    selectWrapper: {
-        flex: 0.2
-    },
-    selectLeft: {
-        flex: 0.59
-    },
-    selectRight: {
-        flex: 0.01
-    },
-    select: {
-        flex: 0.05,
-        color: 'white',
-        fontSize: 14
-    },
-    selectContainer: {
-        padding: 7,
-        overflow: 'hidden',
-        borderRadius: 20,
-        backgroundColor: '#606060',
-        marginTop: 3
-    },
-    selectDisabled: {
-        color: '#c0c0c0'
     },
     buttonContainer: {
         flex: 1,
