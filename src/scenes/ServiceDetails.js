@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Text,
     ListView,
+    RefreshControl,
     View,
     Linking,
     TextInput,
@@ -138,7 +139,9 @@ export default class ServiceDetails extends Component {
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
             loaded: false,
-            modalVisible: false
+            modalVisible: false,
+            refreshing: false,
+            service: this.props.service,
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -174,8 +177,14 @@ export default class ServiceDetails extends Component {
         return this.state.isFormDirty && !this.state.comment;
     }
 
-    async fetchData() {
+    async fetchData(update) {
         let service = this.props.service;
+        if (update) {
+            services = await this.apiClient.getService(service.id);
+            if (services.length > 0) {
+                service = services[0];
+            }
+        }
         let feedbacks = await this.apiClient.getFeedbacks(service.id);
         let provider = await this.apiClient.fetch(service.provider_fetch_url);
         if (!feedbacks) {
@@ -187,6 +196,11 @@ export default class ServiceDetails extends Component {
             provider,
             service
         });
+    }
+
+    onRefresh(){
+        this.setState({refreshing: true});
+        this.fetchData(update=true).then(() => { this.setState({refreshing: false}); });
     }
 
     getDirections(lat, long) {
@@ -217,7 +231,7 @@ export default class ServiceDetails extends Component {
                 (response) => {
                     this._setModalVisible(false);
                     this._setLoaded(false);
-                    this.fetchData();
+                    this.fetchData(update=true);
                 }
             );
         }
@@ -343,7 +357,7 @@ export default class ServiceDetails extends Component {
     }
 
     render() {
-        let service = this.props.service;
+        let service = this.state.service;
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         let coordinates = service.location.match(/[\d\.]+/g);
@@ -362,7 +376,15 @@ export default class ServiceDetails extends Component {
         const { theme, primary } = this.props;
 
         return (
-            <ScrollView style={styles.container}>
+            <ScrollView
+                style={styles.container}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this.onRefresh.bind(this)}
+                    />
+                }
+            >
                 <TouchableHighlight
                     style={styles.buttonContainer}
                     underlayColor="white"

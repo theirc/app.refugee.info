@@ -4,6 +4,7 @@ import {
     View,
     Text,
     ListView,
+    RefreshControl,
     StyleSheet,
     TouchableHighlight,
     AsyncStorage,
@@ -73,7 +74,8 @@ export default class ServiceList extends Component {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1 !== row2
                 }),
-                loaded: false
+                loaded: false,
+                refreshing: false
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -111,6 +113,11 @@ export default class ServiceList extends Component {
             region,
             services
         });
+    }
+
+    onRefresh(){
+        this.setState({refreshing: true});
+        this.fetchData().then(() => { this.setState({refreshing: false}); });
     }
 
     onClick(params) {
@@ -173,6 +180,12 @@ export default class ServiceList extends Component {
         return (
             <View style={styles.container}>
                 <ListView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
                     dataSource={this.state.dataSource}
                     enableEmptySections
                     renderHeader={() => this.renderHeader()}

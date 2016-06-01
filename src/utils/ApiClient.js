@@ -65,6 +65,10 @@ export default class ApiClient {
         return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`);
     }
 
+    getService(id) {
+        return this.fetch(`/v1/services/search/?format=json&id=${id}`);
+    }
+
     postFeedback(service, name, rating, comment) {
         return this.post('/v1/feedback/?format=json', {
             name,
