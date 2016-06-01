@@ -80,7 +80,7 @@ class CityChoice extends Component {
             return (
                 <View style={styles.container}>
                     <Image
-                        resizeMode={Image.resizeMode.stretch}
+                        resizeMode={Image.resizeMode.contain}
                         source={require('../assets/earthsmall.png')}
                         style={styles.icon}
                     />
