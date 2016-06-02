@@ -23,7 +23,7 @@ export default class GeneralInformationDetails extends Component {
     async _loadInitialState() {
         var languageCode = await AsyncStorage.getItem('langCode');
         this.setState({
-          languageCode: languageCode
+          languageCode: languageCode || 'en'
         });
     }
 
