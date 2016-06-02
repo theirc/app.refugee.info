@@ -1,4 +1,4 @@
-
+import { AsyncStorage } from 'react-native';
 
 export default class ApiClient {
 
@@ -7,8 +7,18 @@ export default class ApiClient {
         this.apiRoot = api_root;
     }
 
-    fetch(relativeUrl) {
-        return fetch(`${this.apiRoot}${relativeUrl}`)
+    async fetch(relativeUrl) {
+        var languageCode = await AsyncStorage.getItem('langCode');
+        var headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+
+        if (languageCode) {
+          headers['Accept-Language'] = languageCode;
+        }
+
+        return fetch(`${this.apiRoot}${relativeUrl}`, { headers:headers })
             .then((response) => response.json())
             .catch((error) => {
                 this.navigator.to('networkFailure');
