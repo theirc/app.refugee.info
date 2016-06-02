@@ -4,7 +4,7 @@ export default {
 
     languageSelection: {
         initialRoute: true,
-
+        exitOnBackPress: true,
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/LanguageSelection').default
     },
@@ -51,6 +51,7 @@ export default {
     },
 
     info: {
+        exitOnBackPress: true,
         title: I18n.t('GENERAL_INFO'),
         component: require('./scenes/GeneralInformation').default,
         children: {

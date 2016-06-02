@@ -57,8 +57,6 @@ class LanguageSelection extends Component {
 
             if (location) {
                 this.context.navigator.to('info');
-            } else {
-                this.context.navigator.to('countryChoice');
             }
         }
     }
