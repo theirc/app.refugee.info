@@ -1,4 +1,5 @@
 import { AsyncStorage } from 'react-native';
+const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
@@ -8,6 +9,7 @@ export default class ApiClient {
     }
 
     async fetch(relativeUrl) {
+        await InteractionManager.runAfterInteractions();
         var languageCode = await AsyncStorage.getItem('langCode');
         var headers = {
             'Accept': 'application/json',
