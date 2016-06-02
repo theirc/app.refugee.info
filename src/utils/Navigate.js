@@ -79,8 +79,9 @@ export default class Navigate {
 	* @returns {boolean}
 	*/
 	_hardwareBackPress = () => {
-		if (this.navigator.getCurrentRoutes()[0].path == Navigate.getInitialRoute().path) {
-			BackAndroid.exitApp();
+		let exitPaths = this.getExitRoutePaths();
+		let currentPath = this.navigator.getCurrentRoutes()[0].path;
+		if (exitPaths.indexOf(currentPath) > -1){
 			return false;
 		} else {
 			if (!this.isChild) {
@@ -93,6 +94,20 @@ export default class Navigate {
 				return true;
 			}
 		}
+	};
+
+   /**
+   * Gets the routes with 'exitOnBackPress'
+   * @returns {Array}
+   */
+	getExitRoutePaths = () => {
+		let paths = [];
+		for (const route in routes) {
+			if (routes[route].exitOnBackPress) {
+				paths.push(route)
+			}
+		}
+		return paths;
 	};
 
 	/**
