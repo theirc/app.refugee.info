@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
+import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
 
@@ -23,7 +24,7 @@ export default class CountryChoice extends Component {
 
     componentDidMount() {
         this.apiClient = new ApiClient(this.context);
-        this.detectLocation();
+        this._loadInitialState();
     }
 
     async _getLocation(position, level) {
@@ -103,6 +104,11 @@ export default class CountryChoice extends Component {
                         resizeMode={Image.resizeMode.contain}
                         source={require('../assets/earthsmall.png')}
                         style={styles.icon}
+                    />
+                    <Button
+                        onPress={() => this.detectLocation()}
+                        raised
+                        text={I18n.t('DETECT_LOCATION')}
                     />
                     <LocationListView
                         header={I18n.t('SELECT_COUNTRY')}
