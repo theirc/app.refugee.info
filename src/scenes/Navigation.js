@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { PropTypes, Text } from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { Text } from 'react-native';
 import { connect } from 'react-redux';
 import { Drawer } from 'react-native-material-design';
 import I18n from '../constants/Messages';
@@ -10,7 +10,7 @@ class Navigation extends Component {
 
     static contextTypes = {
         drawer: PropTypes.object.isRequired,
-        navigator: PropTypes.object.isRequired
+        navigator: PropTypes.object
     };
 
     constructor(props) {

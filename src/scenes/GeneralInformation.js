@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import {PropTypes, View, AsyncStorage, StyleSheet, ListView, TextInput} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';

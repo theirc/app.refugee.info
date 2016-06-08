@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
-    PropTypes,
     ScrollView,
     TouchableHighlight,
     StyleSheet,
@@ -108,6 +107,12 @@ const styles = StyleSheet.create({
         color: '#a94442',
         fontSize: 12,
         marginTop: -5
+    },
+    textInput: {
+        height: 48
+    },
+    textInputMultiline: {
+        height: 144
     }
 });
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -215,6 +220,7 @@ export default class ServiceDetails extends Component {
 
     onShareClick() {
         Share.open({
+            share_text: "Refugee Info",
             share_URL: 'http://refugeeinfo.org',
             title: 'Refugee Info'
         },(e) => {
@@ -273,7 +279,7 @@ export default class ServiceDetails extends Component {
         return (
             <View>
                 <Modal
-                    animated={this.state.animated}
+                    animationType={'fade'}
                     onRequestClose={() => this._setModalVisible(false)}
                     transparent={this.state.transparent}
                     visible={this.state.modalVisible}
@@ -286,6 +292,7 @@ export default class ServiceDetails extends Component {
                             <View style={styles.starContainer}>
                                 {rateStars}
                             </View>
+                            <TextInput />
                             <TextInput
                                 onChangeText={
                                     (text) => this.setState({name: text})
@@ -293,6 +300,7 @@ export default class ServiceDetails extends Component {
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
+                                style={styles.textInput}
                             />
                             {this._isNameInvalid() &&
                                 <Text style={styles.validationText}>
@@ -307,6 +315,7 @@ export default class ServiceDetails extends Component {
                                 placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
+                                style={styles.textInputMultiline}
                             />
                             {this._isCommentInvalid() &&
                                 <Text style={styles.validationText}>

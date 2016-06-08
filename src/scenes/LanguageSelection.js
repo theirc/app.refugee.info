@@ -75,7 +75,7 @@ class LanguageSelection extends Component {
         return (
             <Drawer theme={theme} style={styles.container}>
                 <Image
-                    resizeMode={Image.resizeMode.stretch}
+                    resizeMode={Image.resizeMode.cover}
                     source={require('../assets/earthsmall.png')}
                     style={styles.icon}
                 />
@@ -111,8 +111,8 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     icon: {
-        flex: 0.33,
-        width: 360,
+        flex: 1,
+        width: 375,
         height: 185
     }
 });

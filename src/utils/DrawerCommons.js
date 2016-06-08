@@ -1,5 +1,5 @@
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 import { Drawer } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
@@ -67,7 +67,12 @@ export default class DrawerCommons {
 
         navigator.to(path, name, props);
         dispatch({type: 'CHANGE_ROUTE', payload: path});
-        drawer.closeDrawer();
+        if (Platform.OS === 'ios'){
+            this.component.context.drawer.close()
+        }
+        else{
+            drawer.closeDrawer();
+        }
     };
 
     renderLanguageSection() {

@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import { PropTypes } from 'react-native';
+import React, { Component, PropTypes } from 'react';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
