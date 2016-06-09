@@ -9,7 +9,8 @@ import {
     View,
     Linking,
     TextInput,
-    Modal
+    Modal,
+    Platform
 } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
@@ -210,6 +211,9 @@ export default class ServiceDetails extends Component {
 
     getDirections(lat, long) {
         let location = `${lat},${long}`;
+        if (Platform.OS = 'ios'){
+            Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
+        }
         Linking.openURL(`geo:${location}?q=${location}`);
     }
 
