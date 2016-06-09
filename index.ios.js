@@ -4,7 +4,8 @@ import {
     Text,
     View,
     Navigator,
-    StatusBar
+    StatusBar,
+    AsyncStorage
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './src/scenes/Navigation';
@@ -53,10 +54,50 @@ class RefugeeInfoApp extends Component {
         });
     };
 
+    componentDidMount = () => {
+        AsyncStorage.getItem("theme").then((value) => {
+            this.setState({"theme": value}
+            );
+        }).done();
+    };
+
     setNavigator = (navigator) => {
         this.setState({
             navigator: new Navigate(navigator, store)
         });
+    };
+    getDrawerTheme = (theme) => {
+        if (theme=='light'){
+        return {
+            main: {
+                paddingLeft: 3,
+                borderTopWidth: 20,
+                borderTopColor: '#1976D2',
+                backgroundColor: '#F5F5F5'
+            },
+            drawer: {
+                backgroundColor: '#ffffff',
+                shadowOpacity: 0.8,
+                shadowRadius: 3,
+                paddingTop: 20,
+                paddingLeft: 5
+            }
+        }}
+        else return {
+            main: {
+                paddingLeft: 3,
+                borderTopWidth: 20,
+                borderTopColor: '#000000',
+                backgroundColor: '#F5F5F5'
+            },
+            drawer: {
+                backgroundColor: '#333333',
+                shadowOpacity: 0.8,
+                shadowRadius: 3,
+                paddingTop: 20,
+                paddingLeft: 5
+            }
+        }
     };
 
     render() {
@@ -72,21 +113,7 @@ class RefugeeInfoApp extends Component {
                 acceptTap={true}
                 content={navView}
                 tapToClose={true}
-                styles={{
-                    main: {
-                        paddingLeft: 3, 
-                        borderTopWidth: 20, 
-                        borderTopColor: '#1976D2', 
-                        backgroundColor: '#F5F5F5'
-                    },
-                    drawer: {
-                        backgroundColor: '#ffffff',
-                        shadowOpacity: 0.8,
-                        shadowRadius: 3,
-                        paddingTop: 20,
-                        paddingLeft: 5
-                    }
-                }}
+                styles={this.getDrawerTheme(this.state.theme)}
                 onOpen={() => {
                     this.setState({drawerOpen: true})
                 }}

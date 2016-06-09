@@ -20,7 +20,6 @@ class Navigation extends Component {
     
     render() {
         let {theme, route} = this.props;
-
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }

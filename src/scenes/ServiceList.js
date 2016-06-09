@@ -39,6 +39,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         textAlignVertical: 'center',
         padding: 10
+    },
+    textInput: {
+        height: 48,
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 10,
+        marginRight: 10
     }
 });
 
@@ -163,6 +170,7 @@ export default class ServiceList extends Component {
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
+                    style={styles.textInput}
                 />
                 <Divider/>
             </View>
