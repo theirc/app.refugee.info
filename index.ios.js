@@ -3,7 +3,8 @@ import {
     StyleSheet,
     Text,
     View,
-    Navigator
+    Navigator,
+    StatusBar
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './src/scenes/Navigation';
@@ -99,6 +100,9 @@ class RefugeeInfoApp extends Component {
                 closedDrawerOffset={() => -3}
                 panOpenMask={0.2}
             >
+                <StatusBar
+                    barStyle={'light-content'}
+                />
                 {!drawer &&
                 <Navigator
                     configureScene={() => {
