@@ -17,13 +17,12 @@ class Navigation extends Component {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
     }
-    
+
     render() {
         let {theme, route} = this.props;
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
-
         let countryId = (this.props.region) ? this.props.region.country.id : null;
         return (
             <Drawer theme={theme}>

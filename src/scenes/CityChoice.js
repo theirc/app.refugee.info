@@ -8,6 +8,7 @@ import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 
+const styles = require('../styles');
 
 class CityChoice extends Component {
 
@@ -53,17 +54,6 @@ class CityChoice extends Component {
         });
     }
 
-    renderLoadingView() {
-        return (
-            <View style={styles.container}>
-                <Spinner
-                    overlayColor="#EEE"
-                    visible
-                />
-            </View>
-        );
-    }
-
     async _onPress(city) {
         const { dispatch } = this.props;
 
@@ -76,37 +66,23 @@ class CityChoice extends Component {
     }
 
     render() {
-        if (this.state.loaded) {
             return (
                 <View style={styles.container}>
                     <Image
-                        resizeMode={Image.resizeMode.contain}
+                        resizeMode={Image.resizeMode.cover}
                         source={require('../assets/earthsmall.png')}
-                        style={styles.icon}
+                        style={styles.logo}
                     />
-                    <LocationListView
-                        header={I18n.t('SELECT_LOCATION')}
-                        onPress={(rowData) => this._onPress(rowData)}
-                        rows={this.state.cities}
-                    />
+                    <View style={styles.containerBelowLogo}>
+                        <LocationListView
+                            header={I18n.t('SELECT_LOCATION')}
+                            onPress={(rowData) => this._onPress(rowData)}
+                            rows={this.state.cities}
+                        />
+                    </View>
                 </View>
             );
-        } else {
-            return this.renderLoadingView();
-        }
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    icon: {
-        flex: 0.33,
-        height: null,
-        width: null
-    }
-});
 
 export default connect()(CityChoice);

@@ -3,6 +3,8 @@ import {View, AsyncStorage} from 'react-native';
 import WebView from '../nativeComponents/android/ExtendedWebView';
 import { wrapHtmlContent } from '../utils/htmlUtils'
 
+const styles = require('../styles');
+
 export default class GeneralInformationDetails extends Component {
 
     static propTypes = {
@@ -36,10 +38,9 @@ export default class GeneralInformationDetails extends Component {
           html: wrapHtmlContent(this.props.section, this.state.languageCode)
         };
         return (
-            <View style={{height: 600}}>
+            <View style={styles.container}>
                 <WebView
                     source={source}
-                    style={{marginBottom: 50}}
                 />
             </View>
         );

@@ -1,13 +1,14 @@
-import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, Image, StyleSheet, View } from 'react-native';
+import React, {Component, PropTypes} from 'react';
+import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
 
 import Spinner from 'react-native-loading-spinner-overlay';
-import { connect } from 'react-redux';
-import { Drawer, Button } from 'react-native-material-design';
+import {connect} from 'react-redux';
+import {Drawer, Button} from 'react-native-material-design';
 
 import DrawerCommons from '../utils/DrawerCommons';
 import I18n from '../constants/Messages';
 
+var styles = require('../styles');
 
 class LanguageSelection extends Component {
 
@@ -67,28 +68,29 @@ class LanguageSelection extends Component {
     }
 
     render() {
-        if (!this.state.loaded) {
-            return LanguageSelection.renderLoadingView();
-        }
         let {theme} = this.props;
 
         return (
-            <Drawer theme={theme} style={styles.container}>
+            <View style={styles.container}>
                 <Image
                     resizeMode={Image.resizeMode.cover}
                     source={require('../assets/earthsmall.png')}
-                    style={styles.icon}
+                    style={styles.logo}
                 />
-                {this.drawerCommons.renderLanguageSection()}
-                {this.drawerCommons.renderThemeSection()}
-                <View style={styles.buttonContainer}>
-                    <Button
-                        onPress={() => this.onPress()}
-                        raised
-                        text={I18n.t('SELECT')}
-                    />
+                <View style={styles.containerBelowLogo}>
+                    <Drawer theme={theme}>
+                        {this.drawerCommons.renderLanguageSection()}
+                        {this.drawerCommons.renderThemeSection()}
+                    </Drawer>
+                    <View>
+                        <Button
+                            onPress={() => this.onPress()}
+                            raised
+                            text={I18n.t('SELECT')}
+                        />
+                    </View>
                 </View>
-            </Drawer>
+            </View>
         );
     }
 }
@@ -100,21 +102,5 @@ const mapStateToProps = (state) => {
         theme: state.theme.theme
     };
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    icon: {
-        flex: 1,
-        width: 375,
-        height: 185
-    }
-});
 
 export default connect(mapStateToProps)(LanguageSelection);

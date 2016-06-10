@@ -6,6 +6,7 @@ import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
 
+const styles = require('../styles');
 
 export default class LocationListView extends Component {
 
@@ -65,11 +66,9 @@ export default class LocationListView extends Component {
                         {image &&
                         <Image
                             source={image}
-                            style={styles.image}
+                            style={styles.countryFlag}
                         />}
-                        <Text style={[styles.buttonText, buttonIsSelected?
-                                                            styles.buttonTextSelected : '']}
-                        >
+                        <Text style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}>
                             {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
                         </Text>
                     </View>
@@ -87,14 +86,21 @@ export default class LocationListView extends Component {
 
     render() {
         const primary = this.props.primary;
-        if (this.props.rows.length === 0) {
+        if (!this.props.rows.length) {
             return (
-                <View style={styles.noLocationsContainer}>
-                    <Text
-                        style={styles.noLocationsText}
-                    >
-                            There are no locations
-                    </Text>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>Loading locations, please wait...</Text>
+                    </View>
+                </View>
+            );
+        }
+        else if (this.props.rows.length === 0) {
+            return (
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>No locations found!</Text>
+                    </View>
                 </View>
             );
         } else {
@@ -107,13 +113,14 @@ export default class LocationListView extends Component {
                         renderRow={(rowData) => this.renderRow(rowData)}
                         style={styles.listViewContainer}
                     />
-                            <Button
-                                disabled={this.state.selected === null}
-                                onPress={() => this.props.onPress(this.state.selected)}
-                                primary={primary}
-                                raised
-                                text={I18n.t('SELECT')}
-                            />
+                    <Button
+                        disabled={this.state.selected === null}
+                        onPress={() => this.props.onPress(this.state.selected)}
+                        primary={primary}
+                        raised
+                        style={styles.selectButton}
+                        text={I18n.t('SELECT')}
+                    />
                  </View>
             );
         }
@@ -129,74 +136,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(LocationListView);
-
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 0.67,
-        flexDirection: 'column',
-        backgroundColor: '#F5F5F5'
-    },
-    noLocationsContainer: {
-        flex: 0.67,
-        flexDirection: 'column',
-        backgroundColor: '#F5F5F5'
-    },
-    listViewContainer: {
-        flex: 0.88,
-        flexDirection: 'column'
-    },
-    header: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-        padding: 15
-    },
-    headerText: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-        fontWeight: 'bold',
-        fontSize: 15,
-        color: '#313131'
-    },
-    noLocationsText: {
-        flex: 1,
-        fontWeight: 'bold',
-        fontSize: 15,
-        color: '#313131',
-        textAlign: 'center',
-        marginTop: 12
-    },
-    buttonText: {
-        fontWeight: 'bold',
-        color: '#555556'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#F5F5F5'
-    },
-    buttonContainerSelected: {
-        backgroundColor: '#E1E0E0'
-    },
-    buttonTextSelected: {
-        color: '#313131'
-    },
-    icon: {
-        justifyContent: 'flex-end'
-    },
-    rowWrapper: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    rowHeader: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    image: {
-        marginRight: 5
-    }
-});

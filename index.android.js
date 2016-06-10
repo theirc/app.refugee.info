@@ -22,6 +22,8 @@ import { fetchRegionFromStorage } from './src/actions/region';
 
 store.dispatch(fetchRegionFromStorage());
 
+var styles = require('./src/styles');
+
 class RefugeeInfoApp extends Component {
 
     static childContextTypes = {
@@ -106,12 +108,5 @@ class RefugeeInfoApp extends Component {
 
     }
 }
-
-const styles = StyleSheet.create({
-    scene: {
-        flex: 1,
-        marginTop: 56
-    }
-});
 
 AppRegistry.registerComponent('RefugeeInfoApp', () => RefugeeInfoApp);

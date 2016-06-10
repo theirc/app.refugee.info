@@ -1,11 +1,10 @@
 import {
     AppRegistry,
-    StyleSheet,
     Text,
     View,
     Navigator,
     StatusBar,
-    AsyncStorage
+    AsyncStorage,
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './src/scenes/Navigation';
@@ -18,26 +17,30 @@ import { fetchRegionFromStorage } from './src/actions/region';
 
 store.dispatch(fetchRegionFromStorage());
 
+const styles = require('./src/styles');
 
 class RefugeeInfoApp extends Component {
 
     static childContextTypes = {
         drawer: React.PropTypes.object,
-        navigator: React.PropTypes.object
+        navigator: React.PropTypes.object,
+        theme: React.PropTypes.oneOf(['light', 'dark'])
     };
 
     constructor(props) {
         super(props);
         this.state = {
             drawer: null,
-            navigator: null
+            navigator: null,
+            theme: 'light'
         };
     }
 
     getChildContext = () => {
         return {
             drawer: this.state.drawer,
-            navigator: this.state.navigator
+            navigator: this.state.navigator,
+            theme: this.state.theme
         };
     };
 
@@ -56,8 +59,7 @@ class RefugeeInfoApp extends Component {
 
     componentDidMount = () => {
         AsyncStorage.getItem("theme").then((value) => {
-            this.setState({"theme": value}
-            );
+            this.setState({"theme": value});
         }).done();
     };
 
@@ -66,42 +68,12 @@ class RefugeeInfoApp extends Component {
             navigator: new Navigate(navigator, store)
         });
     };
-    getDrawerTheme = (theme) => {
-        if (theme=='light'){
-        return {
-            main: {
-                paddingLeft: 3,
-                borderTopWidth: 20,
-                borderTopColor: '#1976D2',
-                backgroundColor: '#F5F5F5'
-            },
-            drawer: {
-                backgroundColor: '#ffffff',
-                shadowOpacity: 0.8,
-                shadowRadius: 3,
-                paddingTop: 20,
-                paddingLeft: 5
-            }
-        }}
-        else return {
-            main: {
-                paddingLeft: 3,
-                borderTopWidth: 20,
-                borderTopColor: '#000000',
-                backgroundColor: '#F5F5F5'
-            },
-            drawer: {
-                backgroundColor: '#333333',
-                shadowOpacity: 0.8,
-                shadowRadius: 3,
-                paddingTop: 20,
-                paddingLeft: 5
-            }
-        }
+    
+    setTheme = (theme) => {
+        this.setState({'theme': theme});
     };
 
     render() {
-        const navView = React.createElement(Navigation);
         const { drawer, navigator } = this.state;
         return (
         <Provider store={store}>
@@ -111,9 +83,24 @@ class RefugeeInfoApp extends Component {
                 }}
                 type="overlay"
                 acceptTap={true}
-                content={navView}
+                content={
+                    <Navigation />
+                }
                 tapToClose={true}
-                styles={this.getDrawerTheme(this.state.theme)}
+                styles={{
+                main: {
+                    paddingLeft: 3,
+                    borderTopWidth: 20,
+                    borderTopColor: '#1976D2',
+                    backgroundColor: '#F5F5F5'
+                },
+                drawer: {
+                    backgroundColor: '#ffffff',
+                    shadowOpacity: 0.8,
+                    shadowRadius: 3,
+                    paddingTop: 20,
+                    paddingLeft: 5
+                }}}
                 onOpen={() => {
                     this.setState({drawerOpen: true})
                 }}
@@ -143,7 +130,7 @@ class RefugeeInfoApp extends Component {
                             return (
                                 <View
                                     showsVerticalScrollIndicator={true}
-                                    style={styles.mainView}
+                                    style={styles.scene}
                                 >
                                     <route.component
                                      path={route.path}
@@ -161,12 +148,5 @@ class RefugeeInfoApp extends Component {
         )
     }
 }
-
-const styles = StyleSheet.create({
-    mainView: {
-        paddingTop: 56,
-        flex: 1
-    }
-});
 
 AppRegistry.registerComponent('RefugeeInfoApp', () => RefugeeInfoApp);

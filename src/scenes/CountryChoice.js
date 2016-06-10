@@ -9,6 +9,8 @@ import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 
+const styles = require('../styles');
+
 export default class CountryChoice extends Component {
 
     static contextTypes = {
@@ -85,26 +87,15 @@ export default class CountryChoice extends Component {
         navigator.forward(null, '', {countryId: rowData.id}, this.state);
     }
 
-    renderLoadingView() {
+    render() {
         return (
             <View style={styles.container}>
-                <Spinner
-                    overlayColor="#EEE"
-                    visible
+                <Image
+                    resizeMode={Image.resizeMode.cover}
+                    source={require('../assets/earthsmall.png')}
+                    style={styles.logo}
                 />
-            </View>
-        );
-    }
-
-    render() {
-        if (this.state.loaded) {
-            return (
-                <View style={styles.container}>
-                    <Image
-                        resizeMode={Image.resizeMode.contain}
-                        source={require('../assets/earthsmall.png')}
-                        style={styles.icon}
-                    />
+                <View style={styles.containerBelowLogo}>
                     <Button
                         onPress={() => this.detectLocation()}
                         raised
@@ -117,23 +108,9 @@ export default class CountryChoice extends Component {
                         rows={this.state.locations}
                     />
                 </View>
-            );
-        } else {
-            return this.renderLoadingView();
-        }
+            </View>
+        );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    icon: {
-        flex: 0.33,
-        height: null,
-        width: null
-    }
-});
 
 export default connect()(CountryChoice);

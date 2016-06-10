@@ -13,35 +13,13 @@ import ApiClient from '../utils/ApiClient';
 
 const RADIUS = 10;
 
-let styles = StyleSheet.create({
-    container: {
-        flex: 1
-    },
-    map: {
-        flex: 1
-    },
-    icon: {
-        width: 32,
-        height: 32
-    }
-});
+const styles = require('../styles');
 
 export default class ServiceMap extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };
-
-    static renderLoadingView() {
-        return (
-            <View style={{ flex: 1 }}>
-                <Spinner
-                    overlayColor="#EEE"
-                    visible
-                />
-            </View>
-        );
-    }
 
     static getInitialRegion(markers) {
         if (markers.length == 0) {
@@ -155,15 +133,12 @@ export default class ServiceMap extends Component {
     }
 
     render() {
-        if (!this.state.loaded) {
-            return ServiceMap.renderLoadingView();
-        }
         return (
             <View style={styles.container}>
                 <MapView
                     onRegionChangeComplete={(region) => this.onRegionChange(region)}
                     region={this.state.region}
-                    style={styles.map}
+                    style={styles.flex}
                 >
                     {this.state.markers.map((marker, i) => (
                         <MapView.Marker
@@ -181,7 +156,7 @@ export default class ServiceMap extends Component {
                                     <Image
                                         onLoadEnd={() => this.onLoadEnd(marker.icon_url)}
                                         source={{uri: marker.icon_url}}
-                                        style={styles.icon}
+                                        style={styles.mapIcon}
                                     />
                                 </View>
                             }

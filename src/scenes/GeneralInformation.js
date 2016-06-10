@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import LoadingView from '../components/LoadingView';
 import ApiClient from '../utils/ApiClient';
 
+const styles = require('../styles');
 
 export default class GeneralInformation extends Component {
 
@@ -86,15 +87,15 @@ export default class GeneralInformation extends Component {
                 theme={theme}
                 raised={true}
                 text={rowData.title}
+                style={{
+                    buttonStyle: {height: 100}
+                }}
                 onPress={() => this.onClick(rowData.title, rowData.section)}
             />
         );
     }
 
     render() {
-        if (!this.state.loaded) {
-            return <LoadingView />;
-        }
         return (
             <View style={styles.container}>
                 <ListView
@@ -120,27 +121,3 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(GeneralInformation);
 
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    listViewContainer: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#EEE'
-    },
-    textInput: {
-        height: 48,
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 10,
-        marginRight: 10
-    }
-});

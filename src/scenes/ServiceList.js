@@ -19,35 +19,7 @@ import MapButton from '../components/MapButton';
 import { connect } from 'react-redux';
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    listViewContainer: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15
-    },
-    header: {
-        flex: 0,
-        flexDirection: 'column',
-        textAlign: 'center',
-        textAlignVertical: 'center',
-        padding: 10
-    },
-    textInput: {
-        height: 48,
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 10,
-        marginRight: 10
-    }
-});
+const styles = require('../styles');
 
 export default class ServiceList extends Component {
 
@@ -58,17 +30,6 @@ export default class ServiceList extends Component {
     static propTypes = {
         savedState: React.PropTypes.object //eslint-disable-line react/forbid-prop-types
     };
-
-    static renderLoadingView() {
-        return (
-            <View style={{ flex: 1 }}>
-                <Spinner
-                    overlayColor="#EEE"
-                    visible
-                />
-            </View>
-        );
-    }
 
     constructor(props) {
         super(props);
@@ -85,7 +46,6 @@ export default class ServiceList extends Component {
             };
         }
         this.serviceCommons = new ServiceCommons();
-
     }
 
 
@@ -165,7 +125,9 @@ export default class ServiceList extends Component {
     renderHeader() {
         return (
             <View>
-                <Text style={styles.header}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
+                </View>
                 <Divider/>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
@@ -178,11 +140,21 @@ export default class ServiceList extends Component {
     }
 
     render() {
-        if (!this.state.loaded) {
-            return ServiceList.renderLoadingView();
-        }
-        else if (!this.state.region) {
-            return <Text>{I18n.t('CHOOSE_REGION')}</Text>;
+        if (!this.state.region) {
+            return (
+                <View>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>Loading services...</Text>
+                    </View>
+                    <Divider/>
+                    <TextInput
+                        onChangeText={(text) => this._onChangeText(text)}
+                        placeholder={I18n.t('SEARCH')}
+                        style={styles.textInput}
+                    />
+                    <Divider/>
+                </View>
+            )
         }
         return (
             <View style={styles.container}>
