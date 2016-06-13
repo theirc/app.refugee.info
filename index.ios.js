@@ -90,7 +90,7 @@ class RefugeeInfoApp extends Component {
                 panThreshold={0.08}
                 openDrawerOffset={0.2}
                 closedDrawerOffset={() => -3}
-                panOpenMask={0.2}
+                panOpenMask={0.02}
             >
                 <StatusBar
                     barStyle={'light-content'}

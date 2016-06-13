@@ -6,7 +6,7 @@ export default () => {
     return (
         <View>
             <Spinner
-                overlayColor={'rgba(0,0,0,0.0)'}
+                overlayColor={'rgba(0,0,0,0.2)'}
                 color="black"
                 visible
             />

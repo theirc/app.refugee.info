@@ -1,12 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
-
-import Spinner from 'react-native-loading-spinner-overlay';
 import {connect} from 'react-redux';
-import {Drawer, Button} from 'react-native-material-design';
-import LoadingView from '../components/LoadingView';
 import DrawerCommons from '../utils/DrawerCommons';
-import I18n from '../constants/Messages';
 
 var styles = require('../styles');
 
@@ -20,9 +15,6 @@ class Initial extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            loaded: false
-        };
         this.drawerCommons = new DrawerCommons(this);
     }
 
@@ -37,7 +29,6 @@ class Initial extends Component {
         const color = await AsyncStorage.getItem('color');
         const location = await AsyncStorage.getItem('region');
 
-        this.setState({'loaded': true});
         if (JSON.parse(isLanguageSelected)) {
             if (code) {
                 this.drawerCommons.changeLanguage(code, false);
@@ -50,13 +41,12 @@ class Initial extends Component {
                 this.context.navigator.to('info');
             }
         }
-        this.context.navigator.to('languageSelection');
+        else {
+            this.context.navigator.to('languageSelection');
+        }
     }
 
     render() {
-        
-        let {theme} = this.props;
-
         return (
             <View />
         );
