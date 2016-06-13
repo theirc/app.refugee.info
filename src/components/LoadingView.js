@@ -4,9 +4,10 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 export default () => {
     return (
-        <View style={{ flex: 1 }}>
+        <View>
             <Spinner
-                overlayColor="#EEE"
+                overlayColor={'rgba(0,0,0,0.0)'}
+                color="black"
                 visible
             />
         </View>

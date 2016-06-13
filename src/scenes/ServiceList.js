@@ -9,7 +9,6 @@ import {
     AsyncStorage,
     TextInput
 } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { Divider } from 'react-native-material-design';
 
 import I18n from '../constants/Messages';
@@ -17,6 +16,7 @@ import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
 import { connect } from 'react-redux';
+import LoadingView from '../components/LoadingView';
 
 
 const styles = require('../styles');
@@ -153,6 +153,7 @@ export default class ServiceList extends Component {
                         style={styles.textInput}
                     />
                     <Divider/>
+                    <LoadingView />
                 </View>
             )
         }

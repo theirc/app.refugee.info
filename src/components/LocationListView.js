@@ -5,6 +5,7 @@ import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
+import LoadingView from '../components/LoadingView';
 
 const styles = require('../styles');
 
@@ -92,10 +93,12 @@ export default class LocationListView extends Component {
                     <View style={styles.header}>
                         <Text style={styles.headerText}>Loading locations, please wait...</Text>
                     </View>
+                    <LoadingView />
                 </View>
             );
         }
         else if (this.props.rows.length === 0) {
+            //TODO never happening
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>

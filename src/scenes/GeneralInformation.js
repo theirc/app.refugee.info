@@ -5,7 +5,6 @@ import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
 
-import LoadingView from '../components/LoadingView';
 import ApiClient from '../utils/ApiClient';
 
 const styles = require('../styles');

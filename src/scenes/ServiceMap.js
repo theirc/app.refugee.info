@@ -7,7 +7,6 @@ import {
     Image,
 } from 'react-native';
 import MapView from 'react-native-maps';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import ApiClient from '../utils/ApiClient';
 
