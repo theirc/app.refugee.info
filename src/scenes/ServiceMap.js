@@ -10,7 +10,7 @@ import MapView from 'react-native-maps';
 
 import ApiClient from '../utils/ApiClient';
 
-const RADIUS = 10;
+const RADIUS_MULTIPLIER = 1.1;
 
 const styles = require('../styles');
 
@@ -32,8 +32,8 @@ export default class ServiceMap extends Component {
         return {
             latitude: (minLat + maxLat) / 2,
             longitude: (minLong + maxLong) / 2,
-            latitudeDelta: maxLat - minLat + RADIUS,
-            longitudeDelta: maxLong - minLong + RADIUS
+            latitudeDelta: (maxLat - minLat) * RADIUS_MULTIPLIER,
+            longitudeDelta: (maxLong - minLong) * RADIUS_MULTIPLIER
         };
     }
 
