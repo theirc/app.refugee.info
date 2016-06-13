@@ -90,16 +90,12 @@ class RefugeeInfoApp extends Component {
                 styles={{
                 main: {
                     paddingLeft: 3,
-                    borderTopWidth: 20,
-                    borderTopColor: '#1976D2',
                     backgroundColor: '#F5F5F5'
                 },
                 drawer: {
                     backgroundColor: '#ffffff',
                     shadowOpacity: 0.8,
-                    shadowRadius: 3,
-                    paddingTop: 20,
-                    paddingLeft: 5
+                    shadowRadius: 3
                 }}}
                 onOpen={() => {
                     this.setState({drawerOpen: true})

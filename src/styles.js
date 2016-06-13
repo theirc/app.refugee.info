@@ -2,18 +2,24 @@
 
 var React = require('react-native');
 
+import { Platform } from 'react-native';
+
 var styles = React.StyleSheet.create({
     
     flex: {
         flex: 1
     },
     scene: {
-        paddingTop: 56,
+        paddingTop: (Platform.OS === 'ios') ? 76 : 56,
         flex: 1
     },
     container: {
         flex: 1,
         flexDirection: 'column'
+    },
+    materialToolbar: {
+        height: (Platform.OS === 'ios') ? 76 : 56,
+        paddingTop: (Platform.OS === 'ios') ? 20 : 0
     },
     containerBelowLogo: {
         flex: 0.67,
@@ -24,7 +30,6 @@ var styles = React.StyleSheet.create({
         height: null,
         width: null
     },
-
     listViewContainer: {
         flex: 0.85,
         flexDirection: 'column'

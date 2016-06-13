@@ -3,6 +3,8 @@ import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
 
+const styles = require('../styles');
+
 export default class Toolbar extends Component {
 
     static contextTypes = {
@@ -41,6 +43,7 @@ export default class Toolbar extends Component {
                     width: 189,
                     height: 56
                 }}
+                style={styles.materialToolbar}
                 testID="test-id-toolbar"
                 title={title}
             />
