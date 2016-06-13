@@ -87,7 +87,17 @@ export default class LocationListView extends Component {
 
     render() {
         const primary = this.props.primary;
-        if (!this.props.rows.length) {
+
+        if (this.props.rows.length == 0 && this.props.loaded) {
+            return (
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>No locations found</Text>
+                    </View>
+                </View>
+            );
+        }
+        else if (!this.props.rows.length && !this.props.loaded) {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
@@ -97,16 +107,7 @@ export default class LocationListView extends Component {
                 </View>
             );
         }
-        else if (this.props.rows.length === 0) {
-            //TODO never happening
-            return (
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <Text style={styles.headerText}>No locations found!</Text>
-                    </View>
-                </View>
-            );
-        } else {
+        else {
             return (
                 <View style={styles.container}>
                     <ListView

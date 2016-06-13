@@ -57,7 +57,7 @@ export default class DrawerCommons {
         if (reload) {
             AsyncStorage.setItem('theme', theme);
             AsyncStorage.setItem('color', color);
-            this.changeScene('languageSelection');
+            this.changeScene('initial');
         }
     }
 

@@ -66,22 +66,23 @@ class CityChoice extends Component {
     }
 
     render() {
-            return (
-                <View style={styles.container}>
-                    <Image
-                        resizeMode={Image.resizeMode.cover}
-                        source={require('../assets/earthsmall.png')}
-                        style={styles.logo}
+        return (
+            <View style={styles.container}>
+                <Image
+                    resizeMode={Image.resizeMode.cover}
+                    source={require('../assets/earthsmall.png')}
+                    style={styles.logo}
+                />
+                <View style={styles.containerBelowLogo}>
+                    <LocationListView
+                        loaded={this.state.loaded}
+                        header={I18n.t('SELECT_LOCATION')}
+                        onPress={(rowData) => this._onPress(rowData)}
+                        rows={this.state.cities}
                     />
-                    <View style={styles.containerBelowLogo}>
-                        <LocationListView
-                            header={I18n.t('SELECT_LOCATION')}
-                            onPress={(rowData) => this._onPress(rowData)}
-                            rows={this.state.cities}
-                        />
-                    </View>
                 </View>
-            );
+            </View>
+        );
     }
 }
 

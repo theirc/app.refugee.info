@@ -31,16 +31,14 @@ class RefugeeInfoApp extends Component {
         super(props);
         this.state = {
             drawer: null,
-            navigator: null,
-            theme: 'light'
+            navigator: null
         };
     }
 
     getChildContext = () => {
         return {
             drawer: this.state.drawer,
-            navigator: this.state.navigator,
-            theme: this.state.theme
+            navigator: this.state.navigator
         };
     };
 
@@ -51,26 +49,10 @@ class RefugeeInfoApp extends Component {
         this.drawer.open()
     };
 
-    setDrawer = (drawer) => {
-        this.setState({
-            drawer
-        });
-    };
-
-    componentDidMount = () => {
-        AsyncStorage.getItem("theme").then((value) => {
-            this.setState({"theme": value});
-        }).done();
-    };
-
     setNavigator = (navigator) => {
         this.setState({
             navigator: new Navigate(navigator, store)
         });
-    };
-    
-    setTheme = (theme) => {
-        this.setState({'theme': theme});
     };
 
     render() {
