@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { PropTypes } from 'react-native';
+import React, { Component, PropTypes } from 'react';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
+import styles from '../styles';
 
 export default class Toolbar extends Component {
 
@@ -42,6 +42,7 @@ export default class Toolbar extends Component {
                     width: 189,
                     height: 56
                 }}
+                style={styles.materialToolbar}
                 testID="test-id-toolbar"
                 title={title}
             />

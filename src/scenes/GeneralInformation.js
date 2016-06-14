@@ -1,13 +1,11 @@
-import React, { Component } from 'react';
-import {PropTypes, View, AsyncStorage, StyleSheet, ListView, TextInput} from 'react-native';
+import React, { Component, PropTypes } from 'react';
+import { View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput, ScrollView } from 'react-native';
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
-
-import LoadingView from '../components/LoadingView';
 import ApiClient from '../utils/ApiClient';
-
+import styles from '../styles';
 
 export default class GeneralInformation extends Component {
 
@@ -72,6 +70,8 @@ export default class GeneralInformation extends Component {
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
+                    style={styles.textInput}
+                    returnKeyType={'search'}
                 />
             </View>
         );
@@ -85,15 +85,15 @@ export default class GeneralInformation extends Component {
                 theme={theme}
                 raised={true}
                 text={rowData.title}
+                style={{
+                    buttonStyle: {height: 100}
+                }}
                 onPress={() => this.onClick(rowData.title, rowData.section)}
             />
         );
     }
 
     render() {
-        if (!this.state.loaded) {
-            return <LoadingView />;
-        }
         return (
             <View style={styles.container}>
                 <ListView
@@ -119,20 +119,3 @@ const mapStateToProps = (state) => {
 
 export default connect(mapStateToProps)(GeneralInformation);
 
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    listViewContainer: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#EEE'
-    }
-});

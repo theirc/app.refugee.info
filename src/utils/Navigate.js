@@ -177,7 +177,7 @@ export default class Navigate {
 					this.previousRoute = this.currentRoute;
 				}
 				this.currentRoute = route;
-				this.navigator.replace(route);
+				this.navigator.push(route);
 				this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});
 			}
 		}
@@ -189,7 +189,7 @@ export default class Navigate {
 	* @param props
 	*/
 	back = (title, props) => {
-		const current = this.navigator.getCurrentRoutes()[0].path;
+		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length-1].path;
 		const path = current.substr(0, current.lastIndexOf('.'));
 		const obj = this._getRouteObject(path);
 		const savedInstance = this._recoverInstanceState(path); // TODO
@@ -209,9 +209,8 @@ export default class Navigate {
 				component: obj.component,
 				props
 			};
-
 			this.currentRoute = route;
-			this.navigator.replace(route);
+			this.navigator.pop();
 		}
 	};
 
@@ -223,7 +222,7 @@ export default class Navigate {
 	* @param {Object} savedInstanceState [Optional] Send additional props that'll get bootstrapped onto the route
 	*/
 	forward = (child, title, props, savedInstanceState) => {
-		const current = this.navigator.getCurrentRoutes()[0].path;
+		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length-1].path;
 		const currentObject = this._getRouteObject(current);
 
 		if (!currentObject.children || !Object.keys(currentObject.children).length) {
@@ -249,7 +248,7 @@ export default class Navigate {
 					};
 					this.previousRoute = this.currentRoute;
 					this.currentRoute = route;
-					this.navigator.replace(route);
+					this.navigator.push(route);
 				}
 			} else {
 				if (!!props) {
@@ -266,7 +265,7 @@ export default class Navigate {
 					props
 				};
 				this.currentRoute = route;
-				this.navigator.replace(route);
+				this.navigator.push(route);
 			}
 		}
 	};

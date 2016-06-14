@@ -50,7 +50,9 @@ I18n.translations = {
         SET_COUNTRY: 'Set Country',
         SHARE: 'Share',
         NETWORK_FAILURE: 'Network failure',
-        RETRY: 'Retry'
+        RETRY: 'Retry',
+        LOADING_LOCATIONS: 'Loading locations, please wait...',
+        NO_LOCATIONS_FOUND: 'No locations found'
 
     },
     fr: {

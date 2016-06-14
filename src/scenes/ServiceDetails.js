@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
-    PropTypes,
     ScrollView,
     TouchableHighlight,
     StyleSheet,
@@ -10,106 +9,20 @@ import {
     View,
     Linking,
     TextInput,
-    Modal
+    Modal,
+    Platform
 } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
-
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import { connect } from 'react-redux';
 import Share from 'react-native-share';
+import styles from '../styles';
 
 const RADIUS = 0.01;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#EEE'
-    },
-    feedbackContainer: {
-        marginTop: 10
-    },
-    detailsContainer: {
-        margin: 5
-    },
-    textCenter: {
-        textAlign: 'center',
-        textAlignVertical: 'center'
-    },
-    textRight: {
-        textAlign: 'right'
-    },
-    title: {
-        fontWeight: 'bold'
-    },
-    commentBox: {
-        flexDirection: 'row',
-        flex: 1,
-        marginBottom: 10
-    },
-    commentForm: {
-        marginTop: 5,
-        padding: 5
-    },
-    comment: {
-        flex: 8
-    },
-    commentIcon: {
-        flex: 1,
-        alignSelf: 'center',
-        marginLeft: 15
-    },
-    loading: {
-        justifyContent: 'center',
-        alignSelf: 'center',
-        margin: 10
-    },
-    map: {
-        flex: 1,
-        height: 120
-    },
-    modalContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 20,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
-    },
-    modalInnerContainer: {
-        borderRadius: 10,
-        backgroundColor: '#fff',
-        padding: 20
-    },
-    starContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        margin: 5,
-        marginLeft: 25
-    },
-    flex: {
-        flex: 1
-    },
-    modalButtonContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        marginLeft: 5,
-        marginRight: 10,
-        marginTop: 5
-    },
-    validationText: {
-        color: '#a94442',
-        fontSize: 12,
-        marginTop: -5
-    }
-});
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export default class ServiceDetails extends Component {
@@ -205,7 +118,10 @@ export default class ServiceDetails extends Component {
 
     getDirections(lat, long) {
         let location = `${lat},${long}`;
-        Linking.openURL(`geo:${location}?q=${location}`);
+        if (Platform.OS === 'ios'){
+            return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
+        }
+        return Linking.openURL(`geo:${location}?q=${location}`);
     }
 
     call() {
@@ -215,6 +131,7 @@ export default class ServiceDetails extends Component {
 
     onShareClick() {
         Share.open({
+            share_text: "Refugee Info",
             share_URL: 'http://refugeeinfo.org',
             title: 'Refugee Info'
         },(e) => {
@@ -273,7 +190,7 @@ export default class ServiceDetails extends Component {
         return (
             <View>
                 <Modal
-                    animated={this.state.animated}
+                    animationType={'fade'}
                     onRequestClose={() => this._setModalVisible(false)}
                     transparent={this.state.transparent}
                     visible={this.state.modalVisible}
@@ -286,6 +203,7 @@ export default class ServiceDetails extends Component {
                             <View style={styles.starContainer}>
                                 {rateStars}
                             </View>
+                            <TextInput />
                             <TextInput
                                 onChangeText={
                                     (text) => this.setState({name: text})
@@ -293,6 +211,7 @@ export default class ServiceDetails extends Component {
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
+                                style={styles.textInput}
                             />
                             {this._isNameInvalid() &&
                                 <Text style={styles.validationText}>
@@ -307,6 +226,7 @@ export default class ServiceDetails extends Component {
                                 placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
+                                style={styles.textInputMultiline}
                             />
                             {this._isCommentInvalid() &&
                                 <Text style={styles.validationText}>

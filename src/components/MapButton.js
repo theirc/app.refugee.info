@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, TouchableHighlight, Image } from 'react-native';
+import styles from '../styles';
+
 
 export default class MapButton extends Component {
 
@@ -16,7 +18,7 @@ export default class MapButton extends Component {
         return (
             <TouchableHighlight
                 onPress={() => this.onClick()}
-                style={styles.container}
+                style={styles.floatingActionButton}
                 underlayColor="white"
             >
                 <Image
@@ -27,14 +29,3 @@ export default class MapButton extends Component {
     }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        flex: 1,
-        right: 20,
-        bottom: 20,
-        borderWidth: 1,
-        borderRadius: 50,
-        opacity: 0.7
-    }
-});

@@ -1,9 +1,14 @@
 import I18n from './constants/Messages';
 
 export default {
+    initial: {
+        initialRoute: true,
+        exitOnBackPress: true,
+        title: I18n.t('REFUGEE_INFO'),
+        component: require('./scenes/initial').default
+    },
 
     languageSelection: {
-        initialRoute: true,
         exitOnBackPress: true,
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/LanguageSelection').default
@@ -61,7 +66,7 @@ export default {
             }
         }
     },
-
+    
     networkFailure: {
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/NetworkFailure').default
