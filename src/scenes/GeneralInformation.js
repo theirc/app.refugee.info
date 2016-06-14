@@ -4,10 +4,8 @@ import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
-
 import ApiClient from '../utils/ApiClient';
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class GeneralInformation extends Component {
 
@@ -73,6 +71,7 @@ export default class GeneralInformation extends Component {
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
                     style={styles.textInput}
+                    returnKeyType={'search'}
                 />
             </View>
         );

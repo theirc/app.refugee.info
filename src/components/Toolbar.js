@@ -2,8 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { Toolbar as MaterialToolbar } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class Toolbar extends Component {
 

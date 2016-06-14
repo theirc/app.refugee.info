@@ -3,13 +3,11 @@ import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-
 import LocationListView from '../components/LocationListView';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class CountryChoice extends Component {
 

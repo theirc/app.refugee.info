@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { StyleSheet, TouchableHighlight, Image } from 'react-native';
+import styles from '../styles';
 
-var styles = require('../styles');
 
 export default class MapButton extends Component {
 

@@ -1,11 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-
 import { View, StyleSheet, Text } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
-
 import I18n from '../constants/Messages';
-
+import styles from '../styles';
 
 class NetworkFailure extends Component {
 
@@ -28,7 +26,7 @@ class NetworkFailure extends Component {
     render() {
         const { theme, primary } = this.props;
         return (
-            <View style={styles.container}>
+            <View style={styles.rowHeader}>
                 <View style={styles.horizontalContainer}>
                     <Text style={styles.error}>
                         {I18n.t('NETWORK_FAILURE')}
@@ -45,22 +43,5 @@ class NetworkFailure extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#EEE'
-    },
-    horizontalContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    error: {
-        marginBottom: 5
-    }
-});
 
 export default connect()(NetworkFailure);

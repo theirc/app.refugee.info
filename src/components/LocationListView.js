@@ -1,13 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { View, ListView, StyleSheet, Text, TouchableHighlight, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
-
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
 import LoadingView from '../components/LoadingView';
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class LocationListView extends Component {
 
@@ -88,11 +86,11 @@ export default class LocationListView extends Component {
     render() {
         const primary = this.props.primary;
 
-        if (this.props.rows.length == 0 && this.props.loaded) {
+        if (this.props.rows.length === 0 && this.props.loaded) {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>No locations found</Text>
+                        <Text style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</Text>
                     </View>
                 </View>
             );
@@ -101,9 +99,8 @@ export default class LocationListView extends Component {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>Loading locations, please wait...</Text>
+                        <Text style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</Text>
                     </View>
-                    <LoadingView />
                 </View>
             );
         }

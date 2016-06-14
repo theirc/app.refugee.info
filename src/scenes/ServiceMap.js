@@ -7,12 +7,10 @@ import {
     Image,
 } from 'react-native';
 import MapView from 'react-native-maps';
-
 import ApiClient from '../utils/ApiClient';
+import styles from '../styles';
 
 const RADIUS = 10;
-
-const styles = require('../styles');
 
 export default class ServiceMap extends Component {
 

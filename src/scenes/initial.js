@@ -2,8 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
 import {connect} from 'react-redux';
 import DrawerCommons from '../utils/DrawerCommons';
-
-var styles = require('../styles');
+import styles from '../styles';
 
 class Initial extends Component {
 

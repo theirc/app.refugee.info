@@ -15,17 +15,14 @@ import {
 import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
-
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import { connect } from 'react-redux';
 import Share from 'react-native-share';
+import styles from '../styles';
 
 const RADIUS = 0.01;
-
-const styles = require('../styles');
-
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export default class ServiceDetails extends Component {
@@ -121,10 +118,10 @@ export default class ServiceDetails extends Component {
 
     getDirections(lat, long) {
         let location = `${lat},${long}`;
-        if (Platform.OS = 'ios'){
-            Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
+        if (Platform.OS === 'ios'){
+            return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
         }
-        Linking.openURL(`geo:${location}?q=${location}`);
+        return Linking.openURL(`geo:${location}?q=${location}`);
     }
 
     call() {

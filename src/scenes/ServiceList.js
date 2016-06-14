@@ -10,16 +10,13 @@ import {
     TextInput
 } from 'react-native';
 import { Divider } from 'react-native-material-design';
-
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
 import { connect } from 'react-redux';
 import LoadingView from '../components/LoadingView';
-
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class ServiceList extends Component {
 
@@ -153,7 +150,6 @@ export default class ServiceList extends Component {
                         style={styles.textInput}
                     />
                     <Divider/>
-                    <LoadingView />
                 </View>
             )
         }

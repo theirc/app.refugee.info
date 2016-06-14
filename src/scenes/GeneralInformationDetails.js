@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import {View, AsyncStorage} from 'react-native';
 import WebView from '../nativeComponents/android/ExtendedWebView';
 import { wrapHtmlContent } from '../utils/htmlUtils'
-
-const styles = require('../styles');
+import styles from '../styles';
 
 export default class GeneralInformationDetails extends Component {
 

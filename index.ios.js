@@ -3,8 +3,7 @@ import {
     Text,
     View,
     Navigator,
-    StatusBar,
-    AsyncStorage,
+    StatusBar
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './src/scenes/Navigation';
@@ -14,10 +13,9 @@ import Drawer from 'react-native-drawer'
 import {Provider} from 'react-redux';
 import store from './src/store';
 import { fetchRegionFromStorage } from './src/actions/region';
+import styles from './src/styles';
 
 store.dispatch(fetchRegionFromStorage());
-
-const styles = require('./src/styles');
 
 class RefugeeInfoApp extends Component {
 

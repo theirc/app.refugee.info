@@ -1,10 +1,8 @@
 'use strict';
 
-var React = require('react-native');
+import { Platform, StyleSheet } from 'react-native';
 
-import { Platform } from 'react-native';
-
-var styles = React.StyleSheet.create({
+const styles = StyleSheet.create({
     
     flex: {
         flex: 1
@@ -17,10 +15,19 @@ var styles = React.StyleSheet.create({
         flex: 1,
         flexDirection: 'column'
     },
+    horizontalContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'center'
+    },
+    error: {
+        marginBottom: 5
+    },
     materialToolbar: {
         height: (Platform.OS === 'ios') ? 76 : 56,
         paddingTop: (Platform.OS === 'ios') ? 20 : 0
     },
+    
     containerBelowLogo: {
         flex: 0.67,
         flexDirection: 'column'
@@ -103,7 +110,16 @@ var styles = React.StyleSheet.create({
         width: 32,
         height: 32
     },
-    //
+    iconContainer: {
+        width: 32,
+        marginRight: 10,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    rowContainer: {
+        flex: 1,
+        flexDirection: 'row'
+    },
     feedbackContainer: {
         marginTop: 10
     },
@@ -177,4 +193,4 @@ var styles = React.StyleSheet.create({
     }
 });
 
-module.exports = styles;
+export default styles;

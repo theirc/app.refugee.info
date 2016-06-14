@@ -1,28 +1,19 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
-
 import Navigate from './src/utils/Navigate';
 import { Toolbar } from './src/components';
 import Navigation from './src/scenes/Navigation';
-
 import React, { Component } from 'react';
 import {
     AppRegistry,
     Navigator,
     DrawerLayoutAndroid,
-    StyleSheet,
     View
 } from 'react-native';
 import {Provider} from 'react-redux';
-
 import store from './src/store';
+import styles from './src/styles';
 import { fetchRegionFromStorage } from './src/actions/region';
 
 store.dispatch(fetchRegionFromStorage());
-
-var styles = require('./src/styles');
 
 class RefugeeInfoApp extends Component {
 

@@ -1,14 +1,11 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
-
 import Spinner from 'react-native-loading-spinner-overlay';
 import {connect} from 'react-redux';
 import {Drawer, Button} from 'react-native-material-design';
-
 import DrawerCommons from '../utils/DrawerCommons';
 import I18n from '../constants/Messages';
-
-var styles = require('../styles');
+import styles from '../styles';
 
 class LanguageSelection extends Component {
 
