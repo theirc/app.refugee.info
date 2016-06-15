@@ -11,7 +11,6 @@ I18n.translations = {
         GENERAL_INFO: 'General Information',
         GPS_DISABLED: 'Unable to determine location. Please enable GPS.',
         NETWORK_PROBLEM: 'There is a problem with your Internet connection',
-        LOADING_SERVICES: 'Loading services...',
         CANT_FIND_LOCATION: 'Sorry, we can\'t find your location. Please choose location from the list',
         DETECTING_LOCATION: 'Detecting...',
         DETECT_LOCATION: 'Detect Location',
@@ -52,6 +51,7 @@ I18n.translations = {
         NETWORK_FAILURE: 'Network failure',
         RETRY: 'Retry',
         LOADING_LOCATIONS: 'Loading locations, please wait...',
+        LOADING_SERVICES: 'Loading services, please wait...',
         NO_LOCATIONS_FOUND: 'No locations found'
 
     },

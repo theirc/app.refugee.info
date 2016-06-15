@@ -121,17 +121,19 @@ export default class ServiceList extends Component {
 
     renderHeader() {
         return (
-            <View>
+            <View style={styles.stickyInputContainer}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
                 </View>
-                <Divider/>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
-                    style={styles.textInput}
+                    style={styles.stickyInput}
+                    returnKeyType={'search'}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    clearButtonMode="always"
                 />
-                <Divider/>
             </View>
         );
     }
@@ -139,17 +141,19 @@ export default class ServiceList extends Component {
     render() {
         if (!this.state.region) {
             return (
-                <View>
+                <View style={styles.stickyInputContainer}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>Loading services...</Text>
+                        <Text style={styles.headerText}>{I18n.t('LOADING_SERVICES')}</Text>
                     </View>
-                    <Divider/>
                     <TextInput
                         onChangeText={(text) => this._onChangeText(text)}
                         placeholder={I18n.t('SEARCH')}
-                        style={styles.textInput}
+                        style={styles.stickyInput}
+                        returnKeyType={'search'}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        clearButtonMode="always"
                     />
-                    <Divider/>
                 </View>
             )
         }
@@ -164,9 +168,11 @@ export default class ServiceList extends Component {
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderHeader={() => this.renderHeader()}
+                    renderSectionHeader={() => this.renderHeader()}
                     renderRow={(service) => this.renderRow(service)}
                     style={styles.listViewContainer}
+                    keyboardShouldPersistTaps={true}
+                    keyboardDismissMode="on-drag"
                 />
                 <MapButton />
             </View>

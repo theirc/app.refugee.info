@@ -80,7 +80,7 @@ export default class Navigate {
 	*/
 	_hardwareBackPress = () => {
 		let exitPaths = this.getExitRoutePaths();
-		let currentPath = this.navigator.getCurrentRoutes()[0].path;
+		let currentPath = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
 		if (exitPaths.indexOf(currentPath) > -1){
 			return false;
 		} else {

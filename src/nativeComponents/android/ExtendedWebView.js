@@ -1,6 +1,5 @@
 import React from 'react';
-import {WebView} from 'react-native';
-import requireNativeComponent from 'requireNativeComponent';
+import {WebView, requireNativeComponent} from 'react-native';
 
 requireNativeComponent('RCTExtendedWebView', WebView);
 

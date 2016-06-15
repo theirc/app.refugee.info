@@ -37,12 +37,10 @@ class Initial extends Component {
             }
 
             if (location) {
-                this.context.navigator.to('info');
+                return this.context.navigator.to('info');
             }
         }
-        else {
-            this.context.navigator.to('languageSelection');
-        }
+        return this.context.navigator.to('languageSelection');
     }
 
     render() {

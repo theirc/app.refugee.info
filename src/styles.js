@@ -94,6 +94,24 @@ const styles = StyleSheet.create({
     textInputMultiline: {
         height: 144
     },
+    stickyInput: {
+        height: 40,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 5,
+        marginBottom: 5,
+        backgroundColor: '#ffffff',
+        borderRadius: 2,
+        shadowColor: 'black',
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        paddingLeft: 10,
+        paddingRight: 5
+
+    },
+    stickyInputContainer: {
+        backgroundColor: '#F5F5F5'
+    },
     countryFlag: {
         marginRight: 10
     },
