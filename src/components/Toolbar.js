@@ -23,7 +23,7 @@ export default class Toolbar extends Component {
 
     render() {
         const { navigator } = this.context;
-        const { onIconPress, primary } = this.props;
+        const { onIconPress, primary, region } = this.props;
         let title = require('../assets/RI-logo.png');
         if (navigator && navigator.currentRoute && navigator.currentRoute.title != I18n.t('REFUGEE_INFO')) {
             title = navigator.currentRoute.title;
@@ -31,7 +31,7 @@ export default class Toolbar extends Component {
         return (
             <MaterialToolbar
                 primary={primary}
-                icon={navigator && navigator.isChild ? 'keyboard-backspace' : require('../assets/ic_menu_white_24dp.png')}
+                icon={!region ? null : (navigator && navigator.isChild ? 'keyboard-backspace' : 'menu')}
                 onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
                 rightIconStyle={{
                     margin: 10
@@ -52,7 +52,9 @@ export default class Toolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary
+        primary: state.theme.primary,
+        region: state.region
+        
     };
 };
 
