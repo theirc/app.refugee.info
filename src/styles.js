@@ -218,6 +218,17 @@ const styles = StyleSheet.create({
         color: '#a94442',
         fontSize: 12,
         marginTop: -5
+    },
+    mapPopupContainer: {
+    },
+    mapPopupTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5
+    },
+    mapPopupDescription: {
+        marginTop: 5,
+        fontSize: 12
     }
 });
 
