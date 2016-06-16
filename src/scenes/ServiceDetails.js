@@ -55,6 +55,7 @@ export default class ServiceDetails extends Component {
             modalVisible: false,
             refreshing: false,
             service: this.props.service,
+            isFormDirty: false
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -140,18 +141,18 @@ export default class ServiceDetails extends Component {
     }
 
     postComment() {
-        this._setFormDirty(true);
-        let rating = this.state.rating;
-
-        if (!this._isNameInvalid() && !this._isCommentInvalid() && !!rating) {
-            this.apiClient.postFeedback(this.state.service, this.state.name, rating, this.state.comment).then(
-                (response) => {
-                    this._setModalVisible(false);
-                    this._setLoaded(false);
-                    this.fetchData(update=true);
-                }
-            );
-        }
+        this.setState({isFormDirty: true}, function(){
+            let rating = this.state.rating;
+            if (!this._isNameInvalid() && !this._isCommentInvalid() && !!rating) {
+                this.apiClient.postFeedback(this.state.service, this.state.name, rating, this.state.comment).then(
+                    (response) => {
+                        this._setModalVisible(false);
+                        this._setLoaded(false);
+                        this.fetchData(update=true);
+                    }
+                );
+            }
+        });
     }
 
     renderFeedback(row) {
@@ -184,7 +185,7 @@ export default class ServiceDetails extends Component {
                     this._setRating(i + 1);
                 }}
                 size={24}
-                style={styles.flex}
+                style={styles.starIcon}
             />
         ));
         return (
@@ -192,7 +193,7 @@ export default class ServiceDetails extends Component {
                 <Modal
                     animationType={'fade'}
                     onRequestClose={() => this._setModalVisible(false)}
-                    transparent={this.state.transparent}
+                    transparent={true}
                     visible={this.state.modalVisible}
                 >
                     <View style={[styles.modalContainer]}>
@@ -203,7 +204,6 @@ export default class ServiceDetails extends Component {
                             <View style={styles.starContainer}>
                                 {rateStars}
                             </View>
-                            <TextInput />
                             <TextInput
                                 onChangeText={
                                     (text) => this.setState({name: text})
@@ -211,7 +211,7 @@ export default class ServiceDetails extends Component {
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
-                                style={styles.textInput}
+                                style={styles.textInputModal}
                             />
                             {this._isNameInvalid() &&
                                 <Text style={styles.validationText}>
@@ -256,12 +256,6 @@ export default class ServiceDetails extends Component {
                         </View>
                     </View>
                 </Modal>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    enableEmptySections
-                    renderRow={(row) => this.renderFeedback(row)}
-                    style={styles.feedbackContainer}
-                />
                 <View
                     style={styles.commentForm}
                 >
@@ -272,6 +266,13 @@ export default class ServiceDetails extends Component {
                         {rateStars}
                     </View>
                 </View>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    renderRow={(row) => this.renderFeedback(row)}
+                    style={styles.feedbackContainer}
+                />
+
             </View>
         );
     }

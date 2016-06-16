@@ -92,7 +92,12 @@ const styles = StyleSheet.create({
         marginRight: 10
     },
     textInputMultiline: {
-        height: 144
+        height: 144,
+        fontSize: 16
+    },
+    textInputModal: {
+        margin: 0,
+        height: 48
     },
     stickyInput: {
         height: 40,
@@ -107,7 +112,6 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         paddingLeft: 10,
         paddingRight: 5
-
     },
     stickyInputContainer: {
         backgroundColor: '#F5F5F5'
@@ -194,8 +198,14 @@ const styles = StyleSheet.create({
     starContainer: {
         flex: 1,
         flexDirection: 'row',
-        margin: 5,
-        marginLeft: 25
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: 25,
+        marginRight: 25
+    },
+    starIcon: {
+        flex: 1,
+        textAlign: 'center'
     },
     modalButtonContainer: {
         flex: 1,
