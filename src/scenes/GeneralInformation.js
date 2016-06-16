@@ -66,12 +66,15 @@ export default class GeneralInformation extends Component {
 
     renderHeader() {
         return (
-            <View>
+            <View style={styles.stickyInputContainer}>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
-                    style={styles.textInput}
+                    style={styles.stickyInput}
                     returnKeyType={'search'}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    clearButtonMode="always"
                 />
             </View>
         );
@@ -99,9 +102,11 @@ export default class GeneralInformation extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderHeader={() => this.renderHeader()}
+                    renderSectionHeader={() => this.renderHeader()}
                     renderRow={(rowData) => this.renderRow(rowData)}
                     style={styles.listViewContainer}
+                    keyboardShouldPersistTaps={true}
+                    keyboardDismissMode="on-drag"
                 />
                 <MapButton/>
             </View>
