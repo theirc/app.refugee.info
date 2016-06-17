@@ -69,13 +69,13 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
  * The advantage is the size of the APK is reduced by about 4MB.
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
- */
-def enableSeparateBuildPerCPUArchitecture = false
-
-/**
+ *
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+
+def enableSeparateBuildPerCPUArchitecture = false
+def enableSeparateBuildScreenDensity = false
+def enableProguardInReleaseBuilds = true
 
 android {
     compileSdkVersion 23
@@ -92,6 +92,9 @@ android {
         }
     }
     splits {
+        density {
+          enable enableSeparateBuildScreenDensity
+        }
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
