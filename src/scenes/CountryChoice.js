@@ -36,7 +36,7 @@ export default class CountryChoice extends Component {
             return detectedLocation;
         }
     }
-    
+
     async _getCountryId(location) {
         const parent = await this.apiClient.getLocation(location.parent);
         if (parent.parent) {
@@ -44,7 +44,7 @@ export default class CountryChoice extends Component {
         } else {
             return parent;
         }
-        
+
     }
 
     async detectLocation() {
@@ -88,22 +88,17 @@ export default class CountryChoice extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image
-                    resizeMode={Image.resizeMode.cover}
-                    source={require('../assets/earthsmall.png')}
-                    style={styles.logo}
-                />
                 <View style={styles.containerBelowLogo}>
+                    <LocationListView
+                        header={I18n.t('SELECT_COUNTRY')}
+                        image={(countryISO) => getCountryFlag(countryISO)}
+                        onPress={(rowData) => this.onPress(rowData)}
+                        rows={this.state.locations}
+                    />
                     <Button
                         onPress={() => this.detectLocation()}
                         raised
                         text={I18n.t('DETECT_LOCATION')}
-                    />
-                    <LocationListView
-                        header={I18n.t('SELECT_COUNTRY')}
-                        image={(countryName) => getCountryFlag(countryName)}
-                        onPress={(rowData) => this.onPress(rowData)}
-                        rows={this.state.locations}
                     />
                 </View>
             </View>

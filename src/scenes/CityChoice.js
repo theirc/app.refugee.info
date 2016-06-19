@@ -65,11 +65,6 @@ class CityChoice extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Image
-                    resizeMode={Image.resizeMode.cover}
-                    source={require('../assets/earthsmall.png')}
-                    style={styles.logo}
-                />
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         loaded={this.state.loaded}

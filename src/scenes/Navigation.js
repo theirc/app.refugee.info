@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import { Text } from 'react-native';
+import { Text, Image, View } from 'react-native';
 import { connect } from 'react-redux';
-import { Drawer } from 'react-native-material-design';
+import { Drawer,Divider } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
 import DrawerCommons from '../utils/DrawerCommons';
+import { Header, Section } from '../components/DrawerOverrides'
 
 class Navigation extends Component {
 
@@ -18,35 +19,47 @@ class Navigation extends Component {
         this.drawerCommons = new DrawerCommons(this);
     }
 
+    _getImportantInformation() {
+      const region = this.props.region;
+
+      if(!region || !region.important_information) {
+        return <View />;
+      }
+
+      return <Section
+        items={region.important_information.map((i) => {
+          return {
+            value: i.metadata.page_title,
+            active: false,
+            onPress: () => false,
+            onLongPress: () => false
+          }
+        })}
+      />
+    }
+
     render() {
         let {theme, route} = this.props;
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
         let countryId = (this.props.region) ? this.props.region.country.id : null;
+
+        let title = require('../assets/RI-logo.png');
         return (
             <Drawer theme={theme}>
-                <Drawer.Section
-                    items={
-                    [{
-                        icon: 'public',
-                        value: I18n.t('CHANGE_COUNTRY'),
-                        active: !route || route === 'countryChoice',
-                        onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
-                        onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})
-                    },{
-                        icon: 'location-city',
-                        value: I18n.t('CHANGE_CITY'),
-                        active: !route || route === 'cityChoice',
-                        onPress: () => this.drawerCommons.changeScene('cityChoice', null, {countryId}),
-                        onLongPress: () => this.drawerCommons.changeScene('cityChoice', null, {countryId})
-                    }
-                    ]}
-                    title={this.props.region && `${capitalize(this.props.region.country.name)}, ${capitalize(this.props.region.name)}`}
-                />
-
-                <Drawer.Section
-                    items={[{
+                <Header>
+                </Header>
+                <Section
+                    items={[
+                      {
+                          icon: 'info',
+                          value: I18n.t('GENERAL_INFO'),
+                          active: route === 'info',
+                          onPress: () => this.drawerCommons.changeScene('info'),
+                          onLongPress: () => this.drawerCommons.changeScene('info')
+                      },
+                      {
                         icon: 'list',
                         value: I18n.t('SERVICE_LIST'),
                         active: route === 'services',
@@ -58,19 +71,24 @@ class Navigation extends Component {
                         active: route === 'map',
                         onPress: () => this.drawerCommons.changeScene('map'),
                         onLongPress: () => this.drawerCommons.changeScene('map')
-                    }, {
-                        icon: 'info',
-                        value: I18n.t('GENERAL_INFO'),
-                        active: route === 'info',
-                        onPress: () => this.drawerCommons.changeScene('info'),
-                        onLongPress: () => this.drawerCommons.changeScene('info')
                     }
                     ]}
-                    title={I18n.t('REFUGEE_INFO')}
                 />
-
-                {this.drawerCommons.renderLanguageSection()}
-                {this.drawerCommons.renderThemeSection()}
+                <Divider />
+                {this._getImportantInformation()}
+                <Divider />
+                <Section
+                    items={
+                    [{
+                        icon: 'public',
+                        value: I18n.t('CHANGE_COUNTRY'),
+                        active: !route || route === 'countryChoice',
+                        onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
+                        onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})
+                    }
+                    ]}
+                />
+                <Divider />
             </Drawer>
         );
     }

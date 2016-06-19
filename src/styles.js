@@ -3,7 +3,7 @@
 import { Platform, StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    
+
     flex: {
         flex: 1
     },
@@ -27,9 +27,9 @@ const styles = StyleSheet.create({
         height: (Platform.OS === 'ios') ? 76 : 56,
         paddingTop: (Platform.OS === 'ios') ? 20 : 0
     },
-    
+
     containerBelowLogo: {
-        flex: 0.67,
+        flex: 1,
         flexDirection: 'column'
     },
     logo: {
