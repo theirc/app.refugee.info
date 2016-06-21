@@ -3,6 +3,7 @@ import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
 import {connect} from 'react-redux';
 import DrawerCommons from '../utils/DrawerCommons';
 import styles from '../styles';
+import I18n from '../constants/Messages'
 
 class Initial extends Component {
 
@@ -22,22 +23,32 @@ class Initial extends Component {
     }
 
     async checkLanguageSelected() {
+
         const isLanguageSelected = await AsyncStorage.getItem('isLanguageSelected');
-        const code = await AsyncStorage.getItem('langCode');
         const theme = await AsyncStorage.getItem('theme');
         const color = await AsyncStorage.getItem('color');
-        const location = await AsyncStorage.getItem('region');
+        let location = await AsyncStorage.getItem('region');
+        const code = await AsyncStorage.getItem('langCode');
 
-        if (JSON.parse(isLanguageSelected)) {
-            if (code) {
-                this.drawerCommons.changeLanguage(code, false);
-            }
-            if (theme && color) {
-                this.drawerCommons.changeTheme(theme, color, false);
-            }
+        if (!code) {
+          let languageCode = I18n.currentLocale().split('-')[0];
+          await AsyncStorage.setItem('langCode', languageCode);
+          await AsyncStorage.setItem('isLanguageSelected', 'true');
+        }
 
-            if (location) {
-                return this.context.navigator.to('info');
+        if (code) {
+            this.drawerCommons.changeLanguage(code, false);
+        }
+        if (theme && color) {
+            this.drawerCommons.changeTheme(theme, color, false);
+        }
+
+        if (location) {
+            location = JSON.parse(location)
+            if(location.content && location.content.length == 1) {
+              return this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
+            } else {
+              return this.context.navigator.to('info');
             }
         }
         return this.context.navigator.to('languageSelection');

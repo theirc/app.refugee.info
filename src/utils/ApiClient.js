@@ -8,7 +8,7 @@ export default class ApiClient {
         this.apiRoot = api_root;
     }
 
-    async fetch(relativeUrl) {
+    async fetch(relativeUrl, raise_exception=false) {
         await InteractionManager.runAfterInteractions();
         var languageCode = await AsyncStorage.getItem('langCode');
         var headers = {
@@ -19,11 +19,16 @@ export default class ApiClient {
         if (languageCode) {
           headers['Accept-Language'] = languageCode;
         }
-
         return fetch(`${this.apiRoot}${relativeUrl}`, { headers:headers })
             .then((response) => response.json())
             .catch((error) => {
-                this.navigator.to('networkFailure');
+                if (raise_exception){
+                    throw 'offline'
+                }
+                else {
+                    console.log(error);
+                    this.navigator.to('networkFailure');
+                }
             });
     }
 
@@ -45,12 +50,12 @@ export default class ApiClient {
         return this.fetch('/v1/region/?format=json&level=1');
     }
 
-    getLocations(parentId) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}`);
+    getLocations(parentId, raise_exception=false) {
+        return this.fetch(`/v1/region/?format=json&parent=${parentId}`, raise_exception);
     }
 
-    getLocation(id) {
-        return this.fetch(`/v1/region/${id}/?format=json&`);
+    getLocation(id, raise_exception=false) {
+        return this.fetch(`/v1/region/${id}/?format=json&`, raise_exception);
     }
 
     getRegions(parentId) {
@@ -65,20 +70,20 @@ export default class ApiClient {
         return this.fetch(`/v1/region/?format=json&point=${latitude},${longitude}&level=${level}`);
     }
 
-    getServiceTypes() {
-        return this.fetch('/v1/servicetypes/?format=json');
+    getServiceTypes(raise_exception=false) {
+        return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServices(locationSlug) {
-        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`);
+    getServices(locationSlug, raise_exception=false) {
+        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`, raise_exception);
     }
 
-    getFeedbacks(service) {
-        return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`);
+    getFeedbacks(service, raise_exception=false) {
+        return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
     }
 
-    getService(id) {
-        return this.fetch(`/v1/services/search/?format=json&id=${id}`);
+    getService(id, raise_exception=false) {
+        return this.fetch(`/v1/services/search/?format=json&id=${id}`, raise_exception);
     }
 
     postFeedback(service, name, rating, comment) {

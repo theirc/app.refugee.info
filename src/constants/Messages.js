@@ -7,8 +7,6 @@ I18n.defaultLocale = 'en';
 I18n.translations = {
     en: {
         HOME: 'Home',
-        EXPLORE_MAP: 'Explore Services on Map',
-        GENERAL_INFO: 'General Information',
         GPS_DISABLED: 'Unable to determine location. Please enable GPS.',
         NETWORK_PROBLEM: 'There is a problem with your Internet connection',
         CANT_FIND_LOCATION: 'Sorry, we can\'t find your location. Please choose location from the list',
@@ -40,7 +38,9 @@ I18n.translations = {
         ARABIC: 'Arabic',
         SELECT_COUNTRY: 'Please choose the country where you are',
         SELECT_LOCATION: 'Please choose your location',
-        SERVICE_LIST: 'Service List',
+        SERVICE_LIST: 'Services',
+        EXPLORE_MAP: 'Map',
+        GENERAL_INFO: 'Information',
         SERVICE_DETAILS: 'Service Details',
         SERVICE_MAP: 'Service Map',
         THEME: 'Theme',
@@ -52,8 +52,12 @@ I18n.translations = {
         RETRY: 'Retry',
         LOADING_LOCATIONS: 'Loading locations, please wait...',
         LOADING_SERVICES: 'Loading services, please wait...',
-        NO_LOCATIONS_FOUND: 'No locations found'
-
+        NO_LOCATIONS_FOUND: 'No locations found',
+        OFFLINE_MODE: 'You are in offline mode!\nData might be outdated!',
+        TRY_TO_REFRESH: 'Try to refresh',
+        FEEDBACK_OFFLINE: 'Comments and feedback are disabled in offline mode',
+        LAST_SYNC: 'Last sync',
+        MINUTES_AGO: 'minutes ago'
     },
     fr: {
         LANGUAGE: 'La langue'

@@ -1,11 +1,22 @@
 import React, { Component, PropTypes } from 'react';
-import { View, Text, AsyncStorage, StyleSheet, ListView, TouchableHighlight, TextInput, ScrollView } from 'react-native';
+import {
+    View,
+    Text,
+    AsyncStorage,
+    StyleSheet,
+    ListView,
+    TouchableHighlight,
+    TextInput,
+    ScrollView,
+    RefreshControl
+} from 'react-native';
 import I18n from '../constants/Messages';
 import MapButton from '../components/MapButton';
-import { Button } from 'react-native-material-design';
+import OfflineView from '../components/OfflineView';
 import { connect } from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
+import { Divider } from 'react-native-material-design';
 
 export default class GeneralInformation extends Component {
 
@@ -19,7 +30,10 @@ export default class GeneralInformation extends Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
-            loaded: false
+            loaded: false,
+            offline: false,
+            refreshing: false,
+            lastSync: null
         };
     }
 
@@ -29,20 +43,49 @@ export default class GeneralInformation extends Component {
     }
 
     async _loadInitialState() {
+        const { navigator } = this.context;
+
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         if (!region) {
             return;
         }
 
-        region = await this.apiClient.getLocation(region.id);
+        try {
+            region = await this.apiClient.getLocation(region.id, true);
+            await AsyncStorage.setItem('regionCache', JSON.stringify(region));
+            await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
+            this.setState({
+                offline: false
+            })
+        }
+        catch (e){
+            region = JSON.parse(await AsyncStorage.getItem('regionCache'));
+            this.setState({
+                offline: true
+            })
+        }
+        
         if (!region) {
             return;
+        }
+        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
+
+        if(region.content && region.content.length === 1) {
+            let c = region.content[0];
+            navigator.to('infoDetails', c.title, {section:c.section});
         }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
             generalInfo: region.content,
-            loaded: true
+            region: region,
+            loaded: true,
+            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
         });
+    }
+
+    onRefresh(){
+        this.setState({refreshing: true});
+        this._loadInitialState().then(() => { this.setState({refreshing: false}); });
     }
 
     onClick(title, section) {
@@ -52,16 +95,6 @@ export default class GeneralInformation extends Component {
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
         navigator.forward(null, title, {section}, this.state);
-    }
-
-    _onChangeText(text) {
-        const generalInfo = this.state.generalInfo;
-        const filteredGeneralInfo = generalInfo.filter((x) => x.section.toLowerCase()
-            .replace(/(<(?:.|\n)*?>|\s)/gm, '').indexOf(text.toLowerCase().replace(/\s/gm, '')) !== -1);
-        this.setState({
-            searchText: text,
-            dataSource: this.state.dataSource.cloneWithRows(filteredGeneralInfo)
-        });
     }
 
     renderHeader() {
@@ -83,23 +116,36 @@ export default class GeneralInformation extends Component {
     renderRow(rowData) {
         const {primary, theme} = this.props;
         return (
-            <Button
-                primary={primary}
-                theme={theme}
-                raised={true}
-                text={rowData.title}
-                style={{
-                    buttonStyle: {height: 100}
-                }}
-                onPress={() => this.onClick(rowData.title, rowData.section)}
-            />
+            <View>
+                <TouchableHighlight
+                    onPress={() => this.onClick(rowData.title, rowData.section)}
+                    style={styles.buttonContainer}
+                    underlayColor= {theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                >
+                    <View style={styles.generalInfoItem}>
+                        <Text style={styles.generalInfoText}>{rowData.title}</Text>
+                    </View>
+                </TouchableHighlight>
+                <Divider />
+            </View>
         );
     }
 
     render() {
         return (
             <View style={styles.container}>
+                <OfflineView 
+                    offline={this.state.offline} 
+                    onRefresh={this.onRefresh.bind(this)}
+                    lastSync={this.state.lastSync}
+                />
                 <ListView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
+                    }
                     dataSource={this.state.dataSource}
                     enableEmptySections
                     renderSectionHeader={() => this.renderHeader()}
@@ -123,4 +169,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(GeneralInformation);
-

@@ -14,8 +14,9 @@ import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
+import OfflineView from '../components/OfflineView';
 import { connect } from 'react-redux';
-import LoadingView from '../components/LoadingView';
+
 import styles from '../styles';
 
 export default class ServiceList extends Component {
@@ -39,7 +40,9 @@ export default class ServiceList extends Component {
                     rowHasChanged: (row1, row2) => row1 !== row2
                 }),
                 loaded: false,
-                refreshing: false
+                refreshing: false,
+                offline: false,
+                lastSync: null
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -61,20 +64,41 @@ export default class ServiceList extends Component {
             });
             return;
         }
-        let serviceTypes = await this.apiClient.getServiceTypes();
-        let services = await this.apiClient.getServices(region.slug);
-        let locations = await this.apiClient.getLocations(region.id);
+        let serviceTypes, services, locations;
+        try {
+            serviceTypes = await this.apiClient.getServiceTypes(true);
+            services = await this.apiClient.getServices(region.slug, true);
+            locations = await this.apiClient.getLocations(region.id, true);
+            await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
+            await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
+            await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
+            await AsyncStorage.setItem('lastServicesSync', new Date().toISOString());
+            this.setState({
+                offline: false
+            });
+        }
+        catch (e){
+            this.setState({
+                offline: true
+            });
+            serviceTypes = JSON.parse(await AsyncStorage.getItem('serviceTypesCache'));
+            services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
+            locations = JSON.parse(await AsyncStorage.getItem('locationsCache'));
+        }
         if (!services || !locations) {
             return;
         }
         locations.push(region);
+        let lastSync = await AsyncStorage.getItem('lastServicesSync');
+        console.log(lastSync);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,
             serviceTypes,
             locations,
             region,
-            services
+            services,
+            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
         });
     }
 
@@ -122,9 +146,6 @@ export default class ServiceList extends Component {
     renderHeader() {
         return (
             <View style={styles.stickyInputContainer}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>{I18n.t('LATEST_SERVICES')} {this.state.region.name}</Text>
-                </View>
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
@@ -142,9 +163,6 @@ export default class ServiceList extends Component {
         if (!this.state.region) {
             return (
                 <View style={styles.stickyInputContainer}>
-                    <View style={styles.header}>
-                        <Text style={styles.headerText}>{I18n.t('LOADING_SERVICES')}</Text>
-                    </View>
                     <TextInput
                         onChangeText={(text) => this._onChangeText(text)}
                         placeholder={I18n.t('SEARCH')}
@@ -154,11 +172,19 @@ export default class ServiceList extends Component {
                         autoCorrect={false}
                         clearButtonMode="always"
                     />
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>{I18n.t('LOADING_SERVICES')}</Text>
+                    </View>
                 </View>
             )
         }
         return (
             <View style={styles.container}>
+                <OfflineView 
+                    offline={this.state.offline} 
+                    onRefresh={this.onRefresh.bind(this)}
+                    lastSync={this.state.lastSync}
+                />
                 <ListView
                     refreshControl={
                         <RefreshControl

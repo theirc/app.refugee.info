@@ -59,17 +59,17 @@ class CityChoice extends Component {
         city.country = await this.apiClient.getLocation(this.props.countryId);
         dispatch({type: 'REGION_CHANGED', payload: city});
         await AsyncStorage.setItem('region', JSON.stringify(city));
-        this.context.navigator.to('info');
+
+        if(city.content && city.content.length == 1) {
+          return this.context.navigator.to('infoDetails', city.content[0].title, {section: city.content[0].section})
+        } else {
+          return this.context.navigator.to('info');
+        }
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Image
-                    resizeMode={Image.resizeMode.cover}
-                    source={require('../assets/earthsmall.png')}
-                    style={styles.logo}
-                />
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         loaded={this.state.loaded}
