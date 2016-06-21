@@ -52,8 +52,12 @@ I18n.translations = {
         RETRY: 'Retry',
         LOADING_LOCATIONS: 'Loading locations, please wait...',
         LOADING_SERVICES: 'Loading services, please wait...',
-        NO_LOCATIONS_FOUND: 'No locations found'
-
+        NO_LOCATIONS_FOUND: 'No locations found',
+        OFFLINE_MODE: 'You are in offline mode!\nData might be outdated!',
+        TRY_TO_REFRESH: 'Try to refresh',
+        FEEDBACK_OFFLINE: 'Comments and feedback are disabled in offline mode',
+        LAST_SYNC: 'Last sync',
+        MINUTES_AGO: 'minutes ago'
     },
     fr: {
         LANGUAGE: 'La langue'

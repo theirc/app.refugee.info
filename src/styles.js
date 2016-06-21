@@ -13,7 +13,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: '#F5F5F5'
     },
     horizontalContainer: {
         flex: 1,
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
         width: null
     },
     listViewContainer: {
-        flex: 0.85,
         flexDirection: 'column'
     },
     header: {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         padding: 15,
-        backgroundColor: '#F5F5F5'
+        backgroundColor: '#ffffff'
     },
     buttonContainerSelected: {
         backgroundColor: '#E1E0E0'
@@ -101,12 +101,9 @@ const styles = StyleSheet.create({
     },
     stickyInput: {
         height: 40,
-        marginLeft: 10,
-        marginRight: 10,
         marginTop: 5,
         marginBottom: 5,
         backgroundColor: '#ffffff',
-        borderRadius: 2,
         shadowColor: 'black',
         shadowOpacity: 0.8,
         shadowRadius: 2,
@@ -229,7 +226,43 @@ const styles = StyleSheet.create({
     mapPopupDescription: {
         marginTop: 5,
         fontSize: 12
+    },
+    offlineModeContainer: {
+        padding: 15,
+        paddingBottom: 0,
+        flexDirection: 'column'
+    },
+    offlineModeTextContainer: {
+      marginLeft: 50
+    },
+    offlineModeText: {
+        textAlign: 'center'
+    },
+    OfflineModeLastSync: {
+        marginTop: 10,
+        textAlign: 'center',
+        fontSize: 12,
+        color: '#333333'
+    },
+    offlineModeIcon: {
+        position: 'absolute',
+        top: 25,
+        left: 25,
+        color: '#FFD700',
+        fontSize: 36
+    },
+    offlineModeButtonContainer: {
+        width: 180,
+        alignSelf: 'center',
+        marginRight: -15
+    },
+    generalInfoItem: {
+        padding: 10
+    },
+    generalInfoText: {
+        fontSize: 16
     }
+
 });
 
 export default styles;

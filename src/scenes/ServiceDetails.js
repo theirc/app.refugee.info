@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     ScrollView,
     TouchableHighlight,
@@ -12,14 +12,16 @@ import {
     Modal,
     Platform
 } from 'react-native';
-import { Button } from 'react-native-material-design';
-import { default as Icon } from 'react-native-vector-icons/FontAwesome';
+import {Button} from 'react-native-material-design';
+import {default as Icon} from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import Share from 'react-native-share';
+import OfflineView from '../components/OfflineView';
+
 import styles from '../styles';
 
 const RADIUS = 0.01;
@@ -55,7 +57,8 @@ export default class ServiceDetails extends Component {
             modalVisible: false,
             refreshing: false,
             service: this.props.service,
-            isFormDirty: false
+            isFormDirty: false,
+            offline: false
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -93,33 +96,44 @@ export default class ServiceDetails extends Component {
 
     async fetchData(update) {
         let service = this.props.service;
-        if (update) {
-            services = await this.apiClient.getService(service.id);
-            if (services.length > 0) {
-                service = services[0];
+        try {
+            if (update) {
+                services = await this.apiClient.getService(service.id, true);
+                if (services.length > 0) {
+                    service = services[0];
+                }
             }
+            let feedbacks = await this.apiClient.getFeedbacks(service.id, true);
+            let provider = await this.apiClient.fetch(service.provider_fetch_url, true);
+            if (!feedbacks) {
+                return;
+            }
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(feedbacks),
+                loaded: true,
+                provider,
+                service,
+                offline: false
+            });
+
         }
-        let feedbacks = await this.apiClient.getFeedbacks(service.id);
-        let provider = await this.apiClient.fetch(service.provider_fetch_url);
-        if (!feedbacks) {
-            return;
+        catch (e) {
+            this.setState({
+                offline: true
+            })
         }
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(feedbacks),
-            loaded: true,
-            provider,
-            service
-        });
     }
 
-    onRefresh(){
+    onRefresh() {
         this.setState({refreshing: true});
-        this.fetchData(update=true).then(() => { this.setState({refreshing: false}); });
+        this.fetchData(update = true).then(() => {
+            this.setState({refreshing: false});
+        });
     }
 
     getDirections(lat, long) {
         let location = `${lat},${long}`;
-        if (Platform.OS === 'ios'){
+        if (Platform.OS === 'ios') {
             return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
         }
         return Linking.openURL(`geo:${location}?q=${location}`);
@@ -135,20 +149,20 @@ export default class ServiceDetails extends Component {
             share_text: "Refugee Info",
             share_URL: 'http://refugeeinfo.org',
             title: 'Refugee Info'
-        },(e) => {
+        }, (e) => {
             console.log(e);
         });
     }
 
     postComment() {
-        this.setState({isFormDirty: true}, function(){
+        this.setState({isFormDirty: true}, function () {
             let rating = this.state.rating;
             if (!this._isNameInvalid() && !this._isCommentInvalid() && !!rating) {
                 this.apiClient.postFeedback(this.state.service, this.state.name, rating, this.state.comment).then(
                     (response) => {
                         this._setModalVisible(false);
                         this._setLoaded(false);
-                        this.fetchData(update=true);
+                        this.fetchData(update = true);
                     }
                 );
             }
@@ -214,9 +228,9 @@ export default class ServiceDetails extends Component {
                                 style={styles.textInputModal}
                             />
                             {this._isNameInvalid() &&
-                                <Text style={styles.validationText}>
-                                    {I18n.t('FIELD_REQUIRED')}
-                                </Text>
+                            <Text style={styles.validationText}>
+                                {I18n.t('FIELD_REQUIRED')}
+                            </Text>
                             }
                             <TextInput
                                 multiline
@@ -229,9 +243,9 @@ export default class ServiceDetails extends Component {
                                 style={styles.textInputMultiline}
                             />
                             {this._isCommentInvalid() &&
-                                <Text style={styles.validationText}>
-                                    {I18n.t('FIELD_REQUIRED')}
-                                </Text>
+                            <Text style={styles.validationText}>
+                                {I18n.t('FIELD_REQUIRED')}
+                            </Text>
                             }
                             <View style={styles.modalButtonContainer}>
                                 <TouchableHighlight
@@ -294,7 +308,7 @@ export default class ServiceDetails extends Component {
         let rowContent = this.serviceCommons.renderRowContent(
             service, this.props.serviceType, this.props.location
         );
-        const { theme, primary } = this.props;
+        const {theme, primary} = this.props;
 
         return (
             <ScrollView
@@ -306,6 +320,11 @@ export default class ServiceDetails extends Component {
                     />
                 }
             >
+                <OfflineView
+                    offline={this.state.offline}
+                    onRefresh={this.onRefresh.bind(this)}
+                    data={"services"}
+                />
                 <TouchableHighlight
                     style={styles.buttonContainer}
                     underlayColor="white"
@@ -330,30 +349,30 @@ export default class ServiceDetails extends Component {
                 </MapView>
                 <View style={styles.detailsContainer}>
                     {!!service.description &&
-                        <Text>
-                            {I18n.t('DESCRIPTION')}:
-                            {`\n${service.description}`}
-                        </Text>
+                    <Text>
+                        {I18n.t('DESCRIPTION')}:
+                        {`\n${service.description}`}
+                    </Text>
                     }
                     {!!openingHours &&
-                        <Text>
-                            {I18n.t('OPENING_HOURS')}:
-                            {`\n${openingHours}`}
-                        </Text>
+                    <Text>
+                        {I18n.t('OPENING_HOURS')}:
+                        {`\n${openingHours}`}
+                    </Text>
                     }
                     {!!service.cost_of_service &&
-                        <Text>
-                            {I18n.t('COST_OF_SERVICE')}:
-                            {`\n${service.cost_of_service}`}
-                        </Text>
+                    <Text>
+                        {I18n.t('COST_OF_SERVICE')}:
+                        {`\n${service.cost_of_service}`}
+                    </Text>
                     }
                     {service.selection_criteria.length > 0 &&
-                        <Text>
-                            {I18n.t('SELECTION_CRITERIA')}:
-                            {service.selection_criteria.map((criteria, i) => (
-                                `\n - ${criteria.text}`
-                            ))}
-                        </Text>
+                    <Text>
+                        {I18n.t('SELECTION_CRITERIA')}:
+                        {service.selection_criteria.map((criteria, i) => (
+                            `\n - ${criteria.text}`
+                        ))}
+                    </Text>
                     }
                 </View>
                 <Button
@@ -377,11 +396,17 @@ export default class ServiceDetails extends Component {
                     raised={true}
                     onPress={() => this.onShareClick()}
                 />
-                {this.state.loaded ?
-                    (this.renderFeedbackContainer()) :
+                {this.state.offline ?
                     <Text style={styles.loading}>
-                        {I18n.t('LOADING')}
-                    </Text>
+                        {I18n.t('FEEDBACK_OFFLINE')}
+                    </Text> :
+                    this.state.loaded ?
+                        this.renderFeedbackContainer()
+                        :
+                        <Text style={styles.loading}>
+                            {I18n.t('LOADING')}
+                        </Text>
+
                 }
             </ScrollView>
         );

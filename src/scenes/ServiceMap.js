@@ -12,6 +12,7 @@ import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
+import OfflineView from '../components/OfflineView';
 
 const RADIUS_MULTIPLIER = 1.2;
 
@@ -50,7 +51,10 @@ export default class ServiceMap extends Component {
                 }),
                 loaded: false,
                 iconsLoaded: false,
-                markers: []
+                markers: [],
+                offline: false,
+                refreshing: false,
+                lastSync: null
             };
         }
         this.icons = {};
@@ -72,10 +76,27 @@ export default class ServiceMap extends Component {
             });
             return;
         }
-
-        let serviceTypes = await this.apiClient.getServiceTypes();
-        let services = await this.apiClient.getServices(region.slug);
-        let locations = await this.apiClient.getLocations(region.id);
+        let serviceTypes, services, locations;
+        try {
+            serviceTypes = await this.apiClient.getServiceTypes(true);
+            services = await this.apiClient.getServices(region.slug, true);
+            locations = await this.apiClient.getLocations(region.id, true);
+            await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
+            await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
+            await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
+            await AsyncStorage.setItem('lastServicesSync', new Date().toISOString());
+            this.setState({
+                offline: false
+            });
+        }
+        catch (e) {
+            this.setState({
+                offline: true
+            });
+            serviceTypes = JSON.parse(await AsyncStorage.getItem('serviceTypesCache'));
+            services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
+            locations = JSON.parse(await AsyncStorage.getItem('locationsCache'));
+        }
         if (!services || !locations) {
             return;
         }
@@ -94,7 +115,7 @@ export default class ServiceMap extends Component {
                 service
             };
         });
-
+        let lastSync = await AsyncStorage.getItem('lastServicesSync');
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,
@@ -102,7 +123,8 @@ export default class ServiceMap extends Component {
             markers,
             serviceTypes,
             locations,
-            services
+            services,
+            lastSync: Math.floor(Math.abs(new Date() - new Date(lastSync)) / 60000) + 1
         });
     }
 
@@ -133,9 +155,22 @@ export default class ServiceMap extends Component {
         }
     }
 
+    onRefresh(){
+        this.setState({refreshing: true});
+        this.fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
+    }
+
     render() {
+        if (this.state.loaded){
         return (
             <View style={styles.container}>
+                <OfflineView 
+                    offline={this.state.offline} 
+                    onRefresh={this.onRefresh.bind(this)}
+                    lastSync={this.state.lastSync}
+                />
                 <MapView
                     onRegionChangeComplete={(region) => this.onRegionChange(region)}
                     region={this.state.region}
@@ -181,7 +216,8 @@ export default class ServiceMap extends Component {
                     ))}
                 </MapView>
             </View>
-        );
+        )}
+        return (null)
     }
 
 }
