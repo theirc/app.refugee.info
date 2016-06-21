@@ -47,17 +47,19 @@ class Navigation extends Component {
             return <Text>Choose location first</Text>;
         }
         let countryId = (region) ? region.country.id : null;
+        let pageTitle = region.metadata.page_title.replace('\u060c', ',').split(',')[0];
 
         let navigateTo = region.content.length == 1 ?
           () => this.drawerCommons.changeScene('infoDetails', region.content[0].title, {section: region.content[0].section}) :
-          () => this.drawerCommons.changeScene('info');
+          () => this.drawerCommons.changeScene('info', pageTitle);
 
         let title = require('../assets/RI-logo.png');
+
         return (
             <Drawer theme={theme}>
                 <Header>
                     <View style={{paddingTop: 40}}>
-                        <Text style={[{}, COLOR.paperGrey50, TYPO.paperFontSubhead]}>{region.metadata.page_title}</Text>
+                        <Text style={[{}, COLOR.paperGrey50, TYPO.paperFontSubhead]}>{pageTitle}</Text>
                     </View>
                 </Header>
                 <Section
@@ -92,6 +94,12 @@ class Navigation extends Component {
                     [{
                         icon: 'public',
                         value: I18n.t('CHANGE_COUNTRY'),
+                        active: !route || route === 'countryChoice',
+                        onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
+                        onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})
+                    },{
+                        icon: 'settings',
+                        value: I18n.t('SETTINGS'),
                         active: !route || route === 'countryChoice',
                         onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
                         onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})

@@ -63,7 +63,8 @@ class CityChoice extends Component {
         if(city.content && city.content.length == 1) {
           return this.context.navigator.to('infoDetails', city.content[0].title, {section: city.content[0].section})
         } else {
-          return this.context.navigator.to('info');
+          let pageTitle = city.metadata.page_title.replace('\u060c', ',').split(',')[0];
+          return this.context.navigator.to('info', pageTitle);
         }
     }
 

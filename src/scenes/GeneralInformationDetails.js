@@ -16,7 +16,8 @@ export default class GeneralInformationDetails extends Component {
         super(props);
         this.webView = null;
         this.state = {
-            languageCode: false
+            loading: false,
+            source: false,
         };
     }
 
@@ -26,14 +27,35 @@ export default class GeneralInformationDetails extends Component {
 
     async _loadInitialState() {
         var languageCode = await AsyncStorage.getItem('langCode');
+
+        let source = {
+          html: wrapHtmlContent(this.props.section, languageCode)
+        };
+
         this.setState({
-          languageCode: languageCode || 'en',
-          loading: true
+          source: source
         });
     }
 
 
-    _onChangeText(text) {
+    async _onChangeText(text) {
+        // TODO: Refactor this searches all of the text including tags
+
+        if(text.length < 5) {
+          return;
+        }
+        var languageCode = await AsyncStorage.getItem('langCode');
+
+        let reg = new RegExp(`(${text})`, 'ig');
+        section = (reg) ? this.props.section.replace(reg, '<mark>$1</mark>') : this.props.section;
+
+        let source = {
+          html: wrapHtmlContent(section, languageCode)
+        };
+
+        this.setState({
+          source: source
+        });
     }
 
     _onNavigationStateChange(state) {
@@ -65,13 +87,10 @@ export default class GeneralInformationDetails extends Component {
     }
 
     render() {
-        if(!this.state.languageCode) {
+        if(!this.state.source) {
           return <View />;
         }
 
-        let source = {
-          html: wrapHtmlContent(this.props.section, this.state.languageCode)
-        };
         return (
             <View style={styles.container}>
                 <View style={styles.stickyInputContainer}>
@@ -87,7 +106,7 @@ export default class GeneralInformationDetails extends Component {
                 </View>
                 <WebView ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
-                    source={source}
+                    source={this.state.source}
                 />
                 </View>
         );
