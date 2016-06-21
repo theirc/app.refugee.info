@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, Image, View } from 'react-native';
 import { connect } from 'react-redux';
-import { Drawer,Divider } from 'react-native-material-design';
+import { Avatar, Drawer, Divider, COLOR, TYPO } from 'react-native-material-design';
+
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
 import DrawerCommons from '../utils/DrawerCommons';
@@ -39,16 +40,25 @@ class Navigation extends Component {
     }
 
     render() {
-        let {theme, route} = this.props;
+        let {theme, route, region} = this.props;
+        const { navigator } = this.context;
+        console.log("Language:"+ I18n.currentLocale());
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
-        let countryId = (this.props.region) ? this.props.region.country.id : null;
+        let countryId = (region) ? region.country.id : null;
+
+        let navigateTo = region.content.length == 1 ?
+          () => this.drawerCommons.changeScene('infoDetails', region.content[0].title, {section: region.content[0].section}) :
+          () => this.drawerCommons.changeScene('info');
 
         let title = require('../assets/RI-logo.png');
         return (
             <Drawer theme={theme}>
                 <Header>
+                    <View style={{paddingTop: 40}}>
+                        <Text style={[{}, COLOR.paperGrey50, TYPO.paperFontSubhead]}>{region.metadata.page_title}</Text>
+                    </View>
                 </Header>
                 <Section
                     items={[
@@ -56,8 +66,8 @@ class Navigation extends Component {
                           icon: 'info',
                           value: I18n.t('GENERAL_INFO'),
                           active: route === 'info',
-                          onPress: () => this.drawerCommons.changeScene('info'),
-                          onLongPress: () => this.drawerCommons.changeScene('info')
+                          onPress: navigateTo,
+                          onLongPress: navigateTo
                       },
                       {
                         icon: 'list',

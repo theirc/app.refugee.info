@@ -56,7 +56,12 @@ export default class CountryChoice extends Component {
                     location.country = await this._getCountryId(location);
                     dispatch({type: 'REGION_CHANGED', payload: location});
                     await AsyncStorage.setItem('region', JSON.stringify(location));
-                    this.context.navigator.to('info');
+
+                    if(location.content && location.content.length == 1) {
+                      this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
+                    } else {
+                      this.context.navigator.to('info');
+                    }
                 } else {
                     location = await this._getLocation(position, 1);
                     if (location) {
