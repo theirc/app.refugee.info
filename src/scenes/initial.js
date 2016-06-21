@@ -24,34 +24,45 @@ class Initial extends Component {
 
     async checkLanguageSelected() {
 
-        const isLanguageSelected = await AsyncStorage.getItem('isLanguageSelected');
         const theme = await AsyncStorage.getItem('theme');
         const color = await AsyncStorage.getItem('color');
-        let location = await AsyncStorage.getItem('region');
-        const code = await AsyncStorage.getItem('langCode');
+        const location = JSON.parse(await AsyncStorage.getItem('region'));
 
-        if (!code) {
-          let languageCode = I18n.currentLocale().split('-')[0];
-          await AsyncStorage.setItem('langCode', languageCode);
-          await AsyncStorage.setItem('isLanguageSelected', 'true');
+        let code = (I18n.currentLocale() || 'en').split('-')[0];
+        if(!I18n.translations.hasOwnProperty(code)) {
+          // This means we don't have a translation for it
+          // So fallback to English
+          code = 'en';
         }
 
-        if (code) {
-            this.drawerCommons.changeLanguage(code, false);
+        // Instead of having the app handling the language selection we should
+        // let the user override whatever they have set in their device
+        const languageOverride = await AsyncStorage.getItem('languageOverride');
+        if (languageOverride) {
+          code = languageOverride;
         }
+
+        await AsyncStorage.setItem('langCode', code);
+
+        this.drawerCommons.changeLanguage(code, false);
+
         if (theme && color) {
             this.drawerCommons.changeTheme(theme, color, false);
         }
 
+        // If the location is already stored in the storage send to info page directly
         if (location) {
-            location = JSON.parse(location)
             if(location.content && location.content.length == 1) {
+              // If info page has only one section, show only that section
               return this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
             } else {
-              return this.context.navigator.to('info');
+              let pageTitle = location.metadata.page_title.replace('\u060c', ',').split(',')[0];
+              return this.context.navigator.to('info', pageTitle);
             }
+        } else {
+          // No location selected, so manual selection
+          return this.context.navigator.to('countryChoice');
         }
-        return this.context.navigator.to('languageSelection');
     }
 
     render() {

@@ -60,7 +60,9 @@ export default class CountryChoice extends Component {
                     if(location.content && location.content.length == 1) {
                       this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
                     } else {
-                      this.context.navigator.to('info');
+
+                      let pageTitle = location.metadata.page_title.replace('\u060c', ',').split(',')[0];
+                      this.context.navigator.to('info', pageTitle);
                     }
                 } else {
                     location = await this._getLocation(position, 1);
