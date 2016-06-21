@@ -54,7 +54,6 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         region: state.region
-
     };
 };
 

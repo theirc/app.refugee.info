@@ -23,6 +23,8 @@ export default class ApiClient {
         return fetch(`${this.apiRoot}${relativeUrl}`, { headers:headers })
             .then((response) => response.json())
             .catch((error) => {
+                console.log(error);
+                
                 this.navigator.to('networkFailure');
             });
     }

@@ -94,14 +94,14 @@ export default class DrawerCommons {
                 items={[{
                     icon: DrawerCommons._getThemeIcon(theme, 'light'),
                     value: 'Light',
-                    onPress: () => this.changeTheme('light', 'googleBlue'),
-                    onLongPress: () => this.changeTheme('light', 'googleBlue')
+                    onPress: () => this.changeTheme('light', 'googleGreen'),
+                    onLongPress: () => this.changeTheme('light', 'googleGreen')
                 },
                 {
                     icon: DrawerCommons._getThemeIcon(theme, 'dark'),
                     value: 'Dark',
-                    onPress: () => this.changeTheme('dark', 'paperGrey800'),
-                    onLongPress: () => this.changeTheme('dark', 'paperGrey800')
+                    onPress: () => this.changeTheme('dark', 'paperGrey'),
+                    onLongPress: () => this.changeTheme('dark', 'paperGrey')
                 }]}
                 title={I18n.t('THEME')}
             />
