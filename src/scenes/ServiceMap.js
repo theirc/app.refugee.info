@@ -124,7 +124,7 @@ export default class ServiceMap extends Component {
             serviceTypes,
             locations,
             services,
-            lastSync: Math.floor(Math.abs(new Date() - new Date(lastSync)) / 60000) + 1
+            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
         });
     }
 

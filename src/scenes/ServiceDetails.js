@@ -10,7 +10,8 @@ import {
     Linking,
     TextInput,
     Modal,
-    Platform
+    Platform,
+    AsyncStorage
 } from 'react-native';
 import {Button} from 'react-native-material-design';
 import {default as Icon} from 'react-native-vector-icons/FontAwesome';
@@ -118,8 +119,10 @@ export default class ServiceDetails extends Component {
 
         }
         catch (e) {
+            let lastSync = await AsyncStorage.getItem('lastServicesSync');
             this.setState({
-                offline: true
+                offline: true,
+                lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
             })
         }
     }
@@ -323,7 +326,7 @@ export default class ServiceDetails extends Component {
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
-                    data={"services"}
+                    lastSync={this.state.lastSync}
                 />
                 <TouchableHighlight
                     style={styles.buttonContainer}
