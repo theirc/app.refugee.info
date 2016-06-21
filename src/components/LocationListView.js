@@ -45,21 +45,15 @@ export default class LocationListView extends Component {
         let buttonIsSelected = (this.state.selected && this.state.selected.id === rowData.id);
         let image = null;
         if (this.props.image) {
-            image = this.props.image(rowData.name);
+            image = this.props.image(rowData.code);
         }
         return (
             <TouchableHighlight
                 onPress={() => {
-                    if (buttonIsSelected) {
-                        this.setState({selected: null});
-                    } else {
-                        this.setState({selected: rowData});
-                    }
+                   this.props.onPress(rowData)
                 }}
-                style={[styles.buttonContainer, buttonIsSelected?
-                                                    styles.buttonContainerSelected : '']}
-                underlayColor="white"
-            >
+                style={[styles.buttonContainer]}
+                underlayColor="white" >
                 <View style={styles.rowWrapper}>
                     <View style={styles.rowHeader}>
                         {image &&
@@ -113,14 +107,6 @@ export default class LocationListView extends Component {
                         renderHeader={() => this.renderHeader()}
                         renderRow={(rowData) => this.renderRow(rowData)}
                         style={styles.listViewContainer}
-                    />
-                    <Button
-                        disabled={this.state.selected === null}
-                        onPress={() => this.props.onPress(this.state.selected)}
-                        primary={primary}
-                        raised
-                        style={styles.selectButton}
-                        text={I18n.t('SELECT')}
                     />
                  </View>
             );
