@@ -43,6 +43,8 @@ export default class GeneralInformation extends Component {
     }
 
     async _loadInitialState() {
+        const { navigator } = this.context;
+
         let region = JSON.parse(await AsyncStorage.getItem('region'));
         if (!region) {
             return;
@@ -67,9 +69,15 @@ export default class GeneralInformation extends Component {
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
+
+        if(region.content && region.content.length === 1) {
+            let c = region.content[0];
+            navigator.to('infoDetails', c.title, {section:c.section});
+        }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
             generalInfo: region.content,
+            region: region,
             loaded: true,
             lastSync: Math.floor(Math.abs(new Date() - new Date(lastSync)) / 60000) + 1
         });
@@ -87,16 +95,6 @@ export default class GeneralInformation extends Component {
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
         navigator.forward(null, title, {section}, this.state);
-    }
-
-    _onChangeText(text) {
-        const generalInfo = this.state.generalInfo;
-        const filteredGeneralInfo = generalInfo.filter((x) => x.section.toLowerCase()
-            .replace(/(<(?:.|\n)*?>|\s)/gm, '').indexOf(text.toLowerCase().replace(/\s/gm, '')) !== -1);
-        this.setState({
-            searchText: text,
-            dataSource: this.state.dataSource.cloneWithRows(filteredGeneralInfo)
-        });
     }
 
     renderHeader() {
@@ -171,4 +169,3 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps)(GeneralInformation);
-

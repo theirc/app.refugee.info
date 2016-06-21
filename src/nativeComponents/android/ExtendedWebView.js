@@ -1,6 +1,8 @@
 import React from 'react';
-import {WebView, requireNativeComponent} from 'react-native';
+import {WebView, requireNativeComponent, Platform} from 'react-native';
 
-requireNativeComponent('RCTExtendedWebView', WebView);
+if (Platform.OS !== 'ios') {
+    requireNativeComponent('RCTExtendedWebView', WebView);
+}
 
 export default WebView;

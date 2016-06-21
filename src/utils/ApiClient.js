@@ -26,6 +26,7 @@ export default class ApiClient {
                     throw 'offline'
                 }
                 else {
+                    console.log(error);
                     this.navigator.to('networkFailure');
                 }
             });

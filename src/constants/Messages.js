@@ -7,8 +7,6 @@ I18n.defaultLocale = 'en';
 I18n.translations = {
     en: {
         HOME: 'Home',
-        EXPLORE_MAP: 'Explore Services on Map',
-        GENERAL_INFO: 'General Information',
         GPS_DISABLED: 'Unable to determine location. Please enable GPS.',
         NETWORK_PROBLEM: 'There is a problem with your Internet connection',
         CANT_FIND_LOCATION: 'Sorry, we can\'t find your location. Please choose location from the list',
@@ -40,7 +38,9 @@ I18n.translations = {
         ARABIC: 'Arabic',
         SELECT_COUNTRY: 'Please choose the country where you are',
         SELECT_LOCATION: 'Please choose your location',
-        SERVICE_LIST: 'Service List',
+        SERVICE_LIST: 'Services',
+        EXPLORE_MAP: 'Map',
+        GENERAL_INFO: 'Information',
         SERVICE_DETAILS: 'Service Details',
         SERVICE_MAP: 'Service Map',
         THEME: 'Theme',

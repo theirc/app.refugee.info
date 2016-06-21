@@ -37,7 +37,7 @@ export default class Toolbar extends Component {
                     margin: 10
                 }}
                 logoStyle={{
-                    marginLeft: (!region ? -5 : 16),
+                    marginLeft: 16,
                     marginTop: 4,
                     width: 189,
                     height: 56
@@ -54,7 +54,6 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         region: state.region
-
     };
 };
 
