@@ -41,7 +41,6 @@ class Skeleton extends Component {
     }
 
     _handleAppStateChange() {
-        // console.log(arguments);
     }
 
     async checkLanguageSelected() {

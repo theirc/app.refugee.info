@@ -13,10 +13,11 @@ import styles from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
+import { connect } from 'react-redux';
 
 const RADIUS_MULTIPLIER = 1.2;
 
-export default class ServiceMap extends Component {
+class ServiceMap extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
@@ -69,7 +70,7 @@ export default class ServiceMap extends Component {
     }
 
     async fetchData() {
-        let region = JSON.parse(await AsyncStorage.getItem('region'));
+        const { region } = this.props;
         if (!region) {
             this.setState({
                 loaded: true
@@ -221,3 +222,13 @@ export default class ServiceMap extends Component {
     }
 
 }
+
+const mapStateToProps = (state) => {
+    return {
+        country: state.country,
+        region: state.region,
+        theme: state.theme.theme,
+    };
+};
+
+export default connect(mapStateToProps)(ServiceMap);
