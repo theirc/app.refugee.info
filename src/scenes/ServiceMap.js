@@ -13,6 +13,7 @@ import styles from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
+import { connect } from 'react-redux';
 
 const RADIUS_MULTIPLIER = 1.2;
 

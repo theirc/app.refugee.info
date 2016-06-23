@@ -109,8 +109,6 @@ a.link-button {
 `;
 
 export function wrapHtmlContent(content:String, language:String, title:String=null, theme:String="light") : String {
-  console.log(language);
-  console.log('---------------------------------------------');
   language = language || 'en';
   let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
   let titleHtml = title||false ? `<h2>${title}</h2>`:'';
