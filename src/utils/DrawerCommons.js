@@ -63,7 +63,6 @@ export default class DrawerCommons {
     changeScene = (path, name, props={}) => {
         const { drawer, navigator } = this.component.context;
         const { dispatch } = this.component.props;
-<<<<<<< HEAD
         InteractionManager.runAfterInteractions(() => {
           navigator.to(path, name, props);
           dispatch({type: 'CHANGE_ROUTE', payload: path});
@@ -74,16 +73,6 @@ export default class DrawerCommons {
               drawer.closeDrawer();
           }
         });
-=======
-        navigator.to(path, name, props);
-        dispatch({type: 'CHANGE_ROUTE', payload: path});
-        if (Platform.OS === 'ios'){
-            this.component.context.drawer.close()
-        }
-        else{
-            drawer.closeDrawer();
-        }
->>>>>>> f019c7583ac8e40eba2faefa1d5d989ba63fb912
     };
 
     renderLanguageSection() {
