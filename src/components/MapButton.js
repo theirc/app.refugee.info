@@ -9,23 +9,16 @@ export default class MapButton extends Component {
         navigator: PropTypes.object.isRequired
     };
 
-    static propTypes = {
-      direction: PropTypes.oneOf(['rtl', 'ltr']),
-
-      ...Component.propTypes
-    }
-
     onClick() {
         const { navigator } = this.context;
         navigator.to('map');
     }
 
     render() {
-      const { direction } = this.props;
         return (
             <TouchableHighlight
                 onPress={() => this.onClick()}
-                style={[styles.floatingActionButton, direction === 'rtl' ? { left:20 } : { right: 20 }]}
+                style={styles.floatingActionButton}
                 underlayColor="white"
             >
                 <Image
@@ -35,3 +28,4 @@ export default class MapButton extends Component {
         );
     }
 }
+

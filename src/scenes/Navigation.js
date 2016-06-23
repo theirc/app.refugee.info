@@ -3,14 +3,10 @@ import { Text, Image, View } from 'react-native';
 import { connect } from 'react-redux';
 import { Avatar, Drawer, Divider, COLOR, TYPO } from 'react-native-material-design';
 
-import { typography } from 'react-native-material-design-styles';
-
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
-import ApiClient from '../utils/ApiClient';
 import DrawerCommons from '../utils/DrawerCommons';
-import { Header, Section, DirectionalText } from '../components'
-import CountryHeaders from '../constants/CountryHeaders'
+import { Header, Section } from '../components/DrawerOverrides'
 
 class Navigation extends Component {
 
@@ -26,7 +22,6 @@ class Navigation extends Component {
 
     _getImportantInformation() {
       const region = this.props.region;
-      console.log(region);
 
       if(!region || !region.important_information) {
         return <View />;
@@ -45,33 +40,24 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route, region, country} = this.props;
+        let {theme, route, region} = this.props;
         const { navigator } = this.context;
-
+        console.log("Language:"+ I18n.currentLocale());
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
+        let countryId = (region) ? region.country.id : null;
 
         let navigateTo = region.content.length == 1 ?
           () => this.drawerCommons.changeScene('infoDetails', region.content[0].title, {section: region.content[0].section}) :
           () => this.drawerCommons.changeScene('info');
 
         let title = require('../assets/RI-logo.png');
-        let headerInformation = CountryHeaders.rs;
-
-        if(country) {
-          const countryCode = country.code.toLowerCase();
-          if(CountryHeaders.hasOwnProperty(countryCode)) {
-            headerInformation = CountryHeaders[countryCode];
-          }
-        }
-
         return (
             <Drawer theme={theme}>
-                <Header backgroundColor={headerInformation.backgroundColor } height={75}>
-                    <View style={{paddingBottom: 10, flexDirection: 'row', flex: 1, alignItems: 'flex-end'}}>
-                          <DirectionalText direction={this.props.direction}
-                          style={[{color: headerInformation.color}, typography.paperFontTitle]}>{region.pageTitle}</DirectionalText>
+                <Header>
+                    <View style={{paddingTop: 40}}>
+                        <Text style={[{}, COLOR.paperGrey50, TYPO.paperFontSubhead]}>{region.metadata.page_title}</Text>
                     </View>
                 </Header>
                 <Section
@@ -107,14 +93,8 @@ class Navigation extends Component {
                         icon: 'public',
                         value: I18n.t('CHANGE_COUNTRY'),
                         active: !route || route === 'countryChoice',
-                        onPress: () => this.drawerCommons.changeScene('countryChoice'),
-                        onLongPress: () => this.drawerCommons.changeScene('countryChoice')
-                    },{
-                        icon: 'settings',
-                        value: I18n.t('SETTINGS'),
-                        active: !route || route === 'settings',
-                        onPress: () => this.drawerCommons.changeScene('settings'),
-                        onLongPress: () => this.drawerCommons.changeScene('settings')
+                        onPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId}),
+                        onLongPress: () => this.drawerCommons.changeScene('countryChoice', null, {countryId})
                     }
                     ]}
                 />
@@ -128,9 +108,7 @@ const mapStateToProps = (state) => {
     return {
         route: state.navigation,
         region: state.region,
-        country: state.country,
-        language: state.language,
-        direction: state.direction,
+        code: state.language,
         theme: state.theme.theme
     };
 };

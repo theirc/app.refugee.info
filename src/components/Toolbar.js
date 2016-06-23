@@ -25,7 +25,6 @@ export default class Toolbar extends Component {
         const { navigator } = this.context;
         const { onIconPress, primary, region } = this.props;
         let title = require('../assets/RI-logo.png');
-
         if (navigator && navigator.currentRoute && navigator.currentRoute.title != I18n.t('REFUGEE_INFO')) {
             title = navigator.currentRoute.title;
         }

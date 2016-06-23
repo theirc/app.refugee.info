@@ -3,17 +3,14 @@ const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
-    constructor(context, props={language:'en'}, api_root='http://api.refugee.info') {
+    constructor(context, api_root='http://api.refugee.info') {
         this.navigator = context.navigator;
         this.apiRoot = api_root;
-        this.language = props.language || 'en';
-
-        console.log("API Client Constructor", this);
     }
 
     async fetch(relativeUrl, raise_exception=false) {
         await InteractionManager.runAfterInteractions();
-        var languageCode = this.language;
+        var languageCode = await AsyncStorage.getItem('langCode');
         var headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -29,6 +26,7 @@ export default class ApiClient {
                     throw 'offline'
                 }
                 else {
+                    console.log(error);
                     this.navigator.to('networkFailure');
                 }
             });
