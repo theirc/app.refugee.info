@@ -7,8 +7,6 @@ export default class ApiClient {
         this.navigator = context.navigator;
         this.apiRoot = api_root;
         this.language = props.language || 'en';
-
-        console.log("API Client Constructor", this);
     }
 
     async fetch(relativeUrl, raise_exception=false) {

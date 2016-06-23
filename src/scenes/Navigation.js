@@ -26,8 +26,6 @@ class Navigation extends Component {
 
     _getImportantInformation() {
       const region = this.props.region;
-      console.log(region);
-
       if(!region || !region.important_information) {
         return <View />;
       }
