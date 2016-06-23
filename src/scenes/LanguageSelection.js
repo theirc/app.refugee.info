@@ -56,6 +56,8 @@ class LanguageSelection extends Component {
             if (location) {
                 if(location.content && location.content.length == 1) {
                   this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
+                  return;
+                  
                 } else {
                   this.context.navigator.to('info');
                 }

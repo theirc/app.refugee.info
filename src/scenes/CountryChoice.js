@@ -69,13 +69,14 @@ export default class CountryChoice extends Component {
                     location.country = await this._getCountryId(location);
                     dispatch(updateCountryIntoStorage(location.country));
                     dispatch(updateRegionIntoStorage(location));
-                    
+
                     dispatch({type: 'REGION_CHANGED', payload: location});
                     dispatch({type: 'COUNTRY_CHANGED', payload: location.country});
 
 
                     if(location.content && location.content.length == 1) {
                       this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
+                      return;
                     } else {
 
                       this.context.navigator.to('info');
