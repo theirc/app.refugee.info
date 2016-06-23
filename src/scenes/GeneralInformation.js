@@ -55,6 +55,7 @@ export class GeneralInformation extends Component {
         if(region.content && region.content.length === 1) {
             let c = region.content[0];
             navigator.to('infoDetails', c.title, {section:c.section});
+            return;
         }
 
         this.setState({
