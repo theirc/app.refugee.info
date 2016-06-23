@@ -2,10 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { View, ListView, StyleSheet, Text, TouchableHighlight, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { default as Icon } from 'react-native-vector-icons/FontAwesome';
-import I18n from '../constants/Messages';
-import { connect } from 'react-redux';
-import LoadingView from '../components/LoadingView';
+
+import { I18n, CountryHeaders } from '../constants';
+import { LoadingView, DirectionalText } from '../components';
 import styles from '../styles';
+import {connect} from 'react-redux';
 
 export default class LocationListView extends Component {
 
@@ -34,9 +35,13 @@ export default class LocationListView extends Component {
     }
 
     renderHeader() {
+        let { direction } = this.props;
+        if(!direction) {
+          direction = 'ltr';
+        }
         return (
             <View style={styles.header}>
-                <Text style={styles.headerText}>{this.props.header}</Text>
+                <DirectionalText direction={direction} style={styles.headerText}>{this.props.header}</DirectionalText>
             </View>
           );
     }
@@ -47,6 +52,16 @@ export default class LocationListView extends Component {
         if (this.props.image) {
             image = this.props.image(rowData.code);
         }
+        let { direction } = this.props;
+        if(!(direction||false)) {
+          direction = 'ltr';
+        }
+
+        const imageElement = (image && <Image
+            source={image}
+            style={styles.countryFlag}
+        />);
+
         return (
             <TouchableHighlight
                 onPress={() => {
@@ -56,14 +71,11 @@ export default class LocationListView extends Component {
                 underlayColor="white" >
                 <View style={styles.rowWrapper}>
                     <View style={styles.rowHeader}>
-                        {image &&
-                        <Image
-                            source={image}
-                            style={styles.countryFlag}
-                        />}
-                        <Text style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}>
-                            {rowData.name[0].toLocaleUpperCase() + rowData.name.slice(1)}
-                        </Text>
+                        {direction === 'ltr' && imageElement }
+                        <DirectionalText direction={direction} style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}>
+                            {rowData.pageTitle || rowData.metadata.page_title}
+                        </DirectionalText>
+                        {direction === 'rtl' && imageElement }
                     </View>
                     {(buttonIsSelected) ?
                         <Icon
@@ -79,12 +91,16 @@ export default class LocationListView extends Component {
 
     render() {
         const primary = this.props.primary;
+        let { direction } = this.props;
+        if(!(direction||false)) {
+          direction = 'ltr';
+        }
 
         if (this.props.rows.length === 0 && this.props.loaded) {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</Text>
+                        <DirectionalText direction={direction} style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</DirectionalText>
                     </View>
                 </View>
             );
@@ -93,7 +109,7 @@ export default class LocationListView extends Component {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <Text style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</Text>
+                        <DirectionalText direction={direction} style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</DirectionalText>
                     </View>
                 </View>
             );
@@ -118,7 +134,9 @@ export default class LocationListView extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary
+        primary: state.theme.primary,
+        direction: state.direction,
+        language: state.language
     };
 };
 

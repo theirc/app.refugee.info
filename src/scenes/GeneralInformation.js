@@ -11,14 +11,14 @@ import {
     RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
-import MapButton from '../components/MapButton';
-import OfflineView from '../components/OfflineView';
+import { MapButton, OfflineView,DirectionalText } from '../components';
 import { connect } from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
+import store from '../store';
 import { Divider } from 'react-native-material-design';
 
-export default class GeneralInformation extends Component {
+export class GeneralInformation extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
@@ -38,42 +38,25 @@ export default class GeneralInformation extends Component {
     }
 
     componentDidMount() {
-        this.apiClient = new ApiClient(this.context);
+        this.apiClient = new ApiClient(this.context, this.props);
         this._loadInitialState();
     }
 
     async _loadInitialState() {
+        let { region } = this.props;
         const { navigator } = this.context;
 
-        let region = JSON.parse(await AsyncStorage.getItem('region'));
-        if (!region) {
-            return;
+        if(!region) {
+          console.log("Store?", store.getState())
+          navigator.to('countryChoice');
+          return;
         }
-
-        try {
-            region = await this.apiClient.getLocation(region.id, true);
-            await AsyncStorage.setItem('regionCache', JSON.stringify(region));
-            await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
-            this.setState({
-                offline: false
-            })
-        }
-        catch (e){
-            region = JSON.parse(await AsyncStorage.getItem('regionCache'));
-            this.setState({
-                offline: true
-            })
-        }
-        
-        if (!region) {
-            return;
-        }
-        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
 
         if(region.content && region.content.length === 1) {
             let c = region.content[0];
             navigator.to('infoDetails', c.title, {section:c.section});
         }
+
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
             generalInfo: region.content,
@@ -81,6 +64,22 @@ export default class GeneralInformation extends Component {
             loaded: true,
             lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
         });
+
+        try {
+            region = await this.apiClient.getLocation(region.id, true);
+            await AsyncStorage.setItem('regionCache', JSON.stringify(region));
+            await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
+            this.setState({
+                offline: false,
+                region: region
+            })
+        }
+        catch (e){
+            this.setState({
+                offline: true
+            })
+        }
+        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
     }
 
     onRefresh(){
@@ -94,27 +93,12 @@ export default class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
-        navigator.forward(null, title, {section}, this.state);
-    }
-
-    renderHeader() {
-        return (
-            <View style={styles.stickyInputContainer}>
-                <TextInput
-                    onChangeText={(text) => this._onChangeText(text)}
-                    placeholder={I18n.t('SEARCH')}
-                    style={styles.stickyInput}
-                    returnKeyType={'search'}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    clearButtonMode="always"
-                />
-            </View>
-        );
+        navigator.forward(null, null, {section, title}, this.state);
     }
 
     renderRow(rowData) {
         const {primary, theme} = this.props;
+
         return (
             <View>
                 <TouchableHighlight
@@ -123,7 +107,7 @@ export default class GeneralInformation extends Component {
                     underlayColor= {theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
                 >
                     <View style={styles.generalInfoItem}>
-                        <Text style={styles.generalInfoText}>{rowData.title}</Text>
+                        <DirectionalText direction={this.props.direction} style={styles.generalInfoText}>{rowData.title}</DirectionalText>
                     </View>
                 </TouchableHighlight>
                 <Divider />
@@ -134,8 +118,8 @@ export default class GeneralInformation extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <OfflineView 
-                    offline={this.state.offline} 
+                <OfflineView
+                    offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
                     lastSync={this.state.lastSync}
                 />
@@ -148,13 +132,12 @@ export default class GeneralInformation extends Component {
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderSectionHeader={() => this.renderHeader()}
                     renderRow={(rowData) => this.renderRow(rowData)}
                     style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                 />
-                <MapButton/>
+                <MapButton direction={this.props.direction} />
             </View>
         );
     }
@@ -164,7 +147,10 @@ export default class GeneralInformation extends Component {
 const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
-        theme: state.theme.theme
+        language: state.language,
+        region: state.region,
+        theme: state.theme.theme,
+        direction: state.direction
     };
 };
 

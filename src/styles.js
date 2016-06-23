@@ -26,7 +26,8 @@ const styles = StyleSheet.create({
     },
     materialToolbar: {
         height: (Platform.OS === 'ios') ? 76 : 56,
-        paddingTop: (Platform.OS === 'ios') ? 20 : 0
+        paddingTop: (Platform.OS === 'ios') ? 20 : 0,
+        paddingRight: (Platform.OS === 'ios') ? 0 : 10
     },
 
     containerBelowLogo: {
@@ -114,12 +115,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5'
     },
     countryFlag: {
-        marginRight: 10
+        marginLeft: 10,
+        marginRight: 10,
     },
     floatingActionButton: {
         position: 'absolute',
         flex: 1,
-        right: 20,
         bottom: 20,
         borderWidth: 1,
         borderRadius: 50,

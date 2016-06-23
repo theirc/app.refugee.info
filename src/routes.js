@@ -5,7 +5,7 @@ export default {
         initialRoute: true,
         exitOnBackPress: true,
         title: I18n.t('REFUGEE_INFO'),
-        component: require('./scenes/initial').default
+        component: require('./scenes/Initial').default
     },
 
     languageSelection: {
@@ -61,19 +61,19 @@ export default {
         component: require('./scenes/GeneralInformation').default,
         children: {
             details: {
-                title: '',
+                title: I18n.t('GENERAL_INFO'),
                 component: require('./scenes/GeneralInformationDetails').default
             }
         }
-    },
-    
-    infoDetails: {
-        title: '',
-        component: require('./scenes/GeneralInformationDetails').default
     },
 
     networkFailure: {
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/NetworkFailure').default
+    },
+
+    settings: {
+        title: I18n.t('SETTINGS'),
+        component: require('./scenes/Settings').default
     }
 };

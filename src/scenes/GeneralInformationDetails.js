@@ -4,11 +4,14 @@ import WebView from '../nativeComponents/android/ExtendedWebView';
 import { wrapHtmlContent } from '../utils/htmlUtils'
 import styles from '../styles';
 import I18n from '../constants/Messages';
+import { connect } from 'react-redux';
+import { MapButton, OfflineView } from '../components';
 
 var WEBVIEW_REF = 'webview';
-export default class GeneralInformationDetails extends Component {
+export class GeneralInformationDetails extends Component {
 
     static propTypes = {
+        title: React.PropTypes.string.isRequired,
         section: React.PropTypes.string.isRequired
     };
 
@@ -16,7 +19,8 @@ export default class GeneralInformationDetails extends Component {
         super(props);
         this.webView = null;
         this.state = {
-            languageCode: false
+            loading: false,
+            source: false,
         };
     }
 
@@ -24,26 +28,41 @@ export default class GeneralInformationDetails extends Component {
         this._loadInitialState();
     }
 
-    async _loadInitialState() {
-        var languageCode = await AsyncStorage.getItem('langCode');
+    _loadInitialState() {
+        const {section, title, language, theme} = this.props;
+
+        let source = {
+          html: wrapHtmlContent(section, language, title, theme)
+        };
+
         this.setState({
-          languageCode: languageCode || 'en',
-          loading: true
+          source: source
         });
     }
 
 
     _onChangeText(text) {
-    }
+        // TODO: Refactor this searches all of the text including tags
 
-    _onNavigationStateChange(state) {
-        if(this.state.loading) {
-          console.log('Loading...');
+        const {title, language, theme} = this.props;
 
-          this.setState({ loading:false });
+        if(text.length < 5) {
           return;
         }
 
+        let reg = new RegExp(`(${text})`, 'ig');
+        section = (reg) ? this.props.section.replace(reg, '<mark>$1</mark>') : this.props.section;
+
+        let source = {
+          html: wrapHtmlContent(section, language, title, theme)
+        };
+
+        this.setState({
+          source: source
+        });
+    }
+
+    _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
         let url = state.url;
 
@@ -53,7 +72,10 @@ export default class GeneralInformationDetails extends Component {
         }
 
         if(this.webView) {
-          this.webView.stopLoading();
+          if(state.navigationType && state.navigationType === 'click') {
+            // Image are loaded using this method. So this narrows down to prevent all clicks.
+            this.webView.stopLoading();
+          }
 
           if (url.indexOf('/') == 0) {
               // If we get to this point, we need to point to the app
@@ -65,13 +87,10 @@ export default class GeneralInformationDetails extends Component {
     }
 
     render() {
-        if(!this.state.languageCode) {
+        if(!this.state.source) {
           return <View />;
         }
 
-        let source = {
-          html: wrapHtmlContent(this.props.section, this.state.languageCode)
-        };
         return (
             <View style={styles.container}>
                 <View style={styles.stickyInputContainer}>
@@ -87,9 +106,22 @@ export default class GeneralInformationDetails extends Component {
                 </View>
                 <WebView ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
-                    source={source}
+                    source={this.state.source}
                 />
+                <MapButton direction={this.props.direction} />
                 </View>
         );
     }
 }
+
+
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary,
+        language: state.language,
+        theme: state.theme.theme,
+        direction: state.direction
+    };
+};
+
+export default connect(mapStateToProps)(GeneralInformationDetails);
