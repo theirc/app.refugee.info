@@ -63,7 +63,6 @@ export default class DrawerCommons {
     changeScene = (path, name, props={}) => {
         const { drawer, navigator } = this.component.context;
         const { dispatch } = this.component.props;
-
         navigator.to(path, name, props);
         dispatch({type: 'CHANGE_ROUTE', payload: path});
         if (Platform.OS === 'ios'){

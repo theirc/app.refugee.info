@@ -47,7 +47,6 @@ export class GeneralInformation extends Component {
         const { navigator } = this.context;
 
         if(!region) {
-          console.log("Store?", store.getState())
           navigator.to('countryChoice');
           return;
         }

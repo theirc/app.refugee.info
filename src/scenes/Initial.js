@@ -23,9 +23,6 @@ import { fetchCountryFromStorage } from '../actions/country';
     await dispatch(fetchLanguageFromStorage());
     await dispatch(fetchCountryFromStorage());
 
-
-    console.log(store.getState())
-
     if(!(r||false)) {
       this.context.navigator.to('countryChoice');
     } else {
