@@ -65,7 +65,7 @@ export default class ServiceDetails extends Component {
     }
 
     componentDidMount() {
-        this.apiClient = new ApiClient(this.context, this.state);
+        this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
