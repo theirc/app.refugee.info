@@ -51,7 +51,7 @@ class Navigation extends Component {
         }
 
         let navigateTo = region.content.length == 1 ?
-          () => this.drawerCommons.changeScene('infoDetails', region.content[0].title, {section: region.content[0].section}) :
+          () => this.drawerCommons.changeScene('infoDetails', null, {section: region.content[0].section, sectionTitle: region.content[0].title}) :
           () => this.drawerCommons.changeScene('info');
 
         let title = require('../assets/RI-logo.png');

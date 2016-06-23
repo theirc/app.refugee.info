@@ -32,6 +32,7 @@
 	"SELECT_COUNTRY": "Please choose the country where you are",
 	"SELECT_LOCATION": "Please choose your location",
 	"SERVICE_LIST": "Services",
+	"SERVICES": "Services",
 	"EXPLORE_MAP": "Map",
 	"GENERAL_INFO": "Information",
 	"SERVICE_DETAILS": "Service Details",

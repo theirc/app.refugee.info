@@ -29,10 +29,10 @@ export class GeneralInformationDetails extends Component {
     }
 
     _loadInitialState() {
-        const {section, title, language, theme} = this.props;
+        const {section, sectionTitle, language, theme} = this.props;
 
         let source = {
-          html: wrapHtmlContent(section, language, title, theme)
+          html: wrapHtmlContent(section, language, sectionTitle, theme)
         };
 
         this.setState({
@@ -44,7 +44,7 @@ export class GeneralInformationDetails extends Component {
     _onChangeText(text) {
         // TODO: Refactor this searches all of the text including tags
 
-        const {title, language, theme} = this.props;
+        const {sectionTitle, language, theme} = this.props;
 
         if(text.length < 5) {
           return;
@@ -54,7 +54,7 @@ export class GeneralInformationDetails extends Component {
         section = (reg) ? this.props.section.replace(reg, '<mark>$1</mark>') : this.props.section;
 
         let source = {
-          html: wrapHtmlContent(section, language, title, theme)
+          html: wrapHtmlContent(section, language, sectionTitle, theme)
         };
 
         this.setState({
