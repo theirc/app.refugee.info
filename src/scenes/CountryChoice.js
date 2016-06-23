@@ -3,11 +3,20 @@ import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import LocationListView from '../components/LocationListView';
+import { LocationListView } from '../components';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
+import store from '../store';
+
+import { updateRegionIntoStorage } from '../actions/region';
+import { updateCountryIntoStorage } from '../actions/country';
+
+import { fetchRegionFromStorage } from '../actions/region';
+import { fetchDirectionFromStorage } from '../actions/direction';
+import { fetchLanguageFromStorage } from '../actions/language';
+
 
 export default class CountryChoice extends Component {
 
@@ -17,14 +26,18 @@ export default class CountryChoice extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            locations: []
-        };
+
+        this.state = Object.assign({}, store.getState(), {
+            locations: [],
+            loaded: false
+        });
     }
 
-    componentDidMount() {
-        this.apiClient = new ApiClient(this.context);
-        this._loadInitialState();
+    async componentWillMount() {
+      const {dispatch} = this.props;
+
+      this.apiClient = new ApiClient(this.context, this.props);
+      await this._loadInitialState();
     }
 
     async _getLocation(position, level) {
@@ -54,20 +67,23 @@ export default class CountryChoice extends Component {
                 let location = await this._getLocation(position, 3);
                 if (location) {
                     location.country = await this._getCountryId(location);
+                    dispatch(updateCountryIntoStorage(location.country));
+                    dispatch(updateRegionIntoStorage(location));
+                    
                     dispatch({type: 'REGION_CHANGED', payload: location});
-                    await AsyncStorage.setItem('region', JSON.stringify(location));
+                    dispatch({type: 'COUNTRY_CHANGED', payload: location.country});
+
 
                     if(location.content && location.content.length == 1) {
                       this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
                     } else {
 
-                      let pageTitle = location.metadata.page_title.replace('\u060c', ',').split(',')[0];
-                      this.context.navigator.to('info', pageTitle);
+                      this.context.navigator.to('info');
                     }
                 } else {
                     location = await this._getLocation(position, 1);
                     if (location) {
-                        this.context.navigator.forward(null, '', {countryId: location.id}, this.state);
+                        this.context.navigator.forward(null, '', {countryId: location.id});
                     } else {
                         this._loadInitialState();
                     }
@@ -81,25 +97,36 @@ export default class CountryChoice extends Component {
 
     async _loadInitialState() {
         const locations = await this.apiClient.getRootLocations();
+
+        locations.forEach((c)=>{
+          if(c && c.metadata) {
+            const pageTitle = (c.metadata.page_title || '')
+              .replace('\u060c', ',').split(',')[0];
+            c.pageTitle = pageTitle;
+          }
+        });
+
         this.setState({
             locations,
-            loaded: true
+            loaded: true,
+            language: this.props.language
         });
     }
 
     onPress(rowData) {
         const { navigator } = this.context;
-        navigator.forward(null, '', {countryId: rowData.id}, this.state);
+        navigator.forward(null, '', {countryId: rowData.id});
     }
 
     render() {
+        let pressed = false;
         return (
             <View style={styles.container}>
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         header={I18n.t('SELECT_COUNTRY')}
                         image={(countryISO) => getCountryFlag(countryISO)}
-                        onPress={(rowData) => this.onPress(rowData)}
+                        onPress={(rowData) => { if(!pressed) { this.onPress(rowData); pressed = true; } }}
                         rows={this.state.locations}
                     />
                     <Button
@@ -113,4 +140,11 @@ export default class CountryChoice extends Component {
     }
 }
 
-export default connect()(CountryChoice);
+
+const mapStateToProps = (state) => {
+    return {
+        ...state
+    };
+};
+
+export default connect(mapStateToProps)(CountryChoice);

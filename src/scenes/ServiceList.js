@@ -49,8 +49,8 @@ export default class ServiceList extends Component {
     }
 
 
-    componentDidMount() {
-        this.apiClient = new ApiClient(this.context);
+    componentWillMount() {
+        this.apiClient = new ApiClient(this.context, this.state);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -180,8 +180,8 @@ export default class ServiceList extends Component {
         }
         return (
             <View style={styles.container}>
-                <OfflineView 
-                    offline={this.state.offline} 
+                <OfflineView
+                    offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
                     lastSync={this.state.lastSync}
                 />

@@ -57,8 +57,7 @@ class LanguageSelection extends Component {
                 if(location.content && location.content.length == 1) {
                   this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
                 } else {
-                  let pageTitle = location.metadata.page_title.replace('\u060c', ',').split(',')[0];
-                  this.context.navigator.to('info', pageTitle);
+                  this.context.navigator.to('info');
                 }
             }
         }

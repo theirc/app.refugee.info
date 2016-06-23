@@ -2,96 +2,71 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {connect} from 'react-redux';
-import {Drawer, Button} from 'react-native-material-design';
+import {Drawer, Button, RadioButtonGroup, Subheader} from 'react-native-material-design';
 import DrawerCommons from '../utils/DrawerCommons';
 import I18n from '../constants/Messages';
 import styles from '../styles';
+import store from '../store';
+import {updateLanguageIntoStorage} from '../actions/language'
+import {updateDirectionIntoStorage} from '../actions/direction'
+import {updateRegionIntoStorage} from '../actions/region'
+import {updateCountryIntoStorage} from '../actions/country'
 
-class LanguageSelection extends Component {
+class Settings extends Component {
 
     static contextTypes = {
-        drawer: PropTypes.object.isRequired,
         navigator: PropTypes.object.isRequired
     };
 
-    static renderLoadingView() {
-        return (
-            <View style={{ flex: 1 }}>
-                <Spinner
-                    overlayColor="#EEE"
-                    visible
-                />
-            </View>
-        );
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            loaded: false
-        };
-        this.drawerCommons = new DrawerCommons(this);
-    }
-
     componentDidMount() {
-        this.checkLanguageSelected().done();
     }
 
-    async checkLanguageSelected() {
-        const isLanguageSelected = await AsyncStorage.getItem('isLanguageSelected');
-        const code = await AsyncStorage.getItem('langCode');
-        const theme = await AsyncStorage.getItem('theme');
-        const color = await AsyncStorage.getItem('color');
-        const location = await AsyncStorage.getItem('region');
-
-        this.setState({'loaded': true});
-        if (JSON.parse(isLanguageSelected)) {
-            if (code) {
-                this.drawerCommons.changeLanguage(code, false);
-            }
-            if (theme && color) {
-                this.drawerCommons.changeTheme(theme, color, false);
-            }
-
-            if (location) {
-                if(location.content && location.content.length == 1) {
-                  this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
-                } else {
-                  let pageTitle = location.metadata.page_title.replace('\u060c', ',').split(',')[0];
-                  this.context.navigator.to('info', pageTitle);
-                }
-            }
-        }
+    setLanguage(lang) {
+      this.setState({
+        language: lang
+      })
     }
 
-    onPress() {
-        AsyncStorage.setItem('isLanguageSelected', JSON.stringify(true));
-        this.context.navigator.to('countryChoice');
+    selectLanguage(lang) {
+      const {navigator} = this.context;
+      const { dispatch } = this.props;
+      const direction = ['ar','fa'].indexOf(lang) > -1 ? 'rtl' : 'ltr';
+
+      dispatch(updateLanguageIntoStorage(lang));
+      dispatch(updateDirectionIntoStorage(direction));
+      dispatch(updateRegionIntoStorage(null));
+      dispatch(updateCountryIntoStorage(null));
+
+      dispatch({type: "REGION_CHANGED", payload: null});
+      dispatch({type: 'COUNTRY_CHANGED', payload: null});
+      dispatch({type: "LANGUAGE_CHANGED", payload: lang});
+      dispatch({type: "DIRECTION_CHANGED", payload: direction});
+
+      navigator.to('initial');
     }
 
     render() {
-        let {theme} = this.props;
+        const {theme, language} = this.props;
 
         return (
-            <View style={styles.container}>
-                <Image
-                    resizeMode={Image.resizeMode.cover}
-                    source={require('../assets/earthsmall.png')}
-                    style={styles.logo}
-                />
-                <View style={styles.containerBelowLogo}>
-                    <Drawer theme={theme}>
-                        {this.drawerCommons.renderLanguageSection()}
-                        {this.drawerCommons.renderThemeSection()}
-                    </Drawer>
-                    <View>
-                        <Button
-                            onPress={() => this.onPress()}
-                            raised
-                            text={I18n.t('SELECT')}
-                        />
-                    </View>
-                </View>
+            <View style={localStyle.container}>
+                <Subheader text="Language" />
+
+                <RadioButtonGroup
+                      onSelect={(value)=> this.setLanguage(value) }
+                      theme={theme.theme}
+                      primary={theme.primary}
+                      selected={language}
+                      items={[{
+                          value: 'en', label: 'English'
+                      }, {
+                          value: 'ar', label: 'Arabic'
+                      },{
+                          value: 'fa', label: 'Farsi'
+                      }
+                    ]}
+                  />
+                  <Button raised onPress={() => this.selectLanguage(this.state.language)} text="Select"/>
             </View>
         );
     }
@@ -100,9 +75,16 @@ class LanguageSelection extends Component {
 const mapStateToProps = (state) => {
     return {
         route: state.navigation,
-        code: state.language,
-        theme: state.theme.theme
+        language: state.language,
+        theme: state.theme,
     };
 };
 
-export default connect(mapStateToProps)(LanguageSelection);
+const localStyle = StyleSheet.create({
+      container: {
+          flex: 1,
+          flexDirection: 'column'
+      },
+})
+
+export default connect(mapStateToProps)(Settings);
