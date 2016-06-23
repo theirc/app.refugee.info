@@ -57,7 +57,8 @@ export default class ServiceList extends Component {
     }
 
     async fetchData() {
-        let region = JSON.parse(await AsyncStorage.getItem('region'));
+        // the region comes from the state now
+        const { region } = this.props;
         if (!region) {
             this.setState({
                 loaded: true
@@ -207,7 +208,9 @@ export default class ServiceList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme.theme
+        country: state.country,
+        region: state.region,
+        theme: state.theme.theme,
     };
 };
 
