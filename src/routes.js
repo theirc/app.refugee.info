@@ -66,6 +66,10 @@ export default {
             }
         }
     },
+    infoDetails: {
+        title: I18n.t('GENERAL_INFO'),
+        component: require('./scenes/GeneralInformationDetails').default
+    },
 
     networkFailure: {
         title: I18n.t('REFUGEE_INFO'),
