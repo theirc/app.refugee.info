@@ -108,12 +108,12 @@ a.link-button {
 }
 `;
 
-export function wrapHtmlContent(content:String, language:String, title:String=null, theme:String="light") : String {
+export function wrapHtmlContent(content:String, language:String, theme:String) : String {
   console.log(language);
   console.log('---------------------------------------------');
   language = language || 'en';
   let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
-  let titleHtml = title||false ? `<h2>${title}</h2>`:'';
+
   let direction = ['ar','fa'].indexOf(language) > -1 ? 'rtl' : 'ltr'
   let htmlWrap = `
   <html>
@@ -124,7 +124,6 @@ export function wrapHtmlContent(content:String, language:String, title:String=nu
   </style>
   </head>
   <body class="${direction}">
-  ${titleHtml}
   ${content}
   </body>
   </html>

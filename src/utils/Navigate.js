@@ -177,9 +177,7 @@ export default class Navigate {
 					this.previousRoute = this.currentRoute;
 				}
 				this.currentRoute = route;
-
-				// RR: Changed push to replace because it caused weird behavior in iOS
-				this.navigator.replace(route);
+				this.navigator.push(route);
 				this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});
 			}
 		}

@@ -17,7 +17,7 @@ export default class OfflineView extends Component {
     onRefreshHandler() {
         this.props.onRefresh();
     };
-
+    
     render() {
         if (this.props.offline) {
             return (

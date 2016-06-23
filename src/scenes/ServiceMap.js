@@ -62,7 +62,7 @@ export default class ServiceMap extends Component {
     }
 
     componentDidMount() {
-        this.apiClient = new ApiClient(this.context, this.props);
+        this.apiClient = new ApiClient(this.context);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -166,8 +166,8 @@ export default class ServiceMap extends Component {
         if (this.state.loaded){
         return (
             <View style={styles.container}>
-                <OfflineView
-                    offline={this.state.offline}
+                <OfflineView 
+                    offline={this.state.offline} 
                     onRefresh={this.onRefresh.bind(this)}
                     lastSync={this.state.lastSync}
                 />

@@ -1,45 +1,72 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text} from 'react-native';
-import store from '../store'
-import {connect} from 'react-redux'
+import {AsyncStorage, Image, StyleSheet, View} from 'react-native';
+import {connect} from 'react-redux';
+import DrawerCommons from '../utils/DrawerCommons';
+import styles from '../styles';
+import I18n from '../constants/Messages'
 
-import { fetchRegionFromStorage } from '../actions/region';
-import { fetchDirectionFromStorage } from '../actions/direction';
-import { fetchLanguageFromStorage } from '../actions/language';
-import { fetchCountryFromStorage } from '../actions/country';
-
- class Initial extends Component {
+class Initial extends Component {
 
     static contextTypes = {
+        drawer: PropTypes.object.isRequired,
         navigator: PropTypes.object.isRequired
     };
 
-  async componentDidMount() {
-    const { dispatch } = this.props;
-    const r = await AsyncStorage.getItem('regionCache');
 
-    await dispatch(fetchRegionFromStorage());
-    await dispatch(fetchDirectionFromStorage());
-    await dispatch(fetchLanguageFromStorage());
-    await dispatch(fetchCountryFromStorage());
-
-
-    console.log(store.getState())
-
-    if(!(r||false)) {
-      this.context.navigator.to('countryChoice');
-    } else {
-      this.context.navigator.to('info');
+    constructor(props) {
+        super(props);
+        this.drawerCommons = new DrawerCommons(this);
     }
 
-  }
+    componentDidMount() {
+        this.checkLanguageSelected().done();
+    }
 
-  render() {
-    // Nothing to see here, just redirecting to the info page
-    return <View />
-  }
+    async checkLanguageSelected() {
+
+        const isLanguageSelected = await AsyncStorage.getItem('isLanguageSelected');
+        const theme = await AsyncStorage.getItem('theme');
+        const color = await AsyncStorage.getItem('color');
+        let location = await AsyncStorage.getItem('region');
+        const code = await AsyncStorage.getItem('langCode');
+
+        if (!code) {
+          let languageCode = I18n.currentLocale().split('-')[0];
+          await AsyncStorage.setItem('langCode', languageCode);
+          await AsyncStorage.setItem('isLanguageSelected', 'true');
+        }
+
+        if (code) {
+            this.drawerCommons.changeLanguage(code, false);
+        }
+        if (theme && color) {
+            this.drawerCommons.changeTheme(theme, color, false);
+        }
+
+        if (location) {
+            location = JSON.parse(location)
+            if(location.content && location.content.length == 1) {
+              return this.context.navigator.to('infoDetails', location.content[0].title, {section: location.content[0].section})
+            } else {
+              return this.context.navigator.to('info');
+            }
+        }
+        return this.context.navigator.to('languageSelection');
+    }
+
+    render() {
+        return (
+            <View />
+        );
+    }
 }
 
-export default connect((state) => {
-  return {...state};
-})(Initial);
+const mapStateToProps = (state) => {
+    return {
+        route: state.navigation,
+        code: state.language,
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(Initial);
