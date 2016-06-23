@@ -9,17 +9,17 @@ import {
 import React, {Component, PropTypes} from 'react';
 import Navigation from './Navigation';
 import Navigate from '../utils/Navigate';
-import { Toolbar } from '../components';
+import {Toolbar} from '../components';
 import Drawer from 'react-native-drawer'
 import {Provider} from 'react-redux';
 import store from '../store';
 import styles from '../styles';
 import {connect} from 'react-redux';
 
-import { fetchRegionFromStorage } from '../actions/region';
-import { fetchDirectionFromStorage } from '../actions/direction';
-import { fetchLanguageFromStorage } from '../actions/language';
-import { fetchCountryFromStorage } from '../actions/country';
+import {fetchRegionFromStorage} from '../actions/region';
+import {fetchDirectionFromStorage} from '../actions/direction';
+import {fetchLanguageFromStorage} from '../actions/language';
+import {fetchCountryFromStorage} from '../actions/country';
 
 
 export class App extends Component {
@@ -39,12 +39,12 @@ export class App extends Component {
     }
 
     async componentDidMount() {
-      const {dispatch} = this.props;
+        const {dispatch} = this.props;
 
-      await dispatch(fetchRegionFromStorage());
-      await dispatch(fetchDirectionFromStorage());
-      await dispatch(fetchLanguageFromStorage());
-      await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchRegionFromStorage());
+        await dispatch(fetchDirectionFromStorage());
+        await dispatch(fetchLanguageFromStorage());
+        await dispatch(fetchCountryFromStorage());
     }
 
     getChildContext = () => {
@@ -68,24 +68,24 @@ export class App extends Component {
     };
 
     render() {
-        const { drawer, navigator } = this.state;
+        const {drawer, navigator} = this.state;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
 
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
 
         return (
-          <Drawer
-              ref={(drawer) =>{
+            <Drawer
+                ref={(drawer) =>{
                   this.drawer = drawer;
               }}
-              type="overlay"
-              acceptTap={true}
-              content={
+                type="overlay"
+                acceptTap={true}
+                content={
                   <Navigation />
               }
-              tapToClose={true}
-              styles={{
+                tapToClose={true}
+                styles={{
               main: {
                   paddingLeft: 3,
                   backgroundColor: '#F5F5F5'
@@ -95,31 +95,31 @@ export class App extends Component {
                   shadowOpacity: 0.8,
                   shadowRadius: 3
               }}}
-              onOpen={() => {
+                onOpen={() => {
                   this.setState({drawerOpen: true})
               }}
-              onClose={() => {
+                onClose={() => {
                   this.setState({drawerOpen: false})
               }}
-              captureGestures={false}
-              tweenDuration={100}
-              panThreshold={0.08}
-              openDrawerOffset={0.2}
-              closedDrawerOffset={() => -3}
-              panOpenMask={0.02}
-          >
-              <StatusBar
-                  barStyle={'light-content'}
-              />
-              {!drawer &&
-              <Navigator
-                  configureScene={() => {
+                captureGestures={false}
+                tweenDuration={100}
+                panThreshold={0.08}
+                openDrawerOffset={0.2}
+                closedDrawerOffset={() => -3}
+                panOpenMask={0.02}
+            >
+                <StatusBar
+                    barStyle={'light-content'}
+                />
+                {!drawer &&
+                <Navigator
+                    configureScene={() => {
                       return sceneConfig;
                   }}
-                  initialRoute={Navigate.getInitialRoute()}
-                  navigationBar={<Toolbar onIconPress={this.openDrawer} />}
-                  ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
-                  renderScene={(route) => {
+                    initialRoute={Navigate.getInitialRoute()}
+                    navigationBar={<Toolbar onIconPress={this.openDrawer} />}
+                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
+                    renderScene={(route) => {
                       if (this.state.navigator && route.component) {
 
                           let instance =
@@ -131,17 +131,18 @@ export class App extends Component {
 
                           return (
                               <View
-                                  showsVerticalScrollIndicator={true}
-                                  style={[styles.scene,!(this.state && !this.state.drawerOpen) ? {width: 0, height: 0} : {}]}
+                                pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
+                                showsVerticalScrollIndicator={true}
+                                style={styles.scene}
                               >
                               {instance}
                               </View>
                           );
                       }
                   }}
-              />
-              }
-          </Drawer>
+                />
+                }
+            </Drawer>
         )
     }
 }

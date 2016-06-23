@@ -90,7 +90,6 @@ export default class ServiceList extends Component {
         }
         locations.push(region);
         let lastSync = await AsyncStorage.getItem('lastServicesSync');
-        console.log(lastSync);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,

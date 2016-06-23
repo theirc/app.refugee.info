@@ -13,45 +13,43 @@ import {Provider} from 'react-redux';
 
 
 /**
-This class is the skeleton of the app.
+ This class is the skeleton of the app.
 
-This was removed from the index.*.js because of loading the language on start up and showing up
-welcome screen.
+ This was removed from the index.*.js because of loading the language on start up and showing up
+ welcome screen.
 
-*/
+ */
 class Skeleton extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-          firstLoad: true
+            firstLoad: true
         }
     }
 
     componentWillMount() {
         this.languagePromise = this.checkLanguageSelected();
-        console.log(store.getState());
-
     }
 
     componentDidMount() {
-      AppState.addEventListener('change', this._handleAppStateChange);
+        AppState.addEventListener('change', this._handleAppStateChange);
     }
 
     componentWillUnmount() {
-      AppState.removeEventListener('change', this._handleAppStateChange);
+        AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
     _handleAppStateChange() {
-      console.log(arguments);
+        // console.log(arguments);
     }
 
     async checkLanguageSelected() {
         let code = (I18n.currentLocale() || 'en').split('-')[0];
-        if(!I18n.translations.hasOwnProperty(code)) {
-          // This means we don't have a translation for it
-          // So fallback to English
-          code = 'en';
+        if (!I18n.translations.hasOwnProperty(code)) {
+            // This means we don't have a translation for it
+            // So fallback to English
+            code = 'en';
         }
 
         // Instead of having the app handling the language selection we should
@@ -63,17 +61,17 @@ class Skeleton extends Component {
     }
 
     render() {
-        if(this.state.firstLoad) {
-          return (
-              <Welcome firstLoad={this.state.firstLoad} finished={()=> {
+        if (this.state.firstLoad) {
+            return (
+                <Welcome firstLoad={this.state.firstLoad} finished={()=> {
                 AsyncStorage.setItem('firstLoad','false');
                 this.setState({firstLoad: false});
-              } } />
-          );
+                } }/>
+            );
         } else {
-          return (
-              <App />
-          );
+            return (
+                <App />
+            );
         }
     }
 }
