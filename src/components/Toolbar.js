@@ -46,6 +46,7 @@ export default class Toolbar extends Component {
                 style={styles.materialToolbar}
                 testID="test-id-toolbar"
                 title={title}
+                direction={this.props.direction}
             />
         );
     }
@@ -54,7 +55,8 @@ export default class Toolbar extends Component {
 const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
-        region: state.region
+        region: state.region,
+        direction: state.direction
     };
 };
 

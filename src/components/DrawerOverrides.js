@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from "react";
 import {View, Image, Text, TouchableNativeFeedback} from "react-native";
-import { Ripple, Icon,TYPO } from 'react-native-material-design';
-import { Platform } from 'react-native';
+import {Ripple, Icon, TYPO} from 'react-native-material-design';
+import {Platform} from 'react-native';
 
 /**
  * Detect whether a specific feature is compatible with the device
@@ -35,22 +35,52 @@ export class Section extends Component {
             onLongPress: PropTypes.func,
             active: PropTypes.bool,
             disabled: PropTypes.bool
-        }))
+        })),
+        direction: PropTypes.oneOf(['ltr', 'rtl'])
     };
 
     renderRow = (item, index, color) => {
+        if (this.props.direction == 'rtl') {
+            return (
+                <View
+                    key={index}
+                    style={styles.item}
+                >
+                    <View style={styles.valueRTL}>
+                        <Text style={[TYPO.paperFontBody2, { color }, {textAlign: 'right'}]}>
+                            {item.value}
+                        </Text>
+                    </View>
+                    {item.label &&
+                    <View style={styles.label}>
+                        <Text style={[TYPO.paperFontBody2, { color }]}>
+                            {item.label}
+                        </Text>
+                    </View>
+                    }
+                    {item.icon &&
+                    <Icon
+                        name={item.icon}
+                        color={color}
+                        size={22}
+                        style={styles.iconRTL}
+                    />
+                    }
+                </View>
+            );
+        }
         return (
             <View
                 key={index}
                 style={styles.item}
             >
                 {item.icon &&
-                    <Icon
-                        name={item.icon}
-                        color={color}
-                        size={22}
-                        style={styles.icon}
-                    />
+                <Icon
+                    name={item.icon}
+                    color={color}
+                    size={22}
+                    style={styles.icon}
+                />
                 }
                 <View style={styles.value}>
                     <Text style={[TYPO.paperFontBody2, { color }]}>
@@ -58,18 +88,18 @@ export class Section extends Component {
                     </Text>
                 </View>
                 {item.label &&
-                    <View style={styles.label}>
-                        <Text style={[TYPO.paperFontBody2, { color }]}>
-                            {item.label}
-                        </Text>
-                    </View>
+                <View style={styles.label}>
+                    <Text style={[TYPO.paperFontBody2, { color }]}>
+                        {item.label}
+                    </Text>
+                </View>
                 }
             </View>
         );
     };
 
     render() {
-        const { theme, title, items } = this.props;
+        const {theme, title, items} = this.props;
 
         const textStyleMap = {
             light: {
@@ -84,12 +114,12 @@ export class Section extends Component {
 
         const subheaderStyleMap = {
             light: 'rgba(0,0,0,.54)',
-            dark: 'rgba(255,255,255,.70)',
+            dark: 'rgba(255,255,255,.70)'
         };
 
         const activeStyleMap = {
             light: '#f5f5f5',
-            dark: '#212121',
+            dark: '#212121'
         };
 
         const TEXT_COLOR = textStyleMap[theme]['default'];
@@ -99,11 +129,11 @@ export class Section extends Component {
         return (
             <View style={styles.section}>
                 {title &&
-                    <View style={[styles.subheader, styles.item]}>
-                        <Text style={[TYPO.paperFontBody2, { color: SUB_TEXT_COLOR }]}>
-                            {title}
-                        </Text>
-                    </View>
+                <View style={[styles.subheader, styles.item]}>
+                    <Text style={[TYPO.paperFontBody2, { color: SUB_TEXT_COLOR }]}>
+                        {title}
+                    </Text>
+                </View>
                 }
                 {items && items.map((item, i) => {
                     if (item.disabled) {
@@ -119,7 +149,7 @@ export class Section extends Component {
                                 onLongPress={item.onLongPress}
                                 style={{
                                     flex: 1,
-                                    flexDirection: 'row',
+                                    flexDirection: 'column',
                                     backgroundColor: item.active ? ACTIVE_COLOR : null
                                 }}
                             >
@@ -149,7 +179,7 @@ export class Section extends Component {
 export class Header extends Component {
 
     static propTypes = {
-        image: PropTypes.shape({ type: PropTypes.oneOf([Image]) }),
+        image: PropTypes.shape({type: PropTypes.oneOf([Image])}),
         backgroundColor: PropTypes.string,
         height: PropTypes.number,
         children: PropTypes.node
@@ -161,11 +191,11 @@ export class Header extends Component {
     };
 
     render() {
-        const { image, height, backgroundColor, children } = this.props;
+        const {image, height, backgroundColor, children} = this.props;
 
         if (image) {
             return React.cloneElement(image, {
-                style: [styles.header, { height: height }]
+                style: [styles.header, {height: height}]
             }, children);
         }
 
@@ -178,36 +208,48 @@ export class Header extends Component {
 }
 
 const styles = {
-  header: {
-   paddingHorizontal: 16,
-   marginBottom: 0
-  },
-  section: {
-      flex: 1,
-      marginTop: 0
-  },
-  item: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 48,
-      paddingLeft: 16
-  },
-  subheader: {
-      flex: 1,
-  },
-  icon: {
-      position: 'absolute',
-      top: 13
-  },
-  value: {
-      flex: 1,
-      paddingLeft: 56,
-      paddingRight: 5,
-      top: (Platform.OS === 'ios') ? -5 : 2
-  },
-  label: {
-      paddingRight: 16,
-      top: 2
-  }
+    header: {
+        paddingHorizontal: 16,
+        marginBottom: 0
+    },
+    section: {
+        flex: 1,
+        marginTop: 0
+    },
+    item: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 48,
+        paddingLeft: 16
+    },
+    subheader: {
+        flex: 1
+    },
+    icon: {
+        position: 'absolute',
+        top: 13
+    },
+    iconRTL: {
+        position: 'absolute',
+        top: 13,
+        right: 10
+    },
+    value: {
+        flex: 1,
+        paddingLeft: 56,
+        paddingRight: 5,
+        top: (Platform.OS === 'ios') ? -5 : 2
+    },
+    valueRTL: {
+        flex: 1,
+        paddingRight: 56,
+        top: (Platform.OS === 'ios') ? -5 : 2,
+        paddingLeft: 5,
+        alignItems: 'flex-end'
+    },
+    label: {
+        paddingRight: 16,
+        top: 2
+    }
 };
