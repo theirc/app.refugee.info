@@ -53,7 +53,7 @@ export class GeneralInformation extends Component {
 
         if(region.content && region.content.length === 1) {
             let c = region.content[0];
-            navigator.to('infoDetails', c.title, {section:c.section});
+            navigator.to('infoDetails', null, {section:c.section, sectionTitle: c.title});
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
@@ -92,7 +92,7 @@ export class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
-        navigator.forward(null, null, {section, title}, this.state);
+        navigator.forward(null, null, {section, sectionTitle: title}, this.state);
     }
 
     renderRow(rowData) {

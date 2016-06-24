@@ -58,7 +58,8 @@ export default class ServiceList extends Component {
     }
 
     async fetchData() {
-        let region = JSON.parse(await AsyncStorage.getItem('region'));
+        // the region comes from the state now
+        const { region } = this.props;
         if (!region) {
             this.setState({
                 loaded: true
@@ -146,6 +147,7 @@ export default class ServiceList extends Component {
             dataSource: this.state.dataSource.cloneWithRows(filteredServices)
         });
     }
+    
     renderHeader() {
         return (
             <View style={styles.stickyInputContainer}>
@@ -212,8 +214,10 @@ export default class ServiceList extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        direction: state.direction,
-        theme: state.theme.theme
+        country: state.country,
+        region: state.region,
+        theme: state.theme.theme,
+        direction: state.direction
     };
 };
 
