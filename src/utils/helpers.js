@@ -234,3 +234,22 @@ export function getCountryFlag(countryISO) {
         return countryFlags[lowerCaseCountryISO];
     }
 }
+
+/**
+ *
+ * @param text parameter from onChangeText
+ * @param searches array of search history
+ * @param textInput reference to textInput
+ * @returns {string} RTL text
+ */
+export function convertInputToRtl(text, searches, textInput){
+    let rtl_text = '';
+    if (text.length > searches[searches.length - 1].length) {
+        rtl_text = text.slice(-1) + text.slice(0, -1);
+    } else {
+        rtl_text = searches[searches.length - 1].slice(1);
+    }
+    searches.push(rtl_text);
+    textInput.setNativeProps({text: rtl_text});
+    return rtl_text;
+}

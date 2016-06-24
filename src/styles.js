@@ -262,6 +262,9 @@ const styles = StyleSheet.create({
     },
     generalInfoText: {
         fontSize: 16
+    },
+    alignRight: {
+        textAlign: 'right'
     }
 
 });

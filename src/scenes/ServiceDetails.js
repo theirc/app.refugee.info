@@ -22,7 +22,7 @@ import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
 import Share from 'react-native-share';
 import OfflineView from '../components/OfflineView';
-
+import { convertInputToRtl } from '../utils/helpers'
 import styles from '../styles';
 
 const RADIUS = 0.01;
@@ -59,7 +59,9 @@ export default class ServiceDetails extends Component {
             refreshing: false,
             service: this.props.service,
             isFormDirty: false,
-            offline: false
+            offline: false,
+            names: [''],
+            comments: ['']
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -191,6 +193,22 @@ export default class ServiceDetails extends Component {
         );
     }
 
+    _onChangeTextName(text){
+        let name = text;
+        if (this.props.direction == 'rtl') {
+            name = convertInputToRtl(text, this.state.names, this._textInputName);
+        }
+        this.setState({name: name})
+    }
+
+    _onChangeTextComment(text){
+        let comment = text;
+        if (this.props.direction == 'rtl') {
+            comment = convertInputToRtl(text, this.state.comments, this._textInputComment);
+        }
+        this.setState({comment: comment})
+    }
+
     renderFeedbackContainer() {
         let rateStars = [...new Array(5)].map((x, i) => (
             <Icon
@@ -222,13 +240,14 @@ export default class ServiceDetails extends Component {
                                 {rateStars}
                             </View>
                             <TextInput
+                                ref={component => this._textInputName = component}
                                 onChangeText={
-                                    (text) => this.setState({name: text})
+                                    (text) => this._onChangeTextName(text)
                                 }
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
-                                style={styles.textInputModal}
+                                style={[styles.textInputModal, this.props.direction=='rtl' ? styles.alignRight : null]}
                             />
                             {this._isNameInvalid() &&
                             <Text style={styles.validationText}>
@@ -237,13 +256,14 @@ export default class ServiceDetails extends Component {
                             }
                             <TextInput
                                 multiline
+                                ref={component => this._textInputComment = component}
                                 onChangeText={
-                                    (text) => this.setState({comment: text})
+                                    (text) => this._onChangeTextComment(text)
                                 }
                                 placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
-                                style={styles.textInputMultiline}
+                                style={[styles.textInputMultiline, this.props.direction=='rtl' ? styles.alignRight : null]}
                             />
                             {this._isCommentInvalid() &&
                             <Text style={styles.validationText}>
@@ -419,7 +439,8 @@ export default class ServiceDetails extends Component {
 const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        direction: state.direction,
     };
 };
 
