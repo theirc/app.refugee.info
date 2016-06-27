@@ -14,6 +14,7 @@ import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
 import { connect } from 'react-redux';
+import MapPopup from '../components/MapPopup';
 
 const RADIUS_MULTIPLIER = 1.2;
 
@@ -198,19 +199,10 @@ class ServiceMap extends Component {
                                 </View>
                             }
                             <MapView.Callout style={styles.mapPopupContainer}>
-                                <View style={styles.rowContainer}>
-                                    <View style={styles.iconContainer}>
-                                        <Image
-                                            source={{uri: marker.icon_url}}
-                                            style={styles.mapIcon}
-                                        />
-                                    </View>
-                                    <View>
-                                        <Text style={styles.mapPopupTitle}>{marker.title}</Text>
-                                        <Text>{this.serviceCommons.renderStars(marker.service.rating)}</Text>
-                                        <Text style={styles.mapPopupDescription}>{marker.description}</Text>
-                                    </View>
-                                </View>
+                                <MapPopup
+                                    marker={marker}
+                                    direction={this.props.direction}
+                                />
                             </MapView.Callout>
 
                         </MapView.Marker>
@@ -228,6 +220,7 @@ const mapStateToProps = (state) => {
         country: state.country,
         region: state.region,
         theme: state.theme.theme,
+        direction: state.direction
     };
 };
 
