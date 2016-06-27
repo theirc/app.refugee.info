@@ -27,7 +27,7 @@ class NetworkFailure extends Component {
         const { theme, primary } = this.props;
         return (
             <View style={styles.rowHeader}>
-                <View style={styles.horizontalContainer}>
+                <View style={styles.centeredContainer}>
                     <Text style={styles.error}>
                         {I18n.t('NETWORK_FAILURE')}
                     </Text>

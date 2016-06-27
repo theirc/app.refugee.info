@@ -1,6 +1,8 @@
 'use strict';
 
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, Dimensions } from 'react-native';
+
+let {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
 
@@ -17,6 +19,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5'
     },
     horizontalContainer: {
+        flex: 1,
+        flexDirection: 'column'
+    },
+    centeredContainer: {
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center'
@@ -144,7 +150,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     detailsContainer: {
-        margin: 5
+        margin: 10
     },
     textCenter: {
         textAlign: 'center',
@@ -153,11 +159,22 @@ const styles = StyleSheet.create({
     textRight: {
         textAlign: 'right'
     },
+    rowTextContainerRTL: {
+        flex: 1,
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        marginRight: 20
+    },
+    paddedListItem: {
+        padding: 10
+    },
+    itemsToEnd: {
+        alignItems: 'flex-end'
+    },
     title: {
         fontWeight: 'bold'
     },
     commentBox: {
-        flexDirection: 'row',
         flex: 1,
         marginBottom: 10
     },
@@ -169,9 +186,7 @@ const styles = StyleSheet.create({
         flex: 8
     },
     commentIcon: {
-        flex: 1,
-        alignSelf: 'center',
-        marginLeft: 15
+        margin: 15
     },
     loading: {
         justifyContent: 'center',
@@ -220,13 +235,17 @@ const styles = StyleSheet.create({
     mapPopupContainer: {
     },
     mapPopupTitle: {
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    mapPopupProvider: {
         fontSize: 14,
-        fontWeight: 'bold',
         marginBottom: 5
     },
     mapPopupDescription: {
         marginTop: 5,
-        fontSize: 12
+        fontSize: 12,
+        width: width - 40
     },
     offlineModeContainer: {
         padding: 15,
@@ -262,6 +281,9 @@ const styles = StyleSheet.create({
     },
     generalInfoText: {
         fontSize: 16
+    },
+    alignRight: {
+        textAlign: 'right'
     }
 
 });

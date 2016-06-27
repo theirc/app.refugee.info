@@ -26,8 +26,7 @@ export class App extends Component {
 
     static childContextTypes = {
         drawer: React.PropTypes.object,
-        navigator: React.PropTypes.object,
-        theme: React.PropTypes.oneOf(['light', 'dark'])
+        navigator: React.PropTypes.object
     };
 
     constructor(props) {
@@ -69,8 +68,8 @@ export class App extends Component {
 
     render() {
         const {drawer, navigator} = this.state;
+        let {direction} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
-
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
 
@@ -78,7 +77,7 @@ export class App extends Component {
             <Drawer
                 ref={(drawer) =>{
                   this.drawer = drawer;
-              }}
+                }}
                 type="overlay"
                 acceptTap={true}
                 content={
@@ -87,7 +86,7 @@ export class App extends Component {
                 tapToClose={true}
                 styles={{
               main: {
-                  paddingLeft: 3,
+                  paddingLeft: direction=='rtl' ? 3 : 0,
                   backgroundColor: '#F5F5F5'
               },
               drawer: {
@@ -107,6 +106,7 @@ export class App extends Component {
                 openDrawerOffset={0.2}
                 closedDrawerOffset={() => -3}
                 panOpenMask={0.02}
+                side={'left'}
             >
                 <StatusBar
                     barStyle={'light-content'}
@@ -147,4 +147,12 @@ export class App extends Component {
     }
 }
 
-export default connect()(App);
+const mapStateToProps = (state) => {
+    return {
+        primary: state.theme.primary,
+        theme: state.theme.theme,
+        direction: state.direction
+    };
+};
+
+export default connect(mapStateToProps)(App);

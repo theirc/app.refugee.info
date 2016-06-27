@@ -119,7 +119,7 @@ export default class ServiceList extends Component {
         let serviceType = this.state.serviceTypes.find(function(type) {
             return type.url == service.type;
         });
-        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
+        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location, this.props.direction);
         const theme = this.props.theme;
         return (
             <View>
@@ -149,7 +149,7 @@ export default class ServiceList extends Component {
                 <TextInput
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
-                    style={styles.stickyInput}
+                    style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
                     returnKeyType={'search'}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -166,7 +166,7 @@ export default class ServiceList extends Component {
                     <TextInput
                         onChangeText={(text) => this._onChangeText(text)}
                         placeholder={I18n.t('SEARCH')}
-                        style={styles.stickyInput}
+                        style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
                         returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -199,8 +199,9 @@ export default class ServiceList extends Component {
                     style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
+                    direction={this.props.direction}
                 />
-                <MapButton />
+                <MapButton direction={this.props.direction}/>
             </View>
         );
     }
@@ -211,6 +212,7 @@ const mapStateToProps = (state) => {
         country: state.country,
         region: state.region,
         theme: state.theme.theme,
+        direction: state.direction
     };
 };
 
