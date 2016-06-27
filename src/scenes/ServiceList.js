@@ -120,7 +120,7 @@ export default class ServiceList extends Component {
         let serviceType = this.state.serviceTypes.find(function(type) {
             return type.url == service.type;
         });
-        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
+        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location, this.props.direction);
         const theme = this.props.theme;
         return (
             <View>
@@ -205,8 +205,9 @@ export default class ServiceList extends Component {
                     style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
+                    direction={this.props.direction}
                 />
-                <MapButton />
+                <MapButton direction={this.props.direction}/>
             </View>
         );
     }
