@@ -1,15 +1,15 @@
-import React, { Component, PropTypes } from 'react';
-import { Text, Image, View } from 'react-native';
-import { connect } from 'react-redux';
-import { Avatar, Drawer, Divider, COLOR, TYPO } from 'react-native-material-design';
+import React, {Component, PropTypes} from 'react';
+import {Text, Image, View} from 'react-native';
+import {connect} from 'react-redux';
+import {Avatar, Drawer, Divider, COLOR, TYPO} from 'react-native-material-design';
 
-import { typography } from 'react-native-material-design-styles';
+import {typography} from 'react-native-material-design-styles';
 
 import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
 import ApiClient from '../utils/ApiClient';
 import DrawerCommons from '../utils/DrawerCommons';
-import { Header, Section, DirectionalText } from '../components'
+import {Header, Section, DirectionalText} from '../components'
 import CountryHeaders from '../constants/CountryHeaders'
 
 class Navigation extends Component {
@@ -25,54 +25,61 @@ class Navigation extends Component {
     }
 
     _getImportantInformation() {
-      const region = this.props.region;
-      if(!region || !region.important_information) {
-        return <View />;
-      }
+        const region = this.props.region;
+        if (!region || !region.important_information) {
+            return <View />;
+        }
 
-      return <Section
-        items={region.important_information.map((i) => {
-          return {
-            value: i.metadata.page_title,
-            active: false,
-            onPress: () => false,
-            onLongPress: () => false
-          }
-        })}
-      />
+        return (
+            <Section
+                direction={this.props.direction}
+                items={region.important_information.map((i) => {
+                    return {
+                        value: i.metadata.page_title,
+                        active: false,
+                        onPress: () => false,
+                        onLongPress: () => false
+                    }
+                })}
+            />
+        )
     }
 
     render() {
         const {theme, route, region, country} = this.props;
-        const { navigator } = this.context;
+        const {navigator} = this.context;
 
         if (!this.props.region) {
             return <Text>Choose location first</Text>;
         }
 
         let navigateTo = region.content.length == 1 ?
-          () => this.drawerCommons.changeScene('infoDetails', null, {section: region.content[0].section, sectionTitle: region.content[0].title}) :
-          () => this.drawerCommons.changeScene('info');
+            () => this.drawerCommons.changeScene('infoDetails', null, {
+                section: region.content[0].section,
+                sectionTitle: region.content[0].title
+            }) :
+            () => this.drawerCommons.changeScene('info');
 
         let title = require('../assets/RI-logo.png');
         let headerInformation = CountryHeaders.rs;
 
-        if(country) {
-          const countryCode = country.code.toLowerCase();
-          if(CountryHeaders.hasOwnProperty(countryCode)) {
-            headerInformation = CountryHeaders[countryCode];
-          }
+        if (country) {
+            const countryCode = country.code.toLowerCase();
+            if (CountryHeaders.hasOwnProperty(countryCode)) {
+                headerInformation = CountryHeaders[countryCode];
+            }
         }
 
         return (
             <Drawer theme={theme}>
                 <Header backgroundColor={headerInformation.backgroundColor } height={75}>
                     <View style={{paddingBottom: 10, flexDirection: 'row', flex: 1, alignItems: 'flex-end'}}>
-                          <DirectionalText direction={this.props.direction}
-                          style={[{color: headerInformation.color}, typography.paperFontTitle]}>{region.pageTitle}</DirectionalText>
+                        <DirectionalText direction={this.props.direction}
+                                         style={[{color: headerInformation.color}, typography.paperFontTitle]}>{region.pageTitle}</DirectionalText>
                     </View>
                 </Header>
                 <Section
+                    direction={this.props.direction}
                     items={[
                       {
                           icon: 'info',
@@ -100,6 +107,7 @@ class Navigation extends Component {
                 {this._getImportantInformation()}
                 <Divider />
                 <Section
+                    direction={this.props.direction}
                     items={
                     [{
                         icon: 'public',

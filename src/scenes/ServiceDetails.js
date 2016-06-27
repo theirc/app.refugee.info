@@ -22,7 +22,7 @@ import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
 import Share from 'react-native-share';
 import OfflineView from '../components/OfflineView';
-
+import {convertInputToRtl} from '../utils/helpers';
 import styles from '../styles';
 
 const RADIUS = 0.01;
@@ -59,7 +59,9 @@ export default class ServiceDetails extends Component {
             refreshing: false,
             service: this.props.service,
             isFormDirty: false,
-            offline: false
+            offline: false,
+            names: [''],
+            comments: ['']
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -173,26 +175,77 @@ export default class ServiceDetails extends Component {
     }
 
     renderFeedback(row) {
-        let stars = this.serviceCommons.renderStars(row.quality);
+        let direction = this.props.direction;
+        let stars = this.serviceCommons.renderStars(row.quality, direction);
+        if (direction == 'rtl') return (
+            <View style={[styles.rowContainer, styles.paddedListItem]}>
+                <View style={styles.rowTextContainerRTL}>
+                    <Text>{row.name}</Text>
+                    <Text>{row.extra_comments}</Text>
+                    <Text>{stars} {I18n.t('RATING')}</Text>
+                </View>
+                <View style={styles.iconContainer}>
+                    <Icon
+                        color="black"
+                        name="user"
+                        size={32}
+                        style={styles.mapIcon}
+                    />
+                </View>
+            </View>
+        );
         return (
-            <View style={styles.commentBox}>
-                <Icon
-                    color="black"
-                    name="user"
-                    size={32}
-                    style={styles.commentIcon}
-                />
-                <View style={styles.comment}>
-                    <Text style={styles.comment}>{row.name}</Text>
-                    <Text style={styles.comment}>{row.extra_comments}</Text>
-                    <Text style={styles.comment}>{I18n.t('RATING')}: {stars}</Text>
+            <View style={[styles.rowContainer, styles.paddedListItem]}>
+                <View style={styles.iconContainer}>
+                    <Icon
+                        color="black"
+                        name="user"
+                        size={32}
+                        style={styles.mapIcon}
+                    />
+                </View>
+                <View>
+                    <Text>{row.name}</Text>
+                    <Text>{row.extra_comments}</Text>
+                    <Text>{I18n.t('RATING')}: {stars}</Text>
                 </View>
             </View>
         );
     }
 
+    _onChangeTextName(text) {
+        let name = text;
+        if (this.props.direction == 'rtl') {
+            name = convertInputToRtl(text, this.state.names, this._textInputName);
+        }
+        this.setState({name: name})
+    }
+
+    _onChangeTextComment(text) {
+        let comment = text;
+        if (this.props.direction == 'rtl') {
+            comment = convertInputToRtl(text, this.state.comments, this._textInputComment);
+        }
+        this.setState({comment: comment})
+    }
+
     renderFeedbackContainer() {
-        let rateStars = [...new Array(5)].map((x, i) => (
+        let {direction} = this.props;
+        let rateStars;
+        if (direction == 'rtl') rateStars = [...new Array(5)].map((x, i) => (
+            <Icon
+                key={i}
+                name={(Math.abs(this.state.rating - 5) < i + 1) ? 'star' : 'star-o'}
+                onPress={() => {
+                    this._setFormDirty(false);
+                    this._setModalVisible(true);
+                    this._setRating(Math.abs(i - 5));
+                }}
+                size={24}
+                style={styles.starIcon}
+            />
+        ));
+        else rateStars = [...new Array(5)].map((x, i) => (
             <Icon
                 key={i}
                 name={(this.state.rating >= i + 1) ? 'star' : 'star-o'}
@@ -222,13 +275,15 @@ export default class ServiceDetails extends Component {
                                 {rateStars}
                             </View>
                             <TextInput
+                                ref={component => this._textInputName = component}
                                 onChangeText={
-                                    (text) => this.setState({name: text})
+                                    (text) => this._onChangeTextName(text)
                                 }
+                                autoCapitalize={'none'}
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={(this._isNameInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.name}
-                                style={styles.textInputModal}
+                                style={[styles.textInputModal, direction=='rtl' ? styles.alignRight : null]}
                             />
                             {this._isNameInvalid() &&
                             <Text style={styles.validationText}>
@@ -237,13 +292,15 @@ export default class ServiceDetails extends Component {
                             }
                             <TextInput
                                 multiline
+                                ref={component => this._textInputComment = component}
                                 onChangeText={
-                                    (text) => this.setState({comment: text})
+                                    (text) => this._onChangeTextComment(text)
                                 }
+                                autoCapitalize={'none'}
                                 placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={(this._isCommentInvalid()) ? '#a94442' : 'default'}
                                 value={this.state.comment}
-                                style={styles.textInputMultiline}
+                                style={[styles.textInputMultiline, direction=='rtl' ? styles.alignRight : null]}
                             />
                             {this._isCommentInvalid() &&
                             <Text style={styles.validationText}>
@@ -288,6 +345,7 @@ export default class ServiceDetails extends Component {
                     enableEmptySections
                     renderRow={(row) => this.renderFeedback(row)}
                     style={styles.feedbackContainer}
+                    direction={direction}
                 />
 
             </View>
@@ -309,9 +367,9 @@ export default class ServiceDetails extends Component {
             `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
 
         let rowContent = this.serviceCommons.renderRowContent(
-            service, this.props.serviceType, this.props.location
+            service, this.props.serviceType, this.props.location, this.props.direction
         );
-        const {theme, primary} = this.props;
+        const {theme, primary, direction} = this.props;
 
         return (
             <ScrollView
@@ -328,12 +386,9 @@ export default class ServiceDetails extends Component {
                     onRefresh={this.onRefresh.bind(this)}
                     lastSync={this.state.lastSync}
                 />
-                <TouchableHighlight
-                    style={styles.buttonContainer}
-                    underlayColor="white"
-                >
-                    <View>{rowContent}</View>
-                </TouchableHighlight>
+                <View style={styles.buttonContainer}>
+                    {rowContent}
+                </View>
                 <MapView
                     initialRegion={{
                         latitude: lat,
@@ -352,25 +407,25 @@ export default class ServiceDetails extends Component {
                 </MapView>
                 <View style={styles.detailsContainer}>
                     {!!service.description &&
-                    <Text>
-                        {I18n.t('DESCRIPTION')}:
+                    <Text style={direction=='rtl' ? styles.alignRight : null}>
+                        {I18n.t('DESCRIPTION')}
                         {`\n${service.description}`}
                     </Text>
                     }
                     {!!openingHours &&
-                    <Text>
+                    <Text style={direction=='rtl' ? styles.alignRight : null}>
                         {I18n.t('OPENING_HOURS')}:
                         {`\n${openingHours}`}
                     </Text>
                     }
                     {!!service.cost_of_service &&
-                    <Text>
+                    <Text style={direction=='rtl' ? styles.alignRight : null}>
                         {I18n.t('COST_OF_SERVICE')}:
                         {`\n${service.cost_of_service}`}
                     </Text>
                     }
                     {service.selection_criteria.length > 0 &&
-                    <Text>
+                    <Text style={direction=='rtl' ? styles.alignRight : null}>
                         {I18n.t('SELECTION_CRITERIA')}:
                         {service.selection_criteria.map((criteria, i) => (
                             `\n - ${criteria.text}`
@@ -419,7 +474,8 @@ export default class ServiceDetails extends Component {
 const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        direction: state.direction
     };
 };
 

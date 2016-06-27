@@ -14,9 +14,9 @@ import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
-import OfflineView from '../components/OfflineView';
+import { OfflineView } from '../components';
 import { connect } from 'react-redux';
-
+import { convertInputToRtl } from '../utils/helpers'
 import styles from '../styles';
 
 export default class ServiceList extends Component {
@@ -26,7 +26,7 @@ export default class ServiceList extends Component {
     };
 
     static propTypes = {
-        savedState: React.PropTypes.object //eslint-disable-line react/forbid-prop-types
+        savedState: React.PropTypes.object
     };
 
     constructor(props) {
@@ -42,7 +42,8 @@ export default class ServiceList extends Component {
                 loaded: false,
                 refreshing: false,
                 offline: false,
-                lastSync: null
+                lastSync: null,
+                searches: ['']
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -119,7 +120,7 @@ export default class ServiceList extends Component {
         let serviceType = this.state.serviceTypes.find(function(type) {
             return type.url == service.type;
         });
-        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location);
+        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location, this.props.direction);
         const theme = this.props.theme;
         return (
             <View>
@@ -136,20 +137,25 @@ export default class ServiceList extends Component {
     }
 
     _onChangeText(text) {
+        let query_text = text;
+        if (this.props.direction == 'rtl') {
+            query_text = convertInputToRtl(text, this.state.searches, this._textInput);
+        }
         const services = this.state.services;
-        const filteredServices = services.filter((x) => x.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
+        const filteredServices = services.filter((x) => x.name.toLowerCase().indexOf(query_text.toLowerCase()) !== -1);
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(filteredServices)
         });
     }
-
+    
     renderHeader() {
         return (
             <View style={styles.stickyInputContainer}>
                 <TextInput
+                    ref={component => this._textInput = component}
                     onChangeText={(text) => this._onChangeText(text)}
                     placeholder={I18n.t('SEARCH')}
-                    style={styles.stickyInput}
+                    style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
                     returnKeyType={'search'}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -166,7 +172,7 @@ export default class ServiceList extends Component {
                     <TextInput
                         onChangeText={(text) => this._onChangeText(text)}
                         placeholder={I18n.t('SEARCH')}
-                        style={styles.stickyInput}
+                        style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
                         returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -199,8 +205,9 @@ export default class ServiceList extends Component {
                     style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
+                    direction={this.props.direction}
                 />
-                <MapButton />
+                <MapButton direction={this.props.direction}/>
             </View>
         );
     }
@@ -211,6 +218,7 @@ const mapStateToProps = (state) => {
         country: state.country,
         region: state.region,
         theme: state.theme.theme,
+        direction: state.direction
     };
 };
 

@@ -49,7 +49,7 @@ class Settings extends Component {
         const {theme, language} = this.props;
 
         return (
-            <View style={localStyle.container}>
+            <View style={styles.container}>
                 <Subheader text="Language" />
 
                 <RadioButtonGroup
@@ -77,14 +77,8 @@ const mapStateToProps = (state) => {
         route: state.navigation,
         language: state.language,
         theme: state.theme,
+        direction: state.direction
     };
 };
-
-const localStyle = StyleSheet.create({
-      container: {
-          flex: 1,
-          flexDirection: 'column'
-      },
-})
 
 export default connect(mapStateToProps)(Settings);
