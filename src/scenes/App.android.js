@@ -6,7 +6,8 @@ import {
     AppRegistry,
     Navigator,
     DrawerLayoutAndroid,
-    View
+    View,
+    StatusBar
 } from 'react-native';
 import {Provider} from 'react-redux';
 import store from '../store';
@@ -77,6 +78,7 @@ export default class App extends Component {
                       return null;
                   }}
               >
+                  <StatusBar translucent={true} backgroundColor={'rgba(0,0,0,0)'}/>
                   {drawer &&
                   <Navigator
                       configureScene={() => {
