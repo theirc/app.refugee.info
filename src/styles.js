@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scene: {
-        paddingTop: (Platform.OS === 'ios') ? 76 : 56,
+        paddingTop: 76,
         flex: 1
     },
     container: {
@@ -31,8 +31,8 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     materialToolbar: {
-        height: (Platform.OS === 'ios') ? 76 : 56,
-        paddingTop: (Platform.OS === 'ios') ? 20 : 0,
+        height: 76,
+        paddingTop: 20,
         paddingRight: (Platform.OS === 'ios') ? 0 : 10
     },
 
