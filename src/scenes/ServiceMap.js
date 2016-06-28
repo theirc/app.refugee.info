@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     View,
     ListView,
@@ -13,12 +13,17 @@ import styles from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import MapPopup from '../components/MapPopup';
 
 const RADIUS_MULTIPLIER = 1.2;
+const RADIUS = 0.01;
 
 class ServiceMap extends Component {
+
+    static propTypes = {
+        services: React.PropTypes.array
+    };
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
@@ -28,6 +33,15 @@ class ServiceMap extends Component {
         if (markers.length == 0) {
             return null;
         }
+        if (markers.length == 1) {
+            return {
+                latitude: markers[0].latitude,
+                longitude: markers[0].longitude,
+                latitudeDelta: RADIUS,
+                longitudeDelta: RADIUS
+            };
+        }
+
         let lats = markers.map(marker => marker.latitude),
             longs = markers.map(marker => marker.longitude);
         let minLat = Math.min.apply(null, lats), minLong = Math.min.apply(null, longs);
@@ -71,20 +85,30 @@ class ServiceMap extends Component {
     }
 
     async fetchData() {
-        const { region } = this.props;
+        const {region} = this.props;
+        let serviceTypes, services, locations;
+
         if (!region) {
             this.setState({
                 loaded: true
             });
             return;
         }
-        let serviceTypes, services, locations;
+
+        if (this.props.services) {
+            services = this.props.services;
+        } else {
+            try {
+                services = await this.apiClient.getServices(region.slug, true);
+                await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
+            } catch (e) {
+                services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
+            }
+        }
         try {
             serviceTypes = await this.apiClient.getServiceTypes(true);
-            services = await this.apiClient.getServices(region.slug, true);
             locations = await this.apiClient.getLocations(region.id, true);
             await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
-            await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
             await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
             await AsyncStorage.setItem('lastServicesSync', new Date().toISOString());
             this.setState({
@@ -96,7 +120,6 @@ class ServiceMap extends Component {
                 offline: true
             });
             serviceTypes = JSON.parse(await AsyncStorage.getItem('serviceTypesCache'));
-            services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
             locations = JSON.parse(await AsyncStorage.getItem('locationsCache'));
         }
         if (!services || !locations) {
@@ -104,7 +127,7 @@ class ServiceMap extends Component {
         }
         let markers = services.map(service => {
             let location = service.location.match(/[\d\.]+/g);
-            let serviceType = serviceTypes.find(function(type) {
+            let serviceType = serviceTypes.find(function (type) {
                 return type.url == service.type;
             });
             this.icons[serviceType.icon_url] = false;
@@ -132,18 +155,18 @@ class ServiceMap extends Component {
 
     onCalloutPress(marker) {
         let service = marker.service;
-        let location = this.state.locations.find(function(loc) {
+        let location = this.state.locations.find(function (loc) {
             return loc.id == service.region;
         });
-        let serviceType = this.state.serviceTypes.find(function(type) {
+        let serviceType = this.state.serviceTypes.find(function (type) {
             return type.url == service.type;
         });
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         navigator.forward(null, null, {service, location, serviceType}, this.state);
     }
 
     onRegionChange(region) {
-        this.setState({ region });
+        this.setState({region});
     }
 
     onLoadEnd(iconUrl) {
@@ -157,7 +180,7 @@ class ServiceMap extends Component {
         }
     }
 
-    onRefresh(){
+    onRefresh() {
         this.setState({refreshing: true});
         this.fetchData().then(() => {
             this.setState({refreshing: false});
@@ -165,31 +188,31 @@ class ServiceMap extends Component {
     }
 
     render() {
-        if (this.state.loaded){
-        return (
-            <View style={styles.container}>
-                <OfflineView
-                    offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this)}
-                    lastSync={this.state.lastSync}
-                />
-                <MapView
-                    onRegionChangeComplete={(region) => this.onRegionChange(region)}
-                    region={this.state.region}
-                    style={styles.flex}
-                >
-                    {this.state.markers.map((marker, i) => (
-                        <MapView.Marker
-                            coordinate={{
+        if (this.state.loaded) {
+            return (
+                <View style={styles.container}>
+                    <OfflineView
+                        offline={this.state.offline}
+                        onRefresh={this.onRefresh.bind(this)}
+                        lastSync={this.state.lastSync}
+                    />
+                    <MapView
+                        onRegionChangeComplete={(region) => this.onRegionChange(region)}
+                        region={this.state.region}
+                        style={styles.flex}
+                    >
+                        {this.state.markers.map((marker, i) => (
+                            <MapView.Marker
+                                coordinate={{
                                 latitude: marker.latitude,
                                 longitude: marker.longitude
                             }}
-                            description={marker.description}
-                            key={i}
-                            onCalloutPress={() => this.onCalloutPress(marker)}
-                            title={marker.title}
-                        >
-                            {!!marker.icon_url &&
+                                description={marker.description}
+                                key={i}
+                                onCalloutPress={() => this.onCalloutPress(marker)}
+                                title={marker.title}
+                            >
+                                {!!marker.icon_url &&
                                 <View>
                                     <Image
                                         onLoadEnd={() => this.onLoadEnd(marker.icon_url)}
@@ -197,19 +220,20 @@ class ServiceMap extends Component {
                                         style={styles.mapIcon}
                                     />
                                 </View>
-                            }
-                            <MapView.Callout style={styles.mapPopupContainer}>
-                                <MapPopup
-                                    marker={marker}
-                                    direction={this.props.direction}
-                                />
-                            </MapView.Callout>
+                                }
+                                <MapView.Callout style={styles.mapPopupContainer}>
+                                    <MapPopup
+                                        marker={marker}
+                                        direction={this.props.direction}
+                                    />
+                                </MapView.Callout>
 
-                        </MapView.Marker>
-                    ))}
-                </MapView>
-            </View>
-        )}
+                            </MapView.Marker>
+                        ))}
+                    </MapView>
+                </View>
+            )
+        }
         return (null)
     }
 

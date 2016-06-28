@@ -26,7 +26,7 @@ export default class ServiceList extends Component {
     };
 
     static propTypes = {
-        savedState: React.PropTypes.object //eslint-disable-line react/forbid-prop-types
+        savedState: React.PropTypes.object
     };
 
     constructor(props) {
@@ -139,7 +139,8 @@ export default class ServiceList extends Component {
         const services = this.state.services;
         const filteredServices = services.filter((x) => x.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(filteredServices)
+            dataSource: this.state.dataSource.cloneWithRows(filteredServices),
+            filteredServices: filteredServices
         });
     }
 
@@ -201,7 +202,10 @@ export default class ServiceList extends Component {
                     keyboardDismissMode="on-drag"
                     direction={this.props.direction}
                 />
-                <MapButton direction={this.props.direction}/>
+                <MapButton
+                    direction={this.props.direction}
+                    services={this.state.filteredServices}
+                />
             </View>
         );
     }
