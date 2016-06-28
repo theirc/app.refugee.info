@@ -88,14 +88,13 @@ class CityChoice extends Component {
     }
 
     render() {
-        let pressed = false;
         return (
             <View style={styles.container}>
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         loaded={this.state.loaded}
                         header={I18n.t('SELECT_LOCATION')}
-                        onPress={(rowData) => { if(!pressed) { this._onPress(rowData); pressed = true; } }}
+                        onPress={(rowData) => {this._onPress(rowData)}}
                         rows={this.state.cities}
                     />
                 </View>

@@ -282,6 +282,9 @@ const styles = StyleSheet.create({
     generalInfoText: {
         fontSize: 16
     },
+    locationListItem: {
+        padding: 3
+    },
     alignRight: {
         textAlign: 'right'
     }

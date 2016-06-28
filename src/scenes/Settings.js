@@ -34,11 +34,7 @@ class Settings extends Component {
 
       dispatch(updateLanguageIntoStorage(lang));
       dispatch(updateDirectionIntoStorage(direction));
-      dispatch(updateRegionIntoStorage(null));
-      dispatch(updateCountryIntoStorage(null));
 
-      dispatch({type: "REGION_CHANGED", payload: null});
-      dispatch({type: 'COUNTRY_CHANGED', payload: null});
       dispatch({type: "LANGUAGE_CHANGED", payload: lang});
       dispatch({type: "DIRECTION_CHANGED", payload: direction});
 

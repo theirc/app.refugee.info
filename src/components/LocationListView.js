@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react';
-import { View, ListView, StyleSheet, Text, TouchableHighlight, Image } from 'react-native';
-import { Button } from 'react-native-material-design';
-import { default as Icon } from 'react-native-vector-icons/FontAwesome';
+import React, {Component, PropTypes} from 'react';
+import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react-native';
+import {Button, Divider} from 'react-native-material-design';
+import {default as Icon} from 'react-native-vector-icons/FontAwesome';
 
-import { I18n, CountryHeaders } from '../constants';
-import { LoadingView, DirectionalText } from '../components';
+import {I18n, CountryHeaders} from '../constants';
+import {LoadingView, DirectionalText} from '../components';
 import styles from '../styles';
 import {connect} from 'react-redux';
 
@@ -35,15 +35,15 @@ export default class LocationListView extends Component {
     }
 
     renderHeader() {
-        let { direction } = this.props;
-        if(!direction) {
-          direction = 'ltr';
+        let {direction} = this.props;
+        if (!direction) {
+            direction = 'ltr';
         }
         return (
             <View style={styles.header}>
                 <DirectionalText direction={direction} style={styles.headerText}>{this.props.header}</DirectionalText>
             </View>
-          );
+        );
     }
 
     renderRow(rowData) {
@@ -52,9 +52,9 @@ export default class LocationListView extends Component {
         if (this.props.image) {
             image = this.props.image(rowData.code);
         }
-        let { direction } = this.props;
-        if(!(direction||false)) {
-          direction = 'ltr';
+        let {direction, theme} = this.props;
+        if (!(direction || false)) {
+            direction = 'ltr';
         }
 
         const imageElement = (image && <Image
@@ -63,44 +63,52 @@ export default class LocationListView extends Component {
         />);
 
         return (
-            <TouchableHighlight
-                onPress={() => {
+            <View>
+                <TouchableHighlight
+                    onPress={() => {
                    this.props.onPress(rowData)
                 }}
-                style={[styles.buttonContainer]}
-                underlayColor="white" >
-                <View style={styles.rowWrapper}>
-                    <View style={styles.rowHeader}>
-                        {direction === 'ltr' && imageElement }
-                        <DirectionalText direction={direction} style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}>
-                            {rowData.pageTitle || rowData.metadata.page_title}
-                        </DirectionalText>
-                        {direction === 'rtl' && imageElement }
+                    style={styles.buttonContainer}
+                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                >
+                    <View style={styles.locationListItem}>
+                        <View style={styles.rowHeader}>
+                            {direction === 'ltr' && imageElement }
+                            <DirectionalText
+                                direction={direction}
+                                style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}
+                            >
+                                {rowData.pageTitle || rowData.metadata.page_title}
+                            </DirectionalText>
+                            {direction === 'rtl' && imageElement }
+                        </View>
+                        {(buttonIsSelected) ?
+                            <Icon
+                                color="black"
+                                name="check"
+                                size={16}
+                                style={styles.icon}
+                            /> : null}
                     </View>
-                    {(buttonIsSelected) ?
-                        <Icon
-                            color="black"
-                            name="check"
-                            size={16}
-                            style={styles.icon}
-                        /> : null}
-                </View>
-            </TouchableHighlight>
+                </TouchableHighlight>
+                <Divider />
+            </View>
         );
     }
 
     render() {
         const primary = this.props.primary;
-        let { direction } = this.props;
-        if(!(direction||false)) {
-          direction = 'ltr';
+        let {direction} = this.props;
+        if (!(direction || false)) {
+            direction = 'ltr';
         }
 
         if (this.props.rows.length === 0 && this.props.loaded) {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <DirectionalText direction={direction} style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</DirectionalText>
+                        <DirectionalText direction={direction}
+                                         style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</DirectionalText>
                     </View>
                 </View>
             );
@@ -109,7 +117,8 @@ export default class LocationListView extends Component {
             return (
                 <View style={styles.container}>
                     <View style={styles.header}>
-                        <DirectionalText direction={direction} style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</DirectionalText>
+                        <DirectionalText direction={direction}
+                                         style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</DirectionalText>
                     </View>
                 </View>
             );
@@ -124,7 +133,7 @@ export default class LocationListView extends Component {
                         renderRow={(rowData) => this.renderRow(rowData)}
                         style={styles.listViewContainer}
                     />
-                 </View>
+                </View>
             );
         }
 
@@ -136,7 +145,8 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         direction: state.direction,
-        language: state.language
+        language: state.language,
+        theme: state.theme.theme
     };
 };
 

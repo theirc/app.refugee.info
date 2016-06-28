@@ -2,20 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
 import { Button } from 'react-native-material-design';
 import { connect } from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import { LocationListView } from '../components';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
 import store from '../store';
-
 import { updateRegionIntoStorage } from '../actions/region';
 import { updateCountryIntoStorage } from '../actions/country';
-
-import { fetchRegionFromStorage } from '../actions/region';
-import { fetchDirectionFromStorage } from '../actions/direction';
-import { fetchLanguageFromStorage } from '../actions/language';
 
 
 export default class CountryChoice extends Component {
@@ -116,18 +110,17 @@ export default class CountryChoice extends Component {
 
     onPress(rowData) {
         const { navigator } = this.context;
-        navigator.forward(null, '', {countryId: rowData.id});
+        navigator.forward(null, null, {countryId: rowData.id});
     }
 
     render() {
-        let pressed = false;
         return (
             <View style={styles.container}>
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         header={I18n.t('SELECT_COUNTRY')}
                         image={(countryISO) => getCountryFlag(countryISO)}
-                        onPress={(rowData) => { if(!pressed) { this.onPress(rowData); pressed = true; } }}
+                        onPress={(rowData) => {this.onPress(rowData);}}
                         rows={this.state.locations}
                     />
                     <Button

@@ -32,7 +32,7 @@ export default class Toolbar extends Component {
         return (
             <MaterialToolbar
                 primary={primary}
-                icon={!region ? null : (navigator && navigator.isChild ? 'keyboard-backspace' : 'menu')}
+                icon={navigator && navigator.isChild ? 'keyboard-backspace' : (region ? 'menu' : null)}
                 onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
                 rightIconStyle={{
                     margin: 10

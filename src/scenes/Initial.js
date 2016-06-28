@@ -1,42 +1,41 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text} from 'react-native';
-import store from '../store'
 import {connect} from 'react-redux'
+import {fetchRegionFromStorage} from '../actions/region';
+import {fetchDirectionFromStorage} from '../actions/direction';
+import {fetchLanguageFromStorage} from '../actions/language';
+import {fetchCountryFromStorage} from '../actions/country';
 
-import { fetchRegionFromStorage } from '../actions/region';
-import { fetchDirectionFromStorage } from '../actions/direction';
-import { fetchLanguageFromStorage } from '../actions/language';
-import { fetchCountryFromStorage } from '../actions/country';
-
- class Initial extends Component {
+class Initial extends Component {
 
     static contextTypes = {
+        drawer: PropTypes.object.isRequired,
         navigator: PropTypes.object.isRequired
     };
 
-  async componentDidMount() {
-    const { dispatch } = this.props;
-    const r = await AsyncStorage.getItem('regionCache');
+    async componentDidMount() {
+        const {navigator} = this.context;
+        const {dispatch} = this.props;
+        const region = await AsyncStorage.getItem('regionCache');
 
-    await dispatch(fetchRegionFromStorage());
-    await dispatch(fetchDirectionFromStorage());
-    await dispatch(fetchLanguageFromStorage());
-    await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchRegionFromStorage());
+        await dispatch(fetchDirectionFromStorage());
+        await dispatch(fetchLanguageFromStorage());
+        await dispatch(fetchCountryFromStorage());
 
-    if(!(r||false)) {
-      this.context.navigator.to('countryChoice');
-    } else {
-      this.context.navigator.to('info');
+        if (!(region || false)) {
+            navigator.to('countryChoice');
+        } else {
+            navigator.to('info');
+        }
     }
 
-  }
-
-  render() {
-    // Nothing to see here, just redirecting to the info page
-    return <View />
-  }
+    render() {
+        // Nothing to see here, just redirecting to the info page
+        return <View />
+    }
 }
 
 export default connect((state) => {
-  return {...state};
+    return {...state};
 })(Initial);

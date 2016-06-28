@@ -8,12 +8,6 @@ export default {
         component: require('./scenes/Initial').default
     },
 
-    languageSelection: {
-        exitOnBackPress: true,
-        title: I18n.t('REFUGEE_INFO'),
-        component: require('./scenes/LanguageSelection').default
-    },
-
     countryChoice: {
         title: I18n.t('REFUGEE_INFO'),
         component: require('./scenes/CountryChoice').default,
