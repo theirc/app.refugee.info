@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import { StyleSheet, TouchableHighlight, Image } from 'react-native';
+import React, {Component, PropTypes} from 'react';
+import {StyleSheet, TouchableHighlight, Image} from 'react-native';
 import styles from '../styles';
 
 
@@ -10,18 +10,18 @@ export default class MapButton extends Component {
     };
 
     static propTypes = {
-      direction: PropTypes.oneOf(['rtl', 'ltr']),
-
-      ...Component.propTypes
-    }
+        direction: PropTypes.oneOf(['rtl', 'ltr']),
+        services: PropTypes.array,
+        ...Component.propTypes
+    };
 
     onClick() {
-        const { navigator } = this.context;
-        navigator.to('map');
+        const {navigator} = this.context;
+        navigator.to('map', null, {services: this.props.services});
     }
 
     render() {
-      const { direction } = this.props;
+        const {direction} = this.props;
         return (
             <TouchableHighlight
                 onPress={() => this.onClick()}

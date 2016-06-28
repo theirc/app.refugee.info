@@ -56,6 +56,7 @@ export class GeneralInformation extends Component {
             navigator.to('infoDetails', null, {section:c.section, sectionTitle: c.title});
             return;
         }
+        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
 
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
@@ -79,7 +80,6 @@ export class GeneralInformation extends Component {
                 offline: true
             })
         }
-        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
     }
 
     onRefresh(){
