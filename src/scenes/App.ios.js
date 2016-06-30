@@ -70,6 +70,8 @@ export class App extends Component {
         const {drawer, navigator} = this.state;
         let {direction} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
+        const { country } = this.props;
+
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
 
@@ -81,7 +83,7 @@ export class App extends Component {
                 type="overlay"
                 acceptTap={true}
                 content={
-                  <Navigation />
+                  <Navigation  />
               }
                 tapToClose={true}
                 styles={{
@@ -106,10 +108,10 @@ export class App extends Component {
                 openDrawerOffset={0.2}
                 closedDrawerOffset={() => -3}
                 panOpenMask={0.02}
-                side={'left'}
+                side={'right'}
             >
                 <StatusBar
-                    barStyle={'light-content'}
+                    barStyle={'default'}
                 />
                 {!drawer &&
                 <Navigator
@@ -151,7 +153,8 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         theme: state.theme.theme,
-        direction: state.direction
+        direction: state.direction,
+        country: state.country
     };
 };
 

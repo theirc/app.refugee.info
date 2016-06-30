@@ -63,12 +63,12 @@ export default class App extends Component {
 
     render() {
         const { drawer, navigator } = this.state;
-        const navView = React.createElement(Navigation);
+        const navView = <Navigation />;
         let {direction} = this.props;
 
         return (
               <DrawerLayoutAndroid
-                  drawerPosition={direction=='ltr'? DrawerLayoutAndroid.positions.Left : DrawerLayoutAndroid.positions.Right}
+                  drawerPosition={DrawerLayoutAndroid.positions.Right}
                   drawerWidth={300}
                   ref={(drawer) => { !this.state.drawer ? this.setDrawer(drawer) : null; }}
                   renderNavigationView={() => {
@@ -115,7 +115,8 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         theme: state.theme.theme,
-        direction: state.direction
+        direction: state.direction,
+        country: state.country
     };
 };
 
