@@ -60,18 +60,22 @@ export default class DrawerCommons {
         }
     }
 
-    changeScene = (path, name, props={}) => {
-        const { drawer, navigator } = this.component.context;
-        const { dispatch } = this.component.props;
-        InteractionManager.runAfterInteractions(() => {
-          navigator.to(path, name, props);
-          dispatch({type: 'CHANGE_ROUTE', payload: path});
+    closeDrawer() {
           if (Platform.OS === 'ios'){
               this.component.context.drawer.close()
           }
           else{
               drawer.closeDrawer();
           }
+    }
+
+    changeScene(path, name, props={}) {
+        const { drawer, navigator } = this.component.context;
+        const { dispatch } = this.component.props;
+        InteractionManager.runAfterInteractions(() => {
+          navigator.to(path, name, props);
+          dispatch({type: 'CHANGE_ROUTE', payload: path});
+          this.closeDrawer();
         });
     };
 
