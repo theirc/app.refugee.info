@@ -22,23 +22,27 @@ class Settings extends Component {
     }
 
     setLanguage(lang) {
-      this.setState({
-        language: lang
-      })
+        this.setState({
+            language: lang
+        })
     }
 
     selectLanguage(lang) {
-      const {navigator} = this.context;
-      const { dispatch } = this.props;
-      const direction = ['ar','fa'].indexOf(lang) > -1 ? 'rtl' : 'ltr';
+        const {navigator} = this.context;
+        const {dispatch} = this.props;
+        const direction = ['ar', 'fa'].indexOf(lang) > -1 ? 'rtl' : 'ltr';
 
-      dispatch(updateLanguageIntoStorage(lang));
-      dispatch(updateDirectionIntoStorage(direction));
+        dispatch(updateLanguageIntoStorage(lang));
+        dispatch(updateDirectionIntoStorage(direction));
+        dispatch(updateRegionIntoStorage(null));
+        dispatch(updateCountryIntoStorage(null));
 
-      dispatch({type: "LANGUAGE_CHANGED", payload: lang});
-      dispatch({type: "DIRECTION_CHANGED", payload: direction});
+        dispatch({type: "REGION_CHANGED", payload: null});
+        dispatch({type: 'COUNTRY_CHANGED', payload: null});
+        dispatch({type: "CHANGE_LANGUAGE", payload: lang});
+        dispatch({type: "DIRECTION_CHANGED", payload: direction});
 
-      navigator.to('initial');
+        navigator.to('initial');
     }
 
     render() {
@@ -46,14 +50,14 @@ class Settings extends Component {
 
         return (
             <View style={styles.container}>
-                <Subheader text="Language" />
+                <Subheader text="Language"/>
 
                 <RadioButtonGroup
-                      onSelect={(value)=> this.setLanguage(value) }
-                      theme={theme.theme}
-                      primary={theme.primary}
-                      selected={language}
-                      items={[{
+                    onSelect={(value)=> this.setLanguage(value) }
+                    theme={theme.theme}
+                    primary={theme.primary}
+                    selected={language}
+                    items={[{
                           value: 'en', label: 'English'
                       }, {
                           value: 'ar', label: 'Arabic'
@@ -61,8 +65,8 @@ class Settings extends Component {
                           value: 'fa', label: 'Farsi'
                       }
                     ]}
-                  />
-                  <Button raised onPress={() => this.selectLanguage(this.state.language)} text="Select"/>
+                />
+                <Button raised onPress={() => this.selectLanguage(this.state.language)} text="Select"/>
             </View>
         );
     }
