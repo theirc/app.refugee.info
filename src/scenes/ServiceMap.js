@@ -99,7 +99,7 @@ class ServiceMap extends Component {
             services = this.props.services;
         } else {
             try {
-                services = await this.apiClient.getServices(region.slug, true);
+                services = await this.apiClient.getServices(region.slug, 0, 0, true);
                 await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
             } catch (e) {
                 services = JSON.parse(await AsyncStorage.getItem('servicesCache'));

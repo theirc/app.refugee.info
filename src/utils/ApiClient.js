@@ -1,15 +1,15 @@
-import { AsyncStorage } from 'react-native';
+import {AsyncStorage} from 'react-native';
 const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
-    constructor(context, props={language:'en'}, api_root='http://api.refugee.info') {
+    constructor(context, props = {language: 'en'}, api_root = 'http://api.refugee.info') {
         this.navigator = context.navigator;
         this.apiRoot = api_root;
         this.language = props.language || 'en';
     }
 
-    async fetch(relativeUrl, raise_exception=false) {
+    async fetch(relativeUrl, raise_exception = false) {
         await InteractionManager.runAfterInteractions();
         var languageCode = this.language;
         var headers = {
@@ -18,12 +18,12 @@ export default class ApiClient {
         };
 
         if (languageCode) {
-          headers['Accept-Language'] = languageCode;
+            headers['Accept-Language'] = languageCode;
         }
-        return fetch(`${this.apiRoot}${relativeUrl}`, { headers:headers })
+        return fetch(`${this.apiRoot}${relativeUrl}`, {headers: headers})
             .then((response) => response.json())
             .catch((error) => {
-                if (raise_exception){
+                if (raise_exception) {
                     throw 'offline'
                 }
                 else {
@@ -41,20 +41,20 @@ export default class ApiClient {
             },
             body: JSON.stringify(data)
         }).then((response) => response)
-        .catch((error) => {
-            this.navigator.to('networkFailure');
-        });
+            .catch((error) => {
+                this.navigator.to('networkFailure');
+            });
     }
 
     getRootLocations() {
         return this.fetch('/v1/region/?format=json&level=1');
     }
 
-    getLocations(parentId, raise_exception=false) {
+    getLocations(parentId, raise_exception = false) {
         return this.fetch(`/v1/region/?format=json&parent=${parentId}`, raise_exception);
     }
 
-    getLocation(id, raise_exception=false) {
+    getLocation(id, raise_exception = false) {
         return this.fetch(`/v1/region/${id}/?format=json&`, raise_exception);
     }
 
@@ -70,19 +70,20 @@ export default class ApiClient {
         return this.fetch(`/v1/region/?format=json&point=${latitude},${longitude}&level=${level}`);
     }
 
-    getServiceTypes(raise_exception=false) {
+    getServiceTypes(raise_exception = false) {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServices(locationSlug, raise_exception=false) {
-        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`, raise_exception);
+    getServices(locationSlug, lat, lon, raise_exception = false) {
+        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}
+        &closest=${lat},${lon}`, raise_exception);
     }
 
-    getFeedbacks(service, raise_exception=false) {
+    getFeedbacks(service, raise_exception = false) {
         return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
     }
 
-    getService(id, raise_exception=false) {
+    getService(id, raise_exception = false) {
         return this.fetch(`/v1/services/search/?format=json&id=${id}`, raise_exception);
     }
 

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     View,
     Text,
@@ -9,13 +9,13 @@ import {
     AsyncStorage,
     TextInput
 } from 'react-native';
-import { Divider } from 'react-native-material-design';
+import {Divider} from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
 import OfflineView from '../components/OfflineView';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import styles from '../styles';
 
@@ -56,9 +56,30 @@ export default class ServiceList extends Component {
         }
     }
 
+    async setLocation() {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                this.setState({
+                    location: {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude
+                    }
+                });
+            },
+            (error) => {
+                this.setState({
+                    location: {
+                        latitude: 0,
+                        longitude: 0
+                    }
+                });
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+        );
+    }
+
     async fetchData() {
         // the region comes from the state now
-        const { region } = this.props;
+        const {region} = this.props;
         if (!region) {
             this.setState({
                 loaded: true
@@ -66,9 +87,15 @@ export default class ServiceList extends Component {
             return;
         }
         let serviceTypes, services, locations;
+        await this.setLocation();
         try {
             serviceTypes = await this.apiClient.getServiceTypes(true);
-            services = await this.apiClient.getServices(region.slug, true);
+            services = await this.apiClient.getServices(
+                region.slug,
+                this.state.location.latitude,
+                this.state.location.longitude,
+                true
+            );
             locations = await this.apiClient.getLocations(region.id, true);
             await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
             await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
@@ -78,7 +105,7 @@ export default class ServiceList extends Component {
                 offline: false
             });
         }
-        catch (e){
+        catch (e) {
             this.setState({
                 offline: true
             });
@@ -102,21 +129,23 @@ export default class ServiceList extends Component {
         });
     }
 
-    onRefresh(){
+    onRefresh() {
         this.setState({refreshing: true});
-        this.fetchData().then(() => { this.setState({refreshing: false}); });
+        this.fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
     }
 
     onClick(params) {
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         navigator.forward(null, null, params, this.state);
     }
 
     renderRow(service) {
-        let location = this.state.locations.find(function(loc) {
+        let location = this.state.locations.find(function (loc) {
             return loc.id == service.region;
         });
-        let serviceType = this.state.serviceTypes.find(function(type) {
+        let serviceType = this.state.serviceTypes.find(function (type) {
             return type.url == service.type;
         });
         let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location, this.props.direction);
@@ -126,7 +155,7 @@ export default class ServiceList extends Component {
                 <TouchableHighlight
                     onPress={() => this.onClick({service, serviceType, location})}
                     style={styles.buttonContainer}
-                    underlayColor= {theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
                 >
                     {rowContent}
                 </TouchableHighlight>
