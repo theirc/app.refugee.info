@@ -1,15 +1,15 @@
-import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
-import { Button } from 'react-native-material-design';
-import { connect } from 'react-redux';
-import { LocationListView } from '../components';
+import React, {Component, PropTypes} from 'react';
+import {AsyncStorage, View, StyleSheet, Image, Alert} from 'react-native';
+import {Button} from 'react-native-material-design';
+import {connect} from 'react-redux';
+import {LocationListView} from '../components';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
 import store from '../store';
-import { updateRegionIntoStorage } from '../actions/region';
-import { updateCountryIntoStorage } from '../actions/country';
+import {updateRegionIntoStorage} from '../actions/region';
+import {updateCountryIntoStorage} from '../actions/country';
 
 
 export default class CountryChoice extends Component {
@@ -28,10 +28,10 @@ export default class CountryChoice extends Component {
     }
 
     async componentWillMount() {
-      const {dispatch} = this.props;
+        const {dispatch} = this.props;
 
-      this.apiClient = new ApiClient(this.context, this.props);
-      await this._loadInitialState();
+        this.apiClient = new ApiClient(this.context, this.props);
+        await this._loadInitialState();
     }
 
     async _getLocation(position, level) {
@@ -55,9 +55,12 @@ export default class CountryChoice extends Component {
     }
 
     async detectLocation() {
+        this.setState({
+            buttonDisabled: true
+        });
         navigator.geolocation.getCurrentPosition(
             async(position) => {
-                const { dispatch } = this.props;
+                const {dispatch} = this.props;
                 let location = await this._getLocation(position, 3);
                 if (location) {
                     location.country = await this._getCountryId(location);
@@ -66,25 +69,51 @@ export default class CountryChoice extends Component {
 
                     dispatch({type: 'REGION_CHANGED', payload: location});
                     dispatch({type: 'COUNTRY_CHANGED', payload: location.country});
-
-
-                    if(location.content && location.content.length == 1) {
-                      this.context.navigator.to('infoDetails', null, {section: location.content[0].section, sectionTitle: location.content[0].title })
-                      return;
+                    Alert.alert(
+                        I18n.t('LOCATION_TITLE_SUCCESS'),
+                        `${I18n.t('LOCATION_SET_TO')} ${location.name}, ${location.country.name}.`,
+                        [
+                            {text: I18n.t('OK')}
+                        ]
+                    );
+                    if (location.content && location.content.length == 1) {
+                        this.context.navigator.to('infoDetails', null,
+                            {section: location.content[0].section, sectionTitle: location.content[0].title})
                     } else {
 
-                      this.context.navigator.to('info');
+                        this.context.navigator.to('info');
                     }
                 } else {
                     location = await this._getLocation(position, 1);
                     if (location) {
+                        Alert.alert(
+                            I18n.t('LOCATION_TITLE_SUCCESS'),
+                            `${I18n.t('LOCATION_SET_TO')} ${location.name}. ${I18n.t('LOCATION_PICK_CITY')}`,
+                            [
+                                {text: I18n.t('OK')}
+                            ]
+                        );
                         this.context.navigator.forward(null, '', {countryId: location.id});
                     } else {
+                        Alert.alert(
+                            I18n.t('LOCATION_TITLE_FAILED'),
+                            `${I18n.t('LOCATION_SET_FAILED')}`,
+                            [
+                                {text: I18n.t('OK')}
+                            ]
+                        );
                         this._loadInitialState();
                     }
                 }
             },
             (error) => {
+                Alert.alert(
+                    I18n.t('LOCATION_TITLE_FAILED'),
+                    `${I18n.t('LOCATION_SET_FAILED')}`,
+                    [
+                        {text: I18n.t('OK')}
+                    ]
+                );
                 this._loadInitialState();
             }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
         );
@@ -93,23 +122,23 @@ export default class CountryChoice extends Component {
     async _loadInitialState() {
         const locations = await this.apiClient.getRootLocations();
 
-        locations.forEach((c)=>{
-          if(c && c.metadata) {
-            const pageTitle = (c.metadata.page_title || '')
-              .replace('\u060c', ',').split(',')[0];
-            c.pageTitle = pageTitle;
-          }
+        locations.forEach((c)=> {
+            if (c && c.metadata) {
+                c.pageTitle = (c.metadata.page_title || '')
+                    .replace('\u060c', ',').split(',')[0];
+            }
         });
 
         this.setState({
             locations,
             loaded: true,
-            language: this.props.language
+            language: this.props.language,
+            buttonDisabled: false
         });
     }
 
     onPress(rowData) {
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         navigator.forward(null, null, {countryId: rowData.id});
     }
 
@@ -127,6 +156,7 @@ export default class CountryChoice extends Component {
                         onPress={() => this.detectLocation()}
                         raised
                         text={I18n.t('DETECT_LOCATION')}
+                        disabled={this.state.buttonDisabled}
                     />
                 </View>
             </View>
