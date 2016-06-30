@@ -74,9 +74,12 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServices(locationSlug, lat, lon, raise_exception = false) {
-        return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}
-        &closest=${lat},${lon}`, raise_exception);
+    getServices(locationSlug, latitude, longitude, raise_exception = false) {
+        if (latitude && longitude) {
+            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}
+        &closest=${latitude},${longitude}`, raise_exception);
+        }
+        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`, raise_exception);
     }
 
     getFeedbacks(service, raise_exception = false) {
