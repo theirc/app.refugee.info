@@ -143,7 +143,14 @@ class Navigation extends Component {
         let styles = theme == 'light' ? lightNavigationStyles : {};
 
         // Shorthand to change scene
-        let s = (scene) => this.drawerCommons.changeScene(scene);
+        var s = (scene) => this.drawerCommons.changeScene(scene);
+
+        let headerImage = <Image source={bullseye} style={[
+            { resizeMode: 'stretch', height: 20, width: 20, },
+            (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
+        ]} />;
+
+        const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.outside1}>
             <View style={styles.outside2}>
@@ -151,24 +158,27 @@ class Navigation extends Component {
                     <View>
                         <Image source={rectangularLogo} style={styles.logo} />
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', height: 30, marginBottom: 15 }}>
-                        <Image source={bullseye} style={{ resizeMode: 'stretch', height: 20, width: 20, marginRight: 10 }} />
-                        <Text style={styles.pageTitle}>{region.pageTitle.toUpperCase() }</Text>
+                    <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
+                        {(isLTR) && headerImage}
+                        <Text style={styles.cityTitle}>{region.pageTitle.toUpperCase() }</Text>
+                        {(!isLTR) && headerImage}
                     </View>
-                    <MenuSection title={"REFUGEE.INFO"}>
+                    <MenuSection title={I18n.t("REFUGEE_INFO")}>
                         <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
                         <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
                         <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
                     </MenuSection>
-                    <MenuSection title={"IMPORTANT INFORMATION"}>
+                    <MenuSection title={I18n.t("IMPORTANT_INFORMATION")}>
                         {importantInformationItems}
                     </MenuSection>
-                    <MenuSection title={"CHANGE LOCATION"}>
+                    <MenuSection title={I18n.t("CHANGE_LOCATION")}>
                         {nearbyCitiesItems}
                     </MenuSection>
                     <MenuSection>
-                        <MenuItem icon="public" active={route === 'countryChoice'} onPress={() => s('countryChoice') }>{I18n.t('CHANGE_COUNTRY') }</MenuItem>
                         <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
+                        <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('ABOUT') }</MenuItem>
+                        <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
+                        <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
                     </MenuSection>
                     <View style={{ paddingBottom: 15 }}>
                     </View>
@@ -212,7 +222,14 @@ const lightNavigationStyles = StyleSheet.create({
         borderLeftColor: "#b2b2b2",
         borderLeftWidth: 1,
     },
-    pageTitle: {
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 30,
+        marginBottom: 15,
+        paddingRight: 10
+    },
+    cityTitle: {
         fontSize: 14,
         fontWeight: 'bold',
     }

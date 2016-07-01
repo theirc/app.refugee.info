@@ -103,15 +103,18 @@ class MenuItem extends Component {
             </View>;
         }
         let press = (comp, ...args) => {
-            if (item.onPress) {
+            if (item.onPress !== undefined) {
                 return item.onPress(...args);
             }
+            return true;
         };
         let longPress = (comp, ...args) => {
             let f = item.onLongPress || item.onPress;
-            if (f) {
+            if (f !== undefined) {
                 return f(...args);
             }
+            
+            return true;
         };
         if (!isCompatible('TouchableNativeFeedback')) {
             return (
@@ -208,7 +211,8 @@ const defaultStyles = StyleSheet.create({
     },
     text: {
         color: "#49b050",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        paddingRight: 5,
     },
 });
 
