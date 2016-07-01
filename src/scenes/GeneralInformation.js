@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     View,
     Text,
@@ -11,12 +11,12 @@ import {
     RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
-import { MapButton, OfflineView,DirectionalText } from '../components';
-import { connect } from 'react-redux';
+import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
+import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
-import { Divider } from 'react-native-material-design';
+import {Divider} from 'react-native-material-design';
 
 export class GeneralInformation extends Component {
 
@@ -43,17 +43,17 @@ export class GeneralInformation extends Component {
     }
 
     async _loadInitialState() {
-        let { region } = this.props;
-        const { navigator } = this.context;
+        let {region} = this.props;
+        const {navigator} = this.context;
 
-        if(!region) {
-          navigator.to('countryChoice');
-          return;
+        if (!region) {
+            navigator.to('countryChoice');
+            return;
         }
 
-        if(region.content && region.content.length === 1) {
+        if (region.content && region.content.length === 1) {
             let c = region.content[0];
-            navigator.to('infoDetails', null, {section:c.section, sectionTitle: c.title});
+            navigator.to('infoDetails', null, {section: c.section, sectionTitle: c.title});
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
@@ -75,20 +75,22 @@ export class GeneralInformation extends Component {
                 region: region
             })
         }
-        catch (e){
+        catch (e) {
             this.setState({
                 offline: true
             })
         }
     }
 
-    onRefresh(){
+    onRefresh() {
         this.setState({refreshing: true});
-        this._loadInitialState().then(() => { this.setState({refreshing: false}); });
+        this._loadInitialState().then(() => {
+            this.setState({refreshing: false});
+        });
     }
 
     onClick(title, section) {
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         if (this.state.searchText) {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
@@ -97,17 +99,17 @@ export class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
-        const {primary, theme} = this.props;
-
+        const {theme} = this.props;
         return (
             <View>
                 <TouchableHighlight
                     onPress={() => this.onClick(rowData.title, rowData.section)}
                     style={styles.buttonContainer}
-                    underlayColor= {theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
                 >
                     <View style={styles.generalInfoItem}>
-                        <DirectionalText direction={this.props.direction} style={styles.generalInfoText}>{rowData.title}</DirectionalText>
+                        <DirectionalText direction={this.props.direction}
+                                         style={styles.generalInfoText}>{rowData.title}</DirectionalText>
                     </View>
                 </TouchableHighlight>
                 <Divider />
@@ -116,8 +118,10 @@ export class GeneralInformation extends Component {
     }
 
     render() {
+        const {theme} = this.props;
         return (
             <View style={styles.container}>
+                <SearchBar theme={theme}/>
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
@@ -137,7 +141,7 @@ export class GeneralInformation extends Component {
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                 />
-                <MapButton direction={this.props.direction} />
+                <MapButton direction={this.props.direction}/>
             </View>
         );
     }

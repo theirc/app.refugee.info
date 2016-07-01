@@ -68,7 +68,7 @@ export class App extends Component {
 
     render() {
         const {drawer, navigator} = this.state;
-        let {direction} = this.props;
+        let {direction, theme} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
         const { country, dispatch } = this.props;
 
@@ -108,7 +108,7 @@ export class App extends Component {
                 tweenDuration={100}
                 panThreshold={0.08}
                 openDrawerOffset={0.2}
-                closedDrawerOffset={() => -3}
+                closedDrawerOffset={() => 0}
                 panOpenMask={0.02}
                 side={'right'}
             >
@@ -121,7 +121,13 @@ export class App extends Component {
                       return sceneConfig;
                   }}
                     initialRoute={Navigate.getInitialRoute()}
-                    navigationBar={<Toolbar onIconPress={this.openDrawer} />}
+                    navigationBar={
+                        <Toolbar
+                            logoVisible={true}
+                            theme={theme}
+                            onMenuIconPress={this.openDrawer}
+                        />
+                    }
                     ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
                     renderScene={(route) => {
                       if (this.state.navigator && route.component) {

@@ -9,19 +9,19 @@ export default {
     },
 
     countryChoice: {
-        title: I18n.t('REFUGEE_INFO'),
+        title: I18n.t('WHERE_ARE_YOU'),
         component: require('./scenes/CountryChoice').default,
 
         children: {
             cityChoice: {
-                title: I18n.t('REFUGEE_INFO'),
+                title: I18n.t('WHERE_ARE_YOU'),
                 component: require('./scenes/CityChoice').default
             }
         }
     },
 
     cityChoice: {
-        title: I18n.t('REFUGEE_INFO'),
+        title: I18n.t('WHERE_ARE_YOU'),
         component: require('./scenes/CityChoice').default
     },
 

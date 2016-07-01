@@ -27,12 +27,11 @@
   "LANGUAGE": "Language",
   "ENGLISH": "English",
   "FRENCH": "French",
-  "ARABIC": "Arabic",
-  "SELECT_COUNTRY": "Please choose the country where you are",
-  "SELECT_LOCATION": "Please choose your location",
+  "SELECT_COUNTRY": "Choose your country",
+  "SELECT_LOCATION": "Choose your city",
+  "SERVICE_LIST": "Services",
   "SERVICES": "Services",
   "EXPLORE_MAP": "Map",
-  "SERVICE_LIST": "Services",
   "GENERAL_INFO": "Information",
   "SERVICE_DETAILS": "Service Details",
   "SERVICE_MAP": "Service Map",
@@ -58,12 +57,11 @@
   "LOCATION_SET_TO": "Your location has been set to",
   "LOCATION_PICK_CITY": "Please choose a city.",
   "LOCATION_SET_FAILED": "Could not find any regions in your location. Please choose location from the list.",
-
   "REFUGEE_INFO": "REFUGEE INFO",
   "IMPORTANT_INFORMATION": "IMPORTANT INFORMATION",
   "CHANGE_LOCATION": "CHANGE LOCATION",
-
   "CONTACT_US": "Contact us",
   "FEEDBACK": "Feedback",
-  "ABOUT": "About Refugee.Info"
+  "ABOUT": "About Refugee.Info",
+  "WHERE_ARE_YOU": "Where are you?"
 }
