@@ -4,7 +4,7 @@ import {Platform, StyleSheet, Dimensions} from 'react-native';
 
 let {height, width} = Dimensions.get('window');
 
-const themes = {
+export const themes = {
     light: {
         backgroundColor: '#FFFFFF',
         darkBackgroundColor: '#000000',
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     searchBar: {
         flex: 1,
         shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.4,
         shadowRadius: 1
     },
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     searchBarDark: {
         backgroundColor: themes.dark.backgroundColor
     },
-    
+
     // other
 
     flex: {
@@ -463,8 +463,26 @@ const styles = StyleSheet.create({
     },
     alignRight: {
         textAlign: 'right'
+    },
+});
+
+export function generateTextStyles(language='en') {
+    let style;
+    if (['ar', 'fa'].indexOf(language) > -1) {
+        style = {
+            fontFamily: 'Montserrat-Regular',
+        };
+    } else if (['el', ].indexOf(language) > -1) {
+        style = {
+            fontFamily: 'Roboto',
+        };
+    } else {
+        style = {
+            fontFamily: 'Montserrat-Regular',
+        };
     }
 
-});
+    return style;
+};
 
 export default styles;

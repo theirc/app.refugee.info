@@ -22,6 +22,8 @@ import store from '../store';
 const rectangularLogo = require('../assets/logo-rect.png');
 const bullseye = require('../assets/icons/bullseye.png');
 
+import styles, {generateTextStyles, themes} from '../styles'
+
 
 export function isCompatible(feature) {
     const version = Platform.Version;
@@ -94,7 +96,7 @@ class Navigation extends Component {
         if (!region || !region.important_information) {
             return <View />;
         }
-
+        let s = (scene) => this.drawerCommons.changeScene(scene);
         return region.important_information.map((i, index) => {
             return (
                 <MenuItem key={index} onPress={() => s('info') }>{i.metadata.page_title}</MenuItem>
@@ -125,7 +127,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route, region, country, direction} = this.props;
+        const {theme, route, region, country, direction, language} = this.props;
         const {navigator} = this.context;
 
         if (!this.props.region) {
@@ -143,7 +145,7 @@ class Navigation extends Component {
         let styles = theme == 'light' ? lightNavigationStyles : {};
 
         // Shorthand to change scene
-        var s = (scene) => this.drawerCommons.changeScene(scene);
+        let s = (scene) => this.drawerCommons.changeScene(scene);
 
         let headerImage = <Image source={bullseye} style={[
             { resizeMode: 'stretch', height: 20, width: 20, },
@@ -152,26 +154,26 @@ class Navigation extends Component {
 
         const isLTR = direction == 'ltr';
 
-        return <ScrollView style={styles.outside1}>
-            <View style={styles.outside2}>
+        return <ScrollView style={styles.outermostBorder}>
+            <View style={styles.middleBorder}>
                 <View style={styles.view}>
                     <View>
                         <Image source={rectangularLogo} style={styles.logo} />
                     </View>
                     <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
                         {(isLTR) && headerImage}
-                        <Text style={styles.cityTitle}>{region.pageTitle.toUpperCase() }</Text>
+                        <Text style={[generateTextStyles(language), styles.cityText]}>{region.pageTitle.toUpperCase() }</Text>
                         {(!isLTR) && headerImage}
                     </View>
-                    <MenuSection title={I18n.t("REFUGEE_INFO")}>
+                    <MenuSection title={I18n.t("REFUGEE_INFO") }>
                         <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
                         <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
                         <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
                     </MenuSection>
-                    <MenuSection title={I18n.t("IMPORTANT_INFORMATION")}>
+                    <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                         {importantInformationItems}
                     </MenuSection>
-                    <MenuSection title={I18n.t("CHANGE_LOCATION")}>
+                    <MenuSection title={I18n.t("CHANGE_LOCATION") }>
                         {nearbyCitiesItems}
                     </MenuSection>
                     <MenuSection>
@@ -211,15 +213,15 @@ const lightNavigationStyles = StyleSheet.create({
         flex: 1,
         alignItems: 'stretch',
         paddingLeft: 20,
-        borderLeftColor: "#ededed",
+        borderLeftColor: themes.light.lighterDividerColor,
         borderLeftWidth: 1,
     },
-    outside2: {
-        borderLeftColor: "#e4e4e4",
+    middleBorder: {
+        borderLeftColor: themes.light.darkerDividerColor,
         borderLeftWidth: 1,
     },
-    outside1: {
-        borderLeftColor: "#b2b2b2",
+    outermostBorder: {
+        borderLeftColor: themes.light.dividerColor,
         borderLeftWidth: 1,
     },
     titleWrapper: {
@@ -229,58 +231,11 @@ const lightNavigationStyles = StyleSheet.create({
         marginBottom: 15,
         paddingRight: 10
     },
-    cityTitle: {
+    cityText: {
         fontSize: 14,
         fontWeight: 'bold',
     }
 });
 
-const itemStyles = {
-    header: {
-        paddingHorizontal: 16,
-        marginBottom: 0
-    },
-    section: {
-        flex: 1,
-        marginTop: 0
-    },
-    item: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 48,
-        paddingLeft: 16
-    },
-    subheader: {
-        flex: 1
-    },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 5
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 5
-    },
-    value: {
-        flex: 1,
-        paddingLeft: 26,
-        paddingRight: 5,
-        top: (Platform.OS === 'ios') ? -5 : 2
-    },
-    valueRTL: {
-        flex: 1,
-        paddingRight: 36,
-        top: (Platform.OS === 'ios') ? -5 : 2,
-        paddingLeft: 5,
-        alignItems: 'flex-end'
-    },
-    label: {
-        paddingRight: 16,
-        top: 2
-    }
-};
-
+console.log(themes);
 export default connect(mapStateToProps)(Navigation);
