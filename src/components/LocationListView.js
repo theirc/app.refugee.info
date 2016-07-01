@@ -21,7 +21,8 @@ export default class LocationListView extends Component {
         rows: PropTypes.arrayOf(React.PropTypes.shape({
             id: PropTypes.number,
             name: PropTypes.string.isRequired
-        }))
+        })),
+        theme: PropTypes.oneOf(['light', 'dark'])
     };
 
     constructor(props) {
@@ -34,14 +35,26 @@ export default class LocationListView extends Component {
         });
     }
 
-    renderHeader() {
-        let {direction} = this.props;
+    renderHeader(custom_header_text=null) {
+        let {direction, theme} = this.props;
         if (!direction) {
             direction = 'ltr';
         }
         return (
-            <View style={styles.header}>
-                <DirectionalText direction={direction} style={styles.headerText}>{this.props.header}</DirectionalText>
+            <View style={[
+                    styles.viewHeaderContainer,
+                    theme=='dark' ? styles.viewHeaderContainerDark : styles.viewHeaderContainerLight
+                ]}
+            >
+                <Text
+                    direction={direction}
+                    style={[
+                        styles.viewHeaderText,
+                        theme=='dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
+                    ]}
+                >
+                    {custom_header_text ? custom_header_text.toUpperCase() : this.props.header.toUpperCase()}
+                </Text>
             </View>
         );
     }
@@ -57,41 +70,32 @@ export default class LocationListView extends Component {
             direction = 'ltr';
         }
 
-        const imageElement = (image && <Image
-            source={image}
-            style={styles.countryFlag}
-        />);
-
+        const imageElement = (image && <Image source={image} style={styles.listItemIcon} />);
+        const imageDivider = (image && <View style={styles.listItemDivider} />);
         return (
             <View>
                 <TouchableHighlight
-                    onPress={() => {
-                   this.props.onPress(rowData)
-                }}
-                    style={styles.buttonContainer}
-                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    onPress={() => {this.props.onPress(rowData)}}
+                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
                 >
-                    <View style={styles.locationListItem}>
-                        <View style={styles.rowHeader}>
-                            {direction === 'ltr' && imageElement }
-                            <DirectionalText
-                                direction={direction}
-                                style={[styles.buttonText, buttonIsSelected ? styles.buttonTextSelected : '']}
-                            >
+                    <View
+                        style={[
+                            styles.listItemContainer,
+                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+                        ]}
+                    >
+                        { imageElement }
+                        { imageDivider }
+                        <View style={styles.listItemTextContainer}>
+                            <Text style={[
+                                styles.listItemText,
+                                theme=='dark' ? styles.listItemTextDark : styles.listItemTextLight
+                            ]}>
                                 {rowData.pageTitle || rowData.metadata.page_title}
-                            </DirectionalText>
-                            {direction === 'rtl' && imageElement }
+                            </Text>
                         </View>
-                        {(buttonIsSelected) ?
-                            <Icon
-                                color="black"
-                                name="check"
-                                size={16}
-                                style={styles.icon}
-                            /> : null}
                     </View>
                 </TouchableHighlight>
-                <Divider />
             </View>
         );
     }
@@ -102,41 +106,24 @@ export default class LocationListView extends Component {
         if (!(direction || false)) {
             direction = 'ltr';
         }
-
+        let custom_header_text = null;
         if (this.props.rows.length === 0 && this.props.loaded) {
-            return (
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <DirectionalText direction={direction}
-                                         style={styles.headerText}>{I18n.t('NO_LOCATIONS_FOUND')}</DirectionalText>
-                    </View>
-                </View>
-            );
+            custom_header_text = I18n.t('NO_LOCATIONS_FOUND')
         }
         else if (!this.props.rows.length && !this.props.loaded) {
-            return (
-                <View style={styles.container}>
-                    <View style={styles.header}>
-                        <DirectionalText direction={direction}
-                                         style={styles.headerText}>{I18n.t('LOADING_LOCATIONS')}</DirectionalText>
-                    </View>
-                </View>
-            );
+            custom_header_text = I18n.t('LOADING_LOCATIONS');
         }
-        else {
             return (
                 <View style={styles.container}>
                     <ListView
                         dataSource={this.dataSource.cloneWithRows(this.props.rows)}
                         enableEmptySections
-                        renderHeader={() => this.renderHeader()}
-                        renderRow={(rowData) => this.renderRow(rowData)}
+                        renderHeader={() => this.renderHeader(custom_header_text)}
+                        renderRow={(rowData) => !custom_header_text ? this.renderRow(rowData) : null}
                         style={styles.listViewContainer}
                     />
                 </View>
             );
-        }
-
     }
 }
 

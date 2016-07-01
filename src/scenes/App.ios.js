@@ -68,7 +68,7 @@ export class App extends Component {
 
     render() {
         const {drawer, navigator} = this.state;
-        let {direction} = this.props;
+        let {direction, theme} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
@@ -117,7 +117,13 @@ export class App extends Component {
                       return sceneConfig;
                   }}
                     initialRoute={Navigate.getInitialRoute()}
-                    navigationBar={<Toolbar onIconPress={this.openDrawer} />}
+                    navigationBar={
+                        <Toolbar
+                            logoVisible={true}
+                            theme={theme}
+                            onMenuIconPress={this.openDrawer}
+                        />
+                    }
                     ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
                     renderScene={(route) => {
                       if (this.state.navigator && route.component) {

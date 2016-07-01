@@ -1,22 +1,176 @@
 'use strict';
 
-import { Platform, StyleSheet, Dimensions } from 'react-native';
+import {Platform, StyleSheet, Dimensions} from 'react-native';
 
 let {height, width} = Dimensions.get('window');
 
+const themes = {
+    light: {
+        backgroundColor: '#FFFFFF',
+        darkBackgroundColor: '#000000',
+        dividerColor: '#E2E2E2',
+        darkerDividerColor: '#BABABA',
+        lighterDividerColor: '#F2F2F2',
+        toolbarColor: '#FDF9F9',
+        accentColor: '#39B05C',
+        textColor: '#515151'
+    },
+    dark: {
+        backgroundColor: '#FFFFFF',
+        darkBackgroundColor: '#000000',
+        dividerColor: '#E2E2E2',
+        darkerDividerColor: '#BABABA',
+        lighterDividerColor: '#F2F2F2',
+        toolbarColor: '#FDF9F9',
+        accentColor: '#39B05C',
+        textColor: '#000000'
+    }
+};
+
 const styles = StyleSheet.create({
+
+    // toolbar
+
+    toolbarContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        paddingTop: 10,
+        paddingBottom: 15,
+        paddingRight: 15,
+        paddingLeft: 15,
+        flexDirection: 'column',
+        height: 140,
+        borderTopWidth: 20,
+        borderBottomWidth: 2
+    },
+    toolbarContainerLight: {
+        backgroundColor: themes.light.toolbarColor,
+        borderTopColor: themes.light.darkBackgroundColor,
+        borderBottomColor: themes.light.darkerDividerColor
+    },
+    toolbarContainerDark: {
+        backgroundColor: themes.dark.toolbarColor,
+        borderTopColor: themes.dark.darkBackgroundColor,
+        borderBottomColor: themes.dark.darkerDividerColor
+    },
+
+    toolbarTop: {
+        flexDirection: 'row',
+        height: 50,
+        justifyContent: 'space-between'
+    },
+    toolbarBottom: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
+    brandImage: {
+        height: 40,
+        width: 120
+    },
+    menuIcon: {
+        fontSize: 28,
+        color: themes.light.darkerDividerColor
+    },
+    toolbarTitle: {
+        fontSize: 20,
+        fontFamily: 'Montserrat'
+    },
+    toolbarTitleLight: {
+        color: themes.light.textColor
+    },
+    toolbarTitleDark: {
+        color: themes.dark.textColor
+    },
+
+    // view header
+
+    viewHeaderContainer: {
+        padding: 15
+    },
+    viewHeaderContainerLight: {
+        backgroundColor: themes.light.dividerColor
+    },
+    viewHeaderContainerDark: {
+        backgroundColor: themes.dark.dividerColor
+    },
+    viewHeaderText: {
+        fontSize: 13,
+        fontFamily: 'Montserrat',
+        textAlign: 'center'
+    },
+    viewHeaderTextLight: {
+        color: themes.light.darkerDividerColor
+    },
+    viewHeaderTextDark: {
+        color: themes.dark.darkerDividerColor
+    },
+
+    // list items
+
+    listItemContainer: {
+        flex: 1,
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        borderBottomWidth: 2,
+        flexDirection: 'row'
+    },
+    listItemContainerLight: {
+        borderBottomColor: themes.light.lighterDividerColor,
+        backgroundColor: themes.light.backgroundColor
+    },
+    listItemContainerDark: {
+        borderBottomColor: themes.dark.lighterDividerColor,
+        backgroundColor: themes.dark.backgroundColor
+    },
+    listItemTextContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 9,
+        paddingBottom: 12
+    },
+    listItemText: {
+        flex: 1,
+        fontSize: 15,
+        fontFamily: 'Montserrat'
+    },
+    listItemTextLight: {
+        color: themes.light.textColor
+    },
+    listItemTextDark: {
+        color: themes.dark.textColor
+    },
+    listItemIcon: {
+        position: 'absolute',
+        left: 15,
+        top: 6
+    },
+    listItemDivider: {
+        position: 'absolute',
+        left: 62,
+        top: 12,
+        width: 2,
+        height: 21,
+        backgroundColor: themes.light.lighterDividerColor
+    },
+    // other
 
     flex: {
         flex: 1
     },
     scene: {
-        paddingTop: 76,
-        flex: 1
+        paddingTop: 140,
+        flex: 1,
+        backgroundColor: 'white'
     },
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#F5F5F5'
     },
     horizontalContainer: {
         flex: 1,
@@ -120,10 +274,7 @@ const styles = StyleSheet.create({
     stickyInputContainer: {
         backgroundColor: '#F5F5F5'
     },
-    countryFlag: {
-        marginLeft: 10,
-        marginRight: 10,
-    },
+
     floatingActionButton: {
         position: 'absolute',
         flex: 1,
@@ -232,8 +383,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: -5
     },
-    mapPopupContainer: {
-    },
+    mapPopupContainer: {},
     mapPopupTitle: {
         fontSize: 16,
         fontWeight: 'bold'
@@ -253,7 +403,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     },
     offlineModeTextContainer: {
-      marginLeft: 50
+        marginLeft: 50
     },
     offlineModeText: {
         textAlign: 'center'
