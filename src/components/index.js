@@ -5,3 +5,4 @@ export { default as LoadingView } from './LoadingView';
 export { default as Toolbar } from './Toolbar';
 export { default as DirectionalText } from './DirectionalText';
 export { Header, Section } from './DrawerOverrides';
+export { default as SearchBar } from './SearchBar';

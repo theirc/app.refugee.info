@@ -155,9 +155,35 @@ const styles = StyleSheet.create({
         left: 62,
         top: 12,
         width: 2,
-        height: 21,
+        height: 21
+    },
+    listItemDividerLight: {
         backgroundColor: themes.light.lighterDividerColor
     },
+    listItemDividerDark: {
+        backgroundColor: themes.dark.lighterDividerColor
+    },
+
+    // search bar
+
+    searchBarContainer: {
+        padding: 5,
+        height: 46
+    },
+    searchBar: {
+        flex: 1,
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.4,
+        shadowRadius: 1
+    },
+    searchBarLight: {
+        backgroundColor: themes.light.backgroundColor
+    },
+    searchBarDark: {
+        backgroundColor: themes.dark.backgroundColor
+    },
+    
     // other
 
     flex: {

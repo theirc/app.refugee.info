@@ -47,7 +47,6 @@ export default class LocationListView extends Component {
                 ]}
             >
                 <Text
-                    direction={direction}
                     style={[
                         styles.viewHeaderText,
                         theme=='dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
@@ -71,7 +70,10 @@ export default class LocationListView extends Component {
         }
 
         const imageElement = (image && <Image source={image} style={styles.listItemIcon} />);
-        const imageDivider = (image && <View style={styles.listItemDivider} />);
+        const imageDivider = (image && <View style={[
+            styles.listItemDivider,
+            theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+        ]} />);
         return (
             <View>
                 <TouchableHighlight

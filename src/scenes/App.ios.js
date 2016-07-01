@@ -104,7 +104,7 @@ export class App extends Component {
                 tweenDuration={100}
                 panThreshold={0.08}
                 openDrawerOffset={0.2}
-                closedDrawerOffset={() => -3}
+                closedDrawerOffset={() => 0}
                 panOpenMask={0.02}
                 side={'left'}
             >
