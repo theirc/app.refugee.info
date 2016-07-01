@@ -19,7 +19,6 @@ import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 
-const rectangularLogo = require('../assets/logo-rect.png');
 const bullseye = require('../assets/icons/bullseye.png');
 
 import styles, {generateTextStyles, themes} from '../styles'
@@ -142,7 +141,8 @@ class Navigation extends Component {
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
             return <MenuItem key={index} onPress={() => s('info') }>{i.pageTitle}</MenuItem>;
         });
-        let styles = theme == 'light' ? lightNavigationStyles : {};
+        let rectangularLogo = theme == 'light' ? themes.light.rectangularLogo : themes.dark.rectangularLogo;
+        let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
@@ -152,39 +152,37 @@ class Navigation extends Component {
             (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
         ]} />;
 
+
+
         const isLTR = direction == 'ltr';
 
-        return <ScrollView style={styles.outermostBorder}>
-            <View style={styles.middleBorder}>
-                <View style={styles.view}>
-                    <View>
-                        <Image source={rectangularLogo} style={styles.logo} />
-                    </View>
-                    <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
-                        {(isLTR) && headerImage}
-                        <Text style={[generateTextStyles(language), styles.cityText]}>{region.pageTitle.toUpperCase() }</Text>
-                        {(!isLTR) && headerImage}
-                    </View>
-                    <MenuSection title={I18n.t("REFUGEE_INFO") }>
-                        <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
-                        <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
-                        <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
-                    </MenuSection>
-                    <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
-                        {importantInformationItems}
-                    </MenuSection>
-                    <MenuSection title={I18n.t("CHANGE_LOCATION") }>
-                        {nearbyCitiesItems}
-                    </MenuSection>
-                    <MenuSection>
-                        <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
-                        <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('ABOUT') }</MenuItem>
-                        <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
-                        <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
-                    </MenuSection>
-                    <View style={{ paddingBottom: 15 }}>
-                    </View>
-                </View>
+        return <ScrollView style={styles.view}>
+            <View style={[styles.logoContainer, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end') }]}>
+                <Image source={rectangularLogo} style={ styles.logo } />
+            </View>
+            <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
+                {(isLTR) && headerImage}
+                <Text style={[generateTextStyles(language), styles.cityText]}>{region.pageTitle.toUpperCase() }</Text>
+                {(!isLTR) && headerImage}
+            </View>
+            <MenuSection title={I18n.t("REFUGEE_INFO") }>
+                <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
+                <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
+                <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
+            </MenuSection>
+            <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
+                {importantInformationItems}
+            </MenuSection>
+            <MenuSection title={I18n.t("CHANGE_LOCATION") }>
+                {nearbyCitiesItems}
+            </MenuSection>
+            <MenuSection>
+                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
+                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('ABOUT') }</MenuItem>
+                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
+                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
+            </MenuSection>
+            <View style={{ paddingBottom: 15 }}>
             </View>
         </ScrollView>;
     }
@@ -208,13 +206,15 @@ const lightNavigationStyles = StyleSheet.create({
         resizeMode: 'contain',
         marginTop: 10,
     },
+    logoContainer: {
+        flex:1, 
+        flexDirection:'row',
+        marginRight: 10,
+    },
     view: {
         flexDirection: 'column',
         flex: 1,
-        alignItems: 'stretch',
         paddingLeft: 20,
-        borderLeftColor: themes.light.lighterDividerColor,
-        borderLeftWidth: 1,
     },
     middleBorder: {
         borderLeftColor: themes.light.darkerDividerColor,
@@ -234,6 +234,45 @@ const lightNavigationStyles = StyleSheet.create({
     cityText: {
         fontSize: 14,
         fontWeight: 'bold',
+        color: themes.light.textColor,
+    }
+});
+
+const darkNavigationStyles = StyleSheet.create({
+    logo: {
+        width: 150,
+        resizeMode: 'contain',
+        marginTop: 10,
+    },
+    logoContainer: {
+        flex:1, 
+        flexDirection:'row',
+        marginRight: 10,
+    },
+    view: {
+        flexDirection: 'column',
+        flex: 1,
+        paddingLeft: 20,
+    },
+    middleBorder: {
+        borderLeftColor: themes.dark.darkerDividerColor,
+        borderLeftWidth: 1,
+    },
+    outermostBorder: {
+        borderLeftColor: themes.dark.dividerColor,
+        borderLeftWidth: 1,
+    },
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 30,
+        marginBottom: 15,
+        paddingRight: 10
+    },
+    cityText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: themes.dark.textColor,
     }
 });
 

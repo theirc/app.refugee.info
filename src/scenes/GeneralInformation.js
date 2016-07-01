@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
-import {Divider} from 'react-native-material-design';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export class GeneralInformation extends Component {
 
@@ -104,15 +104,32 @@ export class GeneralInformation extends Component {
             <View>
                 <TouchableHighlight
                     onPress={() => this.onClick(rowData.title, rowData.section)}
-                    style={styles.buttonContainer}
-                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
                 >
-                    <View style={styles.generalInfoItem}>
-                        <DirectionalText direction={this.props.direction}
-                                         style={styles.generalInfoText}>{rowData.title}</DirectionalText>
+                    <View
+                        style={[
+                            styles.listItemContainer,
+                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+                        ]}
+                    >
+                        <Icon name="md-bus" style={styles.listItemIconInline} />
+                        <View style={[
+                            styles.listItemDividerInline,
+                            theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+                        ]} />
+                        <View style={[
+                                styles.listItemTextContainer,
+                                {alignItems: 'flex-start'}
+                            ]}>
+                            <Text style={[
+                                styles.listItemText,
+                                theme=='dark' ? styles.listItemTextDark : styles.listItemTextLight
+                            ]}>
+                                {rowData.title}
+                            </Text>
+                        </View>
                     </View>
                 </TouchableHighlight>
-                <Divider />
             </View>
         );
     }
@@ -141,7 +158,6 @@ export class GeneralInformation extends Component {
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                 />
-                <MapButton direction={this.props.direction}/>
             </View>
         );
     }

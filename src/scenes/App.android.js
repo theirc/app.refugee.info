@@ -16,6 +16,7 @@ import { fetchRegionFromStorage } from '../actions/region';
 import { fetchDirectionFromStorage } from '../actions/direction';
 import { fetchLanguageFromStorage } from '../actions/language';
 import { fetchCountryFromStorage } from '../actions/country';
+import {fetchThemeFromStorage} from '../actions/theme'
 import {connect} from 'react-redux';
 
 export default class App extends Component {
@@ -40,6 +41,7 @@ export default class App extends Component {
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchThemeFromStorage());
     }
 
     getChildContext = () => {
@@ -61,8 +63,14 @@ export default class App extends Component {
         });
     };
 
+    componentWillReceiveProps(props) {
+        const {theme} = props;
+
+        this.setState({ theme: theme });
+    }
+
     render() {
-        const { drawer, navigator } = this.state;
+        const { drawer, navigator, theme} = this.state;
         const navView = <Navigation />;
         let {direction} = this.props;
         const {dispatch} = this.props;

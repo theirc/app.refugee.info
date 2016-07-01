@@ -11,6 +11,7 @@ import {updateLanguageIntoStorage} from '../actions/language'
 import {updateDirectionIntoStorage} from '../actions/direction'
 import {updateRegionIntoStorage} from '../actions/region'
 import {updateCountryIntoStorage} from '../actions/country'
+import {updateThemeIntoStorage} from '../actions/theme'
 
 class Settings extends Component {
 
@@ -26,21 +27,32 @@ class Settings extends Component {
             language: lang
         })
     }
+    setTheme(theme) {
+        this.setState({
+            theme: theme
+        })
+    }
 
-    selectLanguage(lang) {
+    updateSettings() {
         const {navigator} = this.context;
+        const {language, theme} = this.state;
         const {dispatch} = this.props;
-        const direction = ['ar', 'fa'].indexOf(lang) > -1 ? 'rtl' : 'ltr';
+        const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
+        let originalTheme = {...this.props.theme};
+        originalTheme.theme = theme;
 
-        dispatch(updateLanguageIntoStorage(lang));
+        dispatch(updateLanguageIntoStorage(language));
         dispatch(updateDirectionIntoStorage(direction));
         dispatch(updateRegionIntoStorage(null));
         dispatch(updateCountryIntoStorage(null));
+        dispatch(updateThemeIntoStorage(theme));
 
         dispatch({type: "REGION_CHANGED", payload: null});
         dispatch({type: 'COUNTRY_CHANGED', payload: null});
-        dispatch({type: "CHANGE_LANGUAGE", payload: lang});
+        dispatch({type: "CHANGE_LANGUAGE", payload: language});
         dispatch({type: "DIRECTION_CHANGED", payload: direction});
+        dispatch({type: "THEME_CHANGED", payload: theme});
+        
 
         navigator.to('initial');
     }
@@ -66,7 +78,21 @@ class Settings extends Component {
                       }
                     ]}
                 />
-                <Button raised onPress={() => this.selectLanguage(this.state.language)} text="Select"/>
+                <Subheader text="Theme"/>
+                
+                <RadioButtonGroup
+                    onSelect={(value)=> this.setTheme(value) }
+                    theme={theme.theme}
+                    primary={theme.primary}
+                    selected={theme.theme}
+                    items={[{
+                          value: 'light', label: 'Light'
+                      }, {
+                          value: 'dark', label: 'Dark'
+                      }
+                    ]}
+                />
+                <Button raised onPress={() => this.updateSettings()} text="Update"/>
             </View>
         );
     }

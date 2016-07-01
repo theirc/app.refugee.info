@@ -6,6 +6,8 @@ let {height, width} = Dimensions.get('window');
 
 export const themes = {
     light: {
+        logo: require("./assets/logo.png"),
+        rectangularLogo: require("./assets/logo-rect.png"),
         backgroundColor: '#FFFFFF',
         darkBackgroundColor: '#000000',
         dividerColor: '#E2E2E2',
@@ -16,14 +18,16 @@ export const themes = {
         textColor: '#515151'
     },
     dark: {
-        backgroundColor: '#FFFFFF',
-        darkBackgroundColor: '#000000',
-        dividerColor: '#E2E2E2',
+        logo: require("./assets/logo.png"),
+        rectangularLogo: require("./assets/logo-rect-dark.png"),
+        backgroundColor: '#000000',
+        darkBackgroundColor: '#FFFFFF',
+        dividerColor: '#303030',
         darkerDividerColor: '#BABABA',
         lighterDividerColor: '#F2F2F2',
         toolbarColor: '#FDF9F9',
         accentColor: '#39B05C',
-        textColor: '#000000'
+        textColor: '#ffffff'
     }
 };
 
@@ -73,6 +77,10 @@ const styles = StyleSheet.create({
     menuIcon: {
         fontSize: 28,
         color: themes.light.darkerDividerColor
+    },
+    backIcon: {
+        fontSize: 28,
+        color: themes.light.accentColor
     },
     toolbarTitle: {
         fontSize: 20,
@@ -150,12 +158,25 @@ const styles = StyleSheet.create({
         left: 15,
         top: 6
     },
+    listItemIconInline: {
+        marginTop: 8,
+        marginLeft: 10,
+        fontSize: 24,
+        color: themes.light.accentColor
+    },
     listItemDivider: {
         position: 'absolute',
         left: 62,
         top: 12,
         width: 2,
         height: 21
+    },
+    listItemDividerInline: {
+        marginTop: 9,
+        width: 2,
+        height: 22,
+        marginLeft: 20,
+        marginRight: 20
     },
     listItemDividerLight: {
         backgroundColor: themes.light.lighterDividerColor
@@ -175,7 +196,12 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.4,
-        shadowRadius: 1
+        shadowRadius: 1,
+        flexDirection: 'row',
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10
     },
     searchBarLight: {
         backgroundColor: themes.light.backgroundColor
@@ -184,6 +210,27 @@ const styles = StyleSheet.create({
         backgroundColor: themes.dark.backgroundColor
     },
 
+    searchBarIconContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
+    searchBarIcon: {
+        marginLeft: 5,
+        marginRight: 10,
+        fontSize: 22
+    },
+    searchBarIconLight: {
+        color: themes.light.darkerDividerColor
+    },
+    searchBarIconDark: {
+        color: themes.dark.darkerDividerColor
+    },
+    searchBarInput: {
+        flex: 1,
+        fontSize: 13,
+        fontFamily: 'Montserrat'
+    },
+    
     // other
 
     flex: {

@@ -5,6 +5,7 @@ import {fetchRegionFromStorage} from '../actions/region';
 import {fetchDirectionFromStorage} from '../actions/direction';
 import {fetchLanguageFromStorage} from '../actions/language';
 import {fetchCountryFromStorage} from '../actions/country';
+import {fetchThemeFromStorage} from '../actions/theme'
 
 class Initial extends Component {
 
@@ -22,6 +23,7 @@ class Initial extends Component {
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchThemeFromStorage());
 
         if (!(region || false)) {
             navigator.to('countryChoice');
