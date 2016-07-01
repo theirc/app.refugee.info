@@ -70,7 +70,7 @@ export class App extends Component {
         const {drawer, navigator} = this.state;
         let {direction} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
-        const { country } = this.props;
+        const { country, dispatch } = this.props;
 
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
@@ -80,7 +80,7 @@ export class App extends Component {
                 ref={(drawer) =>{
                   this.drawer = drawer;
                 }}
-                type="overlay"
+                type="displace"
                 acceptTap={true}
                 content={
                   <Navigation  />
@@ -97,10 +97,12 @@ export class App extends Component {
                   shadowRadius: 3
               }}}
                 onOpen={() => {
-                  this.setState({drawerOpen: true})
+                  this.setState({drawerOpen: true});
+                  dispatch({type:"DRAWER_CHANGED", payload: true});
               }}
                 onClose={() => {
-                  this.setState({drawerOpen: false})
+                  this.setState({drawerOpen: false});
+                  dispatch({type:"DRAWER_CHANGED", payload: false});
               }}
                 captureGestures={false}
                 tweenDuration={100}

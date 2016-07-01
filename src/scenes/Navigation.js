@@ -12,7 +12,7 @@ import I18n from '../constants/Messages';
 import {capitalize} from '../utils/helpers';
 import ApiClient from '../utils/ApiClient';
 import DrawerCommons from '../utils/DrawerCommons';
-import {Header, Section, DirectionalText} from '../components'
+import {Header, Section, DirectionalText, MenuSection, MenuItem} from '../components'
 import CountryHeaders from '../constants/CountryHeaders'
 
 import {updateRegionIntoStorage} from '../actions/region';
@@ -61,7 +61,7 @@ class Navigation extends Component {
             this.setState({ otherLocations: children.slice(0, 5) });
         }
     }
-    
+
     async loadCities(countryId) {
         let cities = [];
         let apiClient = new ApiClient(this.context, this.props);
@@ -77,12 +77,12 @@ class Navigation extends Component {
             for (let _cities of citiesList) {
                 cities = cities.concat(_cities);
             }
-            cities.forEach((c)=>{
-              if(c && c.metadata) {
-                const pageTitle = (c.metadata.page_title || '')
-                  .replace('\u060c', ',').split(',')[0];
-                c.pageTitle = pageTitle;
-              }
+            cities.forEach((c) => {
+                if (c && c.metadata) {
+                    const pageTitle = (c.metadata.page_title || '')
+                        .replace('\u060c', ',').split(',')[0];
+                    c.pageTitle = pageTitle;
+                }
             });
 
             return cities
@@ -95,112 +95,13 @@ class Navigation extends Component {
             return <View />;
         }
 
-        return region.important_information.map((i) => {
-            return {
-                value: i.metadata.page_title,
-                active: false,
-                onPress: () => false,
-                onLongPress: () => false
-            }
-        });
-    }
-
-    renderItem(item, index) {
-        if (this.props.direction == 'rtl') {
+        return region.important_information.map((i, index) => {
             return (
-                <View
-                    key={index}
-                    style={itemStyles.item}
-                    >
-                    <View style={itemStyles.valueRTL}>
-                        <Text style={[TYPO.paperFontBody2, {}, { textAlign: 'right' }]}>
-                            {item.value}
-                        </Text>
-                    </View>
-                    {item.label &&
-                        <View style={itemStyles.label}>
-                            <Text style={[TYPO.paperFontBody2, {}]}>
-                                {item.label}
-                            </Text>
-                        </View>
-                    }
-                    {item.icon &&
-                        <Icon
-                            name={item.icon}
-                            size={22}
-                            style={itemStyles.iconRTL}
-                            />
-                    }
-                </View>
-            );
-        }
-        return (
-            <View
-                key={index}
-                style={itemStyles.item}
-                >
-                {item.icon &&
-                    <Icon
-                        name={item.icon}
-                        size={22}
-                        style={itemStyles.icon}
-                        />
-                }
-                <View style={itemStyles.value}>
-                    <Text style={[TYPO.paperFontBody2, {}]}>
-                        {item.value}
-                    </Text>
-                </View>
-                {item.label &&
-                    <View style={itemStyles.label}>
-                        <Text style={[TYPO.paperFontBody2, {}]}>
-                            {item.label}
-                        </Text>
-                    </View>
-                }
-            </View>
-        );
-    }
-
-    renderItemList(items) {
-        return items && items.map((item, i) => {
-            if (item.disabled) {
-            }
-
-            if (!isCompatible('TouchableNativeFeedback')) {
-                return (
-                    <Ripple
-                        key={i}
-                        rippleColor="rgba(153,153,153,.4)"
-                        onPress={item.onPress}
-                        onLongPress={item.onLongPress}
-                        style={{
-                            flex: 1,
-                            flexDirection: 'column',
-                            backgroundColor: item.active ? '#ffffff' : null,
-                        }}
-                        >
-                        {this.renderItem(item, i) }
-                    </Ripple>
-                );
-            }
-
-            return (
-                <TouchableNativeFeedback
-                    key={i}
-                    background={TouchableNativeFeedback.Ripple('rgba(153,153,153,.4)') }
-                    onPress={item.onPress}
-                    onLongPress={item.onLongPress}
-                    >
-                    <View style={[item.active ? { backgroundColor: '#ffffff' } : {}, {
-                    }]}>
-                        {this.renderItem(item, i) }
-                    </View>
-                </TouchableNativeFeedback>
+                <MenuItem key={index} onPress={() => s('info') }>{i.metadata.page_title}</MenuItem>
             );
         });
-
     }
+
     async selectCity(city) {
         const { dispatch, country } = this.props;
 
@@ -211,20 +112,20 @@ class Navigation extends Component {
         dispatch(updateCountryIntoStorage(city.country));
         dispatch(updateRegionIntoStorage(city));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
         this.drawerCommons.closeDrawer();
 
-        if(city.content && city.content.length == 1) {
-          return this.context.navigator.to('infoDetails', null, {section: city.content[0].section, sectionTitle: city.content[0].title });
+        if (city.content && city.content.length == 1) {
+            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.content[0].title });
         } else {
-          return this.context.navigator.to('info', null, null, store.getState());
+            return this.context.navigator.to('info', null, null, store.getState());
         }
     }
 
     render() {
-        const {theme, route, region, country} = this.props;
+        const {theme, route, region, country, direction} = this.props;
         const {navigator} = this.context;
 
         if (!this.props.region) {
@@ -235,116 +136,45 @@ class Navigation extends Component {
             return <Text>Choose location first</Text>;
         }
 
-        let navigateTo = region.content.length == 1 ?
-            () => this.drawerCommons.changeScene('infoDetails', null, {
-                section: region.content[0].section,
-                sectionTitle: region.content[0].title
-            }) :
-            () => this.drawerCommons.changeScene('info');
-
-        let title = require('../assets/RI-logo.png');
-        let headerInformation = CountryHeaders.rs;
-
-        if (country) {
-            const countryCode = country.code.toLowerCase();
-            if (CountryHeaders.hasOwnProperty(countryCode)) {
-                headerInformation = CountryHeaders[countryCode];
-            }
-        }
-
-        let styles = lightNavigationStyles;
-        let mainItems = [
-            {
-                icon: 'info',
-                value: I18n.t('GENERAL_INFO'),
-                active: route === 'info',
-                onPress: navigateTo,
-                onLongPress: navigateTo
-            },
-            {
-                icon: 'list',
-                value: I18n.t('SERVICE_LIST'),
-                active: route === 'services',
-                onPress: () => this.drawerCommons.changeScene('services'),
-                onLongPress: () => this.drawerCommons.changeScene('services')
-            }, {
-                icon: 'map',
-                value: I18n.t('EXPLORE_MAP'),
-                active: route === 'map',
-                onPress: () => this.drawerCommons.changeScene('map'),
-                onLongPress: () => this.drawerCommons.changeScene('map')
-            }
-        ];
-
-        let bottomItems = [{
-            icon: 'public',
-            value: I18n.t('CHANGE_COUNTRY'),
-            active: !route || route === 'countryChoice',
-            onPress: () => this.drawerCommons.changeScene('countryChoice'),
-            onLongPress: () => this.drawerCommons.changeScene('countryChoice')
-        }, {
-                icon: 'settings',
-                value: I18n.t('SETTINGS'),
-                active: !route || route === 'settings',
-                onPress: () => this.drawerCommons.changeScene('settings'),
-                onLongPress: () => this.drawerCommons.changeScene('settings')
-            }
-        ]
-
         let importantInformationItems = this._getImportantInformation();
-        let nearbyCitiesItems = this.state.otherLocations.map((i) => {
-            return {
-                value: i.pageTitle,
-                active: false,
-                onPress: () => this.selectCity(i),
-                onLongPress: () => this.selectCity(i)
-            }
-        })
+        let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
+            return <MenuItem key={index} onPress={() => s('info') }>{i.pageTitle}</MenuItem>;
+        });
+        let styles = theme == 'light' ? lightNavigationStyles : {};
 
-        return <View style={styles.view}>
-            <View>
-                <Image source={rectangularLogo} style={styles.logo} />
+        // Shorthand to change scene
+        let s = (scene) => this.drawerCommons.changeScene(scene);
+
+        return <ScrollView style={styles.outside1}>
+            <View style={styles.outside2}>
+                <View style={styles.view}>
+                    <View>
+                        <Image source={rectangularLogo} style={styles.logo} />
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', height: 30, marginBottom: 15 }}>
+                        <Image source={bullseye} style={{ resizeMode: 'stretch', height: 20, width: 20, marginRight: 10 }} />
+                        <Text style={styles.pageTitle}>{region.pageTitle.toUpperCase() }</Text>
+                    </View>
+                    <MenuSection title={"REFUGEE.INFO"}>
+                        <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
+                        <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
+                        <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
+                    </MenuSection>
+                    <MenuSection title={"IMPORTANT INFORMATION"}>
+                        {importantInformationItems}
+                    </MenuSection>
+                    <MenuSection title={"CHANGE LOCATION"}>
+                        {nearbyCitiesItems}
+                    </MenuSection>
+                    <MenuSection>
+                        <MenuItem icon="public" active={route === 'countryChoice'} onPress={() => s('countryChoice') }>{I18n.t('CHANGE_COUNTRY') }</MenuItem>
+                        <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
+                    </MenuSection>
+                    <View style={{ paddingBottom: 15 }}>
+                    </View>
+                </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', height: 30, marginBottom: 15 }}>
-                <Image source={bullseye} style={{ resizeMode: 'stretch', height: 20, width: 20, marginRight: 10 }} />
-                <Text style={styles.pageTitle}>{region.pageTitle.toUpperCase() }</Text>
-            </View>
-            <ScrollView>
-                <View style={{ borderBottomColor: "#000000", borderBottomWidth: 1, paddingBottom: 15 }}>
-                    <Text style={{ color: "#49b050", fontWeight: "bold" }}>{"REFUGEE.INFO"}</Text>
-                </View>
-                {this.renderItemList(mainItems).map((item, index) => {
-                    return <View key={"wrapper-" + index} style={{ borderBottomColor: "#b2b2b2", borderBottomWidth: 1 }}>
-                        {item}
-                    </View>;
-                }) }
-                <View style={{ borderBottomColor: "#000000", borderBottomWidth: 1, paddingTop: 45, paddingBottom: 15 }}>
-                    <Text style={{ color: "#49b050", fontWeight: "bold" }}>{"IMPORTANT INFORMATION"}</Text>
-                </View>
-                {this.renderItemList(importantInformationItems).map((item, index) => {
-                    return <View key={"wrapper-" + index} style={{ borderBottomColor: "#b2b2b2", borderBottomWidth: 1 }}>
-                        {item}
-                    </View>;
-                }) }
-                <View style={{ borderBottomColor: "#000000", borderBottomWidth: 1, paddingTop: 45, paddingBottom: 15 }}>
-                    <Text style={{ color: "#49b050", fontWeight: "bold" }}>{"CHANGE LOCATION"}</Text>
-                </View>
-                {this.renderItemList(nearbyCitiesItems).map((item, index) => {
-                    return <View key={"wrapper-" + index} style={{ borderBottomColor: "#b2b2b2", borderBottomWidth: 1 }}>
-                        {item}
-                    </View>;
-                }) }
-                <View style={{ borderBottomColor: "#000000", borderBottomWidth: 1, paddingTop: 45, paddingBottom: 15 }}>
-                </View>
-                {this.renderItemList(bottomItems).map((item, index) => {
-                    return <View key={"wrapper-" + index} style={[{ borderBottomColor: "#000000", borderBottomWidth: 1 }]}>
-                        {item}
-                    </View>;
-                }) }
-                <View style={{ paddingBottom: 15 }}>
-                </View>
-            </ScrollView>
-        </View>;
+        </ScrollView>;
     }
 }
 
@@ -355,7 +185,8 @@ const mapStateToProps = (state) => {
         country: state.country,
         language: state.language,
         direction: state.direction,
-        theme: state.theme.theme
+        theme: state.theme.theme,
+        drawerOpen: state.drawerOpen
     };
 };
 
@@ -369,7 +200,17 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         alignItems: 'stretch',
-        marginLeft: 20,
+        paddingLeft: 20,
+        borderLeftColor: "#ededed",
+        borderLeftWidth: 1,
+    },
+    outside2: {
+        borderLeftColor: "#e4e4e4",
+        borderLeftWidth: 1,
+    },
+    outside1: {
+        borderLeftColor: "#b2b2b2",
+        borderLeftWidth: 1,
     },
     pageTitle: {
         fontSize: 14,
