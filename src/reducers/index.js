@@ -6,6 +6,7 @@ import language from './language';
 import direction from './direction';
 import theme from './theme';
 import country from './country';
+import drawerOpen from './drawerOpen';
 
 const refugeeApp = combineReducers({
     region,
@@ -13,7 +14,8 @@ const refugeeApp = combineReducers({
     language,
     direction,
     theme,
-    country
+    country,
+    drawerOpen
 });
 
 export default refugeeApp;

@@ -70,6 +70,8 @@ export class App extends Component {
         const {drawer, navigator} = this.state;
         let {direction, theme} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
+        const { country, dispatch } = this.props;
+
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
 
@@ -78,10 +80,10 @@ export class App extends Component {
                 ref={(drawer) =>{
                   this.drawer = drawer;
                 }}
-                type="overlay"
+                type="displace"
                 acceptTap={true}
                 content={
-                  <Navigation />
+                  <Navigation  />
               }
                 tapToClose={true}
                 styles={{
@@ -95,10 +97,12 @@ export class App extends Component {
                   shadowRadius: 3
               }}}
                 onOpen={() => {
-                  this.setState({drawerOpen: true})
+                  this.setState({drawerOpen: true});
+                  dispatch({type:"DRAWER_CHANGED", payload: true});
               }}
                 onClose={() => {
-                  this.setState({drawerOpen: false})
+                  this.setState({drawerOpen: false});
+                  dispatch({type:"DRAWER_CHANGED", payload: false});
               }}
                 captureGestures={false}
                 tweenDuration={100}
@@ -106,10 +110,10 @@ export class App extends Component {
                 openDrawerOffset={0.2}
                 closedDrawerOffset={() => 0}
                 panOpenMask={0.02}
-                side={'left'}
+                side={'right'}
             >
                 <StatusBar
-                    barStyle={'light-content'}
+                    barStyle={'default'}
                 />
                 {!drawer &&
                 <Navigator
@@ -157,7 +161,8 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         theme: state.theme.theme,
-        direction: state.direction
+        direction: state.direction,
+        country: state.country
     };
 };
 
