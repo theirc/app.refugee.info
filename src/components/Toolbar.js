@@ -3,7 +3,7 @@ import {View, Image, Text} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import styles from '../styles';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Toolbar extends Component {
 
@@ -13,14 +13,12 @@ export default class Toolbar extends Component {
 
     static propTypes = {
         onMenuIconPress: PropTypes.func,
-        onBackIconPress: PropTypes.func,
-        logoVisible: PropTypes.bool.isRequired,
         theme: PropTypes.oneOf(['light', 'dark'])
     };
-
+    
     render() {
         const {navigator} = this.context;
-        const {theme, logoVisible, onMenuIconPress} = this.props;
+        const {theme, isChild, onMenuIconPress} = this.props;
         let title = '';
         if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
@@ -37,7 +35,7 @@ export default class Toolbar extends Component {
                         source={require('../assets/logo.png')}
                     />
                     <Icon
-                        name="menu"
+                        name="ios-menu"
                         style={styles.menuIcon}
                         onPress={onMenuIconPress}
                     />

@@ -74,6 +74,10 @@ const styles = StyleSheet.create({
         fontSize: 28,
         color: themes.light.darkerDividerColor
     },
+    backIcon: {
+        fontSize: 28,
+        color: themes.light.accentColor
+    },
     toolbarTitle: {
         fontSize: 20,
         fontFamily: 'Montserrat'
@@ -150,12 +154,25 @@ const styles = StyleSheet.create({
         left: 15,
         top: 6
     },
+    listItemIconInline: {
+        marginTop: 8,
+        marginLeft: 10,
+        fontSize: 24,
+        color: themes.light.accentColor
+    },
     listItemDivider: {
         position: 'absolute',
         left: 62,
         top: 12,
         width: 2,
         height: 21
+    },
+    listItemDividerInline: {
+        marginTop: 9,
+        width: 2,
+        height: 22,
+        marginLeft: 20,
+        marginRight: 20
     },
     listItemDividerLight: {
         backgroundColor: themes.light.lighterDividerColor
@@ -175,13 +192,38 @@ const styles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
-        shadowRadius: 1
+        shadowRadius: 1,
+        flexDirection: 'row',
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10
     },
     searchBarLight: {
         backgroundColor: themes.light.backgroundColor
     },
     searchBarDark: {
         backgroundColor: themes.dark.backgroundColor
+    },
+    searchBarIconContainer: {
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
+    searchBarIcon: {
+        marginLeft: 5,
+        marginRight: 10,
+        fontSize: 22
+    },
+    searchBarIconLight: {
+        color: themes.light.darkerDividerColor
+    },
+    searchBarIconDark: {
+        color: themes.dark.darkerDividerColor
+    },
+    searchBarInput: {
+        flex: 1,
+        fontSize: 13,
+        fontFamily: 'Montserrat'
     },
     
     // other

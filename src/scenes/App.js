@@ -123,7 +123,6 @@ export class App extends Component {
                     initialRoute={Navigate.getInitialRoute()}
                     navigationBar={
                         <Toolbar
-                            logoVisible={true}
                             theme={theme}
                             onMenuIconPress={this.openDrawer}
                         />

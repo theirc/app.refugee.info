@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {View, Text, TextInput} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import styles from '../styles';
@@ -8,11 +8,12 @@ import styles from '../styles';
 export default class SearchBar extends Component {
 
     static propTypes = {
-        theme: PropTypes.oneOf(['light', 'dark'])
+        theme: PropTypes.oneOf(['light', 'dark']),
+        searchFunction: PropTypes.func
     };
 
     render() {
-        const {theme} = this.props;
+        const {theme, searchFunction} = this.props;
         return (
             <View style={[
                     styles.searchBarContainer,
@@ -25,7 +26,26 @@ export default class SearchBar extends Component {
                         theme=='dark' ? styles.searchBarDark : styles.searchBarLight
                     ]}
                 >
-                    
+                    <View style={styles.searchBarIconContainer}>
+                        <Icon
+                            name="ios-search"
+                            style={[
+                            styles.searchBarIcon,
+                            theme=='dark' ? styles.searchBarIconDark : styles.searchBarIconLight
+                        ]}
+                        />
+                    </View>
+                    <TextInput
+                        style={[
+                            styles.searchBarInput,
+                            theme=='dark' ? styles.searchBarIconDark : styles.searchBarIconLight
+                        ]}
+                        placeholder={I18n.t('SEARCH')}
+                        returnKeyType={'search'}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        onChangeText={searchFunction}
+                    />
                 </View>
             </View>
         )
