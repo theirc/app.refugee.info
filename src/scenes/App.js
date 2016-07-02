@@ -13,13 +13,14 @@ import {Toolbar} from '../components';
 import Drawer from 'react-native-drawer'
 import {Provider} from 'react-redux';
 import store from '../store';
-import styles from '../styles';
 import {connect} from 'react-redux';
 
 import {fetchRegionFromStorage} from '../actions/region';
 import {fetchDirectionFromStorage} from '../actions/direction';
 import {fetchLanguageFromStorage} from '../actions/language';
 import {fetchCountryFromStorage} from '../actions/country';
+import {fetchThemeFromStorage} from '../actions/theme'
+import styles, {generateTextStyles, themes} from '../styles'
 
 
 export class App extends Component {
@@ -33,17 +34,47 @@ export class App extends Component {
         super(props);
         this.state = Object.assign({}, store.getState(), {
             drawer: null,
-            navigator: null
+            navigator: null,
+            drawerBackgroundColor: null,
+            drawerBorderColor: null,
         });
     }
 
-    async componentDidMount() {
+    async componentWillMount() {
         const {dispatch} = this.props;
 
         await dispatch(fetchRegionFromStorage());
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchThemeFromStorage());
+
+    }
+
+    componentWillReceiveProps(props) {
+        /*
+        HERE BE DRAGONS
+        The only way to update the backgroundColor of the drawer and the main panel 
+        was to use its internal api, which may change without notice.
+        */
+        const {theme} = props;
+
+        let drawerBackgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
+        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.dividerColor;
+
+        if (this.drawer) {
+            this.drawer.drawer.setNativeProps({
+                style: {
+                    backgroundColor: drawerBackgroundColor,
+                    borderLeftColor: drawerBorderColor
+                }
+            });
+            this.drawer.main.setNativeProps({
+                style: {
+                    backgroundColor: drawerBackgroundColor,
+                }
+            });
+        }
     }
 
     getChildContext = () => {
@@ -59,6 +90,13 @@ export class App extends Component {
     openDrawer = () => {
         this.drawer.open()
     };
+    toggleDrawer = () => {
+        if (!this.state.drawerOpen) {
+            this.drawer.open()
+        } else {
+            this.drawer.close();
+        }
+    };
 
     setNavigator = (navigator) => {
         this.setState({
@@ -68,83 +106,93 @@ export class App extends Component {
 
     render() {
         const {drawer, navigator} = this.state;
-        let {direction} = this.props;
-        let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom};
+        let {direction, theme} = this.props;
+        let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom };
         const { country, dispatch } = this.props;
+
+        let drawerStyles = {
+            main: {
+                paddingLeft: direction == 'rtl' ? 3 : 0,
+                backgroundColor: themes.light.backgroundColor
+            },
+            drawer: {
+                borderLeftWidth: 1,
+                borderLeftColor: themes.light.dividerColor,
+                backgroundColor: themes.light.backgroundColor,
+                shadowOpacity: 0.8,
+                shadowRadius: 3
+            }
+        };
 
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
-
         return (
             <Drawer
-                ref={(drawer) =>{
-                  this.drawer = drawer;
-                }}
+                ref={(drawer) => {
+                    this.drawer = drawer;
+                } }
                 type="displace"
                 acceptTap={true}
                 content={
-                  <Navigation  />
-              }
+                    <Navigation  />
+                }
                 tapToClose={true}
-                styles={{
-              main: {
-                  paddingLeft: direction=='rtl' ? 3 : 0,
-                  backgroundColor: '#F5F5F5'
-              },
-              drawer: {
-                  backgroundColor: '#ffffff',
-                  shadowOpacity: 0.8,
-                  shadowRadius: 3
-              }}}
+                styles={drawerStyles}
                 onOpen={() => {
-                  this.setState({drawerOpen: true});
-                  dispatch({type:"DRAWER_CHANGED", payload: true});
-              }}
+                    this.setState({ drawerOpen: true });
+                    dispatch({ type: "DRAWER_CHANGED", payload: true });
+                } }
                 onClose={() => {
-                  this.setState({drawerOpen: false});
-                  dispatch({type:"DRAWER_CHANGED", payload: false});
-              }}
+                    this.setState({ drawerOpen: false });
+                    dispatch({ type: "DRAWER_CHANGED", payload: false });
+                } }
                 captureGestures={false}
                 tweenDuration={100}
                 panThreshold={0.08}
                 openDrawerOffset={0.2}
-                closedDrawerOffset={() => -3}
+                closedDrawerOffset={() => 0}
                 panOpenMask={0.02}
                 side={'right'}
-            >
+                >
                 <StatusBar
                     barStyle={'default'}
-                />
+                    />
                 {!drawer &&
-                <Navigator
-                    configureScene={() => {
-                      return sceneConfig;
-                  }}
-                    initialRoute={Navigate.getInitialRoute()}
-                    navigationBar={<Toolbar onIconPress={this.openDrawer} />}
-                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; }}
-                    renderScene={(route) => {
-                      if (this.state.navigator && route.component) {
+                    <Navigator
+                        configureScene={() => {
+                            return sceneConfig;
+                        } }
+                        initialRoute={Navigate.getInitialRoute() }
+                        navigationBar={
+                            <Toolbar
+                                theme={theme}
+                                drawerOpen={this.state.drawerOpen}
+                                onMenuIconPress={this.toggleDrawer}
+                                />
+                        }
+                        ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
+                        renderScene={(route) => {
+                            if (this.state.navigator && route.component) {
 
-                          let instance =
-                            <route.component
-                                path={route.path}
-                                title={route.title}
-                                {...route.props}
-                            />;
+                                let instance =
+                                    <route.component
+                                        path={route.path}
+                                        title={route.title}
+                                        {...route.props}
+                                        />;
 
-                          return (
-                              <View
-                                pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
-                                showsVerticalScrollIndicator={true}
-                                style={styles.scene}
-                              >
-                              {instance}
-                              </View>
-                          );
-                      }
-                  }}
-                />
+                                return (
+                                    <View
+                                        pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
+                                        showsVerticalScrollIndicator={true}
+                                        style={styles.scene}
+                                        >
+                                        {instance}
+                                    </View>
+                                );
+                            }
+                        } }
+                        />
                 }
             </Drawer>
         )

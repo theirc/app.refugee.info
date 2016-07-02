@@ -1,8 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import { Toolbar as MaterialToolbar } from 'react-native-material-design';
+import React, {Component, PropTypes} from 'react';
+import {View, Image, Text} from 'react-native';
 import I18n from '../constants/Messages';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import styles from '../styles';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Toolbar extends Component {
 
@@ -11,43 +12,48 @@ export default class Toolbar extends Component {
     };
 
     static propTypes = {
-        onIconPress: PropTypes.func.isRequired
+        onMenuIconPress: PropTypes.func,
+        theme: PropTypes.oneOf(['light', 'dark']),
+        drawerOpen: PropTypes.bool,
     };
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            title: 'Refugee Info'
-        };
-    }
-
+    
     render() {
-        const { navigator } = this.context;
-        const { onIconPress, primary, region } = this.props;
-        let title = require('../assets/RI-logo.png');
-
-        if (navigator && navigator.currentRoute && navigator.currentRoute.title != I18n.t('REFUGEE_INFO')) {
+        const {navigator} = this.context;
+        const {theme, isChild, onMenuIconPress, drawerOpen} = this.props;
+        let title = '';
+        if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
-        }
+
+        let icon = drawerOpen ? "ios-close-outline" : "ios-menu";
+
         return (
-            <MaterialToolbar
-                primary={primary}
-                icon={navigator && navigator.isChild ? 'keyboard-backspace' : (region ? 'menu' : null)}
-                onIconPress={() => {navigator && navigator.isChild ? navigator.back() : onIconPress();}}
-                rightIconStyle={{
-                    margin: 10
-                }}
-                logoStyle={{
-                    marginLeft: 16,
-                    marginTop: 4,
-                    width: 189,
-                    height: 56
-                }}
-                style={styles.materialToolbar}
-                testID="test-id-toolbar"
-                title={title}
-                direction={this.props.direction}
-            />
+            <View
+                style={[
+                    styles.toolbarContainer, 
+                    theme=='dark' ? styles.toolbarContainerDark : styles.toolbarContainerLight
+                ]}
+            >
+                <View style={styles.toolbarTop}>
+                    <Image
+                        style={styles.brandImage}
+                        source={require('../assets/logo.png')}
+                    />
+                    <Icon
+                        name={icon}
+                        style={styles.menuIcon}
+                        onPress={onMenuIconPress}
+                    />
+                </View>
+                <View style={styles.toolbarBottom}>
+                    <Text style={[
+                        styles.toolbarTitle,
+                        theme=='dark' ? styles.toolbarTitleDark : styles.toolbarTitleLight
+                    ]}>
+                        {title}
+                    </Text>
+                </View>
+
+            </View>
         );
     }
 }

@@ -19,8 +19,9 @@ import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 
-const rectangularLogo = require('../assets/logo-rect.png');
 const bullseye = require('../assets/icons/bullseye.png');
+
+import styles, {generateTextStyles, themes} from '../styles'
 
 
 export function isCompatible(feature) {
@@ -94,7 +95,7 @@ class Navigation extends Component {
         if (!region || !region.important_information) {
             return <View />;
         }
-
+        let s = (scene) => this.drawerCommons.changeScene(scene);
         return region.important_information.map((i, index) => {
             return (
                 <MenuItem key={index} onPress={() => s('info') }>{i.metadata.page_title}</MenuItem>
@@ -125,7 +126,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route, region, country, direction} = this.props;
+        const {theme, route, region, country, direction, language} = this.props;
         const {navigator} = this.context;
 
         if (!this.props.region) {
@@ -140,39 +141,48 @@ class Navigation extends Component {
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
             return <MenuItem key={index} onPress={() => s('info') }>{i.pageTitle}</MenuItem>;
         });
-        let styles = theme == 'light' ? lightNavigationStyles : {};
+        let rectangularLogo = theme == 'light' ? themes.light.rectangularLogo : themes.dark.rectangularLogo;
+        let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
 
-        return <ScrollView style={styles.outside1}>
-            <View style={styles.outside2}>
-                <View style={styles.view}>
-                    <View>
-                        <Image source={rectangularLogo} style={styles.logo} />
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', height: 30, marginBottom: 15 }}>
-                        <Image source={bullseye} style={{ resizeMode: 'stretch', height: 20, width: 20, marginRight: 10 }} />
-                        <Text style={styles.pageTitle}>{region.pageTitle.toUpperCase() }</Text>
-                    </View>
-                    <MenuSection title={"REFUGEE.INFO"}>
-                        <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
-                        <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
-                        <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
-                    </MenuSection>
-                    <MenuSection title={"IMPORTANT INFORMATION"}>
-                        {importantInformationItems}
-                    </MenuSection>
-                    <MenuSection title={"CHANGE LOCATION"}>
-                        {nearbyCitiesItems}
-                    </MenuSection>
-                    <MenuSection>
-                        <MenuItem icon="public" active={route === 'countryChoice'} onPress={() => s('countryChoice') }>{I18n.t('CHANGE_COUNTRY') }</MenuItem>
-                        <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
-                    </MenuSection>
-                    <View style={{ paddingBottom: 15 }}>
-                    </View>
-                </View>
+        let headerImage = <Image source={bullseye} style={[
+            { resizeMode: 'stretch', height: 20, width: 20, },
+            (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
+        ]} />;
+
+
+
+        const isLTR = direction == 'ltr';
+
+        return <ScrollView style={styles.view}>
+            <View style={[styles.logoContainer, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end') }]}>
+                <Image source={rectangularLogo} style={ styles.logo } />
+            </View>
+            <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
+                {(isLTR) && headerImage}
+                <Text style={[generateTextStyles(language), styles.cityText]}>{region.pageTitle.toUpperCase() }</Text>
+                {(!isLTR) && headerImage}
+            </View>
+            <MenuSection title={I18n.t("REFUGEE_INFO") }>
+                <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
+                <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
+                <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
+            </MenuSection>
+            <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
+                {importantInformationItems}
+            </MenuSection>
+            <MenuSection title={I18n.t("CHANGE_LOCATION") }>
+                {nearbyCitiesItems}
+            </MenuSection>
+            <MenuSection>
+                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
+                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('ABOUT') }</MenuItem>
+                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
+                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
+            </MenuSection>
+            <View style={{ paddingBottom: 15 }}>
             </View>
         </ScrollView>;
     }
@@ -196,74 +206,74 @@ const lightNavigationStyles = StyleSheet.create({
         resizeMode: 'contain',
         marginTop: 10,
     },
+    logoContainer: {
+        flex:1, 
+        flexDirection:'row',
+        marginRight: 10,
+    },
     view: {
         flexDirection: 'column',
         flex: 1,
-        alignItems: 'stretch',
         paddingLeft: 20,
-        borderLeftColor: "#ededed",
+    },
+    middleBorder: {
+        borderLeftColor: themes.light.darkerDividerColor,
         borderLeftWidth: 1,
     },
-    outside2: {
-        borderLeftColor: "#e4e4e4",
+    outermostBorder: {
+        borderLeftColor: themes.light.dividerColor,
         borderLeftWidth: 1,
     },
-    outside1: {
-        borderLeftColor: "#b2b2b2",
-        borderLeftWidth: 1,
+    titleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 30,
+        marginBottom: 15,
+        paddingRight: 10
     },
-    pageTitle: {
+    cityText: {
         fontSize: 14,
         fontWeight: 'bold',
+        color: themes.light.textColor,
     }
 });
 
-const itemStyles = {
-    header: {
-        paddingHorizontal: 16,
-        marginBottom: 0
+const darkNavigationStyles = StyleSheet.create({
+    logo: {
+        width: 150,
+        resizeMode: 'contain',
+        marginTop: 10,
     },
-    section: {
-        flex: 1,
-        marginTop: 0
+    logoContainer: {
+        flex:1, 
+        flexDirection:'row',
+        marginRight: 10,
     },
-    item: {
+    view: {
+        flexDirection: 'column',
         flex: 1,
+        paddingLeft: 20,
+    },
+    middleBorder: {
+        borderLeftColor: themes.dark.darkerDividerColor,
+        borderLeftWidth: 1,
+    },
+    outermostBorder: {
+        borderLeftColor: themes.dark.dividerColor,
+        borderLeftWidth: 1,
+    },
+    titleWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        height: 48,
-        paddingLeft: 16
+        height: 30,
+        marginBottom: 15,
+        paddingRight: 10
     },
-    subheader: {
-        flex: 1
-    },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 5
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 5
-    },
-    value: {
-        flex: 1,
-        paddingLeft: 26,
-        paddingRight: 5,
-        top: (Platform.OS === 'ios') ? -5 : 2
-    },
-    valueRTL: {
-        flex: 1,
-        paddingRight: 36,
-        top: (Platform.OS === 'ios') ? -5 : 2,
-        paddingLeft: 5,
-        alignItems: 'flex-end'
-    },
-    label: {
-        paddingRight: 16,
-        top: 2
+    cityText: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: themes.dark.textColor,
     }
-};
+});
 
 export default connect(mapStateToProps)(Navigation);

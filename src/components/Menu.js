@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, Image, View, StyleSheet, Platform } from 'react-native';
 import { Avatar, Drawer, Divider, COLOR, TYPO, TouchableNativeFeedback } from 'react-native-material-design';
+import { default as VectorIcon } from 'react-native-vector-icons/MaterialIcons';
 
 import { typography } from 'react-native-material-design-styles';
 
@@ -10,6 +11,8 @@ import DrawerCommons from '../utils/DrawerCommons';
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
 import {Ripple, Icon} from 'react-native-material-design';
+
+import styles, {generateTextStyles, themes} from '../styles'
 
 export function isCompatible(feature) {
     const version = Platform.Version;
@@ -37,39 +40,57 @@ class MenuItem extends Component {
         ...Text.propTypes
     };
 
-    componentWillMount() {
-        let defaultProps = {...this.props };
-        if (!defaultProps.direction) {
-            defaultProps.direction = 'ltr';
-        }
-        if (!defaultProps.styles) {
-            defaultProps.styles = {};
-        }
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
 
-        // Allowing us to add multiple styles to the items
-        // If it is an array of styles, combine them all into oneOf
-        // If null use default
-        // If not null, override the defaults with whatever we pass to it
-        if (Array.isArray(defaultProps.styles)) {
-            defaultProps.styles = Object.assign.apply(Object, defaultProps.styles);
+    componentWillReceiveProps(props) {
+        if (props.theme) {
+            let defaultProps = {...props };
+            if (!defaultProps.direction) {
+                defaultProps.direction = 'ltr';
+            }
+
+            let styleDefaults;
+
+
+            if (defaultProps.theme == 'dark') {
+                styleDefaults = darkStyleDefaults;
+            } else {
+                styleDefaults = lightStyleDefaults;
+            }
+
+            // Allowing us to add multiple styles to the items
+            // If it is an array of styles, combine them all into oneOf
+            // If null use default
+            // If not null, override the defaults with whatever we pass to it
+            if (Array.isArray(defaultProps.styles)) {
+                defaultProps.styles = Object.assign.apply(Object, defaultProps.styles);
+            }
+
+            defaultProps.styles = Object.assign(styleDefaults, defaultProps.styles);
+
+            this.setState({
+                styles: defaultProps.styles,
+                direction: this.props.direction || 'ltr'
+            });
         }
-
-        defaultProps.styles = Object.assign(defaultStyles, defaultProps.styles);
-
-        this.setState({
-            styles: defaultProps.styles,
-            direction: this.props.direction || 'ltr'
-        });
     }
 
 
     render() {
-        const {styles, direction} = this.state;
+        if(!this.state.styles) {
+            return <View />;
+        }
+        
+        const {styles, direction, language} = this.state;
         const item = this.props;
+        const fontStyle = {...styles.itemText, ...generateTextStyles(language) };
 
-        let rtlChild = <View style={itemStyles.item}>
-            <View style={itemStyles.valueRTL}>
-                <Text style={[TYPO.paperFontBody2, {}, { textAlign: 'right' }]}>
+        let rtlChild = <View style={[styles.item]}>
+            <View style={styles.labelRTL}>
+                <Text style={[fontStyle, { textAlign: 'right' }]}>
                     {item.children}
                 </Text>
             </View>
@@ -77,28 +98,30 @@ class MenuItem extends Component {
                 <Icon
                     name={item.icon}
                     size={22}
-                    style={itemStyles.iconRTL}
+                    style={styles.iconRTL}
+                    color={styles.itemText.color || '#000000'}
                     />
             }
         </View>
 
-        let ltrChild = <View style={itemStyles.item}>
+        let ltrChild = <View style={[styles.item]}>
             {item.icon &&
                 <Icon
                     name={item.icon}
                     size={22}
-                    style={itemStyles.icon}
+                    style={styles.icon}
+                    color={styles.itemText.color || '#000000'}
                     />
             }
-            <View style={itemStyles.value}>
-                <Text style={[TYPO.paperFontBody2, {},]}>
+            <View style={styles.label}>
+                <Text style={fontStyle}>
                     {item.children}
                 </Text>
             </View>
         </View>
 
         if (item.active) {
-            return <View style={[item.active ? { backgroundColor: '#f0f0f0' } : {}, styles.itemLine]}>
+            return <View style={[item.active ? styles.itemActive : {},]}>
                 {direction === 'ltr' ? ltrChild : rtlChild}
             </View>;
         }
@@ -106,43 +129,31 @@ class MenuItem extends Component {
             if (item.onPress) {
                 return item.onPress(...args);
             }
+            return true;
         };
         let longPress = (comp, ...args) => {
             let f = item.onLongPress || item.onPress;
             if (f) {
                 return f(...args);
             }
-        };
-        if (!isCompatible('TouchableNativeFeedback')) {
-            return (
-                <Ripple
-                    rippleColor="rgba(73,176,80,.4)"
-                    ref="ripple"
-                    onPress={() => press() }
-                    onLongPress={() => longPress() }
-                    style={{
-                        flex: 1,
-                        flexDirection: 'column',
-                    }}
-                    >
-                    <View style={styles.itemLine}>
-                        {direction === 'ltr' ? ltrChild : rtlChild}
-                    </View>
-                </Ripple>
-            );
-        }
 
+            return true;
+        };
         return (
-            <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple('rgba(73,176,80,.4)') }
-                    ref="ripple"
+            <Ripple
+                rippleColor="rgba(73,176,80,.4)"
+                ref="ripple"
                 onPress={() => press() }
                 onLongPress={() => longPress() }
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                }}
                 >
                 <View style={styles.itemLine}>
                     {direction === 'ltr' ? ltrChild : rtlChild}
                 </View>
-            </TouchableNativeFeedback>
+            </Ripple>
         );
     }
 }
@@ -156,36 +167,58 @@ class MenuSection extends Component {
         ...Text.propTypes
     };
 
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
 
-    componentWillMount() {
-        let defaultProps = {...this.props };
-        if (!defaultProps.styles) {
-            defaultProps.styles = {};
+
+    componentWillReceiveProps(props) {
+        if (props.theme) {
+            let defaultProps = {...props };
+            if (!defaultProps.direction) {
+                defaultProps.direction = 'ltr';
+            }
+
+            let styleDefaults;
+
+
+            if (defaultProps.theme == 'dark') {
+                styleDefaults = darkStyleDefaults;
+            } else {
+                styleDefaults = lightStyleDefaults;
+            }
+
+            // Allowing us to add multiple styles to the items
+            // If it is an array of styles, combine them all into oneOf
+            // If null use default
+            // If not null, override the defaults with whatever we pass to it
+            if (Array.isArray(defaultProps.styles)) {
+                defaultProps.styles = Object.assign.apply(Object, defaultProps.styles);
+            }
+
+            defaultProps.styles = Object.assign(styleDefaults, defaultProps.styles);
+
+            this.setState({
+                styles: defaultProps.styles,
+                direction: this.props.direction || 'ltr'
+            });
         }
-
-        // Allowing us to add multiple styles to the items
-        // If it is an array of styles, combine them all into oneOf
-        // If null use default
-        // If not null, override the defaults with whatever we pass to it
-        if (Array.isArray(defaultProps.styles)) {
-            defaultProps.styles = Object.assign.apply(Object, defaultProps.styles);
-        }
-
-        defaultProps.styles = Object.assign(defaultStyles, defaultProps.styles);
-
-        this.setState({
-            styles: defaultProps.styles,
-            direction: this.props.direction || 'ltr',
-        });
     }
 
     render() {
-        const {styles, direction} = this.state;
-        const {title, children} = this.props;
+        if(!this.state.styles) {
+            return <View />;
+        }
+
+        const {styles, direction, language} = this.state;
+        const {title, children, theme} = this.props;
+        const fontStyle = {...styles.text, ...generateTextStyles(language) };
+
         return (
             <View style={styles.headerWrapper}>
                 {title && <View style={styles.header}>
-                    <DirectionalText {...this.props} style={styles.text} direction={direction}>{title}</DirectionalText>
+                    <DirectionalText {...this.props} style={[fontStyle]} direction={direction}>{title}</DirectionalText>
                 </View>}
                 {children}
             </View>
@@ -193,33 +226,14 @@ class MenuSection extends Component {
     }
 }
 
-const defaultStyles = StyleSheet.create({
+const lightStyleDefaults = {
     header: {
-        borderBottomColor: "#000000",
+        borderBottomColor: themes.dark.darkerDividerColor,
         borderBottomWidth: 1,
         paddingBottom: 15
     },
     headerWrapper: {
         paddingBottom: 30
-    },
-    itemLine: {
-        borderBottomColor: "#b2b2b2",
-        borderBottomWidth: 1
-    },
-    text: {
-        color: "#49b050",
-        fontWeight: "bold"
-    },
-});
-
-const itemStyles = {
-    header: {
-        paddingHorizontal: 16,
-        marginBottom: 0
-    },
-    section: {
-        flex: 1,
-        marginTop: 0
     },
     item: {
         flex: 1,
@@ -228,38 +242,112 @@ const itemStyles = {
         height: 48,
         paddingLeft: 16
     },
-    subheader: {
-        flex: 1
+    itemActive: {
+        backgroundColor: '#fafafa',
+        borderBottomColor: themes.light.dividerColor,
+        borderBottomWidth: 1
+    },
+    itemLine: {
+        borderBottomColor: themes.light.dividerColor,
+        borderBottomWidth: 1
+    },
+    itemText: {
+        fontSize: 14,
+        lineHeight: 24,
+        color: themes.light.textColor,
+    },
+    text: {
+        color: themes.light.accentColor,
+        fontWeight: "bold",
+        paddingRight: 5,
     },
     icon: {
         position: 'absolute',
         top: 13,
-        left: 5
+        left: 8,
     },
     iconRTL: {
         position: 'absolute',
         top: 13,
-        right: 5
+        right: 11,
     },
-    value: {
+    label: {
         flex: 1,
         paddingLeft: 26,
         paddingRight: 5,
         top: (Platform.OS === 'ios') ? -5 : 2
     },
-    valueRTL: {
+    labelRTL: {
         flex: 1,
-        paddingRight: 36,
-        top: (Platform.OS === 'ios') ? -5 : 2,
+        paddingRight: 41,
+        top: (Platform.OS === 'ios') ? -2 : 2,
         paddingLeft: 5,
         alignItems: 'flex-end'
     },
-    label: {
-        paddingRight: 16,
-        top: 2
-    }
 };
 
+
+const darkStyleDefaults = {
+    header: {
+        borderBottomColor: themes.dark.darkerDividerColor,
+        borderBottomWidth: 1,
+        paddingBottom: 15
+    },
+    headerWrapper: {
+        paddingBottom: 30
+    },
+    item: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        height: 48,
+        paddingLeft: 16
+    },
+    itemActive: {
+        backgroundColor: '#202020',
+        borderBottomColor: themes.dark.dividerColor,
+        borderBottomWidth: 1
+    },
+    itemLine: {
+        borderBottomColor: themes.dark.dividerColor,
+        borderBottomWidth: 1
+    },
+    itemText: {
+        fontSize: 14,
+        lineHeight: 24,
+        color: themes.dark.textColor,
+    },
+    text: {
+        color: themes.dark.accentColor,
+        fontWeight: "bold",
+        paddingRight: 5,
+        fontSize: 14,
+        lineHeight: 24,
+    },
+    icon: {
+        position: 'absolute',
+        top: 13,
+        left: 8,
+    },
+    iconRTL: {
+        position: 'absolute',
+        top: 13,
+        right: 11,
+    },
+    label: {
+        flex: 1,
+        paddingLeft: 26,
+        paddingRight: 5,
+        top: (Platform.OS === 'ios') ? -5 : 2
+    },
+    labelRTL: {
+        flex: 1,
+        paddingRight: 41,
+        top: (Platform.OS === 'ios') ? -2 : 2,
+        paddingLeft: 5,
+        alignItems: 'flex-end'
+    },
+};
 
 
 const mapStateToProps = (state) => {

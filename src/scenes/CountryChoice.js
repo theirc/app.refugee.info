@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, View, StyleSheet, Image, Alert} from 'react-native';
-import {Button} from 'react-native-material-design';
 import {connect} from 'react-redux';
 import {LocationListView} from '../components';
 import ApiClient from '../utils/ApiClient';
@@ -151,12 +150,6 @@ export default class CountryChoice extends Component {
                         image={(countryISO) => getCountryFlag(countryISO)}
                         onPress={(rowData) => {this.onPress(rowData);}}
                         rows={this.state.locations}
-                    />
-                    <Button
-                        onPress={() => this.detectLocation()}
-                        raised
-                        text={I18n.t('DETECT_LOCATION')}
-                        disabled={this.state.buttonDisabled}
                     />
                 </View>
             </View>
