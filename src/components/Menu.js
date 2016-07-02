@@ -139,36 +139,21 @@ class MenuItem extends Component {
 
             return true;
         };
-        if (!isCompatible('TouchableNativeFeedback')) {
-            return (
-                <Ripple
-                    rippleColor="rgba(73,176,80,.4)"
-                    ref="ripple"
-                    onPress={() => press() }
-                    onLongPress={() => longPress() }
-                    style={{
-                        flex: 1,
-                        flexDirection: 'column',
-                    }}
-                    >
-                    <View style={styles.itemLine}>
-                        {direction === 'ltr' ? ltrChild : rtlChild}
-                    </View>
-                </Ripple>
-            );
-        }
-
         return (
-            <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple('rgba(73,176,80,.4)') }
+            <Ripple
+                rippleColor="rgba(73,176,80,.4)"
                 ref="ripple"
                 onPress={() => press() }
                 onLongPress={() => longPress() }
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                }}
                 >
-                <View style={[styles.itemLine]}>
+                <View style={styles.itemLine}>
                     {direction === 'ltr' ? ltrChild : rtlChild}
                 </View>
-            </TouchableNativeFeedback>
+            </Ripple>
         );
     }
 }
