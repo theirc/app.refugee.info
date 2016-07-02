@@ -62,13 +62,7 @@ export default class DrawerCommons {
 
     closeDrawer() {
         const { drawer, navigator } = this.component.context;
-
-        if (Platform.OS === 'ios') {
             this.component.context.drawer.close()
-        }
-        else {
-            drawer.closeDrawer();
-        }
     }
 
     changeScene(path, name, props = {}) {
