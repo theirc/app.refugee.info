@@ -13,15 +13,19 @@ export default class Toolbar extends Component {
 
     static propTypes = {
         onMenuIconPress: PropTypes.func,
-        theme: PropTypes.oneOf(['light', 'dark'])
+        theme: PropTypes.oneOf(['light', 'dark']),
+        drawerOpen: PropTypes.bool,
     };
     
     render() {
         const {navigator} = this.context;
-        const {theme, isChild, onMenuIconPress} = this.props;
+        const {theme, isChild, onMenuIconPress, drawerOpen} = this.props;
         let title = '';
         if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
+
+        let icon = drawerOpen ? "ios-close-outline" : "ios-menu";
+
         return (
             <View
                 style={[
@@ -35,7 +39,7 @@ export default class Toolbar extends Component {
                         source={require('../assets/logo.png')}
                     />
                     <Icon
-                        name="ios-menu"
+                        name={icon}
                         style={styles.menuIcon}
                         onPress={onMenuIconPress}
                     />

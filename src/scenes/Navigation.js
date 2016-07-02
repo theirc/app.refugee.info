@@ -276,5 +276,4 @@ const darkNavigationStyles = StyleSheet.create({
     }
 });
 
-console.log(themes);
 export default connect(mapStateToProps)(Navigation);

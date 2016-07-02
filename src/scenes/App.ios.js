@@ -40,7 +40,7 @@ export class App extends Component {
         });
     }
 
-    async componentDidMount() {
+    async componentWillMount() {
         const {dispatch} = this.props;
 
         await dispatch(fetchRegionFromStorage());
@@ -48,6 +48,33 @@ export class App extends Component {
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchThemeFromStorage());
+
+    }
+
+    componentWillReceiveProps(props) {
+        /*
+        HERE BE DRAGONS
+        The only way to update the backgroundColor of the drawer and the main panel 
+        was to use its internal api, which may change without notice.
+        */
+        const {theme} = props;
+
+        let drawerBackgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
+        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.dividerColor;
+
+        if (this.drawer) {
+            this.drawer.drawer.setNativeProps({
+                style: {
+                    backgroundColor: drawerBackgroundColor,
+                    borderLeftColor: drawerBorderColor
+                }
+            });
+            this.drawer.main.setNativeProps({
+                style: {
+                    backgroundColor: drawerBackgroundColor,
+                }
+            });
+        }
     }
 
     getChildContext = () => {
@@ -63,6 +90,13 @@ export class App extends Component {
     openDrawer = () => {
         this.drawer.open()
     };
+    toggleDrawer = () => {
+        if (!this.state.drawerOpen) {
+            this.drawer.open()
+        } else {
+            this.drawer.close();
+        }
+    };
 
     setNavigator = (navigator) => {
         this.setState({
@@ -70,24 +104,25 @@ export class App extends Component {
         });
     };
 
-    
-    componentWillReceiveProps(props) {
-        const {direction, theme} = this.props;
-        if (theme) {
-        
-        let drawerBackgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.dividerColor;
-
-        
-            this.setState({ drawerBackgroundColor:drawerBackgroundColor, drawerBorderColor:drawerBorderColor });
-        }
-    }
-
     render() {
         const {drawer, navigator} = this.state;
         let {direction, theme} = this.props;
         let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom };
         const { country, dispatch } = this.props;
+
+        let drawerStyles = {
+            main: {
+                paddingLeft: direction == 'rtl' ? 3 : 0,
+                backgroundColor: themes.light.backgroundColor
+            },
+            drawer: {
+                borderLeftWidth: 1,
+                borderLeftColor: themes.light.dividerColor,
+                backgroundColor: themes.light.backgroundColor,
+                shadowOpacity: 0.8,
+                shadowRadius: 3
+            }
+        };
 
         // Removing the pop gesture
         delete sceneConfig.gestures.pop;
@@ -102,19 +137,7 @@ export class App extends Component {
                     <Navigation  />
                 }
                 tapToClose={true}
-                styles={{
-                    main: {
-                        paddingLeft: direction == 'rtl' ? 3 : 0,
-                        backgroundColor: '#F5F5F5'
-                    },
-                    drawer: {
-                        borderRightWidth: 1,
-                        borderRightColor: this.state.drawerBorderColor,
-                        backgroundColor: this.state.drawerBackgroundColor,
-                        shadowOpacity: 0.8,
-                        shadowRadius: 3
-                    }
-                }}
+                styles={drawerStyles}
                 onOpen={() => {
                     this.setState({ drawerOpen: true });
                     dispatch({ type: "DRAWER_CHANGED", payload: true });
@@ -143,7 +166,8 @@ export class App extends Component {
                         navigationBar={
                             <Toolbar
                                 theme={theme}
-                                onMenuIconPress={this.openDrawer}
+                                drawerOpen={this.state.drawerOpen}
+                                onMenuIconPress={this.toggleDrawer}
                                 />
                         }
                         ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
