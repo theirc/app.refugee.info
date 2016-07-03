@@ -4,7 +4,8 @@ import {
     View,
     Navigator,
     StatusBar,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './Navigation';
@@ -107,8 +108,16 @@ export class App extends Component {
     render() {
         const {drawer, navigator} = this.state;
         let {direction, theme} = this.props;
-        let sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom };
         const { country, dispatch } = this.props;
+
+        let sceneConfig;
+        if(Platform.OS == 'ios') {
+            sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom } ;
+            // Removing the pop gesture
+            delete sceneConfig.gestures.pop;
+        } else{
+            sceneConfig = {...Navigator.SceneConfigs.FloatFromBottomAndroid };
+        } 
 
         let drawerStyles = {
             main: {
@@ -124,8 +133,6 @@ export class App extends Component {
             }
         };
 
-        // Removing the pop gesture
-        delete sceneConfig.gestures.pop;
         return (
             <Drawer
                 ref={(drawer) => {
@@ -146,7 +153,7 @@ export class App extends Component {
                     this.setState({ drawerOpen: false });
                     dispatch({ type: "DRAWER_CHANGED", payload: false });
                 } }
-                captureGestures={false}
+                captureGestures={true}
                 tweenDuration={100}
                 panThreshold={0.08}
                 openDrawerOffset={0.2}
@@ -155,7 +162,7 @@ export class App extends Component {
                 side={'right'}
                 >
                 <StatusBar
-                    barStyle={'default'}
+                    barStyle={theme == 'light' ? "default" : 'light-content'}
                     />
                 {!drawer &&
                     <Navigator
