@@ -103,7 +103,7 @@ div.table-responsive table td {
 const darkTheme = `
 body {
   color: #fff;
-  background-color: #000;
+  background-color: #2d2d2d;
 }
 
 a {
@@ -115,8 +115,8 @@ a:active {
 }
 
 a.link-button {
-    border: 1px black solid;
-    background-color: #000;
+    border: 1px #fff solid;
+    background-color: #2d2d2d;
     color: #fff !important;
 }
 `;
@@ -157,6 +157,7 @@ const cssFonts = `
 
 export function wrapHtmlContent(content:String, language:String, title:String=null, theme:String="light") : String {
   language = language || 'en';
+
   let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
   let titleHtml = title||false ? `<h2>${title}</h2>`:'';
   let direction = ['ar','fa'].indexOf(language) > -1 ? 'rtl' : 'ltr'
