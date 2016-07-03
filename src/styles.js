@@ -25,7 +25,7 @@ export const themes = {
         dividerColor: '#303030',
         darkerDividerColor: '#BABABA',
         lighterDividerColor: '#F2F2F2',
-        toolbarColor: '#FDF9F9',
+        toolbarColor: '#000000',
         accentColor: '#39B05C',
         textColor: '#ffffff'
     }
@@ -40,13 +40,12 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        paddingTop: 10,
+        paddingTop: 25,
         paddingBottom: 15,
         paddingRight: 15,
         paddingLeft: 15,
         flexDirection: 'column',
         height: 140,
-        borderTopWidth: 20,
         borderBottomWidth: 2
     },
     toolbarContainerLight: {
@@ -76,7 +75,6 @@ const styles = StyleSheet.create({
     },
     menuIcon: {
         fontSize: 28,
-        color: themes.light.darkerDividerColor
     },
     backIcon: {
         fontSize: 28,

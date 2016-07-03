@@ -16,7 +16,7 @@ export default class Toolbar extends Component {
         theme: PropTypes.oneOf(['light', 'dark']),
         drawerOpen: PropTypes.bool,
     };
-    
+
     render() {
         const {navigator} = this.context;
         const {theme, isChild, onMenuIconPress, drawerOpen} = this.props;
@@ -24,30 +24,31 @@ export default class Toolbar extends Component {
         if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 
-        let icon = drawerOpen ? "ios-close-outline" : "ios-menu";
+        let icon = drawerOpen ? "md-close" : "ios-menu";
+        let iconColor = theme == 'light' ? "#000000" : "#ffffff"
 
         return (
             <View
                 style={[
-                    styles.toolbarContainer, 
-                    theme=='dark' ? styles.toolbarContainerDark : styles.toolbarContainerLight
+                    styles.toolbarContainer,
+                    theme == 'dark' ? styles.toolbarContainerDark : styles.toolbarContainerLight
                 ]}
-            >
+                >
                 <View style={styles.toolbarTop}>
                     <Image
                         style={styles.brandImage}
-                        source={require('../assets/logo.png')}
-                    />
+                        source={require('../assets/logo.png') }
+                        />
                     <Icon
                         name={icon}
-                        style={styles.menuIcon}
+                        style={[styles.menuIcon, { color: iconColor }]}
                         onPress={onMenuIconPress}
-                    />
+                        />
                 </View>
                 <View style={styles.toolbarBottom}>
                     <Text style={[
                         styles.toolbarTitle,
-                        theme=='dark' ? styles.toolbarTitleDark : styles.toolbarTitleLight
+                        theme == 'dark' ? styles.toolbarTitleDark : styles.toolbarTitleLight
                     ]}>
                         {title}
                     </Text>
@@ -62,7 +63,7 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         region: state.region,
-        direction: state.direction
+        direction: state.direction,
     };
 };
 
