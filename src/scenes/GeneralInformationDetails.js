@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {View, Text, TextInput, AsyncStorage, Linking} from 'react-native';
 import WebView from '../nativeComponents/android/ExtendedWebView';
 import { wrapHtmlContent } from '../utils/htmlUtils'
-import styles from '../styles';
+import styles, { themes } from '../styles';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
 import { MapButton, OfflineView } from '../components';
@@ -32,11 +32,11 @@ export class GeneralInformationDetails extends Component {
         const {section, sectionTitle, language, theme} = this.props;
 
         let source = {
-          html: wrapHtmlContent(section, language, sectionTitle, theme)
+            html: wrapHtmlContent(section, language, sectionTitle, theme)
         };
 
         this.setState({
-          source: source
+            source: source
         });
     }
 
@@ -46,19 +46,19 @@ export class GeneralInformationDetails extends Component {
 
         const {sectionTitle, language, theme} = this.props;
 
-        if(text.length < 5) {
-          return;
+        if (text.length < 5) {
+            return;
         }
 
         let reg = new RegExp(`(${text})`, 'ig');
         section = (reg) ? this.props.section.replace(reg, '<mark>$1</mark>') : this.props.section;
 
         let source = {
-          html: wrapHtmlContent(section, language, sectionTitle, theme)
+            html: wrapHtmlContent(section, language, sectionTitle, theme)
         };
 
         this.setState({
-          source: source
+            source: source
         });
     }
 
@@ -67,49 +67,52 @@ export class GeneralInformationDetails extends Component {
         let url = state.url;
 
         if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
-          url = url.substr(url.indexOf('://') + 3);
-          url = url.substr(url.indexOf('/'));
+            url = url.substr(url.indexOf('://') + 3);
+            url = url.substr(url.indexOf('/'));
         }
 
-        if(this.webView) {
-          if(state.navigationType && state.navigationType === 'click') {
-            // Image are loaded using this method. So this narrows down to prevent all clicks.
-            this.webView.stopLoading();
-          }
+        if (this.webView) {
+            if (state.navigationType && state.navigationType === 'click') {
+                // Image are loaded using this method. So this narrows down to prevent all clicks.
+                this.webView.stopLoading();
+            }
 
-          if (url.indexOf('/') == 0) {
-              // If we get to this point, we need to point to the app
-              console.log('DEEPLINK ME!');
-          } else {
-              Linking.openURL(state.url);
-          }
+            if (url.indexOf('/') == 0) {
+                // If we get to this point, we need to point to the app
+                console.log('DEEPLINK ME!');
+            } else {
+                Linking.openURL(state.url);
+            }
         }
     }
 
     render() {
-        if(!this.state.source) {
-          return <View />;
+        if (!this.state.source) {
+            return <View />;
         }
+        const {theme} = this.props
+        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
 
         return (
             <View style={styles.container}>
                 <View style={styles.stickyInputContainer}>
                     <TextInput
-                        onChangeText={(text) => this._onChangeText(text)}
-                        placeholder={I18n.t('SEARCH')}
+                        onChangeText={(text) => this._onChangeText(text) }
+                        placeholder={I18n.t('SEARCH') }
                         style={styles.stickyInput}
                         returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
                         clearButtonMode="always"
-                    />
+                        />
                 </View>
                 <WebView ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
+                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                     source={this.state.source}
-                />
+                    style={{ backgroundColor: backgroundColor }}
+                    />
                 <MapButton direction={this.props.direction} />
-                </View>
+            </View>
         );
     }
 }
