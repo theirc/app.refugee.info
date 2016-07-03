@@ -19,13 +19,26 @@ export default class Toolbar extends Component {
 
     render() {
         const {navigator} = this.context;
-        const {theme, isChild, onMenuIconPress, drawerOpen} = this.props;
+        const {theme, isChild, onMenuIconPress, drawerOpen, direction, region} = this.props;
         let title = '';
         if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 
-        let icon = drawerOpen ? "md-close" : "ios-menu";
-        let iconColor = theme == 'light' ? "#000000" : "#ffffff"
+        let menuIcon = drawerOpen ? "md-close" : "ios-menu";
+        let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
+        let iconColor = theme == 'light' ? "#000000" : "#ffffff";
+        let icon = null;
+        if (navigator) {
+            icon = <Icon
+                name={navigator.isChild ? backIcon : menuIcon}
+                style={[styles.menuIcon, { color: iconColor }]}
+                onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
+                />;
+        }
+
+        let showIcon = navigator && (region || navigator.isChild);
+
+        console.log();
 
         return (
             <View
@@ -39,11 +52,7 @@ export default class Toolbar extends Component {
                         style={styles.brandImage}
                         source={require('../assets/logo.png') }
                         />
-                    <Icon
-                        name={icon}
-                        style={[styles.menuIcon, { color: iconColor }]}
-                        onPress={onMenuIconPress}
-                        />
+                    {showIcon && icon}
                 </View>
                 <View style={styles.toolbarBottom}>
                     <Text style={[

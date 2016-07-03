@@ -237,7 +237,6 @@ const styles = StyleSheet.create({
     scene: {
         paddingTop: 140,
         flex: 1,
-        backgroundColor: 'white'
     },
     container: {
         flex: 1,
