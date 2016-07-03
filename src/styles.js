@@ -9,6 +9,7 @@ export const themes = {
         logo: require("./assets/logo.png"),
         rectangularLogo: require("./assets/logo-rect.png"),
         backgroundColor: '#FFFFFF',
+        menuBackgroundColor: '#FFFFFF',
         darkBackgroundColor: '#000000',
         dividerColor: '#E2E2E2',
         darkerDividerColor: '#BABABA',
@@ -20,7 +21,8 @@ export const themes = {
     dark: {
         logo: require("./assets/logo.png"),
         rectangularLogo: require("./assets/logo-rect-dark.png"),
-        backgroundColor: '#000000',
+        backgroundColor: '#2d2d2d',
+        menuBackgroundColor: '#000000',
         darkBackgroundColor: '#FFFFFF',
         dividerColor: '#303030',
         darkerDividerColor: '#BABABA',
