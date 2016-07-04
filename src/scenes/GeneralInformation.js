@@ -43,8 +43,12 @@ export class GeneralInformation extends Component {
     }
 
     async _loadInitialState() {
-        let {region} = this.props;
-        const {navigator} = this.context;
+        let {region, information} = this.props;
+        const {navigator} = this.context;  
+
+        if(information) {
+            region = information;
+        }
 
         if (!region) {
             navigator.to('countryChoice');

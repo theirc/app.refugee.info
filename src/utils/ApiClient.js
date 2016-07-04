@@ -50,6 +50,10 @@ export default class ApiClient {
         return this.fetch('/v1/region/?format=json&level=1');
     }
 
+    getAllChildrenOf(parentId, raise_exception = false) {
+        return this.fetch(`/v1/region/?format=json&is_child_of=${parentId}`, raise_exception);
+    }
+
     getLocations(parentId, raise_exception = false) {
         return this.fetch(`/v1/region/?format=json&parent=${parentId}`, raise_exception);
     }

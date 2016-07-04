@@ -120,11 +120,6 @@ class MenuItem extends Component {
             </View>
         </View>
 
-        if (item.active) {
-            return <View style={[item.active ? styles.itemActive : {},]}>
-                {direction === 'ltr' ? ltrChild : rtlChild}
-            </View>;
-        }
         let press = (comp, ...args) => {
             if (item.onPress) {
                 return item.onPress(...args);
@@ -150,7 +145,7 @@ class MenuItem extends Component {
                     flexDirection: 'column',
                 }}
                 >
-                <View style={styles.itemLine}>
+                <View style={[item.active ? styles.itemActive : {},styles.itemLine]}>
                     {direction === 'ltr' ? ltrChild : rtlChild}
                 </View>
             </Ripple>

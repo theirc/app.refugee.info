@@ -75,6 +75,35 @@ span.tel {
   display: inline-block;
   white-space: nowrap;
 }
+
+
+.table-responsive table {
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.table-responsive table, .table-responsive th, .table-responsive td {
+    border: 1px solid white;
+}
+
+.table-responsive td {
+    padding: 8px 8px;
+    white-space: nowrap;
+}
+
+.table-responsive td p {
+    padding: 0;
+    margin: 0;
+}
+
+.tel {
+    white-space: nowrap;
+}
+
+img {
+  max-width: 100%;
+}
+
 `;
 
 const lightTheme = `

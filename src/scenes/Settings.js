@@ -52,6 +52,11 @@ class Settings extends Component {
         dispatch({type: "CHANGE_LANGUAGE", payload: language});
         dispatch({type: "DIRECTION_CHANGED", payload: direction});
         dispatch({type: "THEME_CHANGED", payload: theme});
+
+        AsyncStorage.getAllKeys().then(k=> {
+            console.log(k);
+            AsyncStorage.clear();
+        });
         
 
         navigator.to('initial');

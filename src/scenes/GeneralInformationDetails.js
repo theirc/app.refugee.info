@@ -6,6 +6,7 @@ import styles, {themes} from '../styles';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {MapButton, OfflineView, SearchBar} from '../components';
+import {Regions} from '../data';
 
 var WEBVIEW_REF = 'webview';
 export class GeneralInformationDetails extends Component {
@@ -14,6 +15,11 @@ export class GeneralInformationDetails extends Component {
         title: React.PropTypes.string.isRequired,
         section: React.PropTypes.string.isRequired
     };
+
+    static contextTypes = {
+        navigator: React.PropTypes.object.isRequired
+    };
+
 
     constructor(props) {
         super(props);
@@ -79,7 +85,12 @@ export class GeneralInformationDetails extends Component {
 
             if (url.indexOf('/') == 0) {
                 // If we get to this point, we need to point to the app
-                console.log('DEEPLINK ME!');
+                let fullSlug = url.substr(1).split('/')[0];
+
+                Regions.searchImportantInformation(fullSlug).then((info) => {
+                    const {navigator} = this.context;
+                    navigator.forward('importantLink', null, { information: info });
+                });
             } else {
                 Linking.openURL(state.url);
             }
@@ -98,14 +109,14 @@ export class GeneralInformationDetails extends Component {
                 <View style={styles.horizontalContainer}>
                     <SearchBar
                         theme={theme}
-                        searchFunction={(text) => this._onChangeText(text)}
-                    />
+                        searchFunction={(text) => this._onChangeText(text) }
+                        />
                 </View>
                 <WebView ref={(v) => this.webView = v}
-                         onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                         source={this.state.source}
-                         style={{ backgroundColor: backgroundColor }}
-                />
+                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                    source={this.state.source}
+                    style={{ backgroundColor: backgroundColor }}
+                    />
             </View>
         );
     }
