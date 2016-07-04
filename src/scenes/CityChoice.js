@@ -14,11 +14,13 @@ import { updateCountryIntoStorage } from '../actions/country';
 import { fetchRegionFromStorage } from '../actions/region';
 import { fetchDirectionFromStorage } from '../actions/direction';
 import { fetchLanguageFromStorage } from '../actions/language';
+import { Regions } from '../data'
 
 class CityChoice extends Component {
 
     static propTypes = {
-        countryId: React.PropTypes.number.isRequired
+        countryId: React.PropTypes.number.isRequired,
+        country: React.PropTypes.object.isRequired
     };
 
     static contextTypes = {
@@ -33,37 +35,21 @@ class CityChoice extends Component {
         });
     }
 
-    componentDidMount() {
-        this.apiClient = new ApiClient(this.context, this.props);
-        this._loadInitialState();
-    }
-
-    async _loadInitialState() {
-        let cities = [];
-
-        const regions = await this.apiClient.getRegions(this.props.countryId);
-        const children = await this.apiClient.getCities(this.props.countryId);
-        cities = cities.concat(children);
-        const promises = [];
-        for (let region of regions) {
-            promises.push(this.apiClient.getCities(region.id));
-        }
-        Promise.all(promises).then((citiesList) => {
-            for (let _cities of citiesList) {
-                cities = cities.concat(_cities);
-            }
-            cities.forEach((c)=>{
-              if(c && c.metadata) {
+    async componentWillMount() {
+        const regionData = new Regions(new ApiClient(this.context, this.props));
+        const cities = await regionData.listChildren(this.props.country);
+        
+        cities.forEach((c) => {
+            if (c && c.metadata) {
                 const pageTitle = (c.metadata.page_title || '')
-                  .replace('\u060c', ',').split(',')[0];
+                    .replace('\u060c', ',').split(',')[0];
                 c.pageTitle = pageTitle;
-              }
-            });
+            }
+        });
 
-            this.setState({
-                cities,
-                loaded: true
-            });
+        this.setState({
+            cities,
+            loaded: true
         });
     }
 
@@ -72,18 +58,17 @@ class CityChoice extends Component {
 
         city.detected = false;
         city.coords = {};
-        city.country = await this.apiClient.getLocation(this.props.countryId);
 
         dispatch(updateCountryIntoStorage(city.country));
         dispatch(updateRegionIntoStorage(city));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
-        if(city.content && city.content.length == 1) {
-          return this.context.navigator.to('infoDetails', null, {section: city.content[0].section, sectionTitle: city.content[0].title });
+        if (city.content && city.content.length == 1) {
+            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.content[0].title });
         } else {
-          return this.context.navigator.to('info', null, null, store.getState());
+            return this.context.navigator.to('info', null, null, store.getState());
         }
     }
 
@@ -93,10 +78,10 @@ class CityChoice extends Component {
                 <View style={styles.containerBelowLogo}>
                     <LocationListView
                         loaded={this.state.loaded}
-                        header={I18n.t('SELECT_LOCATION')}
-                        onPress={(rowData) => {this._onPress(rowData)}}
+                        header={I18n.t('SELECT_LOCATION') }
+                        onPress={(rowData) => { this._onPress(rowData) } }
                         rows={this.state.cities}
-                    />
+                        />
                 </View>
             </View>
         );
@@ -105,7 +90,6 @@ class CityChoice extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ...state
     };
 };
 

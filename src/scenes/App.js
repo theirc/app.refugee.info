@@ -23,7 +23,6 @@ import {fetchCountryFromStorage} from '../actions/country';
 import {fetchThemeFromStorage} from '../actions/theme'
 import styles, {generateTextStyles, themes} from '../styles'
 
-
 export class App extends Component {
 
     static childContextTypes = {

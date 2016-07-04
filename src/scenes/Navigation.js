@@ -18,6 +18,7 @@ import CountryHeaders from '../constants/CountryHeaders'
 import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
+import {Regions} from '../data';
 
 const bullseye = require('../assets/icons/bullseye.png');
 
@@ -57,37 +58,27 @@ class Navigation extends Component {
 
     async componentWillReceiveProps(props) {
         if (props.country) {
-            const children = await this.loadCities(props.country.id);
+            const children = await this.loadCities(props.country);
 
             this.setState({ otherLocations: children.slice(0, 5) });
         }
     }
 
-    async loadCities(countryId) {
+    async loadCities(country) {
         let cities = [];
-        let apiClient = new ApiClient(this.context, this.props);
+        const regionData = new Regions(new ApiClient(this.context, this.props));
 
-        const regions = await apiClient.getRegions(countryId);
-        const children = await apiClient.getCities(countryId);
-        cities = cities.concat(children);
-        const promises = [];
-        for (let region of regions) {
-            promises.push(apiClient.getCities(region.id));
-        }
-        return await Promise.all(promises).then((citiesList) => {
-            for (let _cities of citiesList) {
-                cities = cities.concat(_cities);
-            }
-            cities.forEach((c) => {
-                if (c && c.metadata) {
-                    const pageTitle = (c.metadata.page_title || '')
-                        .replace('\u060c', ',').split(',')[0];
-                    c.pageTitle = pageTitle;
-                }
-            });
+        let children = await regionData.listChildren(country);
 
-            return cities
+        children.forEach((c) => {
+            if (c && c.metadata) {
+                const pageTitle = (c.metadata.page_title || '')
+                    .replace('\u060c', ',').split(',')[0];
+                c.pageTitle = pageTitle;
+            } 
         });
+
+        return children;
     }
 
     _getImportantInformation() {
@@ -109,9 +100,11 @@ class Navigation extends Component {
         city.detected = false;
         city.coords = {};
         city.country = country;
+        
+        console.log(city);
 
-        dispatch(updateCountryIntoStorage(city.country));
         dispatch(updateRegionIntoStorage(city));
+        dispatch(updateCountryIntoStorage(city.country));
 
         dispatch({ type: 'REGION_CHANGED', payload: city });
         dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
@@ -139,7 +132,7 @@ class Navigation extends Component {
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
-            return <MenuItem key={index} onPress={() => s('info') }>{i.pageTitle}</MenuItem>;
+            return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle}</MenuItem>;
         });
         let rectangularLogo = theme == 'light' ? themes.light.rectangularLogo : themes.dark.rectangularLogo;
         let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
@@ -207,8 +200,8 @@ const lightNavigationStyles = StyleSheet.create({
         marginTop: 10,
     },
     logoContainer: {
-        flex:1, 
-        flexDirection:'row',
+        flex: 1,
+        flexDirection: 'row',
         marginRight: 10,
     },
     view: {
@@ -245,8 +238,8 @@ const darkNavigationStyles = StyleSheet.create({
         marginTop: 10,
     },
     logoContainer: {
-        flex:1, 
-        flexDirection:'row',
+        flex: 1,
+        flexDirection: 'row',
         marginRight: 10,
     },
     view: {
