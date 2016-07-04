@@ -31,6 +31,7 @@ export default class Regions extends Component {
         if (!countries || network) {
             countries = await this.client.getRootLocations();
             await AsyncStorage.setItem('__countries', JSON.stringify(countries));
+            await Promise.all(countries.map((c) => AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c))));
         }
 
         return countries.filter((r) => !r.hidden);
@@ -47,16 +48,23 @@ export default class Regions extends Component {
                 m.countryId = countryId;
             });
             await AsyncStorage.setItem('__children-' + countryId, JSON.stringify(children));
+            await Promise.all(children.map((c) => AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c))));
         }
 
         return children.filter((r) => !r.hidden);
     }
 
     async getLocation(id, country, network = false) {
-        if(!country) {
-            return await this.client.getLocation(id);
+        if (!country) {
+            let location = await AsyncStorage.getItem('__region-' + id);
+            if (!location || network) {
+                location = await this.client.getLocation(id);
+                await AsyncStorage.setItem('__region-' + location.id, JSON.stringify(location))
+            }
+
+            return location;
         }
-        
+
         let locations = (await this.listChildren(country, network)).filter((l) => l.id == id);
         return locations.length && locations[0];
     }
