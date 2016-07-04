@@ -31,7 +31,12 @@ export default class Regions extends Component {
         if (!countries || network) {
             countries = await this.client.getRootLocations();
             await AsyncStorage.setItem('__countries', JSON.stringify(countries));
-            await Promise.all(countries.map((c) => AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c))));
+            await Promise.all(countries.map((c) => {
+                return Promise.all([
+                    AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c)),
+                    AsyncStorage.setItem('__slug-' + c.full_slug, JSON.stringify(c)),
+                ]);
+            }));
         }
 
         return countries.filter((r) => !r.hidden);
@@ -48,7 +53,12 @@ export default class Regions extends Component {
                 m.countryId = countryId;
             });
             await AsyncStorage.setItem('__children-' + countryId, JSON.stringify(children));
-            await Promise.all(children.map((c) => AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c))));
+            await Promise.all(children.map((c) => {
+                return Promise.all([
+                    AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c)),
+                    AsyncStorage.setItem('__slug-' + c.full_slug, JSON.stringify(c)),
+                ]);
+            }));
         }
 
         return children.filter((r) => !r.hidden);
@@ -60,6 +70,7 @@ export default class Regions extends Component {
             if (!location || network) {
                 location = await this.client.getLocation(id);
                 await AsyncStorage.setItem('__region-' + location.id, JSON.stringify(location))
+                await AsyncStorage.setItem('__slug-' + location.full_slug, JSON.stringify(location));
             }
 
             return location;
@@ -71,5 +82,31 @@ export default class Regions extends Component {
 
     async getLocationByPosition(longitude, latitude, level) {
         return await this.client(longitude, latitude, level);
+    }
+
+    static loadImportantInformation(region) {
+        if (!region) {
+            return true;
+        }
+
+        let importantInfo = region.important_information.map((i) => {
+            return AsyncStorage.setItem('__info-' + i.full_slug, JSON.stringify(i));
+        });
+        return Promise.all([Promise.all(importantInfo), importantInfo]);
+    }
+
+    static searchImportantInformation(fullSlug) {
+        return AsyncStorage.getAllKeys().then((k) => {
+            let promises = k.map((r) => {
+                if (r.indexOf(fullSlug) > -1) {
+                    return AsyncStorage.getItem(r).then(i=>JSON.parse(i));
+                };
+                return false;
+            }).filter(r => r);
+            if (promises) {
+                return promises.pop();
+            }
+            return false;
+        });
     }
 }
