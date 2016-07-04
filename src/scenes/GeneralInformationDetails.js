@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {View, Text, TextInput, AsyncStorage, Linking} from 'react-native';
 import WebView from '../nativeComponents/android/ExtendedWebView';
-import { wrapHtmlContent } from '../utils/htmlUtils'
-import styles, { themes } from '../styles';
+import {wrapHtmlContent} from '../utils/htmlUtils'
+import styles, {themes} from '../styles';
 import I18n from '../constants/Messages';
-import { connect } from 'react-redux';
-import { MapButton, OfflineView, SearchBar } from '../components';
+import {connect} from 'react-redux';
+import {MapButton, OfflineView, SearchBar} from '../components';
 
 var WEBVIEW_REF = 'webview';
 export class GeneralInformationDetails extends Component {
@@ -95,16 +95,17 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
-                <SearchBar
-                    theme={theme}
-                    searchFunction={(text) => this._onChangeText(text)}
-                />
-                <WebView ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                    source={this.state.source}
-                    style={{ backgroundColor: backgroundColor }}
+                <View style={styles.horizontalContainer}>
+                    <SearchBar
+                        theme={theme}
+                        searchFunction={(text) => this._onChangeText(text)}
                     />
-                <MapButton direction={this.props.direction} />
+                </View>
+                <WebView ref={(v) => this.webView = v}
+                         onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                         source={this.state.source}
+                         style={{ backgroundColor: backgroundColor }}
+                />
             </View>
         );
     }

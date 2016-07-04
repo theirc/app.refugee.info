@@ -30,9 +30,9 @@ export default class SearchBar extends Component {
                         <Icon
                             name="ios-search"
                             style={[
-                            componentStyles.searchBarIcon,
-                            theme=='dark' ? componentStyles.searchBarIconDark : componentStyles.searchBarIconLight
-                        ]}
+                                componentStyles.searchBarIcon,
+                                theme=='dark' ? componentStyles.searchBarIconDark : componentStyles.searchBarIconLight
+                            ]}
                         />
                     </View>
                     <TextInput
@@ -67,8 +67,9 @@ const mapStateToProps = (state) => {
 
 const componentStyles = StyleSheet.create({
     searchBarContainer: {
+        flex: 1,
         padding: 5,
-        height: 50
+        height: 46
     },
     searchBarContainerLight: {
         backgroundColor: themes.light.dividerColor
@@ -77,14 +78,13 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.menuBackgroundColor
     },
     searchBar: {
-        flex: 1,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.4,
         shadowRadius: 1,
         flexDirection: 'row',
         paddingTop: 5,
-        paddingBottom: 5,
+        paddingBottom: 6,
         paddingLeft: 10,
         paddingRight: 10
     },

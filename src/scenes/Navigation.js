@@ -88,8 +88,14 @@ class Navigation extends Component {
         }
         let s = (scene) => this.drawerCommons.changeScene(scene);
         return region.important_information.map((i, index) => {
+            if (i && i.metadata) {
+                const pageTitle = (i.metadata.page_title || '')
+                    .replace('\u060c', ',').split(',')[0];
+                i.pageTitle = pageTitle;
+            } 
+
             return (
-                <MenuItem key={index} onPress={() => s('info') }>{i.metadata.page_title}</MenuItem>
+                <MenuItem key={index} onPress={() => s('info', null, {region:i}) }>{i.pageTitle}</MenuItem>
             );
         });
     }
@@ -101,8 +107,6 @@ class Navigation extends Component {
         city.coords = {};
         city.country = country;
         
-        console.log(city);
-
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 

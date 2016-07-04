@@ -14,13 +14,9 @@ import I18n from '../constants/Messages';
 import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
 import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
+import styles, {getUnderlayColor} from '../styles';
 import store from '../store';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-import { Regions } from '../data'
-
-const InteractionManager = require('InteractionManager');
 
 export class GeneralInformation extends Component {
 
@@ -43,13 +39,11 @@ export class GeneralInformation extends Component {
 
     componentDidMount() {
         this.apiClient = new ApiClient(this.context, this.props);
-        this.regions = new Regions(this.apiClient);
-
         this._loadInitialState();
     }
 
     async _loadInitialState() {
-        let {region, country} = this.props;
+        let {region} = this.props;
         const {navigator} = this.context;
 
         if (!region) {
@@ -59,7 +53,7 @@ export class GeneralInformation extends Component {
 
         if (region.content && region.content.length === 1) {
             let c = region.content[0];
-            navigator.to('infoDetails', null, { section: c.section, sectionTitle: c.title });
+            navigator.to('infoDetails', null, {section: c.section, sectionTitle: c.title});
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
@@ -73,20 +67,15 @@ export class GeneralInformation extends Component {
         });
 
         try {
-            await InteractionManager.runAfterInteractions();
-            region = await this.regions.getLocation(region.id, country, true);
-            region.country = country;
-            
+            region = await this.apiClient.getLocation(region.id, true);
             await AsyncStorage.setItem('regionCache', JSON.stringify(region));
             await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
             this.setState({
                 offline: false,
                 region: region
             })
-
         }
         catch (e) {
-            console.log(e);
             this.setState({
                 offline: true
             })
@@ -94,9 +83,9 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this._loadInitialState().then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
@@ -106,7 +95,7 @@ export class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
-        navigator.forward(null, null, { section, sectionTitle: title }, this.state);
+        navigator.forward(null, null, {section, sectionTitle: title}, this.state);
     }
 
     renderRow(rowData) {
@@ -114,27 +103,27 @@ export class GeneralInformation extends Component {
         return (
             <View>
                 <TouchableHighlight
-                    onPress={() => this.onClick(rowData.title, rowData.section) }
-                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
-                    >
+                    onPress={() => this.onClick(rowData.title, rowData.section)}
+                    underlayColor={getUnderlayColor(theme)}
+                >
                     <View
                         style={[
                             styles.listItemContainer,
-                            theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
                         ]}
-                        >
-                        <Icon name="md-bus" style={styles.listItemIconInline} />
+                    >
+                        <Icon name="md-bus" style={styles.listItemIconInline}/>
                         <View style={[
                             styles.listItemDividerInline,
-                            theme == 'dark' ? styles.listItemDividerDark : styles.listItemDividerLight
-                        ]} />
+                            theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+                        ]}/>
                         <View style={[
-                            styles.listItemTextContainer,
-                            { alignItems: 'flex-start' }
-                        ]}>
+                                styles.listItemTextContainer,
+                                {alignItems: 'flex-start'}
+                            ]}>
                             <Text style={[
                                 styles.listItemText,
-                                theme == 'dark' ? styles.listItemTextDark : styles.listItemTextLight
+                                theme=='dark' ? styles.listItemTextDark : styles.listItemTextLight
                             ]}>
                                 {rowData.title}
                             </Text>
@@ -149,26 +138,27 @@ export class GeneralInformation extends Component {
         const {theme} = this.props;
         return (
             <View style={styles.container}>
-                <SearchBar theme={theme} />
+                <View style={styles.horizontalContainer}>
+                    <SearchBar theme={theme}/>
+                </View>
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
+                    onRefresh={this.onRefresh.bind(this)}
                     lastSync={this.state.lastSync}
-                    />
+                />
                 <ListView
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this) }
-                            />
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderRow={(rowData) => this.renderRow(rowData) }
-                    style={styles.listViewContainer}
+                    renderRow={(rowData) => this.renderRow(rowData)}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
-                    />
+                />
             </View>
         );
     }
@@ -180,7 +170,6 @@ const mapStateToProps = (state) => {
         primary: state.theme.primary,
         language: state.language,
         region: state.region,
-        country: state.country,
         theme: state.theme.theme,
         direction: state.direction
     };
