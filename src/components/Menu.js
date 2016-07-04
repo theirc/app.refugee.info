@@ -257,7 +257,7 @@ const lightStyleDefaults = {
         color: themes.light.textColor,
     },
     text: {
-        color: themes.light.accentColor,
+        color: themes.light.greenAccentColor,
         fontWeight: "bold",
         paddingRight: 5,
     },
@@ -318,7 +318,7 @@ const darkStyleDefaults = {
         color: themes.dark.textColor,
     },
     text: {
-        color: themes.dark.accentColor,
+        color: themes.dark.greenAccentColor,
         fontWeight: "bold",
         paddingRight: 5,
         fontSize: 14,

@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Image, Text} from 'react-native';
+import {View, Image, Text, StyleSheet} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles from '../styles';
+import {generateTextStyles, themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Toolbar extends Component {
@@ -14,50 +14,55 @@ export default class Toolbar extends Component {
     static propTypes = {
         onMenuIconPress: PropTypes.func,
         theme: PropTypes.oneOf(['light', 'dark']),
-        drawerOpen: PropTypes.bool,
+        drawerOpen: PropTypes.bool
     };
 
     render() {
         const {navigator} = this.context;
-        const {theme, isChild, onMenuIconPress, drawerOpen, direction, region} = this.props;
+        const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let title = '';
         if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
-        let iconColor = theme == 'light' ? "#000000" : "#ffffff";
         let icon = null;
         if (navigator) {
             icon = <Icon
                 name={navigator.isChild ? backIcon : menuIcon}
-                style={[styles.menuIcon, { color: iconColor }]}
+                style={
+                navigator.isChild ? [
+                    componentStyles.backIcon,
+                    theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
+                ] : [
+                    componentStyles.menuIcon,
+                    theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
+                ]}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 />;
         }
 
         let showIcon = navigator && (region || navigator.isChild);
 
-        console.log();
-
         return (
             <View
                 style={[
-                    styles.toolbarContainer,
-                    theme == 'dark' ? styles.toolbarContainerDark : styles.toolbarContainerLight
+                    componentStyles.toolbarContainer,
+                    theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight
                 ]}
                 >
-                <View style={styles.toolbarTop}>
+                <View style={componentStyles.toolbarTop}>
                     <Image
-                        style={styles.brandImage}
+                        style={componentStyles.brandImage}
                         source={require('../assets/logo.png') }
                         />
                     {showIcon && icon}
                 </View>
-                <View style={styles.toolbarBottom}>
+                <View style={componentStyles.toolbarBottom}>
                     <Text style={[
-                        styles.toolbarTitle,
-                        theme == 'dark' ? styles.toolbarTitleDark : styles.toolbarTitleLight
+                        componentStyles.toolbarTitle,
+                        generateTextStyles(language),
+                        theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
                     ]}>
                         {title}
                     </Text>
@@ -66,6 +71,7 @@ export default class Toolbar extends Component {
             </View>
         );
     }
+
 }
 
 const mapStateToProps = (state) => {
@@ -73,7 +79,73 @@ const mapStateToProps = (state) => {
         primary: state.theme.primary,
         region: state.region,
         direction: state.direction,
+        language: state.language
     };
 };
+
+const componentStyles = StyleSheet.create({
+    toolbarContainer: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        paddingTop: 25,
+        paddingBottom: 15,
+        paddingRight: 15,
+        paddingLeft: 15,
+        flexDirection: 'column',
+        height: 140,
+        borderBottomWidth: 2
+    },
+    toolbarContainerLight: {
+        backgroundColor: themes.light.toolbarColor,
+        borderBottomColor: themes.light.darkerDividerColor
+    },
+    toolbarContainerDark: {
+        backgroundColor: themes.dark.toolbarColor,
+        borderBottomColor: themes.dark.toolbarColor
+    },
+    toolbarTop: {
+        flexDirection: 'row',
+        height: 50,
+        justifyContent: 'space-between'
+    },
+    toolbarBottom: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'flex-end'
+    },
+    brandImage: {
+        height: 40,
+        width: 120
+    },
+    menuIcon: {
+        fontSize: 28
+    },
+    menuIconLight: {
+        color: themes.light.textColor
+    },
+    menuIconDark: {
+        color: themes.dark.yellowAccentColor
+    },
+    backIcon: {
+        fontSize: 28
+    },
+    backIconLight: {
+        color: themes.light.greenAccentColor
+    },
+    backIconDark: {
+        color: themes.dark.yellowAccentColor
+    },
+    toolbarTitle: {
+        fontSize: 20
+    },
+    toolbarTitleLight: {
+        color: themes.light.textColor
+    },
+    toolbarTitleDark: {
+        color: themes.dark.textColor
+    }
+});
 
 export default connect(mapStateToProps)(Toolbar);
