@@ -86,7 +86,7 @@ class Navigation extends Component {
         if (!region || !region.important_information) {
             return <View />;
         }
-        let s = (scene) => this.drawerCommons.changeScene(scene);
+        let s = (scene, props) => this.drawerCommons.changeScene(scene, null, props);
         return region.important_information.map((i, index) => {
             if (i && i.metadata) {
                 const pageTitle = (i.metadata.page_title || '')
@@ -95,7 +95,7 @@ class Navigation extends Component {
             } 
 
             return (
-                <MenuItem key={index} onPress={() => s('info', null, {region:i}) }>{i.pageTitle}</MenuItem>
+                <MenuItem key={index} onPress={() => s('info', {information:i}) }>{i.pageTitle}</MenuItem>
             );
         });
     }
