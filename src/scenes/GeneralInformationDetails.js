@@ -5,7 +5,7 @@ import { wrapHtmlContent } from '../utils/htmlUtils'
 import styles, { themes } from '../styles';
 import I18n from '../constants/Messages';
 import { connect } from 'react-redux';
-import { MapButton, OfflineView } from '../components';
+import { MapButton, OfflineView, SearchBar } from '../components';
 
 var WEBVIEW_REF = 'webview';
 export class GeneralInformationDetails extends Component {
@@ -20,7 +20,7 @@ export class GeneralInformationDetails extends Component {
         this.webView = null;
         this.state = {
             loading: false,
-            source: false,
+            source: false
         };
     }
 
@@ -90,22 +90,15 @@ export class GeneralInformationDetails extends Component {
         if (!this.state.source) {
             return <View />;
         }
-        const {theme} = this.props
+        const {theme} = this.props;
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
 
         return (
             <View style={styles.container}>
-                <View style={styles.stickyInputContainer}>
-                    <TextInput
-                        onChangeText={(text) => this._onChangeText(text) }
-                        placeholder={I18n.t('SEARCH') }
-                        style={styles.stickyInput}
-                        returnKeyType={'search'}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        clearButtonMode="always"
-                        />
-                </View>
+                <SearchBar
+                    theme={theme}
+                    searchFunction={(text) => this._onChangeText(text)}
+                />
                 <WebView ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                     source={this.state.source}
