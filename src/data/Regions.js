@@ -56,7 +56,7 @@ export default class Regions extends Component {
 
     async getLocation(id, country, network = false) {
         if (!country) {
-            let location = await AsyncStorage.getItem('__region-' + id);
+            let location = JSON.parse(await AsyncStorage.getItem('__region-' + id));
             if (!location || network) {
                 location = await this.client.getLocation(id);
                 await AsyncStorage.setItem('__region-' + location.id, JSON.stringify(location))
