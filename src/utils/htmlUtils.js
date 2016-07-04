@@ -38,10 +38,12 @@ div.table-responsive table {
 }
 
 div.table-responsive table td {
-  font-size: 50%;
-  border: 1px white solid;
-  padding-left: 5px;
-  padding-right: 5px;
+  font-size: 80% !important;
+  padding: 5px 10px;
+}
+
+div.table-responsive table, th, td {
+    border-collapse: collapse;
 }
 
 div.table-responsive table td {
@@ -90,9 +92,8 @@ a:active {
 }
 
 a.link-button {
-    border: 1px black solid;
-    background-color: #ffffff;
-    color: #000000 !important;
+    background-color: #00BA50 !important;
+    color: #FFFFFF !important;
 }
 
 div.table-responsive table td {
@@ -115,9 +116,11 @@ a:active {
 }
 
 a.link-button {
-    border: 1px #fff solid;
-    background-color: #2d2d2d;
+    background-color: #00BA50;
     color: #fff !important;
+}
+div.table-responsive table td {
+  border: 1px white solid;
 }
 `;
 

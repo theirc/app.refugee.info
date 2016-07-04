@@ -15,7 +15,8 @@ export const themes = {
         darkerDividerColor: '#BABABA',
         lighterDividerColor: '#F2F2F2',
         toolbarColor: '#FDF9F9',
-        accentColor: '#39B05C',
+        greenAccentColor: '#39B05C',
+        yellowAccentColor: '#FFDF0C',
         textColor: '#515151'
     },
     dark: {
@@ -24,76 +25,19 @@ export const themes = {
         backgroundColor: '#2d2d2d',
         menuBackgroundColor: '#000000',
         darkBackgroundColor: '#FFFFFF',
-        dividerColor: '#303030',
-        darkerDividerColor: '#BABABA',
-        lighterDividerColor: '#F2F2F2',
-        toolbarColor: '#000000',
-        accentColor: '#39B05C',
-        textColor: '#ffffff'
+        dividerColor: '#6E6E6E',
+        darkerDividerColor: '#373737',
+        lighterDividerColor: '#BBBBBB',
+        toolbarColor: '#181818',
+        greenAccentColor: '#39B05C',
+        yellowAccentColor: '#FFDF0C',
+        textColor: '#FFFFFF'
     }
 };
 
 const styles = StyleSheet.create({
 
-    // toolbar
-
-    toolbarContainer: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        paddingTop: 25,
-        paddingBottom: 15,
-        paddingRight: 15,
-        paddingLeft: 15,
-        flexDirection: 'column',
-        height: 140,
-        borderBottomWidth: 2
-    },
-    toolbarContainerLight: {
-        backgroundColor: themes.light.toolbarColor,
-        borderTopColor: themes.light.darkBackgroundColor,
-        borderBottomColor: themes.light.darkerDividerColor
-    },
-    toolbarContainerDark: {
-        backgroundColor: themes.dark.toolbarColor,
-        borderTopColor: themes.dark.darkBackgroundColor,
-        borderBottomColor: themes.dark.darkerDividerColor
-    },
-
-    toolbarTop: {
-        flexDirection: 'row',
-        height: 50,
-        justifyContent: 'space-between'
-    },
-    toolbarBottom: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'flex-end'
-    },
-    brandImage: {
-        height: 40,
-        width: 120
-    },
-    menuIcon: {
-        fontSize: 28,
-    },
-    backIcon: {
-        fontSize: 28,
-        color: themes.light.accentColor
-    },
-    toolbarTitle: {
-        fontSize: 20,
-        fontFamily: 'Montserrat'
-    },
-    toolbarTitleLight: {
-        color: themes.light.textColor
-    },
-    toolbarTitleDark: {
-        color: themes.dark.textColor
-    },
-
-    // view header
+    // reusable view header
 
     viewHeaderContainer: {
         padding: 15
@@ -113,7 +57,7 @@ const styles = StyleSheet.create({
         color: themes.light.darkerDividerColor
     },
     viewHeaderTextDark: {
-        color: themes.dark.darkerDividerColor
+        color: themes.dark.lighterDividerColor
     },
 
     // list items
@@ -124,7 +68,8 @@ const styles = StyleSheet.create({
         paddingBottom: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
+        height: 50,
         flexDirection: 'row'
     },
     listItemContainerLight: {
@@ -132,7 +77,7 @@ const styles = StyleSheet.create({
         backgroundColor: themes.light.backgroundColor
     },
     listItemContainerDark: {
-        borderBottomColor: themes.dark.lighterDividerColor,
+        borderBottomColor: themes.dark.darkerDividerColor,
         backgroundColor: themes.dark.backgroundColor
     },
     listItemTextContainer: {
@@ -156,20 +101,20 @@ const styles = StyleSheet.create({
     listItemIcon: {
         position: 'absolute',
         left: 15,
-        top: 6
+        top: 8
     },
     listItemIconInline: {
         marginTop: 8,
         marginLeft: 10,
         fontSize: 24,
-        color: themes.light.accentColor
+        color: themes.light.greenAccentColor
     },
     listItemDivider: {
         position: 'absolute',
         left: 62,
-        top: 12,
-        width: 2,
-        height: 21
+        top: 13,
+        width: 1,
+        height: 22
     },
     listItemDividerInline: {
         marginTop: 9,
@@ -182,53 +127,7 @@ const styles = StyleSheet.create({
         backgroundColor: themes.light.lighterDividerColor
     },
     listItemDividerDark: {
-        backgroundColor: themes.dark.lighterDividerColor
-    },
-
-    // search bar
-
-    searchBarContainer: {
-        padding: 5,
-        height: 46
-    },
-    searchBar: {
-        flex: 1,
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
-        flexDirection: 'row',
-        paddingTop: 5,
-        paddingBottom: 5,
-        paddingLeft: 10,
-        paddingRight: 10
-    },
-    searchBarLight: {
-        backgroundColor: themes.light.backgroundColor
-    },
-    searchBarDark: {
-        backgroundColor: themes.dark.backgroundColor
-    },
-
-    searchBarIconContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-end'
-    },
-    searchBarIcon: {
-        marginLeft: 5,
-        marginRight: 10,
-        fontSize: 22
-    },
-    searchBarIconLight: {
-        color: themes.light.darkerDividerColor
-    },
-    searchBarIconDark: {
-        color: themes.dark.darkerDividerColor
-    },
-    searchBarInput: {
-        flex: 1,
-        fontSize: 13,
-        fontFamily: 'Montserrat'
+        backgroundColor: themes.dark.darkerDividerColor
     },
     
     // other

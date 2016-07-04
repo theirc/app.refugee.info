@@ -78,7 +78,7 @@ export default class LocationListView extends Component {
             <View>
                 <TouchableHighlight
                     onPress={() => {this.props.onPress(rowData)}}
-                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.6)'}
                 >
                     <View
                         style={[

@@ -138,7 +138,7 @@ export class GeneralInformation extends Component {
         const {theme} = this.props;
         return (
             <View style={styles.container}>
-                <SearchBar theme={theme}/>
+                <SearchBar theme={theme} />
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
