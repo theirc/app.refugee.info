@@ -7,17 +7,18 @@ import {
     StyleSheet,
     TouchableHighlight,
     AsyncStorage,
-    TextInput
+    TextInput,
+    Image
 } from 'react-native';
-import {Divider} from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
-import OfflineView from '../components/OfflineView';
+import {OfflineView, SearchBar, SearchFilterButton} from '../components';
 import {connect} from 'react-redux';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import styles from '../styles';
+import styles, {themes, getUnderlayColor, generateTextStyles} from '../styles';
 
 export default class ServiceList extends Component {
 
@@ -142,25 +143,82 @@ export default class ServiceList extends Component {
     }
 
     renderRow(service) {
+        const {theme, direction, language} = this.props;
         let location = this.state.locations.find(function (loc) {
             return loc.id == service.region;
         });
         let serviceType = this.state.serviceTypes.find(function (type) {
             return type.url == service.type;
         });
-        let rowContent = this.serviceCommons.renderRowContent(service, serviceType, location, this.props.direction);
-        const theme = this.props.theme;
+        let rating = this.serviceCommons.renderStars(service.rating, direction);
+        let locationName = (location) ? location.name : '';
         return (
-            <View>
-                <TouchableHighlight
-                    onPress={() => this.onClick({service, serviceType, location})}
-                    style={styles.buttonContainer}
-                    underlayColor={theme == 'light' ? 'rgba(72, 133, 237, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+            <TouchableHighlight
+                onPress={() => this.onClick({service, serviceType, location})}
+                underlayColor={getUnderlayColor(theme)}
+            >
+                <View
+                    style={[
+                            styles.listItemContainer,
+                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                            {height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0}
+                        ]}
                 >
-                    {rowContent}
-                </TouchableHighlight>
-                <Divider />
-            </View>
+                    <View style={[styles.horizontalContainer, styles.flex]}>
+                        <View style={[styles.centeredVerticalContainer, {width: 40, paddingLeft: 10}]}>
+                            <Image
+                                source={{uri: serviceType.icon_url}}
+                                style={styles.mapIcon}
+                            />
+                        </View>
+                        <View style={[
+                                styles.listItemDividerLongInline,
+                                theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+                            ]}/>
+                        <View style={[
+                                styles.container,
+                                theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                                {borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14}
+                            ]}>
+                            <Text
+                                style={[
+                                        generateTextStyles(language),
+                                        {fontSize: 15, paddingBottom: 2, fontWeight: '500',
+                                        color: theme=='dark' ? themes.dark.textColor : themes.light.textColor}
+
+                                    ]}
+                            >
+                                {service.name}
+                            </Text>
+                            <View style={[styles.horizontalContainer, {paddingBottom: 2}]}>
+                                <Icon
+                                    name="ios-pin"
+                                    style={[
+                                        {fontSize: 13, marginRight: 8},
+                                        {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor}
+                                    ]}
+                                />
+                                <Text style={[
+                                    generateTextStyles(language),
+                                    {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor,
+                                    fontSize: 11}
+                            ]}>
+                                    {locationName}
+                                </Text>
+                            </View>
+                            <View style={styles.horizontalContainer}>
+                                <Text style={[
+                                        generateTextStyles(language),
+                                        {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1}]
+                                    }>
+                                    {I18n.t('RATING').toUpperCase()}
+                                </Text>
+                                {rating}
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </TouchableHighlight>
         );
     }
 
@@ -173,43 +231,71 @@ export default class ServiceList extends Component {
         });
     }
 
-    renderHeader() {
-        return (
-            <View style={styles.stickyInputContainer}>
-                <TextInput
-                    onChangeText={(text) => this._onChangeText(text)}
-                    placeholder={I18n.t('SEARCH')}
-                    style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
-                    returnKeyType={'search'}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    clearButtonMode="always"
-                />
-            </View>
-        );
+    searchFilterButtonAction() {
+        // TODO RID-122
+        console.log('button clicked!')
     }
 
     render() {
+        const {theme, language} = this.props;
         if (!this.state.region) {
             return (
-                <View style={styles.stickyInputContainer}>
-                    <TextInput
-                        onChangeText={(text) => this._onChangeText(text)}
-                        placeholder={I18n.t('SEARCH')}
-                        style={[styles.stickyInput, this.props.direction=='rtl' ? styles.alignRight : null]}
-                        returnKeyType={'search'}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        clearButtonMode="always"
-                    />
-                    <View style={styles.header}>
-                        <Text style={styles.headerText}>{I18n.t('LOADING_SERVICES')}</Text>
+                <View style={styles.container}>
+                    <View style={styles.horizontalContainer}>
+                        <SearchBar
+                            theme={theme}
+                        />
+                        <SearchFilterButton
+                            theme={theme}
+                        />
+                    </View>
+                    <View
+                        style={[
+                            styles.viewHeaderContainer,
+                            {backgroundColor: (theme=='dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                            {paddingTop: 10}
+                        ]}
+                    >
+                        <Text
+                            style={[
+                                styles.viewHeaderText,
+                                theme=='dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
+                            ]}
+                        >
+                            {I18n.t('LOADING_SERVICES').toUpperCase()}
+                        </Text>
                     </View>
                 </View>
             )
         }
         return (
             <View style={styles.container}>
+                <View style={styles.horizontalContainer}>
+                    <SearchBar
+                        theme={theme}
+                        searchFunction={(text) => this._onChangeText(text)}
+                    />
+                    <SearchFilterButton
+                        theme={theme}
+                        onPressAction={() => this.searchFilterButtonAction()}
+                    />
+                </View>
+                <View
+                    style={[
+                            styles.viewHeaderContainer,
+                            {backgroundColor: (theme=='dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                            {paddingTop: 10}
+                        ]}
+                >
+                    <Text
+                        style={[
+                                styles.viewHeaderText,
+                                theme=='dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
+                            ]}
+                    >
+                        {I18n.t('NEAREST_SERVICES').toUpperCase()}
+                    </Text>
+                </View>
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
@@ -224,9 +310,7 @@ export default class ServiceList extends Component {
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderSectionHeader={() => this.renderHeader()}
                     renderRow={(service) => this.renderRow(service)}
-                    style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                     direction={this.props.direction}
@@ -245,7 +329,8 @@ const mapStateToProps = (state) => {
         country: state.country,
         region: state.region,
         theme: state.theme.theme,
-        direction: state.direction
+        direction: state.direction,
+        language: state.language
     };
 };
 

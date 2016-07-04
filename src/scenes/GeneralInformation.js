@@ -14,7 +14,7 @@ import I18n from '../constants/Messages';
 import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
 import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
+import styles, {getUnderlayColor} from '../styles';
 import store from '../store';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -104,7 +104,7 @@ export class GeneralInformation extends Component {
             <View>
                 <TouchableHighlight
                     onPress={() => this.onClick(rowData.title, rowData.section)}
-                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(0, 0, 0, 0.1)'}
+                    underlayColor={getUnderlayColor(theme)}
                 >
                     <View
                         style={[
@@ -112,11 +112,11 @@ export class GeneralInformation extends Component {
                             theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
                         ]}
                     >
-                        <Icon name="md-bus" style={styles.listItemIconInline} />
+                        <Icon name="md-bus" style={styles.listItemIconInline}/>
                         <View style={[
                             styles.listItemDividerInline,
                             theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
-                        ]} />
+                        ]}/>
                         <View style={[
                                 styles.listItemTextContainer,
                                 {alignItems: 'flex-start'}
@@ -138,7 +138,9 @@ export class GeneralInformation extends Component {
         const {theme} = this.props;
         return (
             <View style={styles.container}>
-                <SearchBar theme={theme} />
+                <View style={styles.horizontalContainer}>
+                    <SearchBar theme={theme}/>
+                </View>
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this)}
@@ -154,7 +156,6 @@ export class GeneralInformation extends Component {
                     dataSource={this.state.dataSource}
                     enableEmptySections
                     renderRow={(rowData) => this.renderRow(rowData)}
-                    style={styles.listViewContainer}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                 />

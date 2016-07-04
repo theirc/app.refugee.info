@@ -26,7 +26,7 @@ export default class Welcome extends Component {
     }
 
     render() {
-      const logo = require('../assets/RI-logo.png');
+      const logo = require('../assets/logo.png');
        return <View style={localStyles.screen}>
                 <View>
                   <Image source={logo}
@@ -49,4 +49,4 @@ const localStyles = StyleSheet.create({
   logo: {
     width: Dimensions.get('window').width
   }
-})
+});

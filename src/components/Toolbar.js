@@ -54,7 +54,7 @@ export default class Toolbar extends Component {
                 <View style={componentStyles.toolbarTop}>
                     <Image
                         style={componentStyles.brandImage}
-                        source={require('../assets/logo.png') }
+                        source={theme=='dark' ? themes.dark.logo : themes.light.logo }
                         />
                     {showIcon && icon}
                 </View>
@@ -116,6 +116,7 @@ const componentStyles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     brandImage: {
+        marginTop: 5,
         height: 40,
         width: 120
     },

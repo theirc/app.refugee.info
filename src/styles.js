@@ -15,12 +15,12 @@ export const themes = {
         darkerDividerColor: '#BABABA',
         lighterDividerColor: '#F2F2F2',
         toolbarColor: '#FDF9F9',
-        greenAccentColor: '#39B05C',
+        greenAccentColor: '#00BA50',
         yellowAccentColor: '#FFDF0C',
         textColor: '#515151'
     },
     dark: {
-        logo: require("./assets/logo.png"),
+        logo: require("./assets/logo-dark.png"),
         rectangularLogo: require("./assets/logo-rect-dark.png"),
         backgroundColor: '#2d2d2d',
         menuBackgroundColor: '#000000',
@@ -29,7 +29,7 @@ export const themes = {
         darkerDividerColor: '#373737',
         lighterDividerColor: '#BBBBBB',
         toolbarColor: '#181818',
-        greenAccentColor: '#39B05C',
+        greenAccentColor: '#00BA50',
         yellowAccentColor: '#FFDF0C',
         textColor: '#FFFFFF'
     }
@@ -118,10 +118,16 @@ const styles = StyleSheet.create({
     },
     listItemDividerInline: {
         marginTop: 9,
-        width: 2,
+        width: 1,
         height: 22,
         marginLeft: 20,
         marginRight: 20
+    },
+    listItemDividerLongInline: {
+        marginTop: 17,
+        width: 1,
+        height: 46,
+        marginLeft: 20
     },
     listItemDividerLight: {
         backgroundColor: themes.light.lighterDividerColor
@@ -137,42 +143,28 @@ const styles = StyleSheet.create({
     },
     scene: {
         paddingTop: 140,
-        flex: 1,
+        flex: 1
     },
     container: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: 'column'
     },
     horizontalContainer: {
-        flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'row'
     },
     centeredContainer: {
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center'
     },
+    centeredVerticalContainer: {
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
     error: {
         marginBottom: 5
     },
-    materialToolbar: {
-        height: 76,
-        paddingTop: 20,
-        paddingRight: (Platform.OS === 'ios') ? 0 : 10
-    },
-
-    containerBelowLogo: {
-        flex: 1,
-        flexDirection: 'column'
-    },
-    logo: {
-        flex: 0.33,
-        height: null,
-        width: null
-    },
-    listViewContainer: {
-        flexDirection: 'column'
-    },
+    
     header: {
         flex: 1,
         backgroundColor: '#F5F5F5',
@@ -246,14 +238,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#F5F5F5'
     },
 
-    floatingActionButton: {
-        position: 'absolute',
-        flex: 1,
-        bottom: 20,
-        borderWidth: 1,
-        borderRadius: 50,
-        opacity: 0.7
-    },
     mapIcon: {
         width: 32,
         height: 32
@@ -338,6 +322,12 @@ const styles = StyleSheet.create({
         marginLeft: 25,
         marginRight: 25
     },
+    ratingIcon: {
+        color: themes.light.yellowAccentColor,
+        fontSize: 15,
+        paddingLeft: 5
+        
+    },
     starIcon: {
         flex: 1,
         textAlign: 'center'
@@ -415,19 +405,26 @@ export function generateTextStyles(language='en') {
     let style;
     if (['ar', 'fa'].indexOf(language) > -1) {
         style = {
-            fontFamily: 'Montserrat-Regular',
+            fontFamily: 'Montserrat'
         };
     } else if (['el', ].indexOf(language) > -1) {
         style = {
-            fontFamily: 'Roboto',
+            fontFamily: 'Roboto'
         };
     } else {
         style = {
-            fontFamily: 'Montserrat-Regular',
+            fontFamily: 'Montserrat'
         };
     }
 
     return style;
 };
+
+export function getUnderlayColor(theme='light'){
+    if (theme=='light') 
+        return 'rgba(0, 0, 0, 0.2)';
+    else 
+        return 'rgba(255, 255, 255, 0.6)'
+}
 
 export default styles;

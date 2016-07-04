@@ -5,7 +5,7 @@ import {default as Icon} from 'react-native-vector-icons/FontAwesome';
 
 import {I18n, CountryHeaders} from '../constants';
 import {LoadingView, DirectionalText} from '../components';
-import styles from '../styles';
+import styles, {getUnderlayColor} from '../styles';
 import {connect} from 'react-redux';
 
 export default class LocationListView extends Component {
@@ -75,10 +75,9 @@ export default class LocationListView extends Component {
             theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
         ]} />);
         return (
-            <View>
                 <TouchableHighlight
                     onPress={() => {this.props.onPress(rowData)}}
-                    underlayColor={theme == 'light' ? 'rgba(0, 0, 0, 0.2)' : 'rgba(255, 255, 255, 0.6)'}
+                    underlayColor={getUnderlayColor(theme)}
                 >
                     <View
                         style={[
@@ -98,7 +97,6 @@ export default class LocationListView extends Component {
                         </View>
                     </View>
                 </TouchableHighlight>
-            </View>
         );
     }
 
