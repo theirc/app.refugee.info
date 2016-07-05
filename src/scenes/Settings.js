@@ -38,28 +38,27 @@ class Settings extends Component {
         const {language, theme} = this.state;
         const {dispatch} = this.props;
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-        let originalTheme = {...this.props.theme};
+        let originalTheme = {...this.props.theme };
         originalTheme.theme = theme;
 
-        dispatch(updateLanguageIntoStorage(language));
-        dispatch(updateDirectionIntoStorage(direction));
-        dispatch(updateRegionIntoStorage(null));
-        dispatch(updateCountryIntoStorage(null));
-        dispatch(updateThemeIntoStorage(theme));
 
-        dispatch({type: "REGION_CHANGED", payload: null});
-        dispatch({type: 'COUNTRY_CHANGED', payload: null});
-        dispatch({type: "CHANGE_LANGUAGE", payload: language});
-        dispatch({type: "DIRECTION_CHANGED", payload: direction});
-        dispatch({type: "THEME_CHANGED", payload: theme});
+        AsyncStorage.getAllKeys().then(k => {
+            AsyncStorage.multiRemove(k, (e) => {
+                dispatch(updateLanguageIntoStorage(language));
+                dispatch(updateDirectionIntoStorage(direction));
+                dispatch(updateRegionIntoStorage(null));
+                dispatch(updateCountryIntoStorage(null));
+                dispatch(updateThemeIntoStorage(theme));
 
-        AsyncStorage.getAllKeys().then(k=> {
-            console.log(k);
-            AsyncStorage.clear();
+                dispatch({ type: "REGION_CHANGED", payload: null });
+                dispatch({ type: 'COUNTRY_CHANGED', payload: null });
+                dispatch({ type: "CHANGE_LANGUAGE", payload: language });
+                dispatch({ type: "DIRECTION_CHANGED", payload: direction });
+                dispatch({ type: "THEME_CHANGED", payload: theme });
+
+                navigator.to('initial');
+            });
         });
-        
-
-        navigator.to('initial');
     }
 
     render() {
@@ -70,34 +69,34 @@ class Settings extends Component {
                 <Subheader text="Language"/>
 
                 <RadioButtonGroup
-                    onSelect={(value)=> this.setLanguage(value) }
+                    onSelect={(value) => this.setLanguage(value) }
                     theme={theme.theme}
                     primary={theme.primary}
                     selected={language}
                     items={[{
-                          value: 'en', label: 'English'
-                      }, {
-                          value: 'ar', label: 'Arabic'
-                      },{
-                          value: 'fa', label: 'Farsi'
-                      }
+                        value: 'en', label: 'English'
+                    }, {
+                            value: 'ar', label: 'Arabic'
+                        }, {
+                            value: 'fa', label: 'Farsi'
+                        }
                     ]}
-                />
+                    />
                 <Subheader text="Theme"/>
-                
+
                 <RadioButtonGroup
-                    onSelect={(value)=> this.setTheme(value) }
+                    onSelect={(value) => this.setTheme(value) }
                     theme={theme.theme}
                     primary={theme.primary}
                     selected={theme.theme}
                     items={[{
-                          value: 'light', label: 'Light'
-                      }, {
-                          value: 'dark', label: 'Dark'
-                      }
+                        value: 'light', label: 'Light'
+                    }, {
+                            value: 'dark', label: 'Dark'
+                        }
                     ]}
-                />
-                <Button raised onPress={() => this.updateSettings()} text="Update"/>
+                    />
+                <Button raised onPress={() => this.updateSettings() } text="Update"/>
             </View>
         );
     }

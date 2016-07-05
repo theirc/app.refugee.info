@@ -95,7 +95,7 @@ export default class CountryChoice extends Component {
                     );
                     if (location.content && location.content.length == 1) {
                         this.context.navigator.to('infoDetails', null,
-                            { section: location.content[0].section, sectionTitle: location.content[0].title })
+                            { section: location.content[0].section, sectionTitle: location.pageTitle })
                     } else {
 
                         this.context.navigator.to('info');

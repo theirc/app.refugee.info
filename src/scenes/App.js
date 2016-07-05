@@ -110,14 +110,6 @@ export class App extends Component {
         let {direction, theme} = this.props;
         const { country, dispatch } = this.props;
 
-        let sceneConfig;
-        if(Platform.OS == 'ios') {
-            sceneConfig = {...Navigator.SceneConfigs.FloatFromBottom } ;
-            // Removing the pop gesture
-            delete sceneConfig.gestures.pop;
-        } else{
-            sceneConfig = {...Navigator.SceneConfigs.FloatFromBottomAndroid };
-        } 
 
         let drawerStyles = {
             main: {
@@ -167,6 +159,14 @@ export class App extends Component {
                 {!drawer &&
                     <Navigator
                         configureScene={() => {
+                            let sceneConfig = direction != 'rtl' ? {...Navigator.SceneConfigs.FloatFromLeft }  : {...Navigator.SceneConfigs.FloatFromRight } ;
+                            sceneConfig.gestures = {...sceneConfig.gestures};
+                            sceneConfig.gestures.pop ={...sceneConfig.gestures.pop};
+
+                            if(!navigator || !navigator.isChild ) {
+                                sceneConfig.gestures.pop = null;
+                            }
+                            
                             return sceneConfig;
                         } }
                         initialRoute={Navigate.getInitialRoute() }
@@ -178,8 +178,13 @@ export class App extends Component {
                                 />
                         }
                         ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
+                        onDidFocus={() => {
+                        }}
                         renderScene={(route) => {
                             if (this.state.navigator && route.component) {
+                                if(navigator) { 
+                                    navigator.updateIsChild(); 
+                                }; 
 
                                 let instance =
                                     <route.component

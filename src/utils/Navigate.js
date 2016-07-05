@@ -37,7 +37,7 @@ export default class Navigate {
 			let initial;
 			for (const route in routes) {
 				if (routes[route].initialRoute) {
-					initial = {path: route, ...routes[route]};
+					initial = { path: route, ...routes[route] };
 					break;
 				}
 			}
@@ -82,7 +82,7 @@ export default class Navigate {
 	_hardwareBackPress = () => {
 		let exitPaths = this.getExitRoutePaths();
 		let currentPath = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
-		if (exitPaths.indexOf(currentPath) > -1){
+		if (exitPaths.indexOf(currentPath) > -1) {
 			return false;
 		} else {
 			if (!this.isChild) {
@@ -97,10 +97,10 @@ export default class Navigate {
 		}
 	};
 
-   /**
-   * Gets the routes with 'exitOnBackPress'
-   * @returns {Array}
-   */
+	/**
+	* Gets the routes with 'exitOnBackPress'
+	* @returns {Array}
+	*/
 	getExitRoutePaths = () => {
 		let paths = [];
 		for (const route in routes) {
@@ -166,7 +166,7 @@ export default class Navigate {
 				if (!!props) {
 					props['previousPath'] = previousPath;
 				} else {
-					props = {'previousPath': previousPath};
+					props = { 'previousPath': previousPath };
 				}
 				const route = {
 					title: title ? title : (obj.title ? obj.title : path),
@@ -179,7 +179,7 @@ export default class Navigate {
 				}
 				this.currentRoute = route;
 				this.navigator.push(route);
-				this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});
+				this.store.dispatch({ type: 'CHANGE_ROUTE', payload: path });
 			}
 		}
 	};
@@ -190,7 +190,7 @@ export default class Navigate {
 	* @param props
 	*/
 	back = (title, props) => {
-		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length-1].path;
+		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
 		const path = current.substr(0, current.lastIndexOf('.'));
 		const obj = this._getRouteObject(path);
 		const savedInstance = this._recoverInstanceState(path); // TODO
@@ -201,7 +201,7 @@ export default class Navigate {
 			if (!!props) {
 				props['savedState'] = savedInstance;
 			} else {
-				props = {'savedState': savedInstance};
+				props = { 'savedState': savedInstance };
 			}
 			this.isChild = path.split('.').length > 1;
 			const route = {
@@ -223,7 +223,7 @@ export default class Navigate {
 	* @param {Object} savedInstanceState [Optional] Send additional props that'll get bootstrapped onto the route
 	*/
 	forward = (child, title, props, savedInstanceState) => {
-		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length-1].path;
+		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
 		const currentObject = this._getRouteObject(current);
 
 		if (!currentObject.children || !Object.keys(currentObject.children).length) {
@@ -239,7 +239,7 @@ export default class Navigate {
 					if (!!props) {
 						props['parentState'] = savedInstanceState;
 					} else {
-						props = {'parentState': savedInstanceState};
+						props = { 'parentState': savedInstanceState };
 					}
 					const route = {
 						title: title ? title : (obj.title || this._getPathPrettyName(`${current}.${child}`)),
@@ -255,7 +255,7 @@ export default class Navigate {
 				if (!!props) {
 					props['parentState'] = savedInstanceState;
 				} else {
-					props = {'parentState': savedInstanceState};
+					props = { 'parentState': savedInstanceState };
 				}
 				const path = `${current}.${Object.keys(currentObject.children)[0]}`;
 				const obj = this._getRouteObject(path);
@@ -284,4 +284,11 @@ export default class Navigate {
 		routes = newRoutes;
 	};
 
+	updateIsChild = () => {
+		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
+
+		this.isChild = current.split('.').length > 1;
+		console.log(this.isChild);
+		
+	};
 };

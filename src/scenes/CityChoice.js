@@ -66,7 +66,7 @@ class CityChoice extends Component {
         dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
         if (city.content && city.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.content[0].title });
+            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.pageTitle });
         } else {
             return this.context.navigator.to('info', null, null, store.getState());
         }

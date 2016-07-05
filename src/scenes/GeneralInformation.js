@@ -57,7 +57,7 @@ export class GeneralInformation extends Component {
 
         if (region.content && region.content.length === 1) {
             let c = region.content[0];
-            navigator.to('infoDetails', null, {section: c.section, sectionTitle: c.title});
+            navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
