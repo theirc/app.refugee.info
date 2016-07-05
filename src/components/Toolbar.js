@@ -22,7 +22,7 @@ export default class Toolbar extends Component {
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let title = '';
         if (navigator && navigator.isChild)
-            title = navigator.childName;
+            title = navigator.childName || navigator.currentRoute.title;
         else if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 
@@ -33,13 +33,13 @@ export default class Toolbar extends Component {
             icon = <Icon
                 name={navigator.isChild ? backIcon : menuIcon}
                 style={
-                navigator.isChild ? [
-                    componentStyles.backIcon,
-                    theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
-                ] : [
-                    componentStyles.menuIcon,
-                    theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
-                ]}
+                    navigator.isChild ? [
+                        componentStyles.backIcon,
+                        theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
+                    ] : [
+                            componentStyles.menuIcon,
+                            theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
+                        ]}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 />;
         }
@@ -56,7 +56,7 @@ export default class Toolbar extends Component {
                 <View style={componentStyles.toolbarTop}>
                     <Image
                         style={componentStyles.brandImage}
-                        source={theme=='dark' ? themes.dark.logo : themes.light.logo }
+                        source={theme == 'dark' ? themes.dark.logo : themes.light.logo }
                         />
                     {showIcon && icon}
                 </View>

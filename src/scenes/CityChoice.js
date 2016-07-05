@@ -35,7 +35,7 @@ class CityChoice extends Component {
         });
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         const regionData = new Regions(new ApiClient(this.context, this.props));
         const cities = await regionData.listChildren(this.props.country);
 
@@ -90,7 +90,11 @@ class CityChoice extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {};
+    return {
+        language: state.language,
+        direction: state.direction,
+        theme: state.theme.theme,
+    };
 };
 
 export default connect(mapStateToProps)(CityChoice);

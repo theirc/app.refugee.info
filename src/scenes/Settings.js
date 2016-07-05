@@ -44,19 +44,18 @@ class Settings extends Component {
 
         AsyncStorage.getAllKeys().then(k => {
             AsyncStorage.multiRemove(k, (e) => {
-                dispatch(updateLanguageIntoStorage(language));
-                dispatch(updateDirectionIntoStorage(direction));
-                dispatch(updateRegionIntoStorage(null));
-                dispatch(updateCountryIntoStorage(null));
-                dispatch(updateThemeIntoStorage(theme));
-
-                dispatch({ type: "REGION_CHANGED", payload: null });
-                dispatch({ type: 'COUNTRY_CHANGED', payload: null });
-                dispatch({ type: "CHANGE_LANGUAGE", payload: language });
-                dispatch({ type: "DIRECTION_CHANGED", payload: direction });
-                dispatch({ type: "THEME_CHANGED", payload: theme });
-
-                navigator.to('initial');
+                Promise.all([
+                    dispatch(updateLanguageIntoStorage(language)),
+                    dispatch(updateDirectionIntoStorage(direction)),
+                    dispatch(updateRegionIntoStorage(null)),
+                    dispatch(updateCountryIntoStorage(null)),
+                    dispatch(updateThemeIntoStorage(theme)),
+                    dispatch({ type: "REGION_CHANGED", payload: null }),
+                    dispatch({ type: 'COUNTRY_CHANGED', payload: null }),
+                    dispatch({ type: "CHANGE_LANGUAGE", payload: language }),
+                    dispatch({ type: "DIRECTION_CHANGED", payload: direction }),
+                    dispatch({ type: "THEME_CHANGED", payload: theme })
+                ]).then(() => navigator.to('initial'))
             });
         });
     }

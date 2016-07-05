@@ -265,6 +265,7 @@ export default class Navigate {
 					component: obj.component,
 					props
 				};
+
 				this.currentRoute = route;
 				this.navigator.push(route);
 			}
@@ -288,7 +289,5 @@ export default class Navigate {
 		const current = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 1].path;
 
 		this.isChild = current.split('.').length > 1;
-		console.log(this.isChild);
-		
 	};
 };

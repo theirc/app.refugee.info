@@ -57,7 +57,7 @@ class Navigation extends Component {
     }
 
     async componentWillReceiveProps(props) {
-        if (props.country) {
+        if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
             this.setState({ otherLocations: children.slice(0, 5) });

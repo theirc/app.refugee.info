@@ -28,13 +28,14 @@ export default class CountryChoice extends Component {
         });
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
         const {dispatch} = this.props;
 
         const regionData = new Regions(new ApiClient(this.context, this.props));
         this.regionData = regionData;
 
         const locations = await regionData.listCountries();
+
 
         locations.forEach((c) => {
             if (c && c.metadata) {
@@ -158,7 +159,9 @@ export default class CountryChoice extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        ...state
+        language: state.language,
+        direction: state.direction,
+        theme: state.theme.theme,
     };
 };
 
