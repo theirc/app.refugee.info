@@ -99,7 +99,6 @@ export class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
-        navigator.childName = title;
         navigator.forward(null, null, {section, sectionTitle: title}, this.state);
     }
 

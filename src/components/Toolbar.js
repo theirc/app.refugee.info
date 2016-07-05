@@ -22,7 +22,7 @@ export default class Toolbar extends Component {
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let title = '';
         if (navigator && navigator.isChild)
-            title = navigator.childName || navigator.currentRoute.title;
+            title = navigator.currentRoute.title || navigator.childName ;
         else if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 

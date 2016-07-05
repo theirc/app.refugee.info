@@ -89,7 +89,7 @@ export class GeneralInformationDetails extends Component {
 
                 Regions.searchImportantInformation(fullSlug).then((info) => {
                     const {navigator} = this.context;
-                    navigator.forward('importantLink', null, { information: info });
+                    navigator.forward('importantLink', null, { information: info, sectionTitle: info.pageTitle });
                 });
             } else {
                 Linking.openURL(state.url);
@@ -117,6 +117,9 @@ export class GeneralInformationDetails extends Component {
                     source={this.state.source}
                     style={{ backgroundColor: backgroundColor }}
                     />
+                <MapButton
+                    direction={this.props.direction}
+                />
             </View>
         );
     }

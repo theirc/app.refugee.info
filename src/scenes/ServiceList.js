@@ -139,7 +139,6 @@ export default class ServiceList extends Component {
 
     onClick(params) {
         const {navigator} = this.context;
-        navigator.childName = params.service.name;
         navigator.forward(null, null, params, this.state);
     }
 

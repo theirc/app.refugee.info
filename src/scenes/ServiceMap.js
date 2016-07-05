@@ -29,23 +29,15 @@ class ServiceMap extends Component {
         navigator: PropTypes.object.isRequired
     };
 
-    static getInitialRegion(markers) {
-        if (markers.length == 0) {
+    static getInitialRegion(region) {
+        if (!region || !region.envelope) {
             return null;
         }
-        if (markers.length == 1) {
-            return {
-                latitude: markers[0].latitude,
-                longitude: markers[0].longitude,
-                latitudeDelta: RADIUS,
-                longitudeDelta: RADIUS
-            };
-        }
 
-        let lats = markers.map(marker => marker.latitude),
-            longs = markers.map(marker => marker.longitude);
+        let lats = region.envelope.coordinates[0].map(c => c[1]), longs = region.envelope.coordinates[0].map(c => c[0]);
         let minLat = Math.min.apply(null, lats), minLong = Math.min.apply(null, longs);
         let maxLat = Math.max.apply(null, lats), maxLong = Math.max.apply(null, longs);
+        console.log(minLat, minLong, region);
 
         return {
             latitude: (minLat + maxLat) / 2,
@@ -144,7 +136,7 @@ class ServiceMap extends Component {
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(services),
             loaded: true,
-            region: ServiceMap.getInitialRegion(markers),
+            region: ServiceMap.getInitialRegion(region),
             markers,
             serviceTypes,
             locations,
@@ -162,11 +154,11 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, {service, location, serviceType}, this.state);
+        navigator.forward(null, null, { service, location, serviceType }, this.state);
     }
 
     onRegionChange(region) {
-        this.setState({region});
+        this.setState({ region });
     }
 
     onLoadEnd(iconUrl) {
@@ -181,9 +173,9 @@ class ServiceMap extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData().then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -193,43 +185,43 @@ class ServiceMap extends Component {
                 <View style={styles.container}>
                     <OfflineView
                         offline={this.state.offline}
-                        onRefresh={this.onRefresh.bind(this)}
+                        onRefresh={this.onRefresh.bind(this) }
                         lastSync={this.state.lastSync}
-                    />
+                        />
                     <MapView
-                        onRegionChangeComplete={(region) => this.onRegionChange(region)}
+                        onRegionChangeComplete={(region) => this.onRegionChange(region) }
                         region={this.state.region}
                         style={styles.flex}
-                    >
+                        >
                         {this.state.markers.map((marker, i) => (
                             <MapView.Marker
                                 coordinate={{
-                                latitude: marker.latitude,
-                                longitude: marker.longitude
-                            }}
+                                    latitude: marker.latitude,
+                                    longitude: marker.longitude
+                                }}
                                 description={marker.description}
                                 key={i}
-                                onCalloutPress={() => this.onCalloutPress(marker)}
+                                onCalloutPress={() => this.onCalloutPress(marker) }
                                 title={marker.title}
-                            >
+                                >
                                 {!!marker.icon_url &&
-                                <View>
-                                    <Image
-                                        onLoadEnd={() => this.onLoadEnd(marker.icon_url)}
-                                        source={{uri: marker.icon_url}}
-                                        style={styles.mapIcon}
-                                    />
-                                </View>
+                                    <View>
+                                        <Image
+                                            onLoadEnd={() => this.onLoadEnd(marker.icon_url) }
+                                            source={{ uri: marker.icon_url }}
+                                            style={styles.mapIcon}
+                                            />
+                                    </View>
                                 }
                                 <MapView.Callout style={styles.mapPopupContainer}>
                                     <MapPopup
                                         marker={marker}
                                         direction={this.props.direction}
-                                    />
+                                        />
                                 </MapView.Callout>
 
                             </MapView.Marker>
-                        ))}
+                        )) }
                     </MapView>
                 </View>
             )
