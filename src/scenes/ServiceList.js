@@ -139,6 +139,7 @@ export default class ServiceList extends Component {
 
     onClick(params) {
         const {navigator} = this.context;
+        navigator.childName = params.service.name;
         navigator.forward(null, null, params, this.state);
     }
 
@@ -182,11 +183,10 @@ export default class ServiceList extends Component {
                             ]}>
                             <Text
                                 style={[
-                                        generateTextStyles(language),
-                                        {fontSize: 15, paddingBottom: 2, fontWeight: '500',
-                                        color: theme=='dark' ? themes.dark.textColor : themes.light.textColor}
-
-                                    ]}
+                                    generateTextStyles(language),
+                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500',
+                                    color: theme=='dark' ? themes.dark.textColor : themes.light.textColor}
+                                ]}
                             >
                                 {service.name}
                             </Text>
@@ -202,14 +202,15 @@ export default class ServiceList extends Component {
                                     generateTextStyles(language),
                                     {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor,
                                     fontSize: 11}
-                            ]}>
+                                ]}>
                                     {locationName}
                                 </Text>
                             </View>
                             <View style={styles.horizontalContainer}>
                                 <Text style={[
                                         generateTextStyles(language),
-                                        {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1}]
+                                        {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1,
+                                        paddingRight: 5}]
                                     }>
                                     {I18n.t('RATING').toUpperCase()}
                                 </Text>

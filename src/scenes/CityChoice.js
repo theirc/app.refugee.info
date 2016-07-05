@@ -1,20 +1,20 @@
-import React, { Component, PropTypes } from 'react';
-import { AsyncStorage, View, StyleSheet, Image } from 'react-native';
-import { connect } from 'react-redux';
+import React, {Component, PropTypes} from 'react';
+import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
+import {connect} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
-import { LocationListView } from '../components';
+import {LocationListView} from '../components';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 import store from '../store';
 
-import { updateRegionIntoStorage } from '../actions/region';
-import { updateCountryIntoStorage } from '../actions/country';
+import {updateRegionIntoStorage} from '../actions/region';
+import {updateCountryIntoStorage} from '../actions/country';
 
-import { fetchRegionFromStorage } from '../actions/region';
-import { fetchDirectionFromStorage } from '../actions/direction';
-import { fetchLanguageFromStorage } from '../actions/language';
-import { Regions } from '../data'
+import {fetchRegionFromStorage} from '../actions/region';
+import {fetchDirectionFromStorage} from '../actions/direction';
+import {fetchLanguageFromStorage} from '../actions/language';
+import {Regions} from '../data'
 
 class CityChoice extends Component {
 
@@ -38,7 +38,7 @@ class CityChoice extends Component {
     async componentWillMount() {
         const regionData = new Regions(new ApiClient(this.context, this.props));
         const cities = await regionData.listChildren(this.props.country);
-        
+
         cities.forEach((c) => {
             if (c && c.metadata) {
                 const pageTitle = (c.metadata.page_title || '')
@@ -54,7 +54,7 @@ class CityChoice extends Component {
     }
 
     async _onPress(city) {
-        const { dispatch } = this.props;
+        const {dispatch} = this.props;
 
         city.detected = false;
         city.coords = {};
@@ -62,11 +62,14 @@ class CityChoice extends Component {
         dispatch(updateCountryIntoStorage(city.country));
         dispatch(updateRegionIntoStorage(city));
 
-        dispatch({ type: 'REGION_CHANGED', payload: city });
-        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
+        dispatch({type: 'REGION_CHANGED', payload: city});
+        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
         if (city.content && city.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.pageTitle });
+            return this.context.navigator.to('infoDetails', null, {
+                section: city.content[0].section,
+                sectionTitle: city.pageTitle
+            });
         } else {
             return this.context.navigator.to('info', null, null, store.getState());
         }
@@ -75,22 +78,19 @@ class CityChoice extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.containerBelowLogo}>
-                    <LocationListView
-                        loaded={this.state.loaded}
-                        header={I18n.t('SELECT_LOCATION') }
-                        onPress={(rowData) => { this._onPress(rowData) } }
-                        rows={this.state.cities}
-                        />
-                </View>
+                <LocationListView
+                    loaded={this.state.loaded}
+                    header={I18n.t('SELECT_LOCATION') }
+                    onPress={(rowData) => { this._onPress(rowData) } }
+                    rows={this.state.cities}
+                />
             </View>
         );
     }
 }
 
 const mapStateToProps = (state) => {
-    return {
-    };
+    return {};
 };
 
 export default connect(mapStateToProps)(CityChoice);

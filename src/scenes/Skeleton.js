@@ -54,18 +54,22 @@ class Skeleton extends Component {
         // Instead of having the app handling the language selection we should
         // let the user override whatever they have set in their device
         const {language} = this.state;
-
-        const firstLoad = await AsyncStorage.getItem('firstLoad');
-        this.setState({firstLoad: firstLoad !== 'false'});
+        const firstLoad = await AsyncStorage.getItem('firstLoad', () => {
+            this.setState({firstLoad: firstLoad !== 'false'});
+        });
     }
 
     render() {
         if (this.state.firstLoad) {
             return (
-                <Welcome firstLoad={this.state.firstLoad} finished={()=> {
-                AsyncStorage.setItem('firstLoad','false');
-                this.setState({firstLoad: false});
-                } }/>
+                <Welcome
+                    theme={this.props.theme}
+                    firstLoad={this.state.firstLoad}
+                    finished={()=> {
+                        AsyncStorage.setItem('firstLoad','false');
+                        this.setState({firstLoad: false});
+                    }}
+                />
             );
         } else {
             return (
@@ -77,6 +81,7 @@ class Skeleton extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        theme: state.theme.theme,
         ...state
     };
 };

@@ -175,7 +175,7 @@ export class App extends Component {
                                 theme={theme}
                                 drawerOpen={this.state.drawerOpen}
                                 onMenuIconPress={this.toggleDrawer}
-                                />
+                            />
                         }
                         ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
                         onDidFocus={() => {
