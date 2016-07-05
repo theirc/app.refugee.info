@@ -44,9 +44,9 @@ export class GeneralInformation extends Component {
 
     async _loadInitialState() {
         let {region, information} = this.props;
-        const {navigator} = this.context;  
+        const {navigator} = this.context;
 
-        if(information) {
+        if (information) {
             region = information;
         }
 
@@ -99,6 +99,7 @@ export class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
+        navigator.childName = title;
         navigator.forward(null, null, {section, sectionTitle: title}, this.state);
     }
 
@@ -127,7 +128,7 @@ export class GeneralInformation extends Component {
                             ]}>
                             <Text style={[
                                 styles.listItemText,
-                                theme=='dark' ? styles.listItemTextDark : styles.listItemTextLight
+                                theme=='dark' ? styles.textDark : styles.textLight
                             ]}>
                                 {rowData.title}
                             </Text>

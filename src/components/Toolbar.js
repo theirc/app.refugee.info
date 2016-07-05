@@ -21,7 +21,9 @@ export default class Toolbar extends Component {
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let title = '';
-        if (navigator && navigator.currentRoute)
+        if (navigator && navigator.isChild)
+            title = navigator.childName;
+        else if (navigator && navigator.currentRoute)
             title = navigator.currentRoute.title;
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
@@ -76,7 +78,6 @@ export default class Toolbar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         region: state.region,
         direction: state.direction,
         language: state.language
