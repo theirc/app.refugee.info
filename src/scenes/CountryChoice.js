@@ -144,14 +144,12 @@ export default class CountryChoice extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={styles.containerBelowLogo}>
                     <LocationListView
                         header={I18n.t('SELECT_COUNTRY') }
                         image={(countryISO) => getCountryFlag(countryISO) }
                         onPress={(rowData) => { this.onPress(rowData); } }
                         rows={this.state.locations}
                         />
-                </View>
             </View>
         );
     }
