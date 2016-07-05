@@ -79,7 +79,7 @@ const componentStyles = StyleSheet.create({
     },
     searchBar: {
         shadowColor: 'black',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
         shadowRadius: 1,
         flexDirection: 'row',

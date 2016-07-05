@@ -90,7 +90,7 @@ export default class LocationListView extends Component {
                         <View style={styles.listItemTextContainer}>
                             <Text style={[
                                 styles.listItemText,
-                                theme=='dark' ? styles.listItemTextDark : styles.listItemTextLight
+                                theme=='dark' ? styles.textDark : styles.textLight
                             ]}>
                                 {rowData.pageTitle || rowData.metadata.page_title}
                             </Text>

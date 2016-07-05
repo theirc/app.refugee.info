@@ -2,8 +2,6 @@
 
 import {Platform, StyleSheet, Dimensions} from 'react-native';
 
-let {height, width} = Dimensions.get('window');
-
 export const themes = {
     light: {
         logo: require("./assets/logo.png"),
@@ -92,12 +90,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontFamily: 'Montserrat'
     },
-    listItemTextLight: {
-        color: themes.light.textColor
-    },
-    listItemTextDark: {
-        color: themes.dark.textColor
-    },
     listItemIcon: {
         position: 'absolute',
         left: 15,
@@ -136,8 +128,20 @@ const styles = StyleSheet.create({
         backgroundColor: themes.dark.darkerDividerColor
     },
     
-    // other
+    // generic text color
 
+    textLight: {
+        color: themes.light.textColor
+    },
+    textDark: {
+        color: themes.dark.textColor
+    },
+    textAccentYellow: {
+        color: themes.light.yellowAccentColor
+    },
+    
+    // other
+    
     flex: {
         flex: 1
     },
@@ -256,7 +260,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     detailsContainer: {
-        margin: 10
+        padding: 10
     },
     textCenter: {
         textAlign: 'center',
@@ -301,104 +305,73 @@ const styles = StyleSheet.create({
     },
     map: {
         flex: 1,
-        height: 120
+        height: 200
     },
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
         padding: 20,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+        backgroundColor: 'rgba(0, 0, 0, 0.75)'
     },
     modalInnerContainer: {
-        borderRadius: 10,
-        backgroundColor: '#fff',
+        borderRadius: 2,
         padding: 20
+    },
+    modalInnerContainerLight: {
+        backgroundColor: themes.light.backgroundColor
+    },
+    modalInnerContainerDark: {
+        backgroundColor: themes.dark.toolbarColor
     },
     starContainer: {
         flex: 1,
         flexDirection: 'row',
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 25,
-        marginRight: 25
+        margin: 5,
+        justifyContent: 'space-between'
     },
     ratingIcon: {
         color: themes.light.yellowAccentColor,
         fontSize: 15,
-        paddingLeft: 5
+        paddingRight: 5
         
     },
     starIcon: {
-        flex: 1,
-        textAlign: 'center'
+        color: themes.light.yellowAccentColor,
+        fontSize: 24
+    },
+    feedbackIcon: {
+        fontSize: 16,
+        marginRight: 6
     },
     modalButtonContainer: {
         flex: 1,
         flexDirection: 'row',
         marginLeft: 5,
         marginRight: 10,
-        marginTop: 5
+        marginTop: 5,
+        justifyContent: 'space-between'
+    },
+    modalButton: {
+        width: 80,
+        paddingTop: 10,
+        paddingBottom: 10,
     },
     validationText: {
         color: '#a94442',
         fontSize: 12,
         marginTop: -5
     },
-    mapPopupContainer: {},
-    mapPopupTitle: {
-        fontSize: 16,
-        fontWeight: 'bold'
-    },
-    mapPopupProvider: {
-        fontSize: 14,
-        marginBottom: 5
-    },
-    mapPopupDescription: {
-        marginTop: 5,
-        fontSize: 12,
-        width: width - 40
-    },
-    offlineModeContainer: {
-        padding: 15,
-        paddingBottom: 0,
-        flexDirection: 'column'
-    },
-    offlineModeTextContainer: {
-        marginLeft: 50
-    },
-    offlineModeText: {
-        textAlign: 'center'
-    },
-    OfflineModeLastSync: {
-        marginTop: 10,
-        textAlign: 'center',
-        fontSize: 12,
-        color: '#333333'
-    },
-    offlineModeIcon: {
-        position: 'absolute',
-        top: 25,
-        left: 25,
-        color: '#FFD700',
-        fontSize: 36
-    },
-    offlineModeButtonContainer: {
-        width: 180,
-        alignSelf: 'center',
-        marginRight: -15
-    },
-    generalInfoItem: {
-        padding: 10
-    },
-    generalInfoText: {
-        fontSize: 16
-    },
-    locationListItem: {
-        padding: 3
-    },
     alignRight: {
         textAlign: 'right'
     },
+    sectionHeader: {
+        fontSize: 18,
+        marginBottom: 10,
+        fontWeight: 'bold'
+    },
+    sectionContent: {
+        fontSize: 13
+    }
 });
 
 export function generateTextStyles(language='en') {
@@ -418,7 +391,7 @@ export function generateTextStyles(language='en') {
     }
 
     return style;
-};
+}
 
 export function getUnderlayColor(theme='light'){
     if (theme=='light') 

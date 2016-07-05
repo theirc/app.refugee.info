@@ -54,7 +54,6 @@ class Settings extends Component {
         dispatch({type: "THEME_CHANGED", payload: theme});
 
         AsyncStorage.getAllKeys().then(k=> {
-            console.log(k);
             AsyncStorage.clear();
         });
         
