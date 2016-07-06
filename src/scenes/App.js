@@ -100,7 +100,6 @@ export class App extends Component {
 
         let drawerStyles = {
             main: {
-                paddingLeft: direction == 'rtl' ? 3 : 0,
                 backgroundColor: themes.light.backgroundColor
             },
             drawer: {
@@ -146,14 +145,19 @@ export class App extends Component {
                 {!drawer &&
                 <Navigator
                     configureScene={() => {
-                            let sceneConfig = direction != 'rtl' ? {...Navigator.SceneConfigs.FloatFromLeft }  : {...Navigator.SceneConfigs.FloatFromRight } ;
-                            sceneConfig.gestures = {...sceneConfig.gestures};
-                            sceneConfig.gestures.pop ={...sceneConfig.gestures.pop};
+                            let sceneConfig = null;
+                            if(Platform.OS == 'ios') {
+                                sceneConfig = direction != 'rtl' ? {...Navigator.SceneConfigs.FloatFromLeft }  : {...Navigator.SceneConfigs.FloatFromRight } ;
+                                sceneConfig.gestures = {...sceneConfig.gestures};
+                                sceneConfig.gestures.pop ={...sceneConfig.gestures.pop};
 
-                            if(!navigator || !navigator.isChild ) {
-                                sceneConfig.gestures.pop = null;
+                                if(!navigator || !navigator.isChild ) {
+                                    sceneConfig.gestures.pop = null;
+                                }
+                            } else {
+                                sceneConfig = Navigator.SceneConfigs.FadeAndroid;
                             }
-                            
+
                             return sceneConfig;
                         } }
                     initialRoute={Navigate.getInitialRoute() }

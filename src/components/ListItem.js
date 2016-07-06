@@ -4,7 +4,8 @@ import {
     Text, 
     TouchableHighlight, 
     StyleSheet,
-    Image
+    Image,
+    Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -144,10 +145,12 @@ const componentStyles = StyleSheet.create({
         fontSize: 15
     },
     listItemIconInline: {
-        width: 50,
-        height: 50,
         fontSize: 24,
         padding: 13,
+        width: Platform.OS == 'ios' ? 50 : null,
+        height: Platform.OS == 'ios' ? 50 : null,
+        top: Platform.OS == 'android' ? 13 : null,
+        left: Platform.OS == 'android' ? 7 : null,
         color: themes.light.greenAccentColor
     },
     listItemImageInline: {
