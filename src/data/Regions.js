@@ -99,7 +99,13 @@ export default class Regions extends Component {
         return AsyncStorage.getAllKeys().then((k) => {
             let promises = k.map((r) => {
                 if (r.indexOf(fullSlug) > -1) {
-                    return AsyncStorage.getItem(r).then(i=>JSON.parse(i));
+                    return AsyncStorage.getItem(r).then(i => {
+                        let item = JSON.parse(i);
+                        if (item && item.metadata && item.metadata.page_title) {
+                            item.pageTitle = item.metadata.page_title;
+                        }
+                        return item;
+                    });
                 };
                 return false;
             }).filter(r => r);

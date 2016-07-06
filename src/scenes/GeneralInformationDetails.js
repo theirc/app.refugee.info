@@ -92,8 +92,11 @@ export class GeneralInformationDetails extends Component {
 
                 Regions.searchImportantInformation(fullSlug).then((info) => {
                     const {navigator} = this.context;
-                    navigator.forward('importantLink', null, { information: info, sectionTitle: info.pageTitle });
+                    navigator.to('info', null, { information: info });
                 });
+                if(Platform.OS == 'android') {
+                    this.webView.goBack();
+                }
             } else {
                 if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
                     let email = state.url.split('mailto:')[1];

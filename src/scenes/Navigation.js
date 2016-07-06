@@ -82,7 +82,7 @@ class Navigation extends Component {
                 <MenuItem
                     image={this._getImportantInformationImage(theme, i.pageTitle)}
                     key={index}
-                    onPress={() => s('info', {information:i}) }
+                    onPress={() => s('info', {information:i,title: i.pageTitle}) }
                 >
                     {i.pageTitle}
                 </MenuItem>
