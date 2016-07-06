@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
-import {Drawer, Button, RadioButtonGroup, Subheader} from 'react-native-material-design';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 
