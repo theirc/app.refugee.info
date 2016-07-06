@@ -12,15 +12,9 @@ import Navigation from './Navigation';
 import Navigate from '../utils/Navigate';
 import {Toolbar} from '../components';
 import Drawer from 'react-native-drawer'
-import {Provider} from 'react-redux';
 import store from '../store';
 import {connect} from 'react-redux';
 
-import {fetchRegionFromStorage} from '../actions/region';
-import {fetchDirectionFromStorage} from '../actions/direction';
-import {fetchLanguageFromStorage} from '../actions/language';
-import {fetchCountryFromStorage} from '../actions/country';
-import {fetchThemeFromStorage} from '../actions/theme'
 import styles, {generateTextStyles, themes} from '../styles'
 
 export class App extends Component {
@@ -41,22 +35,15 @@ export class App extends Component {
     }
 
     async componentWillMount() {
-        const {dispatch} = this.props;
-
-        await dispatch(fetchRegionFromStorage());
-        await dispatch(fetchDirectionFromStorage());
-        await dispatch(fetchLanguageFromStorage());
-        await dispatch(fetchCountryFromStorage());
-        await dispatch(fetchThemeFromStorage());
 
     }
 
     componentWillReceiveProps(props) {
         /*
-        HERE BE DRAGONS
-        The only way to update the backgroundColor of the drawer and the main panel 
-        was to use its internal api, which may change without notice.
-        */
+         HERE BE DRAGONS
+         The only way to update the backgroundColor of the drawer and the main panel
+         was to use its internal api, which may change without notice.
+         */
         const {theme} = props;
 
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
@@ -108,7 +95,7 @@ export class App extends Component {
     render() {
         const {drawer, navigator} = this.state;
         let {direction, theme} = this.props;
-        const { country, dispatch } = this.props;
+        const {country, dispatch} = this.props;
 
 
         let drawerStyles = {
@@ -152,13 +139,13 @@ export class App extends Component {
                 closedDrawerOffset={() => 0}
                 panOpenMask={0.02}
                 side={'right'}
-                >
+            >
                 <StatusBar
                     barStyle={theme == 'light' ? "default" : 'light-content'}
-                    />
+                />
                 {!drawer &&
-                    <Navigator
-                        configureScene={() => {
+                <Navigator
+                    configureScene={() => {
                             let sceneConfig = direction != 'rtl' ? {...Navigator.SceneConfigs.FloatFromLeft }  : {...Navigator.SceneConfigs.FloatFromRight } ;
                             sceneConfig.gestures = {...sceneConfig.gestures};
                             sceneConfig.gestures.pop ={...sceneConfig.gestures.pop};
@@ -169,18 +156,18 @@ export class App extends Component {
                             
                             return sceneConfig;
                         } }
-                        initialRoute={Navigate.getInitialRoute() }
-                        navigationBar={
+                    initialRoute={Navigate.getInitialRoute() }
+                    navigationBar={
                             <Toolbar
                                 theme={theme}
                                 drawerOpen={this.state.drawerOpen}
                                 onMenuIconPress={this.toggleDrawer}
                             />
                         }
-                        ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
-                        onDidFocus={() => {
+                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
+                    onDidFocus={() => {
                         }}
-                        renderScene={(route) => {
+                    renderScene={(route) => {
                             if (this.state.navigator && route.component) {
                                 if(navigator) { 
                                     navigator.updateIsChild(); 
@@ -197,14 +184,16 @@ export class App extends Component {
                                     <View
                                         pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
                                         showsVerticalScrollIndicator={true}
-                                        style={styles.scene}
+                                        style={[styles.scene,
+                                            theme=='dark' && {backgroundColor: themes.dark.backgroundColor}
+                                        ]}
                                         >
                                         {instance}
                                     </View>
                                 );
                             }
                         } }
-                        />
+                />
                 }
             </Drawer>
         )

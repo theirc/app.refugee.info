@@ -1,12 +1,16 @@
 import React, {Component, PropTypes} from 'react';
-import {StyleSheet, TouchableHighlight, View, Text} from 'react-native';
+import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
 import styles, {themes, generateTextStyles} from '../styles';
 import {connect} from 'react-redux';
+import { default as Icon } from 'react-native-vector-icons/MaterialIcons';
 
 export default class Button extends Component {
 
     static propTypes = {
         text: PropTypes.string,
+        icon: PropTypes.string,
+        style: PropTypes.object,
+        textStyle: PropTypes.object,
         color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
         onPress: PropTypes.func
     };
@@ -25,19 +29,43 @@ export default class Button extends Component {
         else return componentStyles.buttonTextWhite
     }
 
+    /**
+     * Ugly but we can't get the color from the styles
+     */
+    getIconColor(color) {
+        if (color == 'black') return themes.dark.textColor;
+        else if (color == 'green') return themes.dark.textColor;
+        else if (color == 'yellow') return themes.light.textColor;
+        else return themes.light.textColor;
+    }
+
     render() {
-        const {text, color, onPress, language} = this.props;
+        const {text, color, onPress, language, style, direction, icon, textStyle} = this.props;
+
+        let textColor = (this.getIconColor(color));
+        let iconImage = icon &&
+            <Icon
+                name={icon}
+                size={22}
+                style={direction == 'ltr' ? componentStyles.icon : componentStyles.iconRTL}
+                color={textColor}
+                />
+            ;
+
         return (
-            <TouchableHighlight onPress={onPress} style={{marginBottom: 10}}>
+            <TouchableHighlight onPress={onPress} style={[{ marginBottom: 10 }, style]}>
                 <View
                     style={[
                         componentStyles.button,
-                        this.getButtonColor(color)
-                ]}>
+                        this.getButtonColor(color),
+                        (icon ? (direction == 'ltr' ? { paddingLeft: 22 } : { paddingRight: 22 }) : {}),
+                    ]}>
+                    {iconImage}
                     <Text style={[
                         componentStyles.buttonText,
                         this.getButtonTextColor(color),
-                        generateTextStyles(language)
+                        generateTextStyles(language),
+                        textStyle,
                     ]}>
                         {text}
                     </Text>
@@ -61,11 +89,12 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         height: 45,
         shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         alignItems: 'center',
         justifyContent: 'center',
         shadowOpacity: 0.4,
-        shadowRadius: 1
+        shadowRadius: 1,
+        flexDirection: 'column',
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
@@ -81,7 +110,7 @@ const componentStyles = StyleSheet.create({
     },
 
     buttonText: {
-        fontSize: 16
+        fontSize: 16,
     },
 
     buttonTextWhite: {
@@ -95,7 +124,19 @@ const componentStyles = StyleSheet.create({
     },
     buttonTextYellow: {
         color: themes.light.textColor
-    }
+    },
+
+
+    icon: {
+        position: 'absolute',
+        top: 4,
+        left: 8,
+    },
+    iconRTL: {
+        position: 'absolute',
+        top: 4,
+        right: 11,
+    },
 });
 
 export default connect(mapStateToProps)(Button);
