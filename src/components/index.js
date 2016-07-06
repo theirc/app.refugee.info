@@ -10,3 +10,6 @@ export {default as SearchBar} from './SearchBar';
 export {default as SearchFilterButton} from './SearchFilterButton';
 export {default as Divider} from './Divider';
 export {default as Button} from './Button';
+export {default as ListItem} from './ListItem';
+export {default as MapPopup} from './MapPopup';
+

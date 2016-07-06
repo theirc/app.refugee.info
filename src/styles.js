@@ -87,8 +87,7 @@ const styles = StyleSheet.create({
     },
     listItemText: {
         flex: 1,
-        fontSize: 15,
-        fontFamily: 'Montserrat'
+        fontSize: 15
     },
     listItemIcon: {
         position: 'absolute',
@@ -101,34 +100,43 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: themes.light.greenAccentColor
     },
-    listItemDivider: {
+    dividerAbsolute: {
         position: 'absolute',
         left: 62,
         top: 13,
         width: 1,
         height: 22
     },
-    listItemDividerInline: {
+    dividerInline: {
         marginTop: 9,
         width: 1,
         height: 22,
         marginLeft: 20,
         marginRight: 20
     },
-    listItemDividerLongInline: {
+    dividerLongInline: {
         marginTop: 17,
         width: 1,
         height: 46,
         marginLeft: 20
     },
-    listItemDividerLight: {
+
+    // generic divider colors
+
+    dividerLight: {
         backgroundColor: themes.light.lighterDividerColor
     },
-    listItemDividerDark: {
+    dividerDark: {
         backgroundColor: themes.dark.darkerDividerColor
     },
+    bottomDividerLight: {
+        borderBottomColor: themes.light.lighterDividerColor
+    },
+    bottomDividerDark: {
+        borderBottomColor: themes.dark.darkerDividerColor
+    },
     
-    // generic text color
+    // generic text colors
 
     textLight: {
         color: themes.light.textColor
@@ -138,6 +146,9 @@ const styles = StyleSheet.create({
     },
     textAccentYellow: {
         color: themes.light.yellowAccentColor
+    },
+    textAccentGreen: {
+        color: themes.light.greenAccentColor
     },
     
     // other
@@ -164,6 +175,10 @@ const styles = StyleSheet.create({
     centeredVerticalContainer: {
         flexDirection: 'row',
         alignItems: 'center'
+    },
+    alignCenter: {
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     error: {
         marginBottom: 5
@@ -192,20 +207,8 @@ const styles = StyleSheet.create({
         padding: 15,
         backgroundColor: '#ffffff'
     },
-    buttonContainerSelected: {
-        backgroundColor: '#E1E0E0'
-    },
-    buttonTextSelected: {
-        color: '#313131'
-    },
     icon: {
         justifyContent: 'flex-end'
-    },
-    rowWrapper: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
     },
     rowHeader: {
         flex: 1,
@@ -227,21 +230,6 @@ const styles = StyleSheet.create({
         margin: 0,
         height: 48
     },
-    stickyInput: {
-        height: 40,
-        marginTop: 5,
-        marginBottom: 5,
-        backgroundColor: '#ffffff',
-        shadowColor: 'black',
-        shadowOpacity: 0.8,
-        shadowRadius: 2,
-        paddingLeft: 10,
-        paddingRight: 5
-    },
-    stickyInputContainer: {
-        backgroundColor: '#F5F5F5'
-    },
-
     mapIcon: {
         width: 32,
         height: 32
@@ -269,34 +257,11 @@ const styles = StyleSheet.create({
     textRight: {
         textAlign: 'right'
     },
-    rowTextContainerRTL: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'flex-end',
-        marginRight: 20
-    },
-    paddedListItem: {
-        padding: 10
-    },
     itemsToEnd: {
         alignItems: 'flex-end'
     },
     title: {
         fontWeight: 'bold'
-    },
-    commentBox: {
-        flex: 1,
-        marginBottom: 10
-    },
-    commentForm: {
-        marginTop: 5,
-        padding: 5
-    },
-    comment: {
-        flex: 8
-    },
-    commentIcon: {
-        margin: 15
     },
     loading: {
         justifyContent: 'center',
@@ -354,7 +319,7 @@ const styles = StyleSheet.create({
     modalButton: {
         width: 80,
         paddingTop: 10,
-        paddingBottom: 10,
+        paddingBottom: 10
     },
     validationText: {
         color: '#a94442',

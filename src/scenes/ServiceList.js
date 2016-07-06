@@ -172,8 +172,8 @@ export default class ServiceList extends Component {
                             />
                         </View>
                         <View style={[
-                                styles.listItemDividerLongInline,
-                                theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+                                styles.dividerLongInline,
+                                theme=='dark' ? styles.dividerDark : styles.dividerLight
                             ]}/>
                         <View style={[
                                 styles.container,
