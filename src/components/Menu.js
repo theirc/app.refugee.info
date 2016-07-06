@@ -1,38 +1,22 @@
-import React, { Component, PropTypes } from 'react';
-import { Text, Image, View, StyleSheet, Platform } from 'react-native';
-import { Avatar, Drawer, Divider, COLOR, TYPO, TouchableNativeFeedback } from 'react-native-material-design';
-import { default as VectorIcon } from 'react-native-vector-icons/MaterialIcons';
-
-import { typography } from 'react-native-material-design-styles';
-
-import { I18n, CountryHeaders } from '../constants';
-import {capitalize} from '../utils/helpers';
-import DrawerCommons from '../utils/DrawerCommons';
+import React, {Component, PropTypes} from 'react';
+import {
+    Text,
+    Image,
+    View,
+    StyleSheet,
+    Platform,
+    TouchableHighlight
+} from 'react-native';
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
-import {Ripple, Icon} from 'react-native-material-design';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {generateTextStyles, getUnderlayColor, themes} from '../styles'
 
-import styles, {generateTextStyles, themes} from '../styles'
-
-export function isCompatible(feature) {
-    const version = Platform.Version;
-
-    switch (feature) {
-        case 'TouchableNativeFeedback':
-            return version >= 21;
-            break;
-        case 'elevation':
-            return version >= 21;
-            break;
-        default:
-            return true;
-            break;
-    }
-}
 
 class MenuItem extends Component {
     static propTypes = {
         icon: PropTypes.string,
+        image: PropTypes.number,
         active: PropTypes.bool,
         direction: PropTypes.oneOf(['rtl', 'ltr']),
         onPress: PropTypes.func,
@@ -47,7 +31,7 @@ class MenuItem extends Component {
 
     componentWillReceiveProps(props) {
         if (props.theme) {
-            let defaultProps = {...props };
+            let defaultProps = {...props};
             if (!defaultProps.direction) {
                 defaultProps.direction = 'ltr';
             }
@@ -80,13 +64,13 @@ class MenuItem extends Component {
 
 
     render() {
-        if(!this.state.styles) {
+        if (!this.state.styles) {
             return <View />;
         }
-        
-        const {styles, direction, language} = this.state;
+
+        const {styles, direction, language, theme} = this.state;
         const item = this.props;
-        const fontStyle = {...styles.itemText, ...generateTextStyles(language) };
+        const fontStyle = {...styles.itemText, ...generateTextStyles(language)};
 
         let rtlChild = <View style={[styles.item]}>
             <View style={styles.labelRTL}>
@@ -95,30 +79,42 @@ class MenuItem extends Component {
                 </Text>
             </View>
             {item.icon &&
-                <Icon
-                    name={item.icon}
-                    size={22}
-                    style={styles.iconRTL}
-                    color={styles.itemText.color || '#000000'}
-                    />
+            <Icon
+                name={item.icon}
+                size={22}
+                style={styles.iconRTL}
+                color={styles.itemText.color || '#000000'}
+            />
             }
-        </View>
+            {item.image &&
+            <Image
+                source={item.image}
+                style={styles.image}
+            />
+            }
+        </View>;
 
         let ltrChild = <View style={[styles.item]}>
             {item.icon &&
-                <Icon
-                    name={item.icon}
-                    size={22}
-                    style={styles.icon}
-                    color={styles.itemText.color || '#000000'}
-                    />
+            <Icon
+                name={item.icon}
+                size={22}
+                style={styles.icon}
+                color={styles.itemText.color || '#000000'}
+            />
+            }
+            {item.image &&
+            <Image
+                source={item.image}
+                style={styles.image}
+            />
             }
             <View style={styles.label}>
                 <Text style={fontStyle}>
                     {item.children}
                 </Text>
             </View>
-        </View>
+        </View>;
 
         let press = (comp, ...args) => {
             if (item.onPress) {
@@ -135,20 +131,19 @@ class MenuItem extends Component {
             return true;
         };
         return (
-            <Ripple
-                rippleColor="rgba(73,176,80,.4)"
-                ref="ripple"
+            <TouchableHighlight
+                underlayColor={getUnderlayColor(theme)}
                 onPress={() => press() }
                 onLongPress={() => longPress() }
                 style={{
                     flex: 1,
-                    flexDirection: 'column',
+                    flexDirection: 'column'
                 }}
-                >
+            >
                 <View style={[item.active ? styles.itemActive : {},styles.itemLine]}>
                     {direction === 'ltr' ? ltrChild : rtlChild}
                 </View>
-            </Ripple>
+            </TouchableHighlight>
         );
     }
 }
@@ -170,7 +165,7 @@ class MenuSection extends Component {
 
     componentWillReceiveProps(props) {
         if (props.theme) {
-            let defaultProps = {...props };
+            let defaultProps = {...props};
             if (!defaultProps.direction) {
                 defaultProps.direction = 'ltr';
             }
@@ -202,13 +197,13 @@ class MenuSection extends Component {
     }
 
     render() {
-        if(!this.state.styles) {
+        if (!this.state.styles) {
             return <View />;
         }
 
         const {styles, direction, language} = this.state;
         const {title, children, theme} = this.props;
-        const fontStyle = {...styles.text, ...generateTextStyles(language) };
+        const fontStyle = {...styles.text, ...generateTextStyles(language)};
 
         return (
             <View style={styles.headerWrapper}>
@@ -223,9 +218,10 @@ class MenuSection extends Component {
 
 const lightStyleDefaults = {
     header: {
-        borderBottomColor: themes.dark.darkerDividerColor,
+        borderBottomColor: themes.light.darkerDividerColor,
         borderBottomWidth: 1,
-        paddingBottom: 15
+        paddingBottom: 12,
+        paddingTop: 12
     },
     headerWrapper: {
         paddingBottom: 30
@@ -234,8 +230,7 @@ const lightStyleDefaults = {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        height: 48,
-        paddingLeft: 16
+        height: 50
     },
     itemActive: {
         backgroundColor: '#fafafa',
@@ -249,36 +244,40 @@ const lightStyleDefaults = {
     itemText: {
         fontSize: 14,
         lineHeight: 24,
-        color: themes.light.textColor,
+        color: themes.light.textColor
     },
     text: {
         color: themes.light.greenAccentColor,
         fontWeight: "bold",
-        paddingRight: 5,
+        paddingRight: 5
     },
     icon: {
         position: 'absolute',
         top: 13,
-        left: 8,
+        left: 8
     },
     iconRTL: {
         position: 'absolute',
         top: 13,
-        right: 11,
+        right: 11
     },
     label: {
         flex: 1,
-        paddingLeft: 26,
         paddingRight: 5,
         top: (Platform.OS === 'ios') ? -5 : 2
     },
     labelRTL: {
         flex: 1,
-        paddingRight: 41,
+        paddingRight: 15,
         top: (Platform.OS === 'ios') ? -2 : 2,
         paddingLeft: 5,
         alignItems: 'flex-end'
     },
+    image: {
+        height: 17,
+        width: 21,
+        marginRight: 15
+    }
 };
 
 
@@ -286,7 +285,8 @@ const darkStyleDefaults = {
     header: {
         borderBottomColor: themes.dark.darkerDividerColor,
         borderBottomWidth: 1,
-        paddingBottom: 15
+        paddingBottom: 12,
+        paddingTop: 12
     },
     headerWrapper: {
         paddingBottom: 30
@@ -295,53 +295,56 @@ const darkStyleDefaults = {
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
-        height: 48,
-        paddingLeft: 16
+        height: 50
     },
     itemActive: {
         backgroundColor: '#202020',
-        borderBottomColor: themes.dark.dividerColor,
+        borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
     },
     itemLine: {
-        borderBottomColor: themes.dark.dividerColor,
+        borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
     },
     itemText: {
         fontSize: 14,
         lineHeight: 24,
-        color: themes.dark.textColor,
+        color: themes.dark.textColor
     },
     text: {
         color: themes.dark.greenAccentColor,
         fontWeight: "bold",
         paddingRight: 5,
         fontSize: 14,
-        lineHeight: 24,
+        lineHeight: 24
     },
     icon: {
         position: 'absolute',
         top: 13,
-        left: 8,
+        left: 8
     },
     iconRTL: {
         position: 'absolute',
         top: 13,
-        right: 11,
+        right: 11
     },
     label: {
         flex: 1,
-        paddingLeft: 26,
         paddingRight: 5,
         top: (Platform.OS === 'ios') ? -5 : 2
     },
     labelRTL: {
         flex: 1,
-        paddingRight: 41,
+        paddingRight: 15,
         top: (Platform.OS === 'ios') ? -2 : 2,
         paddingLeft: 5,
         alignItems: 'flex-end'
     },
+    image: {
+        height: 17,
+        width: 21,
+        marginRight: 15
+    }
 };
 
 
@@ -349,7 +352,7 @@ const mapStateToProps = (state) => {
     return {
         language: state.language,
         direction: state.direction,
-        theme: state.theme.theme,
+        theme: state.theme.theme
     };
 };
 

@@ -4,8 +4,8 @@ import {Platform, StyleSheet, Dimensions} from 'react-native';
 
 export const themes = {
     light: {
-        logo: require("./assets/logo.png"),
-        rectangularLogo: require("./assets/logo-rect.png"),
+        logo: require("./assets/logo-light.png"),
+        drawerLogo: require("./assets/logo-light-drawer.png"),
         backgroundColor: '#FFFFFF',
         menuBackgroundColor: '#FFFFFF',
         darkBackgroundColor: '#000000',
@@ -19,7 +19,7 @@ export const themes = {
     },
     dark: {
         logo: require("./assets/logo-dark.png"),
-        rectangularLogo: require("./assets/logo-rect-dark.png"),
+        drawerLogo: require("./assets/logo-dark-drawer.png"),
         backgroundColor: '#2d2d2d',
         menuBackgroundColor: '#000000',
         darkBackgroundColor: '#FFFFFF',
