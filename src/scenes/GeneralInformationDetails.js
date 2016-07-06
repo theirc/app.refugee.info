@@ -106,12 +106,6 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.horizontalContainer}>
-                    <SearchBar
-                        theme={theme}
-                        searchFunction={(text) => this._onChangeText(text) }
-                        />
-                </View>
                 <WebView ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                     source={this.state.source}

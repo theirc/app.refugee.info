@@ -4,6 +4,7 @@ import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {generateTextStyles, themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {DirectionalText} from '../components';
 
 export default class Toolbar extends Component {
 
@@ -14,17 +15,23 @@ export default class Toolbar extends Component {
     static propTypes = {
         onMenuIconPress: PropTypes.func,
         theme: PropTypes.oneOf(['light', 'dark']),
-        drawerOpen: PropTypes.bool
+        drawerOpen: PropTypes.bool,
+        toolbarTitle: PropTypes.string
     };
 
     render() {
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
+        let {toolbarTitle} = this.props;
         let title = '';
-        if (navigator && navigator.isChild)
-            title = navigator.currentRoute.title || navigator.childName ;
-        else if (navigator && navigator.currentRoute)
-            title = navigator.currentRoute.title;
+        if (!region) {
+            if (navigator && navigator.isChild)
+                title = navigator.currentRoute.title || navigator.childName;
+            else if (navigator && navigator.currentRoute)
+                title = navigator.currentRoute.title;
+        } else {
+            title = region.pageTitle || (region.metadata && region.metadata.page_title) || '';
+        }
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
@@ -60,14 +67,14 @@ export default class Toolbar extends Component {
                         />
                     {showIcon && icon}
                 </View>
-                <View style={componentStyles.toolbarBottom}>
-                    <Text style={[
+                <View style={[componentStyles.toolbarBottom, ]}>
+                    <DirectionalText direction={direction} style={[
                         componentStyles.toolbarTitle,
                         generateTextStyles(language),
                         theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
                     ]}>
                         {title}
-                    </Text>
+                    </DirectionalText>
                 </View>
 
             </View>
@@ -80,7 +87,8 @@ const mapStateToProps = (state) => {
     return {
         region: state.region,
         direction: state.direction,
-        language: state.language
+        language: state.language,
+        toolbarTitle: state.toolbarTitle
     };
 };
 

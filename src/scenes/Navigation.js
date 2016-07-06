@@ -118,7 +118,7 @@ class Navigation extends Component {
         if (city.content && city.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.pageTitle });
         } else {
-            return this.context.navigator.to('info', null, null, store.getState());
+            return this.context.navigator.to('info',null, null, store.getState());
         }
     }
 
