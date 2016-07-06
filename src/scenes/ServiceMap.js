@@ -37,7 +37,6 @@ class ServiceMap extends Component {
         let lats = region.envelope.coordinates[0].map(c => c[1]), longs = region.envelope.coordinates[0].map(c => c[0]);
         let minLat = Math.min.apply(null, lats), minLong = Math.min.apply(null, longs);
         let maxLat = Math.max.apply(null, lats), maxLong = Math.max.apply(null, longs);
-        console.log(minLat, minLong, region);
 
         return {
             latitude: (minLat + maxLat) / 2,

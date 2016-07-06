@@ -1,4 +1,5 @@
 import {AsyncStorage} from 'react-native';
+import I18n from '../constants/Messages'
 
 function reloadLanguage(language) {
     return {
@@ -9,9 +10,11 @@ function reloadLanguage(language) {
 
 export function fetchLanguageFromStorage() {
     return async dispatch => {
+        let currentLocale = I18n.locale.split('-')[0];
+
         return await AsyncStorage.getItem('language')
             .then(language => {
-              return dispatch(reloadLanguage(language || 'en'))
+              return dispatch(reloadLanguage(language || currentLocale))
             });
     };
 }
