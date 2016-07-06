@@ -48,7 +48,7 @@ export class App extends Component {
 
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
         let drawerBackgroundColor = theme == 'light' ? themes.light.menuBackgroundColor : themes.dark.toolbarColor;
-        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.darkerDividerColor;
+        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.backgroundColor;
 
         if (this.drawer) {
             this.drawer.drawer.setNativeProps({

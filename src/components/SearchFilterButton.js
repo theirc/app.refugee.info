@@ -48,7 +48,6 @@ export default class SearchFilterButton extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         region: state.region,
         direction: state.direction,
         language: state.language
