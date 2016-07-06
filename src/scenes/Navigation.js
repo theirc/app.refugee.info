@@ -163,7 +163,7 @@ class Navigation extends Component {
                 {(!isLTR) && headerImage}
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
-                <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
+                <MenuItem icon="home" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
                 <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
                 <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
             </MenuSection>
