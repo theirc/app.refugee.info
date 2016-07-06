@@ -90,24 +90,27 @@ export class GeneralInformationDetails extends Component {
                 // If we get to this point, we need to point to the app
                 let fullSlug = url.substr(1).split('/')[0];
 
+                if (Platform.OS == 'android') {
+                    this.webView.goBack();
+                }
+
                 Regions.searchImportantInformation(fullSlug).then((info) => {
                     const {navigator} = this.context;
                     navigator.to('info', null, { information: info });
                 });
-                if(Platform.OS == 'android') {
-                    this.webView.goBack();
-                }
             } else {
                 if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
+                    this.webView.goBack();
+
                     let email = state.url.split('mailto:')[1];
                     Mailer.mail({
                         recipients: [email],
                     }, (error, event) => {
                     });
-                    this.webView.goBack();
                 } else {
-                    Linking.openURL(state.url);
                     this.webView.goBack();
+                    
+                    Linking.openURL(state.url);
                 }
             }
         }
