@@ -113,7 +113,7 @@ export class GeneralInformation extends Component {
         return (
             <ListItem
                 onPress={this.onClick.bind(this, rowData.title, rowData.section)}
-                text={rowData.title}
+                text={rowData.title.trim()}
             />
         )
     }
