@@ -36,7 +36,43 @@ export default class ListItem extends Component {
                     iconColor && {color: iconColor}
                 ]}
             />;
-        return (
+        if (direction=='rtl') return (
+            <View>
+                <TouchableHighlight
+                    onPress={onPress}
+                    underlayColor={getUnderlayColor(theme)}
+                >
+                    <View
+                        style={[
+                            componentStyles.listItemContainer,
+                            theme=='dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
+                        ]}
+                    >
+                        <View style={[
+                                componentStyles.listItemTextContainer,
+                                {alignItems: 'flex-end', borderBottomWidth: 1},
+                                theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+
+                            ]}>
+                            <Text style={[
+                                componentStyles.listItemText,
+                                theme=='dark' ? styles.textDark : styles.textLight,
+                                generateTextStyles(language),
+                                {fontSize} && {fontSize: fontSize}
+                            ]}>
+                                {text}
+                            </Text>
+                        </View>
+                        <View style={[
+                            componentStyles.dividerInline,
+                            theme=='dark' ? styles.dividerDark : styles.dividerLight
+                        ]}/>
+                        {button_icon}
+                    </View>
+                </TouchableHighlight>
+            </View>
+        );
+        else return (
             <View>
                 <TouchableHighlight
                     onPress={onPress}
@@ -101,7 +137,8 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: 20
+        paddingLeft: 20,
+        paddingRight: 20
     },
     listItemText: {
         fontSize: 15

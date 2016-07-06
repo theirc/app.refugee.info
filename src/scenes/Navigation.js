@@ -1,45 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import {Text, Image, View, ScrollView, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {Avatar, Drawer, Divider, COLOR, TYPO} from 'react-native-material-design';
-
-import {typography} from 'react-native-material-design-styles';
-
-import { TouchableNativeFeedback, Platform} from "react-native";
-import {Ripple, Icon} from 'react-native-material-design';
-
 import I18n from '../constants/Messages';
-import {capitalize} from '../utils/helpers';
 import ApiClient from '../utils/ApiClient';
 import DrawerCommons from '../utils/DrawerCommons';
-import {Header, Section, DirectionalText, MenuSection, MenuItem} from '../components'
-import CountryHeaders from '../constants/CountryHeaders'
-
+import {MenuSection, MenuItem} from '../components'
 import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 import {Regions} from '../data';
-
-const bullseye = require('../assets/icons/bullseye.png');
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import styles, {generateTextStyles, themes} from '../styles'
-
-
-export function isCompatible(feature) {
-    const version = Platform.Version;
-
-    switch (feature) {
-        case 'TouchableNativeFeedback':
-            return version >= 21;
-            break;
-        case 'elevation':
-            return version >= 21;
-            break;
-        default:
-            return true;
-            break;
-    }
-}
 
 class Navigation extends Component {
 
@@ -52,7 +23,7 @@ class Navigation extends Component {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
         this.state = {
-            otherLocations: [],
+            otherLocations: []
         }
     }
 
@@ -60,7 +31,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({ otherLocations: children.slice(0, 5) });
+            this.setState({otherLocations: children.slice(0, 5)});
         }
     }
 
@@ -75,14 +46,27 @@ class Navigation extends Component {
                 const pageTitle = (c.metadata.page_title || '')
                     .replace('\u060c', ',').split(',')[0];
                 c.pageTitle = pageTitle;
-            } 
+            }
         });
 
         return children;
     }
 
+    _getImportantInformationImage(theme, pageTitle){
+        if (theme=='dark'){
+            if (pageTitle.toLowerCase().includes('safe'))
+                return require('../assets/icons/staying-safe-dark.png');
+            else return require('../assets/icons/asylum-procedure-dark.png')
+        }
+        else {
+            if (pageTitle.toLowerCase().includes('safe'))
+                return require('../assets/icons/staying-safe-light.png');
+            else return require('../assets/icons/asylum-procedure-light.png')
+        }
+    }
+
     _getImportantInformation() {
-        const region = this.props.region;
+        const {region, theme} = this.props;
         if (!region || !region.important_information) {
             return <View />;
         }
@@ -92,31 +76,40 @@ class Navigation extends Component {
                 const pageTitle = (i.metadata.page_title || '')
                     .replace('\u060c', ',').split(',')[0];
                 i.pageTitle = pageTitle;
-            } 
+            }
 
             return (
-                <MenuItem key={index} onPress={() => s('info', {information:i}) }>{i.pageTitle}</MenuItem>
+                <MenuItem
+                    image={this._getImportantInformationImage(theme, i.pageTitle)}
+                    key={index}
+                    onPress={() => s('info', {information:i}) }
+                >
+                    {i.pageTitle}
+                </MenuItem>
             );
         });
     }
 
     async selectCity(city) {
-        const { dispatch, country } = this.props;
+        const {dispatch, country} = this.props;
 
         city.detected = false;
         city.coords = {};
         city.country = country;
-        
+
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 
-        dispatch({ type: 'REGION_CHANGED', payload: city });
-        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
+        dispatch({type: 'REGION_CHANGED', payload: city});
+        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
         this.drawerCommons.closeDrawer();
 
         if (city.content && city.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.pageTitle });
+            return this.context.navigator.to('infoDetails', null, {
+                section: city.content[0].section,
+                sectionTitle: city.pageTitle
+            });
         } else {
             return this.context.navigator.to('info', null, null, store.getState());
         }
@@ -126,11 +119,7 @@ class Navigation extends Component {
         const {theme, route, region, country, direction, language} = this.props;
         const {navigator} = this.context;
 
-        if (!this.props.region) {
-            return <Text>Choose location first</Text>;
-        }
-
-        if (!this.props.country) {
+        if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
         }
 
@@ -138,34 +127,68 @@ class Navigation extends Component {
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
             return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle}</MenuItem>;
         });
-        let rectangularLogo = theme == 'light' ? themes.light.rectangularLogo : themes.dark.rectangularLogo;
+        let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
         let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
 
-        let headerImage = <Image source={bullseye} style={[
-            { resizeMode: 'stretch', height: 20, width: 20, },
-            (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
-        ]} />;
-
+        let headerImage = <Icon
+            name="md-locate"
+            style={[
+                {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
+                (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
+            ]}
+        />;
 
 
         const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.view}>
             <View style={[styles.logoContainer, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end') }]}>
-                <Image source={rectangularLogo} style={ styles.logo } />
+                <Image source={logo} style={ styles.logo }/>
             </View>
             <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
                 {(isLTR) && headerImage}
-                <Text style={[generateTextStyles(language), styles.cityText]}>{region.pageTitle.toUpperCase() }</Text>
+                <Text style={[
+                    generateTextStyles(language),
+                    styles.cityText
+                ]}>
+                    {region.pageTitle.toUpperCase()}
+                </Text>
                 {(!isLTR) && headerImage}
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
-                <MenuItem icon="info" active={route === 'info'} onPress={() => s('info') }>{I18n.t('GENERAL_INFO') }</MenuItem>
-                <MenuItem icon="list" active={route === 'services'} onPress={() => s('services') }>{I18n.t('SERVICE_LIST') }</MenuItem>
-                <MenuItem icon="map" active={route === 'map'} onPress={() => s('map') }>{I18n.t('EXPLORE_MAP') }</MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/services-dark.png') :
+                        require('../assets/icons/services-light.png')
+                    }
+                    active={route === 'services'}
+                    onPress={() => s('services') }
+                >
+                    {I18n.t('SERVICE_LIST') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/map-dark.png') :
+                        require('../assets/icons/map-light.png')
+                    }
+                    active={route === 'map'}
+                    onPress={() => s('map') }
+                >
+                    {I18n.t('EXPLORE_MAP') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/information-dark.png') :
+                        require('../assets/icons/information-light.png')
+                    }
+                    active={route === 'info'}
+                    onPress={() => s('info') }
+                >
+                    {I18n.t('GENERAL_INFO') }
+                </MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}
@@ -174,10 +197,45 @@ class Navigation extends Component {
                 {nearbyCitiesItems}
             </MenuSection>
             <MenuSection>
-                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
-                <MenuItem icon="info" active={route === 'about'} onPress={() => s('about') }>{I18n.t('ABOUT') }</MenuItem>
-                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
-                <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/settings-dark.png') :
+                        require('../assets/icons/settings-light.png')
+                    }
+                    active={route === 'settings'}
+                    onPress={() => s('settings')}
+                >
+                    {I18n.t('SETTINGS')}
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/about-dark.png') :
+                        require('../assets/icons/about-light.png')
+                    }
+                    active={route === 'about'}
+                    onPress={() => s('about') }
+                >
+                    {I18n.t('ABOUT') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/contact-dark.png') :
+                        require('../assets/icons/contact-light.png')
+                    }
+                    active={route === 'settings'}
+                    onPress={() => s('settings') }
+                >
+                    {I18n.t('CONTACT_US') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
+                        require('../assets/icons/give-feedback-dark.png') :
+                        require('../assets/icons/give-feedback-light.png')
+                    }
+                    active={route === 'settings'}
+                    onPress={() => s('settings')}>
+                        {I18n.t('FEEDBACK') }
+                </MenuItem>
             </MenuSection>
             <View style={{ paddingBottom: 15 }}>
             </View>
@@ -201,17 +259,17 @@ const lightNavigationStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 10,
+        marginTop: 40
     },
     logoContainer: {
         flex: 1,
         flexDirection: 'row',
-        marginRight: 10,
+        marginRight: 10
     },
     view: {
         flexDirection: 'column',
         flex: 1,
-        paddingLeft: 20,
+        paddingLeft: 20
     },
     middleBorder: {
         borderLeftColor: themes.light.darkerDividerColor,
@@ -225,7 +283,7 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginBottom: 15,
+        marginBottom: 30,
         paddingRight: 10
     },
     cityText: {
@@ -239,12 +297,13 @@ const darkNavigationStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 10,
+        marginTop: 40
     },
     logoContainer: {
         flex: 1,
         flexDirection: 'row',
         marginRight: 10,
+        marginTop: 0
     },
     view: {
         flexDirection: 'column',
@@ -263,7 +322,7 @@ const darkNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginBottom: 15,
+        marginBottom: 30,
         paddingRight: 10
     },
     cityText: {
