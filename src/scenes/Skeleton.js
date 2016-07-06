@@ -1,15 +1,15 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text, AppState} from 'react-native';
 import {connect} from 'react-redux';
-import DrawerCommons from '../utils/DrawerCommons';
-import styles from '../styles';
-import I18n from '../constants/Messages'
-import Welcome from './Welcome'
+import I18n from '../constants/Messages';
+import Welcome from './Welcome';
+import App from './App';
 
-import App from './App'
-import store from '../store';
-
-import {Provider} from 'react-redux';
+import {fetchRegionFromStorage} from '../actions/region';
+import {fetchDirectionFromStorage} from '../actions/direction';
+import {fetchLanguageFromStorage} from '../actions/language';
+import {fetchCountryFromStorage} from '../actions/country';
+import {fetchThemeFromStorage} from '../actions/theme'
 
 
 /**
@@ -30,6 +30,7 @@ class Skeleton extends Component {
 
     componentWillMount() {
         this.languagePromise = this.checkLanguageSelected();
+
     }
 
     componentDidMount() {
@@ -57,6 +58,13 @@ class Skeleton extends Component {
         const firstLoad = await AsyncStorage.getItem('firstLoad', () => {
             this.setState({firstLoad: firstLoad !== 'false'});
         });
+        const {dispatch} = this.props;
+
+        await dispatch(fetchRegionFromStorage());
+        await dispatch(fetchDirectionFromStorage());
+        await dispatch(fetchLanguageFromStorage());
+        await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchThemeFromStorage());
     }
 
     render() {
