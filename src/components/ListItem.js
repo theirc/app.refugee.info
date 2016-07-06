@@ -3,7 +3,8 @@ import {
     View, 
     Text, 
     TouchableHighlight, 
-    StyleSheet
+    StyleSheet,
+    Image
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
@@ -17,21 +18,24 @@ export default class ListItem extends Component {
         icon: PropTypes.string,
         iconColor: PropTypes.string,
         fontSize: PropTypes.number,
-        image: PropTypes.object
+        image: PropTypes.number
     };
 
     render() {
         const {theme, onPress, text, icon, language, direction, iconColor, fontSize, image} = this.props;
         const defaultIcon = 'md-bus';
         const button_icon = image ?
-            <Image /> :
+            <Image
+                source={image}
+                style={componentStyles.listItemImageInline}
+            /> :
             <Icon
                 name={icon || defaultIcon }
                 style={[
-                                componentStyles.listItemIconInline,
-                                iconColor && {color: iconColor}
-                            ]}
-            />
+                    componentStyles.listItemIconInline,
+                    iconColor && {color: iconColor}
+                ]}
+            />;
         return (
             <View>
                 <TouchableHighlight
@@ -108,6 +112,11 @@ const componentStyles = StyleSheet.create({
         fontSize: 24,
         padding: 13,
         color: themes.light.greenAccentColor
+    },
+    listItemImageInline: {
+        width: 24,
+        height: 24,
+        margin: 13
     },
     dividerInline: {
         marginTop: 13,

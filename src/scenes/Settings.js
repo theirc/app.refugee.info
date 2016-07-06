@@ -116,14 +116,18 @@ class Settings extends Component {
                 <ListItem
                     text={I18n.t('ENGLISH')}
                     onPress={this.setLanguage.bind(this, 'en')}
+                    image={require('../assets/flags/gb.png')}
                 />
                 <ListItem
                     text={I18n.t('ARABIC')}
                     onPress={this.setLanguage.bind(this, 'ar')}
+                    image={require('../assets/flags/_Arab_League.png')}
+
                 />
                 <ListItem
                     text={I18n.t('FARSI')}
                     onPress={this.setLanguage.bind(this, 'fa')}
+                    image={require('../assets/flags/ir.png')}
                 />
                 
                 <View style={[
