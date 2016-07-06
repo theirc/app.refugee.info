@@ -175,7 +175,7 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('SETTINGS') }</MenuItem>
-                <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('ABOUT') }</MenuItem>
+                <MenuItem icon="info" active={route === 'about'} onPress={() => s('about') }>{I18n.t('ABOUT') }</MenuItem>
                 <MenuItem icon="public" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('CONTACT_US') }</MenuItem>
                 <MenuItem icon="settings" active={route === 'settings'} onPress={() => s('settings') }>{I18n.t('FEEDBACK') }</MenuItem>
             </MenuSection>
