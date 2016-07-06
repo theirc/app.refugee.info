@@ -80,5 +80,10 @@ export default {
     settings: {
         title: I18n.t('SETTINGS'),
         component: require('./scenes/Settings').default
+    },
+
+    about: {
+        title: I18n.t('ABOUT'),
+        component: require('./scenes/About').default
     }
 };
