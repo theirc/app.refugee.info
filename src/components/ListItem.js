@@ -28,13 +28,14 @@ export default class ListItem extends Component {
         const button_icon = image ?
             <Image
                 source={image}
-                style={componentStyles.listItemImageInline}
+                style={[componentStyles.listItemImageInline,]}
             /> :
             <Icon
                 name={icon || defaultIcon }
                 style={[
                     componentStyles.listItemIconInline,
-                    iconColor && {color: iconColor}
+                    iconColor && {color: iconColor},
+                    { right: direction == 'rtl'? -5 : null, left: direction == 'ltr'? -5 : null }
                 ]}
             />;
         if (direction=='rtl') return (
@@ -147,10 +148,7 @@ const componentStyles = StyleSheet.create({
     listItemIconInline: {
         fontSize: 24,
         padding: 13,
-        width: Platform.OS == 'ios' ? 50 : null,
-        height: Platform.OS == 'ios' ? 50 : null,
-        top: Platform.OS == 'android' ? 13 : null,
-        left: Platform.OS == 'android' ? 7 : null,
+        top: Platform.OS == 'android' ? 13 : 0,
         color: themes.light.greenAccentColor
     },
     listItemImageInline: {

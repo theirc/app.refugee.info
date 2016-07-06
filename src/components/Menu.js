@@ -276,7 +276,8 @@ const lightStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 15,
+        marginLeft: 15
     }
 };
 
@@ -343,7 +344,8 @@ const darkStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 15,
+        marginLeft: 15
     }
 };
 

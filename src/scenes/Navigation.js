@@ -158,6 +158,16 @@ class Navigation extends Component {
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
                 <MenuItem
                     image={theme=='dark' ?
+                        require('../assets/icons/information-dark.png') :
+                        require('../assets/icons/information-light.png')
+                    }
+                    active={route === 'info'}
+                    onPress={() => s('info') }
+                >
+                    {I18n.t('GENERAL_INFO') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
                         require('../assets/icons/services-dark.png') :
                         require('../assets/icons/services-light.png')
                     }
@@ -175,16 +185,6 @@ class Navigation extends Component {
                     onPress={() => s('map') }
                 >
                     {I18n.t('EXPLORE_MAP') }
-                </MenuItem>
-                <MenuItem
-                    image={theme=='dark' ?
-                        require('../assets/icons/information-dark.png') :
-                        require('../assets/icons/information-light.png')
-                    }
-                    active={route === 'info'}
-                    onPress={() => s('info') }
-                >
-                    {I18n.t('GENERAL_INFO') }
                 </MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
