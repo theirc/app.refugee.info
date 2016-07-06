@@ -73,7 +73,7 @@ class MenuItem extends Component {
         const fontStyle = {...styles.itemText, ...generateTextStyles(language)};
 
         let rtlChild = <View style={[styles.item]}>
-            <View style={styles.labelRTL}>
+            <View style={[styles.labelRTL, !(item.icon || item.image) ? {paddingRight: 5} : {}]}>
                 <Text style={[fontStyle, { textAlign: 'right' }]}>
                     {item.children}
                 </Text>
@@ -109,7 +109,7 @@ class MenuItem extends Component {
                 style={styles.image}
             />
             }
-            <View style={styles.label}>
+            <View style={[styles.label, !(item.icon || item.image) ? {paddingLeft: 5} : {}]}>
                 <Text style={fontStyle}>
                     {item.children}
                 </Text>
@@ -140,7 +140,7 @@ class MenuItem extends Component {
                     flexDirection: 'column'
                 }}
             >
-                <View style={[item.active ? styles.itemActive : {},styles.itemLine]}>
+                <View style={[styles.itemLine]}>
                     {direction === 'ltr' ? ltrChild : rtlChild}
                 </View>
             </TouchableHighlight>
@@ -276,7 +276,8 @@ const lightStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 15,
+        marginLeft: 15
     }
 };
 
@@ -343,7 +344,8 @@ const darkStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 15,
+        marginLeft: 15
     }
 };
 

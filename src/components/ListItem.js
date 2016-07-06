@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    View, 
-    Text, 
-    TouchableHighlight, 
+    View,
+    Text,
+    TouchableHighlight,
     StyleSheet,
     Image,
     Platform
@@ -25,48 +25,76 @@ export default class ListItem extends Component {
     render() {
         const {theme, onPress, text, icon, language, direction, iconColor, fontSize, image} = this.props;
         const defaultIcon = 'md-bus';
+
+        let iconStyles = {};
+        
+        if (Platform.OS == 'ios') {
+            iconStyles = {
+                right: direction == 'rtl' ? -5 : null,
+                left: direction == 'ltr' ? -5 : null
+            };
+        } else {
+            iconStyles = {
+                right: direction == 'rtl' ? -17 : null,
+                left: direction == 'ltr' ? 10 : null,
+                top: 13
+            };
+        }
+        let imageStyles = {};
+        
+        if (Platform.OS == 'ios') {
+            imageStyles = {
+                right: direction == 'rtl' ? -5 : null,
+                left: direction == 'ltr' ? -5 : null
+            };
+        } else {
+            imageStyles = {
+            };
+        }
+
         const button_icon = image ?
             <Image
                 source={image}
-                style={componentStyles.listItemImageInline}
-            /> :
+                style={[componentStyles.listItemImageInline, imageStyles]}
+                /> :
             <Icon
                 name={icon || defaultIcon }
                 style={[
                     componentStyles.listItemIconInline,
-                    iconColor && {color: iconColor}
+                    iconColor && { color: iconColor },
+                    iconStyles
                 ]}
-            />;
-        if (direction=='rtl') return (
+                />;
+        if (direction == 'rtl') return (
             <View>
                 <TouchableHighlight
                     onPress={onPress}
-                    underlayColor={getUnderlayColor(theme)}
-                >
+                    underlayColor={getUnderlayColor(theme) }
+                    >
                     <View
                         style={[
                             componentStyles.listItemContainer,
-                            theme=='dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
+                            theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
                         ]}
-                    >
+                        >
                         <View style={[
-                                componentStyles.listItemTextContainer,
-                                {alignItems: 'flex-end', borderBottomWidth: 1},
-                                theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+                            componentStyles.listItemTextContainer,
+                            { alignItems: 'flex-end', borderBottomWidth: 1 },
+                            theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
 
-                            ]}>
+                        ]}>
                             <Text style={[
                                 componentStyles.listItemText,
-                                theme=='dark' ? styles.textDark : styles.textLight,
+                                theme == 'dark' ? styles.textDark : styles.textLight,
                                 generateTextStyles(language),
-                                {fontSize} && {fontSize: fontSize}
+                                { fontSize } && { fontSize: fontSize }
                             ]}>
                                 {text}
                             </Text>
                         </View>
                         <View style={[
                             componentStyles.dividerInline,
-                            theme=='dark' ? styles.dividerDark : styles.dividerLight
+                            theme == 'dark' ? styles.dividerDark : styles.dividerLight
                         ]}/>
                         {button_icon}
                     </View>
@@ -77,30 +105,30 @@ export default class ListItem extends Component {
             <View>
                 <TouchableHighlight
                     onPress={onPress}
-                    underlayColor={getUnderlayColor(theme)}
-                >
+                    underlayColor={getUnderlayColor(theme) }
+                    >
                     <View
                         style={[
                             componentStyles.listItemContainer,
-                            theme=='dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
+                            theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
                         ]}
-                    >
+                        >
                         {button_icon}
                         <View style={[
                             componentStyles.dividerInline,
-                            theme=='dark' ? styles.dividerDark : styles.dividerLight
+                            theme == 'dark' ? styles.dividerDark : styles.dividerLight
                         ]}/>
                         <View style={[
-                                componentStyles.listItemTextContainer,
-                                {alignItems: 'flex-start', borderBottomWidth: 1},
-                                theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+                            componentStyles.listItemTextContainer,
+                            { alignItems: 'flex-start', borderBottomWidth: 1 },
+                            theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
 
-                            ]}>
+                        ]}>
                             <Text style={[
                                 componentStyles.listItemText,
-                                theme=='dark' ? styles.textDark : styles.textLight,
+                                theme == 'dark' ? styles.textDark : styles.textLight,
                                 generateTextStyles(language),
-                                {fontSize} && {fontSize: fontSize}
+                                { fontSize } && { fontSize: fontSize }
                             ]}>
                                 {text}
                             </Text>
@@ -147,23 +175,19 @@ const componentStyles = StyleSheet.create({
     listItemIconInline: {
         fontSize: 24,
         padding: 13,
-        width: Platform.OS == 'ios' ? 50 : null,
-        height: Platform.OS == 'ios' ? 50 : null,
-        top: Platform.OS == 'android' ? 13 : null,
-        left: Platform.OS == 'android' ? 7 : null,
         color: themes.light.greenAccentColor
     },
     listItemImageInline: {
         width: 24,
         height: 24,
-        margin: 13
+        margin: 13,
     },
     dividerInline: {
         marginTop: 13,
         width: 1,
         height: 24
     }
-    
+
 });
 
 export default connect(mapStateToProps)(ListItem);

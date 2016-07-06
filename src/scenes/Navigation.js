@@ -31,7 +31,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({otherLocations: children.slice(0, 5)});
+            this.setState({otherLocations: children});
         }
     }
 
@@ -39,7 +39,7 @@ class Navigation extends Component {
         let cities = [];
         const regionData = new Regions(new ApiClient(this.context, this.props));
 
-        let children = await regionData.listChildren(country);
+        let children = (await regionData.listChildren(country)).filter((c)=>c.level==3);
 
         children.forEach((c) => {
             if (c && c.metadata) {
@@ -158,6 +158,16 @@ class Navigation extends Component {
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
                 <MenuItem
                     image={theme=='dark' ?
+                        require('../assets/icons/information-dark.png') :
+                        require('../assets/icons/information-light.png')
+                    }
+                    active={route === 'info'}
+                    onPress={() => s('info') }
+                >
+                    {I18n.t('GENERAL_INFO') }
+                </MenuItem>
+                <MenuItem
+                    image={theme=='dark' ?
                         require('../assets/icons/services-dark.png') :
                         require('../assets/icons/services-light.png')
                     }
@@ -175,16 +185,6 @@ class Navigation extends Component {
                     onPress={() => s('map') }
                 >
                     {I18n.t('EXPLORE_MAP') }
-                </MenuItem>
-                <MenuItem
-                    image={theme=='dark' ?
-                        require('../assets/icons/information-dark.png') :
-                        require('../assets/icons/information-light.png')
-                    }
-                    active={route === 'info'}
-                    onPress={() => s('info') }
-                >
-                    {I18n.t('GENERAL_INFO') }
                 </MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
