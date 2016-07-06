@@ -31,7 +31,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({otherLocations: children.slice(0, 5)});
+            this.setState({otherLocations: children});
         }
     }
 
@@ -39,7 +39,7 @@ class Navigation extends Component {
         let cities = [];
         const regionData = new Regions(new ApiClient(this.context, this.props));
 
-        let children = await regionData.listChildren(country);
+        let children = (await regionData.listChildren(country)).filter((c)=>c.level==3);
 
         children.forEach((c) => {
             if (c && c.metadata) {
