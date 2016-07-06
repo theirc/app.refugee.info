@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {styles, generateTextStyles, themes} from '../styles';
+import {generateTextStyles, themes} from '../styles';
 
 export default class SearchBar extends Component {
 

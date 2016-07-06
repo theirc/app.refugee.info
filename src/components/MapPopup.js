@@ -21,9 +21,9 @@ export default class MapPopup extends Component {
     render() {
         let {direction, marker} = this.props;
         if (direction == 'rtl') return (
-            <View style={styles.horizontalContainer}>
+            <View style={styles.container}>
                 <View style={[styles.rowContainer, styles.itemsToEnd]}>
-                    <View style={styles.rowTextContainerRTL}>
+                    <View style={[styles.container, {marginRight: 20, alignItems: 'flex-end'}]}>
                         <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
                         <Text style={componentStyles.mapPopupProvider}>{marker.service.provider.name}</Text>
                         <Text>{this.serviceCommons.renderStars(marker.service.rating, direction)}</Text>

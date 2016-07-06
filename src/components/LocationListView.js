@@ -5,7 +5,7 @@ import {default as Icon} from 'react-native-vector-icons/FontAwesome';
 
 import {I18n, CountryHeaders} from '../constants';
 import {LoadingView, DirectionalText} from '../components';
-import styles, {getUnderlayColor} from '../styles';
+import styles, {getUnderlayColor, generateTextStyles} from '../styles';
 import {connect} from 'react-redux';
 
 export default class LocationListView extends Component {
@@ -64,15 +64,15 @@ export default class LocationListView extends Component {
         if (this.props.image) {
             image = this.props.image(rowData.code);
         }
-        let {direction, theme} = this.props;
+        let {direction, theme, language} = this.props;
         if (!(direction || false)) {
             direction = 'ltr';
         }
 
         const imageElement = (image && <Image source={image} style={styles.listItemIcon} />);
         const imageDivider = (image && <View style={[
-            styles.listItemDivider,
-            theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
+            styles.dividerAbsolute,
+            theme=='dark' ? styles.dividerDark : styles.dividerLight
         ]} />);
         return (
                 <TouchableHighlight
@@ -90,6 +90,7 @@ export default class LocationListView extends Component {
                         <View style={styles.listItemTextContainer}>
                             <Text style={[
                                 styles.listItemText,
+                                generateTextStyles(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}>
                                 {rowData.pageTitle || rowData.metadata.page_title}

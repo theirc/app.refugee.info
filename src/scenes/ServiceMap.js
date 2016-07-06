@@ -14,7 +14,7 @@ import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
 import {connect} from 'react-redux';
-import MapPopup from '../components/MapPopup';
+import {MapPopup} from '../components';
 
 const RADIUS_MULTIPLIER = 1.2;
 const RADIUS = 0.01;

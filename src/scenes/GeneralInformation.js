@@ -11,12 +11,11 @@ import {
     RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
-import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
+import {MapButton, OfflineView, DirectionalText, SearchBar, ListItem} from '../components';
 import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles, {getUnderlayColor} from '../styles';
 import store from '../store';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export class GeneralInformation extends Component {
 
@@ -103,39 +102,12 @@ export class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
-        const {theme} = this.props;
         return (
-            <View>
-                <TouchableHighlight
-                    onPress={() => this.onClick(rowData.title, rowData.section)}
-                    underlayColor={getUnderlayColor(theme)}
-                >
-                    <View
-                        style={[
-                            styles.listItemContainer,
-                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
-                        ]}
-                    >
-                        <Icon name="md-bus" style={styles.listItemIconInline}/>
-                        <View style={[
-                            styles.listItemDividerInline,
-                            theme=='dark' ? styles.listItemDividerDark : styles.listItemDividerLight
-                        ]}/>
-                        <View style={[
-                                styles.listItemTextContainer,
-                                {alignItems: 'flex-start'}
-                            ]}>
-                            <Text style={[
-                                styles.listItemText,
-                                theme=='dark' ? styles.textDark : styles.textLight
-                            ]}>
-                                {rowData.title}
-                            </Text>
-                        </View>
-                    </View>
-                </TouchableHighlight>
-            </View>
-        );
+            <ListItem
+                onPress={this.onClick.bind(this, rowData.title, rowData.section)}
+                text={rowData.title}
+            />
+        )
     }
 
     render() {
