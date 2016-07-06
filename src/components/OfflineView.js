@@ -3,6 +3,8 @@ import {View, Text, AsyncStorage, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Button} from 'react-native-material-design';
 import I18n from '../constants/Messages';
+import {connect} from 'react-redux';
+import styles, {generateTextStyles, getUnderlayColor, themes} from '../styles';
 
 export default class OfflineView extends Component {
 
@@ -17,13 +19,31 @@ export default class OfflineView extends Component {
     };
 
     render() {
-        if (this.props.offline) {
+        const {theme, offline, language} = this.props;
+        if (offline) {
             return (
-                <View style={componentStyles.offlineModeContainer}>
+                <View style={[
+                    componentStyles.offlineModeContainer,
+                    {borderBottomWidth: 2},
+                    theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+
+                ]}>
                     <Icon style={componentStyles.offlineModeIcon} name="warning"/>
                     <View style={componentStyles.offlineModeTextContainer}>
-                        <Text style={componentStyles.offlineModeText}>{I18n.t('OFFLINE_MODE')}</Text>
-                        <Text style={componentStyles.OfflineModeLastSync}>
+                        <Text style={[
+                                componentStyles.offlineModeText,
+                                generateTextStyles(language),
+                                theme=='dark' ? styles.textDark : styles.textLight
+                            ]}
+                        >
+                            {I18n.t('OFFLINE_MODE')}
+                        </Text>
+                        <Text style={[
+                                componentStyles.OfflineModeLastSync,
+                                generateTextStyles(language),
+                                theme=='dark' ? styles.textDark : styles.textLight
+                            ]}
+                        >
                             {I18n.t('LAST_SYNC')}: {this.props.lastSync} {I18n.t('MINUTES_AGO')}
                         </Text>
                     </View>
@@ -38,6 +58,15 @@ export default class OfflineView extends Component {
         }
         return null
     }
+};
+
+const mapStateToProps = (state) => {
+    return {
+        region: state.region,
+        direction: state.direction,
+        language: state.language,
+        theme: state.theme.theme
+    };
 };
 
 const componentStyles = StyleSheet.create({
@@ -71,3 +100,6 @@ const componentStyles = StyleSheet.create({
         marginRight: -15
     }
 });
+
+export default connect(mapStateToProps)(OfflineView);
+
