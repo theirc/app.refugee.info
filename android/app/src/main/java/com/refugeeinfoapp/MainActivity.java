@@ -7,6 +7,7 @@ import com.AirMaps.AirPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
+import com.chirag.RNMail.*;  // <--- import
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +42,9 @@ public class MainActivity extends ReactActivity {
             new MainReactPackage(),
             new VectorIconsPackage(),
             new RNSharePackage(),
-            new AirPackage(),
-            new ReactNativeI18n()
+            new AirPackage(),     
+            new ReactNativeI18n(),
+            new RNMail()
         );
     }
 }

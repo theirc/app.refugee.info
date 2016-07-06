@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, AsyncStorage, Linking} from 'react-native';
-import WebView from '../nativeComponents/android/ExtendedWebView';
+import {View, Text, TextInput, AsyncStorage, Linking, Platform, WebView} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils'
 import styles, {themes} from '../styles';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {MapButton, OfflineView, SearchBar} from '../components';
 import {Regions} from '../data';
+import {RNMail as Mailer} from 'NativeModules';
 
 var WEBVIEW_REF = 'webview';
 export class GeneralInformationDetails extends Component {
@@ -71,6 +71,9 @@ export class GeneralInformationDetails extends Component {
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
         let url = state.url;
+        if (url.indexOf('data:') == 0) {
+            return;
+        }
 
         if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
             url = url.substr(url.indexOf('://') + 3);
@@ -92,7 +95,17 @@ export class GeneralInformationDetails extends Component {
                     navigator.forward('importantLink', null, { information: info, sectionTitle: info.pageTitle });
                 });
             } else {
-                Linking.openURL(state.url);
+                if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
+                    let email = state.url.split('mailto:')[1];
+                    Mailer.mail({
+                        recipients: [email],
+                    }, (error, event) => {
+                    });
+                    this.webView.goBack();
+                } else {
+                    Linking.openURL(state.url);
+                    this.webView.goBack();
+                }
             }
         }
     }
@@ -110,10 +123,11 @@ export class GeneralInformationDetails extends Component {
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                     source={this.state.source}
                     style={{ backgroundColor: backgroundColor }}
+                    onError={() => console.log(...arguments) }
                     />
                 <MapButton
                     direction={this.props.direction}
-                />
+                    />
             </View>
         );
     }
