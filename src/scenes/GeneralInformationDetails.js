@@ -89,8 +89,6 @@ export class GeneralInformationDetails extends Component {
             return;
         }
 
-        console.log(state);
-
         if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
             url = url.substr(url.indexOf('://') + 3);
             url = url.substr(url.indexOf('/'));
