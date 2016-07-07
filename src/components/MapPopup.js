@@ -23,16 +23,16 @@ export default class MapPopup extends Component {
         if (direction == 'rtl') return (
             <View style={styles.container}>
                 <View style={[styles.rowContainer, styles.itemsToEnd]}>
-                    <View style={[styles.container, {marginRight: 20, alignItems: 'flex-end'}]}>
+                    <View style={[styles.container, { marginRight: 20, alignItems: 'flex-end' }]}>
                         <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
                         <Text style={componentStyles.mapPopupProvider}>{marker.service.provider.name}</Text>
-                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction)}</Text>
+                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction) }</Text>
                     </View>
-                    <View style={[styles.iconContainer, {marginRight: 0, alignSelf: 'center'}]}>
+                    <View style={[styles.iconContainer, { marginRight: 0, alignSelf: 'center' }]}>
                         <Image
-                            source={{uri: marker.icon_url}}
+                            source={{ uri: marker.icon_url }}
                             style={styles.mapIcon}
-                        />
+                            />
                     </View>
                 </View>
                 <View>
@@ -40,29 +40,31 @@ export default class MapPopup extends Component {
                 </View>
             </View>
         );
+
         return (
             <View style={styles.container}>
                 <View style={styles.rowContainer}>
                     <View style={styles.iconContainer}>
                         <Image
-                            source={{uri: marker.icon_url}}
+                            source={{ uri: marker.icon_url }}
                             style={styles.mapIcon}
-                        />
+                            />
                     </View>
                     <View style={styles.container}>
                         <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
                         <Text style={componentStyles.mapPopupProvider}>{marker.service.provider.name}</Text>
-                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction)}</Text>
+                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction) }</Text>
                     </View>
                 </View>
                 <View>
-                    <Text style={componentStyles.mapPopupDescription}>{marker.description}</Text>
+                    <Text style={[componentStyles.mapPopupDescription, { width: width - 40 }]}>{marker.description}</Text>
                 </View>
             </View>
         )
     }
 };
 
+        const {width} = Dimensions.get('window');
 
 const componentStyles = StyleSheet.create({
     mapPopupTitle: {
@@ -76,6 +78,6 @@ const componentStyles = StyleSheet.create({
     mapPopupDescription: {
         marginTop: 5,
         fontSize: 12,
-        width: Dimensions.get('window').width - 40
+        width
     }
 });

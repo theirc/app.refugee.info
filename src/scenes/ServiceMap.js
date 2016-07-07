@@ -6,6 +6,7 @@ import {
     AsyncStorage,
     Image,
     Text,
+    Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
 import ApiClient from '../utils/ApiClient';
@@ -50,6 +51,7 @@ class ServiceMap extends Component {
     }
 
     timeout = null;
+    markers = [];
 
     constructor(props) {
         super(props);
@@ -61,7 +63,7 @@ class ServiceMap extends Component {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1.id !== row2.id
                 }),
-                loaded: false,
+                loaded: true,
                 iconsLoaded: false,
                 markers: [],
                 offline: false,
@@ -75,13 +77,17 @@ class ServiceMap extends Component {
 
     componentDidMount() {
         this.apiClient = new ApiClient(this.context, this.props);
+        const {region} = this.props;
+
+        let currentEnvelope = ServiceMap.getInitialRegion(region);
+        this.setState({ intialEnvelope: currentEnvelope });
+        
         if (!this.state.loaded) {
             if (this.timeout) {
                 clearTimeout(this.timeout);
             }
-            setTimeout(() => {
-                this.timeout = this.fetchData().done();
-
+            this.timeout = setTimeout(() => {
+                 this.fetchData().done();
             }, 200);
         }
     }
@@ -132,11 +138,6 @@ class ServiceMap extends Component {
             return;
         }
 
-        if (!currentEnvelope.hasOwnProperty('latitude')) {
-            currentEnvelope = ServiceMap.getInitialRegion(region);
-            await this.setState({ intialEnvelope: currentEnvelope });
-        }
-
         try {
             let serviceTypes = await serviceData.listServiceTypes();
             let serviceResult = await serviceData.pageServices(
@@ -145,7 +146,7 @@ class ServiceMap extends Component {
                 criteria
             );
             let newServices = serviceResult.results;
-            let services = (this.state.services||[]).concat(newServices);
+            let services = (this.state.services || []).concat(newServices);
 
             services = _.uniq(services, false, (s) => s.id);
 
@@ -154,13 +155,12 @@ class ServiceMap extends Component {
                 let serviceType = serviceTypes.find(function (type) {
                     return type.url == service.type;
                 });
-                this.icons[serviceType.icon_url] = false;
                 return {
                     latitude: parseFloat(location[2]),
                     longitude: parseFloat(location[1]),
                     description: service.description,
                     title: service.name,
-                    icon_url: serviceType.icon_url,
+                    icon_url: serviceType.icon_base64,
                     service
                 };
             });
@@ -184,50 +184,49 @@ class ServiceMap extends Component {
     }
 
     render() {
-        if (this.state.loaded) {
-            return (
-                <View style={styles.container}>
-                    <MapView
-                        onRegionChangeComplete={(region) => this.onRegionChange(region) }
-                        initialRegion={this.state.intialEnvelope}
-                        style={styles.flex}
-                        >
-                        {this.state.markers.map((marker, i) => (
-                            <MapView.Marker
-                                coordinate={{
-                                    latitude: marker.latitude,
-                                    longitude: marker.longitude
-                                }}
-                                description={marker.description}
-                                key={i}
-                                onCalloutPress={() => this.onCalloutPress(marker) }
-                                title={marker.title}
-                                >
-                                {!!marker.icon_url &&
-                                    <View>
-                                        <Image
-                                            onLoadEnd={() => this.onLoadEnd(marker.icon_url) }
-                                            source={{ uri: marker.icon_url }}
-                                            style={styles.mapIcon}
-                                            />
-                                    </View>
-                                }
-                                <MapView.Callout style={styles.mapPopupContainer}>
-                                    <MapPopup
-                                        marker={marker}
-                                        direction={this.props.direction}
-                                        />
-                                </MapView.Callout>
-                            </MapView.Marker>
-                        )) }
-                    </MapView>
-                </View>
-            )
-        }
-        return (null)
+        const {width, height} = Dimensions.get('window');
+        this.markers = this.state.markers.map(()=>null);
+        return (
+            <View style={styles.container}>
+                <MapView
+                    onRegionChangeComplete={(region) => this.onRegionChange(region) }
+                    initialRegion={this.state.intialEnvelope}
+                    style={styles.flex}
+                    >
+                    {this.state.markers.map((marker, i) => (
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: marker.latitude,
+                                longitude: marker.longitude
+                            }}
+                            description={marker.description}
+                            key={i}
+                            ref={(r) => this.markers[i] = r}
+                            onCalloutPress={() => this.onCalloutPress(marker) }
+                            onPress={()=>console.log('Pressed', this.markers[i].props)}
+                            title={marker.title}
+                            >
+                            <View>
+                                <Image
+                                    source={{ uri: marker.icon_url }}
+                                    style={styles.mapIcon}
+                                    />
+                            </View>
+                            <MapView.Callout style={[styles.mapPopupContainer, {width}]}>
+                                <MapPopup
+                                    marker={marker}
+                                    direction={this.props.direction}
+                                    />
+                            </MapView.Callout>
+                        </MapView.Marker>
+                    )) }
+                </MapView>
+            </View>
+        )
     }
 
 }
+
 
 const mapStateToProps = (state) => {
     return {

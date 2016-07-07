@@ -21,6 +21,8 @@ import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
 import styles, {themes, getUnderlayColor, generateTextStyles} from '../styles';
 
+var _ = require('underscore');
+
 export default class ServiceList extends Component {
 
     static contextTypes = {
@@ -103,6 +105,7 @@ export default class ServiceList extends Component {
                 criteria
             );
             let services = serviceResult.results;
+            services = _.uniq(services, false, (s) => s.id);
 
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(services),
