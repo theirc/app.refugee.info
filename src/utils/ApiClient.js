@@ -3,7 +3,7 @@ const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
-    constructor(context, props = {language: 'en'}, api_root = 'http://api.refugee.info') {
+    constructor(context, props = { language: 'en' }, api_root = 'http://api.refugee.info') {
         this.navigator = context.navigator;
         this.apiRoot = api_root;
         this.language = props.language || 'en';
@@ -20,7 +20,7 @@ export default class ApiClient {
         if (languageCode) {
             headers['Accept-Language'] = languageCode;
         }
-        return fetch(`${this.apiRoot}${relativeUrl}`, {headers: headers})
+        return fetch(`${this.apiRoot}${relativeUrl}`, { headers: headers })
             .then((response) => response.json())
             .catch((error) => {
                 if (raise_exception) {
@@ -78,12 +78,17 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServices(locationSlug, latitude, longitude, raise_exception = false) {
+    getServices(locationSlug, latitude, longitude, raise_exception = false, page = 1, pageSize = 10) {
+        let paging = `page=${page}&page_size=${pageSize}`;
+        let map = (res) => {
+            let r = res.results;
+            return r;
+        };
         if (latitude && longitude) {
-            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}
-        &closest=${latitude},${longitude}`, raise_exception);
+            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}
+        &closest=${latitude},${longitude}`, raise_exception).then(map);
         }
-        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`, raise_exception);
+        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then(map);
     }
 
     getFeedbacks(service, raise_exception = false) {

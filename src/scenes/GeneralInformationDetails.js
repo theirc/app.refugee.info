@@ -24,14 +24,26 @@ export class GeneralInformationDetails extends Component {
     constructor(props) {
         super(props);
         this.webView = null;
+
         this.state = {
             loading: false,
-            source: false
+            source: false,
+            webViewStyle: { opacity: 0 }
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this._loadInitialState();
+    }
+
+    componentDidMount() {
+        /* it aint pretty, but it keeps the webview from flashing white */
+        const {theme} = this.props;
+        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
+
+        setTimeout(() => {
+            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 } });
+        }, 100);
     }
 
     _loadInitialState() {
@@ -68,6 +80,8 @@ export class GeneralInformationDetails extends Component {
         });
     }
 
+
+
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
         let url = state.url;
@@ -99,17 +113,17 @@ export class GeneralInformationDetails extends Component {
                     navigator.to('info', null, { information: info });
                 });
             } else {
-                if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
-                    this.webView.goBack();
+                this.webView.goBack();
 
+                if (state.url.indexOf('tel') == 0) {
+                    /* Gotta test this */
+                } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
                     let email = state.url.split('mailto:')[1];
                     Mailer.mail({
                         recipients: [email],
                     }, (error, event) => {
                     });
                 } else {
-                    this.webView.goBack();
-                    
                     Linking.openURL(state.url);
                 }
             }
@@ -125,12 +139,15 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
-                <WebView ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                    source={this.state.source}
-                    style={{ backgroundColor: backgroundColor }}
-                    onError={() => console.log(...arguments) }
-                    />
+                {this.state.source &&
+                    <WebView ref={(v) => this.webView = v}
+                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                        source={this.state.source}
+                        style={this.state.webViewStyle}
+                        onError={() => console.log(...arguments) }
+                        onLoad={() => console.log(...arguments) }
+                        />
+                }
                 <MapButton
                     direction={this.props.direction}
                     />
