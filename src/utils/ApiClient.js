@@ -8,7 +8,7 @@ export default class ApiClient {
         this.apiRoot = api_root;
         this.language = props.language || 'en';
     }
-
+    
     async fetch(relativeUrl, raise_exception = false) {
         await InteractionManager.runAfterInteractions();
         var languageCode = this.language;
@@ -78,12 +78,13 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServices(locationSlug, latitude, longitude, raise_exception = false) {
+    getServices(locationSlug, latitude, longitude, raise_exception = false, page=1, pageSize=10) {
+        let paging = `page=${page}&page_size=${pageSize}`;
         if (latitude && longitude) {
-            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}
-        &closest=${latitude},${longitude}`, raise_exception);
+            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}
+        &closest=${latitude},${longitude}`, raise_exception).then((r)=>r.results);
         }
-        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}`, raise_exception);
+        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then((r)=>r.results);
     }
 
     getFeedbacks(service, raise_exception = false) {
