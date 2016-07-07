@@ -15,6 +15,7 @@ import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
 import {connect} from 'react-redux';
 import {MapPopup} from '../components';
+import {Regions, Services} from '../data';
 
 const RADIUS_MULTIPLIER = 1.2;
 const RADIUS = 0.01;
@@ -54,7 +55,7 @@ class ServiceMap extends Component {
         } else {
             this.state = {
                 dataSource: new ListView.DataSource({
-                    rowHasChanged: (row1, row2) => row1 !== row2
+                    rowHasChanged: (row1, row2) => row1.id !== row2.id
                 }),
                 loaded: false,
                 iconsLoaded: false,
@@ -75,75 +76,6 @@ class ServiceMap extends Component {
         }
     }
 
-    async fetchData() {
-        const {region} = this.props;
-        let serviceTypes, services, locations;
-
-        if (!region) {
-            this.setState({
-                loaded: true
-            });
-            return;
-        }
-
-        if (this.props.services) {
-            services = this.props.services;
-        } else {
-            try {
-                services = await this.apiClient.getServices(region.slug, 0, 0, true);
-                await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
-            } catch (e) {
-                services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
-            }
-        }
-        try {
-            serviceTypes = await this.apiClient.getServiceTypes(true);
-            locations = await this.apiClient.getLocations(region.id, true);
-            await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
-            await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
-            await AsyncStorage.setItem('lastServicesSync', new Date().toISOString());
-            this.setState({
-                offline: false
-            });
-        }
-        catch (e) {
-            this.setState({
-                offline: true
-            });
-            serviceTypes = JSON.parse(await AsyncStorage.getItem('serviceTypesCache'));
-            locations = JSON.parse(await AsyncStorage.getItem('locationsCache'));
-        }
-        if (!services || !locations) {
-            return;
-        }
-        let markers = services.map(service => {
-            let location = service.location.match(/[\d\.]+/g);
-            let serviceType = serviceTypes.find(function (type) {
-                return type.url == service.type;
-            });
-            this.icons[serviceType.icon_url] = false;
-            return {
-                latitude: parseFloat(location[2]),
-                longitude: parseFloat(location[1]),
-                description: service.description,
-                title: service.name,
-                icon_url: serviceType.icon_url,
-                service
-            };
-        });
-        let lastSync = await AsyncStorage.getItem('lastServicesSync');
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(services),
-            loaded: true,
-            region: ServiceMap.getInitialRegion(region),
-            markers,
-            serviceTypes,
-            locations,
-            services,
-            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
-        });
-    }
-
     onCalloutPress(marker) {
         let service = marker.service;
         let location = this.state.locations.find(function (loc) {
@@ -157,7 +89,7 @@ class ServiceMap extends Component {
     }
 
     onRegionChange(region) {
-        this.setState({ region });
+        this.fetchData(region);
     }
 
     onLoadEnd(iconUrl) {
@@ -165,7 +97,6 @@ class ServiceMap extends Component {
         this.icons[iconUrl] = true;
         if (Object.values(this.icons).filter((x) => !x).length === 0 && !this.state.iconsLoaded) {
             this.setState({
-                markers: this.state.markers.reverse(), //HACK Force update of UI, forceUpdate method is not working.
                 iconsLoaded: true
             });
         }
@@ -176,6 +107,72 @@ class ServiceMap extends Component {
         this.fetchData().then(() => {
             this.setState({ refreshing: false });
         });
+    }
+
+
+    async fetchData(envelope = {}, criteria = "") {
+        // the region comes from the state now
+        const {region} = this.props;
+        const regionData = new Regions(this.apiClient);
+        const serviceData = new Services(this.apiClient);
+
+        let currentEnvelope = envelope;
+        if (!region) {
+            this.setState({
+                loaded: true
+            });
+            return;
+        }
+
+        if (!currentEnvelope.hasOwnProperty('latitude')) {
+            currentEnvelope = ServiceMap.getInitialRegion(region);
+            await this.setState({ intialEnvelope: currentEnvelope });
+        }
+
+        try {
+            let serviceTypes = await serviceData.listServiceTypes();
+            let serviceResult = await serviceData.pageServices(
+                region.slug,
+                currentEnvelope,
+                criteria
+            );
+            let services = serviceResult.results;
+
+            let markers = services.map(service => {
+                let location = service.location.match(/[\d\.]+/g);
+                let serviceType = serviceTypes.find(function (type) {
+                    return type.url == service.type;
+                });
+                this.icons[serviceType.icon_url] = false;
+                return {
+                    latitude: parseFloat(location[2]),
+                    longitude: parseFloat(location[1]),
+                    description: service.description,
+                    title: service.name,
+                    icon_url: serviceType.icon_url,
+                    service
+                };
+            });
+
+            console.log(services);
+
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(services),
+                loaded: true,
+                serviceTypes,
+                locations: [region],
+                searchCriteria: criteria,
+                markers,
+                region,
+                services,
+            });
+        } catch (e) {
+            console.log(e);
+
+            this.setState({
+                offline: true
+            });
+        }
     }
 
     render() {
@@ -189,7 +186,7 @@ class ServiceMap extends Component {
                         />
                     <MapView
                         onRegionChangeComplete={(region) => this.onRegionChange(region) }
-                        region={this.state.region}
+                        initialRegion={this.state.intialEnvelope}
                         style={styles.flex}
                         >
                         {this.state.markers.map((marker, i) => (
@@ -218,7 +215,6 @@ class ServiceMap extends Component {
                                         direction={this.props.direction}
                                         />
                                 </MapView.Callout>
-
                             </MapView.Marker>
                         )) }
                     </MapView>
