@@ -18,7 +18,7 @@ import {OfflineView, SearchBar, SearchFilterButton} from '../components';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
-import {Regions} from '../data';
+import {Regions, Services} from '../data';
 import styles, {themes, getUnderlayColor, generateTextStyles} from '../styles';
 
 export default class ServiceList extends Component {
@@ -39,7 +39,7 @@ export default class ServiceList extends Component {
         } else {
             this.state = {
                 dataSource: new ListView.DataSource({
-                    rowHasChanged: (row1, row2) => row1 !== row2
+                    rowHasChanged: (row1, row2) => row1.id !== row2.id
                 }),
                 loaded: false,
                 refreshing: false,
@@ -55,6 +55,7 @@ export default class ServiceList extends Component {
 
     componentWillMount() {
         this.apiClient = new ApiClient(this.context, this.props);
+        this.serviceData = new Services(this.apiClient);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -81,10 +82,10 @@ export default class ServiceList extends Component {
         );
     }
 
-    async fetchData() {
+    async fetchData(criteria="") {
         // the region comes from the state now
         const {region} = this.props;
-        const RegionData = new Regions(this.apiClient);
+        const regionData = new Regions(this.apiClient);
         if (!region) {
             this.setState({
                 loaded: true
@@ -94,20 +95,25 @@ export default class ServiceList extends Component {
 
         try {
             await this.setLocation();
-            let serviceTypes = await this.apiClient.getServiceTypes(true);
-            let services = await this.apiClient.getServices(
+            const {latitude, longitude} = (this.state.location || {});
+            let serviceTypes = await this.serviceData.listServiceTypes();
+            let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                this.state.location.latitude,
-                this.state.location.longitude,
-                true
+                {latitude, longitude},
+                criteria
             );
+            let services = serviceResult.results;
+
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(services),
                 loaded: true,
                 serviceTypes,
                 locations: [region],
+                searchCriteria: criteria,
                 region,
                 services,
+                canLoadMoreContent: (!!serviceResult.next),
+                pageNumber: 1
             });
         } catch (e) {
             console.log(e);
@@ -116,49 +122,6 @@ export default class ServiceList extends Component {
                 offline: true
             });
         }
-
-        `/*       
-RR: Commenting out offline storage of services for now
- return;
-        try {
-            serviceTypes = await this.apiClient.getServiceTypes(true);
-            services = await this.apiClient.getServices(
-                region.slug,
-                this.state.location.latitude,
-                this.state.location.longitude,
-                true
-            );
-            locations = await RegionData.getLocation(region.id, true);
-            await AsyncStorage.setItem('serviceTypesCache', JSON.stringify(serviceTypes));
-            await AsyncStorage.setItem('servicesCache', JSON.stringify(services));
-            await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
-            await AsyncStorage.setItem('lastServicesSync', new Date().toISOString());
-            this.setState({
-                offline: false
-            });
-        }
-        catch (e) {
-            this.setState({
-                offline: true
-            });
-            serviceTypes = JSON.parse(await AsyncStorage.getItem('serviceTypesCache'));
-            services = JSON.parse(await AsyncStorage.getItem('servicesCache'));
-            locations = JSON.parse(await AsyncStorage.getItem('locationsCache'));
-        }
-        if (!services || !locations) {
-            return;
-        }
-        locations.push(region);
-        let lastSync = await AsyncStorage.getItem('lastServicesSync');
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(services),
-            loaded: true,
-            serviceTypes,
-            locations,
-            region,
-            services,
-            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
-        });*/`
     }
 
     onRefresh() {
@@ -263,10 +226,7 @@ RR: Commenting out offline storage of services for now
         /* Lets not do the search locally
         */
         const services = this.state.services;
-        //const filteredServices = services.filter((x) => x.name.toLowerCase().indexOf(text.toLowerCase()) !== -1);
-        this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(filteredServices),
-            filteredServices: filteredServices
+        this.fetchData(text).then(() => {
         });
     }
 
@@ -276,26 +236,32 @@ RR: Commenting out offline storage of services for now
     }
 
     async _loadMoreContentAsync() {
-        const {pageNumber, services, region} = this.state;
-        this.setState({ canLoadMoreContent: false });
-
+        const {pageNumber, services, region, canLoadMoreContent, searchCriteria} = this.state;
+        if (!canLoadMoreContent) {
+            return;
+        }
         try {
-            let newServices = await this.apiClient.getServices(
+            const {latitude, longitude} = (this.state.location || {});
+            let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                this.state.location.latitude,
-                this.state.location.longitude,
-                true,
+                {latitude, longitude},
+                searchCriteria,
                 pageNumber + 1
             );
 
+            let newServices = serviceResult.results;
+            let allServices = services.concat(newServices);
+
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(services.concat(newServices)),
+                dataSource: this.state.dataSource.cloneWithRows(allServices),
+                services: allServices,
                 pageNumber: pageNumber + 1,
-                canLoadMoreContent: true,
+                searchCriteria,
+                canLoadMoreContent: (!!serviceResult.next),
             });
 
         } catch (e) {
-
+            console.log('Caught', e)
         }
     }
 

@@ -337,6 +337,18 @@ const styles = StyleSheet.create({
     },
     sectionContent: {
         fontSize: 13
+    },
+    contactBorder:{
+        marginTop: 5,
+        marginBottom: 5,
+        borderWidth: 0.5
+    },
+    borderLight: {
+        borderColor: themes.light.darkerDividerColor
+    },
+    borderDark: {
+        borderColor: themes.dark.lighterDividerColor
+
     }
 });
 
