@@ -352,7 +352,7 @@ export default class ServiceDetails extends Component {
                         ]}>
                         {I18n.t('RATE_THIS_SERVICE')}
                     </Text>
-                    <Divider theme={theme} margin={8}/>
+                    <Divider theme={theme}/>
                     <View style={styles.starContainer}>
                         {rateStars}
                     </View>

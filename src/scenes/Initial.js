@@ -28,7 +28,7 @@ class Initial extends Component {
         if (!(region || false)) {
             navigator.to('countryChoice');
         } else {
-            navigator.to('info');
+            navigator.to('countryChoice');
         }
     }
 

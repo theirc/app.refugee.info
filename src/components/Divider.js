@@ -15,8 +15,8 @@ export default class Divider extends Component {
         return (
             <View
                 style={[
-                    componentStyles.button,
-                    (theme=='dark') ? componentStyles.buttonDark : componentStyles.buttonLight,
+                    componentStyles.divider,
+                    (theme=='dark') ? componentStyles.dividerDark : componentStyles.dividerLight,
                     (margin) ? {marginTop: margin, marginBottom: margin} : {marginTop: 10, marginBottom: 10}
                 ]}
             />
@@ -25,14 +25,13 @@ export default class Divider extends Component {
 }
 
 const componentStyles = StyleSheet.create({
-    button: {
-        flex: 1,
+    divider: {
         height: 1
     },
-    buttonLight: {
+    dividerLight: {
         backgroundColor: themes.light.dividerColor
     },
-    buttonDark: {
+    dividerDark: {
         backgroundColor: themes.dark.darkerDividerColor
     }
 });

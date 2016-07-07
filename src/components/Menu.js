@@ -113,11 +113,14 @@ class MenuItem extends Component {
                         {item.image &&
                         <Image
                             source={item.image}
-                            style={styles.image}
+                            style={[
+                                styles.image,
+                                {marginLeft: direction=='rtl' ? 5 : 0}
+                            ]}
                         />
                         }
                         <View style={[
-                            direction=='rtl'? styles.labelRTL : styles.label,
+                            direction=='rtl'? styles.labelRTL : styles.label
                         ]}>
                             <Text style={fontStyle}>
                                 {item.children}
@@ -233,16 +236,6 @@ const lightStyleDefaults = {
         color: themes.light.greenAccentColor,
         fontWeight: "bold"
     },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 8
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 11
-    },
     label: {
         flex: 1
     },
@@ -254,8 +247,7 @@ const lightStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15,
-        marginLeft: 15
+        marginRight: 15
     }
 };
 
@@ -291,18 +283,7 @@ const darkStyleDefaults = {
     text: {
         color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-        paddingRight: 5,
         fontSize: 14
-    },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 8
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 11
     },
     label: {
         flex: 1
@@ -315,8 +296,7 @@ const darkStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15,
-        marginLeft: 15
+        marginRight: 15
     }
 };
 
