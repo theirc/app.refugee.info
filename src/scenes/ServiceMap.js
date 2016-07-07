@@ -17,6 +17,8 @@ import {connect} from 'react-redux';
 import {MapPopup} from '../components';
 import {Regions, Services} from '../data';
 
+var _ = require('underscore');
+
 const RADIUS_MULTIPLIER = 1.2;
 const RADIUS = 0.01;
 
@@ -47,6 +49,8 @@ class ServiceMap extends Component {
         };
     }
 
+    timeout = null;
+
     constructor(props) {
         super(props);
 
@@ -72,7 +76,13 @@ class ServiceMap extends Component {
     componentDidMount() {
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
-            this.fetchData().done();
+            if (this.timeout) {
+                clearTimeout(this.timeout);
+            }
+            setTimeout(() => {
+                this.timeout = this.fetchData().done();
+
+            }, 200);
         }
     }
 
@@ -89,7 +99,12 @@ class ServiceMap extends Component {
     }
 
     onRegionChange(region) {
-        this.fetchData(region);
+        if (this.timeout) {
+            clearTimeout(this.timeout);
+        }
+        setTimeout(() => {
+            this.timeout = this.fetchData(region).done();
+        }, 200);
     }
 
     onLoadEnd(iconUrl) {
@@ -100,13 +115,6 @@ class ServiceMap extends Component {
                 iconsLoaded: true
             });
         }
-    }
-
-    onRefresh() {
-        this.setState({ refreshing: true });
-        this.fetchData().then(() => {
-            this.setState({ refreshing: false });
-        });
     }
 
 
@@ -136,7 +144,10 @@ class ServiceMap extends Component {
                 currentEnvelope,
                 criteria
             );
-            let services = serviceResult.results;
+            let newServices = serviceResult.results;
+            let services = (this.state.services||[]).concat(newServices);
+
+            services = _.uniq(services, false, (s) => s.id);
 
             let markers = services.map(service => {
                 let location = service.location.match(/[\d\.]+/g);
@@ -154,10 +165,7 @@ class ServiceMap extends Component {
                 };
             });
 
-            console.log(services);
-
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(services),
                 loaded: true,
                 serviceTypes,
                 locations: [region],
@@ -179,11 +187,6 @@ class ServiceMap extends Component {
         if (this.state.loaded) {
             return (
                 <View style={styles.container}>
-                    <OfflineView
-                        offline={this.state.offline}
-                        onRefresh={this.onRefresh.bind(this) }
-                        lastSync={this.state.lastSync}
-                        />
                     <MapView
                         onRegionChangeComplete={(region) => this.onRegionChange(region) }
                         initialRegion={this.state.intialEnvelope}
