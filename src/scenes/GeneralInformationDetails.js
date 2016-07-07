@@ -41,8 +41,8 @@ export class GeneralInformationDetails extends Component {
         const {theme} = this.props;
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
 
-        setTimeout(()=>{
-            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 }});
+        setTimeout(() => {
+            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 } });
         }, 100);
     }
 
@@ -89,6 +89,8 @@ export class GeneralInformationDetails extends Component {
             return;
         }
 
+        console.log(state);
+
         if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
             url = url.substr(url.indexOf('://') + 3);
             url = url.substr(url.indexOf('/'));
@@ -113,17 +115,17 @@ export class GeneralInformationDetails extends Component {
                     navigator.to('info', null, { information: info });
                 });
             } else {
-                if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
-                    this.webView.goBack();
+                this.webView.goBack();
 
+                if (state.url.indexOf('tel') == 0) {
+                    /* Gotta test this */
+                } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
                     let email = state.url.split('mailto:')[1];
                     Mailer.mail({
                         recipients: [email],
                     }, (error, event) => {
                     });
                 } else {
-                    this.webView.goBack();
-                    
                     Linking.openURL(state.url);
                 }
             }
@@ -139,14 +141,14 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
-                {this.state.source && 
-                <WebView ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                    source={this.state.source}
-                    style={this.state.webViewStyle}
-                    onError={() => console.log(...arguments) }
-                    onLoad={() => console.log(...arguments) }
-                    />
+                {this.state.source &&
+                    <WebView ref={(v) => this.webView = v}
+                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                        source={this.state.source}
+                        style={this.state.webViewStyle}
+                        onError={() => console.log(...arguments) }
+                        onLoad={() => console.log(...arguments) }
+                        />
                 }
                 <MapButton
                     direction={this.props.direction}
