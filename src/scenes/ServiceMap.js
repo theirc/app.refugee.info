@@ -6,6 +6,7 @@ import {
     AsyncStorage,
     Image,
     Text,
+    Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
 import ApiClient from '../utils/ApiClient';
@@ -50,6 +51,7 @@ class ServiceMap extends Component {
     }
 
     timeout = null;
+    markers = [];
 
     constructor(props) {
         super(props);
@@ -148,8 +150,6 @@ class ServiceMap extends Component {
 
             services = _.uniq(services, false, (s) => s.id);
 
-            console.log(serviceTypes)
-
             let markers = services.map(service => {
                 let location = service.location.match(/[\d\.]+/g);
                 let serviceType = serviceTypes.find(function (type) {
@@ -184,6 +184,8 @@ class ServiceMap extends Component {
     }
 
     render() {
+        const {width, height} = Dimensions.get('window');
+        this.markers = this.state.markers.map(()=>null);
         return (
             <View style={styles.container}>
                 <MapView
@@ -199,7 +201,9 @@ class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
+                            ref={(r) => this.markers[i] = r}
                             onCalloutPress={() => this.onCalloutPress(marker) }
+                            onPress={()=>console.log('Pressed', this.markers[i].props)}
                             title={marker.title}
                             >
                             <View>
@@ -208,7 +212,7 @@ class ServiceMap extends Component {
                                     style={styles.mapIcon}
                                     />
                             </View>
-                            <MapView.Callout style={styles.mapPopupContainer}>
+                            <MapView.Callout style={[styles.mapPopupContainer, {width}]}>
                                 <MapPopup
                                     marker={marker}
                                     direction={this.props.direction}
