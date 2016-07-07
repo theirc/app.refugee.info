@@ -85,5 +85,10 @@ export default {
     about: {
         title: I18n.t('ABOUT'),
         component: require('./scenes/About').default
+    },
+
+    contact: {
+        title: I18n.t('CONTACT_US'),
+        component: require('./scenes/Contact').default
     }
 };

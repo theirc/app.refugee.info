@@ -118,4 +118,13 @@ export default class ApiClient {
             anonymous: false
         });
     }
+
+    sendEmail(name, subject, email, message) {
+        return this.post('/send_email/', {
+            name,
+            subject,
+            email,
+            message
+        });
+    }
 }
