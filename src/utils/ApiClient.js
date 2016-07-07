@@ -78,6 +78,22 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
+    getServicePage(locationSlug, coords = {}, searchCriteria="", page = 1, pageSize = 10, raise_exception = false) {
+        let url = `/v1/services/search/?format=json&geographic_region=${locationSlug}`;
+
+        if (coords.hasOwnProperty('latitude')) {
+            const {latitude, longitude} = coords;
+            url +=  `&closest=${latitude},${longitude}`;
+        }
+        if(!!searchCriteria) {
+            url += `&name=${searchCriteria}`;
+        }
+
+        url += `&page=${page}&page_size=${pageSize}`;
+
+        return this.fetch(url, raise_exception);
+    }
+
     getServices(locationSlug, latitude, longitude, raise_exception = false, page = 1, pageSize = 10) {
         let paging = `page=${page}&page_size=${pageSize}`;
         let map = (res) => {
