@@ -18,23 +18,23 @@ export default class MapButton extends Component {
 
     onClick() {
         const {navigator} = this.context;
-        navigator.to('map', null, {services: this.props.services});
+        navigator.to('map', null, { services: this.props.services });
     }
 
     render() {
         const {direction} = this.props;
         return (
             <TouchableHighlight
-                onPress={() => this.onClick()}
+                onPress={() => this.onClick() }
                 underlayColor="white"
-            >
-                <View
-                    style={componentStyles.mapButton}
                 >
+                <View
+                    style={[componentStyles.mapButton, direction == 'rtl' ? componentStyles.MapButtonRTL : {}]}
+                    >
                     <Icon
                         name="md-map"
                         style={componentStyles.mapButtomIcon}
-                    />
+                        />
                 </View>
             </TouchableHighlight>
         );
@@ -52,9 +52,12 @@ const componentStyles = StyleSheet.create({
         right: 20,
         bottom: 20,
         shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.5,
         shadowRadius: 3
+    },
+    MapButtonRTL: {
+        left: 20,
     },
     mapButtomIcon: {
         color: themes.light.backgroundColor,
