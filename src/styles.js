@@ -160,6 +160,12 @@ const styles = StyleSheet.create({
         paddingTop: 140,
         flex: 1
     },
+    row: {
+        flexDirection: 'row'
+    },
+    rowRTL: {
+        flexDirection: 'row-reverse'  
+    },
     container: {
         flex: 1,
         flexDirection: 'column'

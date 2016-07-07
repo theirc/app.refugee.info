@@ -25,47 +25,19 @@ export default class ListItem extends Component {
     render() {
         const {theme, onPress, text, icon, language, direction, iconColor, fontSize, image} = this.props;
         const defaultIcon = 'md-bus';
-
-        let iconStyles = {};
-        
-        if (Platform.OS == 'ios') {
-            iconStyles = {
-                right: direction == 'rtl' ? -5 : null,
-                left: direction == 'ltr' ? -5 : null
-            };
-        } else {
-            iconStyles = {
-                right: direction == 'rtl' ? -17 : null,
-                left: direction == 'ltr' ? 10 : null,
-                top: 13
-            };
-        }
-        let imageStyles = {};
-        
-        if (Platform.OS == 'ios') {
-            imageStyles = {
-                right: direction == 'rtl' ? -5 : null,
-                left: direction == 'ltr' ? -5 : null
-            };
-        } else {
-            imageStyles = {
-            };
-        }
-
         const button_icon = image ?
             <Image
                 source={image}
-                style={[componentStyles.listItemImageInline, imageStyles]}
-                /> :
+                style={[componentStyles.listItemImageInline]}
+            /> :
             <Icon
                 name={icon || defaultIcon }
                 style={[
                     componentStyles.listItemIconInline,
-                    iconColor && { color: iconColor },
-                    iconStyles
+                    iconColor && { color: iconColor }
                 ]}
-                />;
-        if (direction == 'rtl') return (
+            />;
+        return (
             <View>
                 <TouchableHighlight
                     onPress={onPress}
@@ -74,53 +46,25 @@ export default class ListItem extends Component {
                     <View
                         style={[
                             componentStyles.listItemContainer,
+                            direction=='rtl' ? styles.rowRTL : styles.row,
                             theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
                         ]}
                         >
-                        <View style={[
-                            componentStyles.listItemTextContainer,
-                            { alignItems: 'flex-end', borderBottomWidth: 1 },
-                            theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
-
-                        ]}>
-                            <Text style={[
-                                componentStyles.listItemText,
-                                theme == 'dark' ? styles.textDark : styles.textLight,
-                                generateTextStyles(language),
-                                { fontSize } && { fontSize: fontSize }
-                            ]}>
-                                {text}
-                            </Text>
+                        <View
+                            style={[
+                                componentStyles.listItemIconContainer
+                            ]}
+                        >
+                            {button_icon}
                         </View>
                         <View style={[
                             componentStyles.dividerInline,
                             theme == 'dark' ? styles.dividerDark : styles.dividerLight
                         ]}/>
-                        {button_icon}
-                    </View>
-                </TouchableHighlight>
-            </View>
-        );
-        else return (
-            <View>
-                <TouchableHighlight
-                    onPress={onPress}
-                    underlayColor={getUnderlayColor(theme) }
-                    >
-                    <View
-                        style={[
-                            componentStyles.listItemContainer,
-                            theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
-                        ]}
-                        >
-                        {button_icon}
-                        <View style={[
-                            componentStyles.dividerInline,
-                            theme == 'dark' ? styles.dividerDark : styles.dividerLight
-                        ]}/>
                         <View style={[
                             componentStyles.listItemTextContainer,
-                            { alignItems: 'flex-start', borderBottomWidth: 1 },
+                            {alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'},
+                            {borderBottomWidth: 1},
                             theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
 
                         ]}>
@@ -153,8 +97,7 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         paddingLeft: 10,
         paddingRight: 10,
-        height: 50,
-        flexDirection: 'row'
+        height: 50
     },
     listItemContainerLight: {
         backgroundColor: themes.light.backgroundColor
@@ -172,15 +115,23 @@ const componentStyles = StyleSheet.create({
     listItemText: {
         fontSize: 15
     },
-    listItemIconInline: {
-        fontSize: 24,
+    listItemIconContainer: {
+        width: 50,
+        height: 50,
         padding: 13,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    listItemIconInline: {
+
+        fontSize: 24,
         color: themes.light.greenAccentColor
     },
     listItemImageInline: {
         width: 24,
         height: 24,
-        margin: 13,
+        margin: 13
     },
     dividerInline: {
         marginTop: 13,
