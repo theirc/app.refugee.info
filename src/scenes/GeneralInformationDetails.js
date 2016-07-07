@@ -24,14 +24,26 @@ export class GeneralInformationDetails extends Component {
     constructor(props) {
         super(props);
         this.webView = null;
+
         this.state = {
             loading: false,
-            source: false
+            source: false,
+            webViewStyle: { opacity: 0 }
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this._loadInitialState();
+    }
+
+    componentDidMount() {
+        /* it aint pretty, but it keeps the webview from flashing white */
+        const {theme} = this.props;
+        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
+
+        setTimeout(()=>{
+            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 }});
+        }, 100);
     }
 
     _loadInitialState() {
@@ -67,6 +79,8 @@ export class GeneralInformationDetails extends Component {
             source: source
         });
     }
+
+
 
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
@@ -125,12 +139,15 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
+                {this.state.source && 
                 <WebView ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                     source={this.state.source}
-                    style={{ backgroundColor: backgroundColor }}
+                    style={this.state.webViewStyle}
                     onError={() => console.log(...arguments) }
+                    onLoad={() => console.log(...arguments) }
                     />
+                }
                 <MapButton
                     direction={this.props.direction}
                     />
