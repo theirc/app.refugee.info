@@ -1,6 +1,5 @@
 import React from 'react';
 import { AsyncStorage, Platform, InteractionManager } from 'react-native';
-import { Drawer } from 'react-native-material-design';
 import I18n from '../constants/Messages';
 
 export default class DrawerCommons {

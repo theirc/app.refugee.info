@@ -1,13 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Text, Image, View } from 'react-native';
-import { connect } from 'react-redux';
-import { Avatar, Drawer, Divider, COLOR, TYPO } from 'react-native-material-design';
-
-import { typography } from 'react-native-material-design-styles';
-
-import { I18n, CountryHeaders } from '../constants';
-import {capitalize} from '../utils/helpers';
-import DrawerCommons from '../utils/DrawerCommons';
 
 export default class DirectionalText extends Component {
 

@@ -5,7 +5,6 @@ export {default as LoadingView} from './LoadingView';
 export {default as Toolbar} from './Toolbar';
 export {default as DirectionalText} from './DirectionalText';
 export {MenuSection, MenuItem} from './Menu';
-export {Header, Section} from './DrawerOverrides';
 export {default as SearchBar} from './SearchBar';
 export {default as SearchFilterButton} from './SearchFilterButton';
 export {default as Divider} from './Divider';
