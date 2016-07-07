@@ -64,7 +64,7 @@ export class GeneralInformation extends Component {
 
         if (region.content && region.content.length === 1) {
             let c = region.content[0];
-            navigator.to('infoDetails', null, { section: c.section, sectionTitle: region.pageTitle });
+            navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
             return;
         }
         let lastSync = await AsyncStorage.getItem('lastGeneralSync');
@@ -94,9 +94,9 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this._loadInitialState().then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
@@ -106,7 +106,7 @@ export class GeneralInformation extends Component {
             let reg = new RegExp(`(${this.state.searchText})`, 'ig');
             section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
         }
-        navigator.forward(null, null, { section, sectionTitle: title }, this.state);
+        navigator.forward(null, null, {section, sectionTitle: title}, this.state);
     }
 
     renderRow(rowData) {
@@ -132,47 +132,48 @@ export class GeneralInformation extends Component {
                     componentStyles.searchBarContainer,
                     theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
                 ]}
-                    >
+                >
                     <Button
                         color="green"
                         icon="info"
                         text={I18n.t('SERVICE_LIST') }
                         onPress={() => s('services')}
-                        style={{ flex: 1, paddingRight: 2, marginBottom: 0 }}
-                        textStyle={{ top: (isLatin ? -2 : 0) }}
+                        style={{ flex: 1, marginRight: 2, marginBottom: 0}}
+                        buttonStyle={{height: 33}}
+                        textStyle={{top: (isLatin ? -2 : 0), fontSize: 15}}
                     />
                     <Button
                         color="green"
                         icon="map"
                         text={I18n.t('EXPLORE_MAP') }
                         onPress={() => s('map')}
-                        style={{ flex: 1, paddingLeft: 2, marginBottom: 0 }}
-                        textStyle={{ top: (isLatin ? -2 : 0) }}
+                        style={{ flex: 1, marginLeft: 2, marginBottom: 0}}
+                        buttonStyle={{height: 33}}
+                        textStyle={{top: (isLatin ? -2 : 0), fontSize: 15}}
                     />
                 </View>
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                    />
+                />
                 <ListView
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this) }
-                            />
+                            onRefresh={this.onRefresh.bind(this)}
+                        />
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderRow={(rowData) => this.renderRow(rowData) }
+                    renderRow={(rowData) => this.renderRow(rowData)}
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
-                    />
+                />
             </View>
         );
     }
 }
-
 
 
 const componentStyles = StyleSheet.create({
@@ -186,7 +187,7 @@ const componentStyles = StyleSheet.create({
     },
     searchBarContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor
-    },
+    }
 
 });
 

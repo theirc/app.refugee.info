@@ -158,7 +158,11 @@ export default class ServiceList extends Component {
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
                     >
-                    <View style={[styles.horizontalContainer, styles.flex]}>
+                    <View style={[
+                            direction=='rtl' ? styles.rowRTL : styles.row,
+                            styles.flex
+                        ]}
+                    >
                         <View style={[styles.centeredVerticalContainer, { width: 40, paddingLeft: 10 }]}>
                             <Image
                                 source={{ uri: serviceType.icon_url }}
@@ -171,6 +175,7 @@ export default class ServiceList extends Component {
                         ]}/>
                         <View style={[
                             styles.container,
+                            {alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'},
                             theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
                             { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14 }
                         ]}>
@@ -203,14 +208,13 @@ export default class ServiceList extends Component {
                                     {locationName}
                                 </Text>
                             </View>
-                            <View style={styles.horizontalContainer}>
+                            <View style={direction=='rtl' ? styles.rowRTL : styles.row}>
                                 <Text style={[
-                                    generateTextStyles(language),
-                                    {
-                                        color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1,
-                                        paddingRight: 5
-                                    }]
-                                }>
+                                        generateTextStyles(language),
+                                        {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1},
+                                        direction=='rtl' ? {paddingLeft: 5} : {paddingRight: 5}
+                                    ]}
+                                >
                                     {I18n.t('RATING').toUpperCase() }
                                 </Text>
                                 {rating}

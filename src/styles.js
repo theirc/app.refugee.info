@@ -67,8 +67,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         borderBottomWidth: 1,
-        height: 50,
-        flexDirection: 'row'
+        height: 50
     },
     listItemContainerLight: {
         borderBottomColor: themes.light.lighterDividerColor,
@@ -92,6 +91,11 @@ const styles = StyleSheet.create({
     listItemIcon: {
         position: 'absolute',
         left: 15,
+        top: 8
+    },
+    listItemIconRTL: {
+        position: 'absolute',
+        right: 15,
         top: 8
     },
     listItemIconInline: {
@@ -159,6 +163,12 @@ const styles = StyleSheet.create({
     scene: {
         paddingTop: 140,
         flex: 1
+    },
+    row: {
+        flexDirection: 'row'
+    },
+    rowRTL: {
+        flexDirection: 'row-reverse'  
     },
     container: {
         flex: 1,
@@ -313,8 +323,7 @@ const styles = StyleSheet.create({
     },
     modalButton: {
         width: 80,
-        paddingTop: 10,
-        paddingBottom: 10
+        alignItems: 'center'
     },
     validationText: {
         color: '#a94442',

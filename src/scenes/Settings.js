@@ -74,7 +74,7 @@ class Settings extends Component {
     }
 
     render() {
-        const {theme, language} = this.props;
+        const {theme, language, direction} = this.props;
 
         return (
             <ScrollView style={styles.container}>
@@ -87,7 +87,8 @@ class Settings extends Component {
                 />
 
                 <View style={[
-                    {flexDirection: 'row', marginTop: 30, borderBottomWidth: 1},
+                    direction=='rtl' ? styles.rowRTL : styles.row,
+                    {marginTop: 30, borderBottomWidth: 1},
                     theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
                 ]}>
                     <View style={[
@@ -131,7 +132,8 @@ class Settings extends Component {
                 />
                 
                 <View style={[
-                    {flexDirection: 'row', marginTop: 40, borderBottomWidth: 1},
+                    direction=='rtl' ? styles.rowRTL : styles.row,
+                    {marginTop: 40, borderBottomWidth: 1},
                     theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
                 ]}>
                     <View style={[
@@ -167,7 +169,9 @@ class Settings extends Component {
                             height: 45,
                             justifyContent: 'center',
                             backgroundColor: themes.light.backgroundColor,
-                            paddingLeft: 15
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'
                         }}
                     >
                         <Text style={[
@@ -189,7 +193,9 @@ class Settings extends Component {
                             height: 45,
                             justifyContent: 'center',
                             backgroundColor: themes.dark.toolbarColor,
-                            paddingLeft: 15
+                            paddingLeft: 20,
+                            paddingRight: 20,
+                            alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'
                         }}
                     >
                         <Text style={[

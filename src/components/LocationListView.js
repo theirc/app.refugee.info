@@ -65,11 +65,14 @@ export default class LocationListView extends Component {
             direction = 'ltr';
         }
 
-        const imageElement = (image && <Image source={image} style={styles.listItemIcon} />);
-        const imageDivider = (image && <View style={[
-            styles.dividerAbsolute,
-            theme=='dark' ? styles.dividerDark : styles.dividerLight
-        ]} />);
+        const imageElement = (image && 
+        <Image source={image} style={direction=='rtl' ? styles.listItemIconRTL : styles.listItemIcon} />);
+        const imageDivider = (image && 
+        <View style={[
+                styles.dividerAbsolute,
+                theme=='dark' ? styles.dividerDark : styles.dividerLight
+            ]} 
+        />);
         return (
                 <TouchableHighlight
                     onPress={() => {this.props.onPress(rowData)}}
@@ -78,6 +81,7 @@ export default class LocationListView extends Component {
                     <View
                         style={[
                             styles.listItemContainer,
+                            direction=='rtl' ? styles.rowRTL : styles.row,
                             theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
                         ]}
                     >

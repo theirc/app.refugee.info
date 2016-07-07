@@ -72,50 +72,6 @@ class MenuItem extends Component {
         const item = this.props;
         const fontStyle = {...styles.itemText, ...generateTextStyles(language)};
 
-        let rtlChild = <View style={[styles.item]}>
-            <View style={[styles.labelRTL, !(item.icon || item.image) ? {paddingRight: 5} : {}]}>
-                <Text style={[fontStyle, { textAlign: 'right' }]}>
-                    {item.children}
-                </Text>
-            </View>
-            {item.icon &&
-            <Icon
-                name={item.icon}
-                size={22}
-                style={styles.iconRTL}
-                color={styles.itemText.color || '#000000'}
-            />
-            }
-            {item.image &&
-            <Image
-                source={item.image}
-                style={styles.image}
-            />
-            }
-        </View>;
-
-        let ltrChild = <View style={[styles.item]}>
-            {item.icon &&
-            <Icon
-                name={item.icon}
-                size={22}
-                style={styles.icon}
-                color={styles.itemText.color || '#000000'}
-            />
-            }
-            {item.image &&
-            <Image
-                source={item.image}
-                style={styles.image}
-            />
-            }
-            <View style={[styles.label, !(item.icon || item.image) ? {paddingLeft: 5} : {}]}>
-                <Text style={fontStyle}>
-                    {item.children}
-                </Text>
-            </View>
-        </View>;
-
         let press = (comp, ...args) => {
             if (item.onPress) {
                 return item.onPress(...args);
@@ -141,7 +97,36 @@ class MenuItem extends Component {
                 }}
             >
                 <View style={[styles.itemLine]}>
-                    {direction === 'ltr' ? ltrChild : rtlChild}
+                    <View style={[
+                            styles.item,
+                            {flexDirection: (direction=='rtl') ? 'row-reverse' : 'row'}
+                        ]}
+                    >
+                        {item.icon &&
+                        <Icon
+                            name={item.icon}
+                            size={22}
+                            style={styles.icon}
+                            color={styles.itemText.color || '#000000'}
+                        />
+                        }
+                        {item.image &&
+                        <Image
+                            source={item.image}
+                            style={[
+                                styles.image,
+                                {marginLeft: direction=='rtl' ? 5 : 0}
+                            ]}
+                        />
+                        }
+                        <View style={[
+                            direction=='rtl'? styles.labelRTL : styles.label
+                        ]}>
+                            <Text style={fontStyle}>
+                                {item.children}
+                            </Text>
+                        </View>
+                    </View>
                 </View>
             </TouchableHighlight>
         );
@@ -221,15 +206,17 @@ const lightStyleDefaults = {
         borderBottomColor: themes.light.darkerDividerColor,
         borderBottomWidth: 1,
         paddingBottom: 12,
-        paddingTop: 12
+        paddingTop: 12,
+        paddingRight: 10,
+        paddingLeft: 10
     },
     headerWrapper: {
         paddingBottom: 30
     },
     item: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         height: 50
     },
     itemActive: {
@@ -243,41 +230,24 @@ const lightStyleDefaults = {
     },
     itemText: {
         fontSize: 14,
-        lineHeight: 24,
         color: themes.light.textColor
     },
     text: {
         color: themes.light.greenAccentColor,
-        fontWeight: "bold",
-        paddingRight: 5
-    },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 8
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 11
+        fontWeight: "bold"
     },
     label: {
-        flex: 1,
-        paddingRight: 5,
-        top: (Platform.OS === 'ios') ? -5 : 2
+        flex: 1
     },
     labelRTL: {
         flex: 1,
-        paddingRight: 15,
-        top: (Platform.OS === 'ios') ? -2 : 2,
-        paddingLeft: 5,
+        paddingRight: 10,
         alignItems: 'flex-end'
     },
     image: {
         height: 17,
         width: 21,
-        marginRight: 15,
-        marginLeft: 15
+        marginRight: 15
     }
 };
 
@@ -294,7 +264,6 @@ const darkStyleDefaults = {
     },
     item: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'center',
         height: 50
     },
@@ -309,43 +278,25 @@ const darkStyleDefaults = {
     },
     itemText: {
         fontSize: 14,
-        lineHeight: 24,
         color: themes.dark.textColor
     },
     text: {
         color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-        paddingRight: 5,
-        fontSize: 14,
-        lineHeight: 24
-    },
-    icon: {
-        position: 'absolute',
-        top: 13,
-        left: 8
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 13,
-        right: 11
+        fontSize: 14
     },
     label: {
-        flex: 1,
-        paddingRight: 5,
-        top: (Platform.OS === 'ios') ? -5 : 2
+        flex: 1
     },
     labelRTL: {
         flex: 1,
-        paddingRight: 15,
-        top: (Platform.OS === 'ios') ? -2 : 2,
-        paddingLeft: 5,
+        paddingRight: 10,
         alignItems: 'flex-end'
     },
     image: {
         height: 17,
         width: 21,
-        marginRight: 15,
-        marginLeft: 15
+        marginRight: 15
     }
 };
 

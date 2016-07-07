@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
 import styles, {themes, generateTextStyles} from '../styles';
 import {connect} from 'react-redux';
-import { default as Icon } from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default class Button extends Component {
 
@@ -30,28 +30,22 @@ export default class Button extends Component {
         else return componentStyles.buttonTextWhite
     }
 
-    /**
-     * Ugly but we can't get the color from the styles
-     */
-    getIconColor(color) {
-        if (color == 'black') return themes.dark.textColor;
-        else if (color == 'green') return themes.dark.textColor;
-        else if (color == 'yellow') return themes.light.textColor;
-        else return themes.light.textColor;
-    }
-
     render() {
         const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle} = this.props;
 
-        let textColor = (this.getIconColor(color));
         let iconImage = icon &&
-            <Icon
-                name={icon}
-                size={22}
-                style={direction == 'ltr' ? componentStyles.icon : componentStyles.iconRTL}
-                color={textColor}
+            <View style={[
+                direction=='rtl' ? {paddingRight: 10} : {paddingLeft: 10},
+                styles.alignCenter
+            ]}>
+                <Icon
+                    name={icon}
+                    style={[
+                        this.getButtonTextColor(color),
+                        componentStyles.buttonIcon
+                    ]}
                 />
-            ;
+            </View>;
 
         return (
             <TouchableHighlight onPress={onPress} style={[{ marginBottom: 10 }, style]}>
@@ -60,7 +54,7 @@ export default class Button extends Component {
                         componentStyles.button,
                         this.getButtonColor(color),
                         buttonStyle,
-                        (icon ? (direction == 'ltr' ? { paddingLeft: 22 } : { paddingRight: 22 }) : {})
+                        direction=='rtl' ? styles.rowRTL : styles.row
                     ]}
                 >
                     {iconImage}
@@ -68,7 +62,7 @@ export default class Button extends Component {
                         componentStyles.buttonText,
                         this.getButtonTextColor(color),
                         generateTextStyles(language),
-                        textStyle,
+                        textStyle
                     ]}>
                         {text}
                     </Text>
@@ -92,12 +86,11 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         height: 45,
         shadowColor: 'black',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         shadowOpacity: 0.4,
-        shadowRadius: 1,
-        flexDirection: 'column',
+        shadowRadius: 1
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
@@ -114,8 +107,12 @@ const componentStyles = StyleSheet.create({
 
     buttonText: {
         fontSize: 16,
+        flex: 1,
+        textAlign: 'center'
     },
-
+    buttonIcon: {
+        fontSize: 22
+    },
     buttonTextWhite: {
         color: themes.light.textColor
     },
@@ -127,19 +124,7 @@ const componentStyles = StyleSheet.create({
     },
     buttonTextYellow: {
         color: themes.light.textColor
-    },
-
-
-    icon: {
-        position: 'absolute',
-        top: 4,
-        left: 8,
-    },
-    iconRTL: {
-        position: 'absolute',
-        top: 4,
-        right: 11,
-    },
+    }
 });
 
 export default connect(mapStateToProps)(Button);
