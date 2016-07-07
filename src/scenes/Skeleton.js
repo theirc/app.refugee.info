@@ -24,12 +24,15 @@ class Skeleton extends Component {
         super(props);
 
         this.state = {
-            firstLoad: true
+            firstLoad: true,
+            storageLoaded: false,
         }
     }
 
     componentWillMount() {
-        this.languagePromise = this.checkLanguageSelected();
+        this.languagePromise = this.checkLanguageSelected().then(()=>{
+            this.setState({storageLoaded: true});
+        });
     }
 
     componentDidMount() {
@@ -73,11 +76,13 @@ class Skeleton extends Component {
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchThemeFromStorage());
-
-
     }
 
     render() {
+        if(!this.state.storageLoaded) {
+            return <View />;
+        }
+        
         if (this.state.firstLoad) {
             return (
                 <Welcome

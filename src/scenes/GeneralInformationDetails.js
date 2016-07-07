@@ -43,7 +43,7 @@ export class GeneralInformationDetails extends Component {
 
         setTimeout(() => {
             this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 } });
-        }, 100);
+        }, 400);
     }
 
     _loadInitialState() {

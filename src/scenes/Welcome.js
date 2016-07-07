@@ -27,17 +27,23 @@ class Welcome extends Component {
         if (!this.props.firstLoad) {
             this.props.finished();
         }
-    }
 
-    componentWillReceiveProps(props) {
+        const {props} = this;
+
         let {language} = props;
         if (!language || this.state.languageSelected) {
             return;
         }
+
+        console.log(props);
         if (['ar', 'fa'].indexOf(language) > -1) {
             /* Showing theme selection to arabic and farsi speakers
             TODO: Make this a little more dynamic */
             setTimeout(() => {
+                if (!props.firstLoad) {
+                    return;
+                }
+
                 this.setState({
                     showTheme: true,
                     languageSelected: true,
@@ -47,6 +53,10 @@ class Welcome extends Component {
             }, 1000);
         } else {
             setTimeout(() => {
+                if (!props.firstLoad) {
+                    return;
+                }
+
                 this.setState({
                     showTheme: false,
                     languageSelected: false,
@@ -87,6 +97,7 @@ class Welcome extends Component {
             dispatch({ type: "THEME_CHANGED", payload: theme }),
         ]).then(() => this.props.finished());
     }
+    
 
     renderLanguageSelection() {
         let {language} = this.props;
