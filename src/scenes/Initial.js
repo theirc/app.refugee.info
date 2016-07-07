@@ -17,7 +17,6 @@ class Initial extends Component {
     async componentDidMount() {
         const {navigator} = this.context;
         const {dispatch} = this.props;
-        const region = await AsyncStorage.getItem('regionCache');
 
         await dispatch(fetchRegionFromStorage());
         await dispatch(fetchDirectionFromStorage());
@@ -25,11 +24,13 @@ class Initial extends Component {
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchThemeFromStorage());
 
-        if (!(region || false)) {
-            navigator.to('countryChoice');
+        const region = await AsyncStorage.getItem('regionCache');
+        if (region && region != 'null') { 
+            navigator.to('info');
         } else {
             navigator.to('countryChoice');
         }
+
     }
 
     render() {
