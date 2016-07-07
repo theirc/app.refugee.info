@@ -219,8 +219,8 @@ class Navigation extends Component {
                         require('../assets/icons/contact-dark.png') :
                         require('../assets/icons/contact-light.png')
                     }
-                    active={route === 'settings'}
-                    onPress={() => s('settings') }
+                    active={route === 'contact'}
+                    onPress={() => s('contact') }
                 >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
