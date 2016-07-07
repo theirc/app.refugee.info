@@ -1,10 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, AsyncStorage, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {Button} from 'react-native-material-design';
+import {Button} from '../components'
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles, getUnderlayColor, themes} from '../styles';
+import styles, {generateTextStyles} from '../styles';
 
 export default class OfflineView extends Component {
 
@@ -51,6 +51,10 @@ export default class OfflineView extends Component {
                         <Button
                             text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
                             onPress={()=> this.onRefreshHandler()}
+                            style={{marginTop: 15}}
+                            buttonStyle={{height: 35}}
+                            textStyle={{fontSize: 14}}
+                            color="green"
                         />
                     </View>
                 </View>

@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
-import { Button } from 'react-native-material-design';
-import { connect } from 'react-redux';
+import React, {Component, PropTypes} from 'react';
+import {View, StyleSheet, Text} from 'react-native';
+import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles from '../styles';
+import styles, {generateTextStyles} from '../styles';
+import {Button} from '../components';
 
 class NetworkFailure extends Component {
 
@@ -19,29 +19,39 @@ class NetworkFailure extends Component {
     }
 
     async _onPress() {
-        const { navigator } = this.context;
+        const {navigator} = this.context;
         navigator.to(this.previousPath);
     }
 
     render() {
-        const { theme, primary } = this.props;
+        const {theme, language} = this.props;
         return (
-            <View style={styles.rowHeader}>
-                <View style={styles.centeredContainer}>
-                    <Text style={styles.error}>
-                        {I18n.t('NETWORK_FAILURE')}
-                    </Text>
-                    <Button
-                        theme={theme}
-                        primary={primary}
-                        text={I18n.t('RETRY')}
-                        raised={true}
-                        onPress={() => this._onPress()}
-                    />
-                </View>
+            <View style={[styles.centeredContainer, {justifyContent: 'center'}]}>
+                <Text style={[
+                        styles.error,
+                        theme=='dark' ? styles.textDark : styles.textLight,
+                        generateTextStyles(language)
+                    ]}
+                >
+                    {I18n.t('NETWORK_FAILURE')}
+                </Text>
+                <Button
+                    color="green"
+                    text={I18n.t('RETRY')}
+                    onPress={() => this._onPress()}
+                    style={{marginTop: 15}}
+                    buttonStyle={{paddingLeft: 30, paddingRight: 30}}
+                    textStyle={{textAlign: 'center'}}
+                />
             </View>
         );
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        language: state.language,
+        theme: state.theme.theme
+    };
+};
 
-export default connect()(NetworkFailure);
+export default connect(mapStateToProps)(NetworkFailure);

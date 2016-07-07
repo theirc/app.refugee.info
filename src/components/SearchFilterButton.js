@@ -74,7 +74,8 @@ const componentStyles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
-        shadowRadius: 1
+        shadowRadius: 1,
+        height: 36
     },
     searchFilterButtonLight: {
         backgroundColor: themes.light.backgroundColor

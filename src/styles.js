@@ -210,11 +210,6 @@ const styles = StyleSheet.create({
     icon: {
         justifyContent: 'flex-end'
     },
-    rowHeader: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     textInput: {
         height: 48,
         marginTop: 5,

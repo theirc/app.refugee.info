@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, TextInput, StyleSheet} from 'react-native';
+import {View, Text, TextInput, StyleSheet, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
@@ -49,6 +49,7 @@ export default class SearchBar extends Component {
                         placeholderTextColor={
                             theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor
                         }
+                        underlineColorAndroid='transparent'
                     />
                 </View>
             </View>
@@ -83,10 +84,11 @@ const componentStyles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 1,
         flexDirection: 'row',
-        paddingTop: 5,
-        paddingBottom: 6,
+        paddingTop: (Platform.OS==='ios') ? 5 : 0,
+        paddingBottom: (Platform.OS==='ios') ? 6 : 0,
         paddingLeft: 10,
-        paddingRight: 10
+        paddingRight: 10,
+        height: 36
     },
     searchBarLight: {
         backgroundColor: themes.light.backgroundColor
@@ -96,7 +98,8 @@ const componentStyles = StyleSheet.create({
     },
     searchBarIconContainer: {
         flexDirection: 'row',
-        alignItems: 'flex-end'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     searchBarIcon: {
         marginLeft: 5,

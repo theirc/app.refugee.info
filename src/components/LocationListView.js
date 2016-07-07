@@ -1,10 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react-native';
-import {Button, Divider} from 'react-native-material-design';
-import {default as Icon} from 'react-native-vector-icons/FontAwesome';
-
-import {I18n, CountryHeaders} from '../constants';
-import {LoadingView, DirectionalText} from '../components';
+import {I18n} from '../constants';
 import styles, {getUnderlayColor, generateTextStyles} from '../styles';
 import {connect} from 'react-redux';
 

@@ -11,6 +11,7 @@ export default class Button extends Component {
         icon: PropTypes.string,
         style: PropTypes.object,
         textStyle: PropTypes.object,
+        buttonStyle: PropTypes.object,
         color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
         onPress: PropTypes.func
     };
@@ -40,7 +41,7 @@ export default class Button extends Component {
     }
 
     render() {
-        const {text, color, onPress, language, style, direction, icon, textStyle} = this.props;
+        const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle} = this.props;
 
         let textColor = (this.getIconColor(color));
         let iconImage = icon &&
@@ -58,8 +59,10 @@ export default class Button extends Component {
                     style={[
                         componentStyles.button,
                         this.getButtonColor(color),
-                        (icon ? (direction == 'ltr' ? { paddingLeft: 22 } : { paddingRight: 22 }) : {}),
-                    ]}>
+                        buttonStyle,
+                        (icon ? (direction == 'ltr' ? { paddingLeft: 22 } : { paddingRight: 22 }) : {})
+                    ]}
+                >
                     {iconImage}
                     <Text style={[
                         componentStyles.buttonText,
