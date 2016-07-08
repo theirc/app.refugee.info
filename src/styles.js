@@ -64,10 +64,18 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 5,
         paddingBottom: 5,
-        paddingLeft: 10,
-        paddingRight: 10,
         borderBottomWidth: 1,
         height: 50
+    },
+    listItemIconContainer: {
+        width: 50,
+        height: 80,
+        padding: 13,
+        marginLeft: 5,
+        marginRight: 5,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     listItemContainerLight: {
         borderBottomColor: themes.light.lighterDividerColor,
@@ -121,8 +129,7 @@ const styles = StyleSheet.create({
     dividerLongInline: {
         marginTop: 17,
         width: 1,
-        height: 46,
-        marginLeft: 20
+        height: 46
     },
 
     // generic divider colors
@@ -138,6 +145,12 @@ const styles = StyleSheet.create({
     },
     bottomDividerDark: {
         borderBottomColor: themes.dark.darkerDividerColor
+    },
+    borderLight: {
+        borderColor: themes.light.darkerDividerColor
+    },
+    borderDark: {
+        borderColor: themes.dark.lighterDividerColor
     },
     
     // generic text colors
@@ -174,58 +187,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column'
     },
-    horizontalContainer: {
-        flexDirection: 'row'
-    },
-    centeredContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center'
-    },
-    centeredVerticalContainer: {
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     alignCenter: {
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    error: {
-        marginBottom: 5
-    },
-    
-    header: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-        padding: 15
-    },
-    headerText: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-        fontWeight: 'bold',
-        fontSize: 15,
-        color: '#313131',
-        textAlign: 'center'
-    },
-    buttonText: {
-        fontWeight: 'bold',
-        color: '#555556'
-    },
-    buttonContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        padding: 15,
-        backgroundColor: '#ffffff'
-    },
-    icon: {
-        justifyContent: 'flex-end'
-    },
-    textInput: {
-        height: 48,
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 10,
-        marginRight: 10
     },
     textInputMultiline: {
         height: 144,
@@ -245,25 +209,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center'
     },
-    rowContainer: {
-        flex: 1,
-        flexDirection: 'row'
-    },
-    feedbackContainer: {
-        marginTop: 10
-    },
     detailsContainer: {
         padding: 10
-    },
-    textCenter: {
-        textAlign: 'center',
-        textAlignVertical: 'center'
-    },
-    textRight: {
-        textAlign: 'right'
-    },
-    itemsToEnd: {
-        alignItems: 'flex-end'
     },
     title: {
         fontWeight: 'bold'
@@ -295,7 +242,6 @@ const styles = StyleSheet.create({
     },
     starContainer: {
         flex: 1,
-        flexDirection: 'row',
         margin: 5,
         justifyContent: 'space-between'
     },
@@ -303,19 +249,16 @@ const styles = StyleSheet.create({
         color: themes.light.yellowAccentColor,
         fontSize: 15,
         paddingRight: 5
-        
     },
     starIcon: {
         color: themes.light.yellowAccentColor,
         fontSize: 24
     },
     feedbackIcon: {
-        fontSize: 16,
-        marginRight: 6
+        fontSize: 16
     },
     modalButtonContainer: {
         flex: 1,
-        flexDirection: 'row',
         marginLeft: 5,
         marginRight: 10,
         marginTop: 5,
@@ -345,13 +288,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         borderWidth: 0.5
-    },
-    borderLight: {
-        borderColor: themes.light.darkerDividerColor
-    },
-    borderDark: {
-        borderColor: themes.dark.lighterDividerColor
-
     }
 });
 
@@ -379,6 +315,24 @@ export function getUnderlayColor(theme='light'){
         return 'rgba(0, 0, 0, 0.2)';
     else 
         return 'rgba(255, 255, 255, 0.6)'
+}
+
+export function getRowOrdering(direction){
+    if (direction==='rtl')
+        return styles.rowRTL;
+    else return styles.row;
+}
+
+export function getAlignItems(direction){
+    if (direction==='rtl')
+        return {alignItems: 'flex-end'};
+    else return {alignItems: 'flex-start'};
+}
+
+export function getAlignText(direction){
+    if (direction==='rtl')
+        return {textAlign: 'right'};
+    else return {textAlign: 'auto'};
 }
 
 export default styles;

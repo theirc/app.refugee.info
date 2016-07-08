@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
 import {connect} from 'react-redux';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {LocationListView} from '../components';
 import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';

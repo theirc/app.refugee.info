@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
-import styles, {themes, getUnderlayColor, generateTextStyles} from '../styles';
+import styles, {themes, getUnderlayColor, generateTextStyles, getRowOrdering, getAlignItems} from '../styles';
 
 var _ = require('underscore');
 
@@ -80,11 +80,11 @@ export default class ServiceList extends Component {
                         longitude: 0
                     }
                 });
-            }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
         );
     }
 
-    async fetchData(criteria="") {
+    async fetchData(criteria = "") {
         // the region comes from the state now
         const {region} = this.props;
         const regionData = new Regions(this.apiClient);
@@ -128,9 +128,9 @@ export default class ServiceList extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this.fetchData().then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
@@ -147,30 +147,30 @@ export default class ServiceList extends Component {
         let serviceType = this.state.serviceTypes.find(function (type) {
             return type.url == service.type;
         });
-        let rating = this.serviceCommons.renderStars(service.rating, direction);
+        let rating = this.serviceCommons.renderStars(service.rating);
         let locationName = (location) ? location.name : '';
         return (
             <TouchableHighlight
                 onPress={() => this.onClick({ service, serviceType, location }) }
                 underlayColor={getUnderlayColor(theme) }
-                >
+            >
                 <View
                     style={[
                         styles.listItemContainer,
                         theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
-                    >
+                >
                     <View style={[
-                            direction=='rtl' ? styles.rowRTL : styles.row,
+                            getRowOrdering(direction),
                             styles.flex
                         ]}
                     >
-                        <View style={[styles.centeredVerticalContainer, { width: 40, paddingLeft: 10 }]}>
+                        <View style={styles.listItemIconContainer}>
                             <Image
                                 source={{ uri: serviceType.icon_url }}
                                 style={styles.mapIcon}
-                                />
+                            />
                         </View>
                         <View style={[
                             styles.dividerLongInline,
@@ -178,29 +178,27 @@ export default class ServiceList extends Component {
                         ]}/>
                         <View style={[
                             styles.container,
-                            {alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'},
+                            getAlignItems(direction),
                             theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
-                            { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14 }
+                            { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
                         ]}>
                             <Text
                                 style={[
                                     generateTextStyles(language),
-                                    {
-                                        fontSize: 15, paddingBottom: 2, fontWeight: '500',
-                                        color: theme == 'dark' ? themes.dark.textColor : themes.light.textColor
-                                    }
+                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500',
+                                    color: theme == 'dark' ? themes.dark.textColor : themes.light.textColor}
                                 ]}
-                                >
+                            >
                                 {service.name}
                             </Text>
-                            <View style={[styles.horizontalContainer, { paddingBottom: 2 }]}>
+                            <View style={[styles.row, { paddingBottom: 2 }]}>
                                 <Icon
                                     name="ios-pin"
                                     style={[
                                         { fontSize: 13, marginRight: 8 },
                                         { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                                     ]}
-                                    />
+                                />
                                 <Text style={[
                                     generateTextStyles(language),
                                     {
@@ -211,7 +209,7 @@ export default class ServiceList extends Component {
                                     {locationName}
                                 </Text>
                             </View>
-                            <View style={direction=='rtl' ? styles.rowRTL : styles.row}>
+                            <View style={getRowOrdering(direction)}>
                                 <Text style={[
                                         generateTextStyles(language),
                                         {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1},
@@ -231,7 +229,7 @@ export default class ServiceList extends Component {
 
     _onChangeText(text) {
         /* Lets not do the search locally
-        */
+         */
         const services = this.state.services;
         this.fetchData(text).then(() => {
         });
@@ -277,13 +275,13 @@ export default class ServiceList extends Component {
         if (!this.state.region) {
             return (
                 <View style={styles.container}>
-                    <View style={styles.horizontalContainer}>
+                    <View style={styles.row}>
                         <SearchBar
                             theme={theme}
-                            />
+                        />
                         <SearchFilterButton
                             theme={theme}
-                            />
+                        />
                     </View>
                     <View
                         style={[
@@ -291,13 +289,13 @@ export default class ServiceList extends Component {
                             { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
                             { paddingTop: 10 }
                         ]}
-                        >
+                    >
                         <Text
                             style={[
                                 styles.viewHeaderText,
                                 theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                             ]}
-                            >
+                        >
                             {I18n.t('LOADING_SERVICES').toUpperCase() }
                         </Text>
                     </View>
@@ -306,15 +304,15 @@ export default class ServiceList extends Component {
         }
         return (
             <View style={styles.container}>
-                <View style={styles.horizontalContainer}>
+                <View style={styles.row}>
                     <SearchBar
                         theme={theme}
                         searchFunction={(text) => this._onChangeText(text) }
-                        />
+                    />
                     <SearchFilterButton
                         theme={theme}
                         onPressAction={() => this.searchFilterButtonAction() }
-                        />
+                    />
                 </View>
                 <View
                     style={[
@@ -322,13 +320,13 @@ export default class ServiceList extends Component {
                         { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
                         { paddingTop: 10 }
                     ]}
-                    >
+                >
                     <Text
                         style={[
                             styles.viewHeaderText,
                             theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                         ]}
-                        >
+                    >
                         {I18n.t('NEAREST_SERVICES').toUpperCase() }
                     </Text>
                 </View>
@@ -336,7 +334,7 @@ export default class ServiceList extends Component {
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                    />
+                />
                 <ListView
                     refreshControl={
                         <RefreshControl
@@ -353,11 +351,11 @@ export default class ServiceList extends Component {
                     direction={this.props.direction}
                     canLoadMore={this.state.canLoadMoreContent}
                     onLoadMoreAsync={() => { this._loadMoreContentAsync() } }
-                    />
+                />
                 <MapButton
                     direction={this.props.direction}
                     services={this.state.filteredServices}
-                    />
+                />
             </View>
         );
     }

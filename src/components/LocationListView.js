@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react-native';
 import {I18n} from '../constants';
-import styles, {getUnderlayColor, generateTextStyles} from '../styles';
+import styles, {getUnderlayColor, generateTextStyles, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
 
 export default class LocationListView extends Component {
@@ -81,7 +81,7 @@ export default class LocationListView extends Component {
                     <View
                         style={[
                             styles.listItemContainer,
-                            direction=='rtl' ? styles.rowRTL : styles.row,
+                            getRowOrdering(direction),
                             theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
                         ]}
                     >

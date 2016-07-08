@@ -22,8 +22,14 @@ import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
 import Share from 'react-native-share';
 import {OfflineView, Divider, Button} from '../components';
-
-import styles, {themes, generateTextStyles, getUnderlayColor} from '../styles';
+import styles, {
+    themes,
+    generateTextStyles,
+    getUnderlayColor,
+    getRowOrdering,
+    getAlignItems,
+    getAlignText
+} from '../styles';
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -173,19 +179,21 @@ export default class ServiceDetails extends Component {
 
     renderFeedback(row) {
         const {direction, theme, language} = this.props;
-        let stars = this.serviceCommons.renderStars(row.quality, direction);
+        let stars = this.serviceCommons.renderStars(row.quality);
         return (
             <View style={styles.detailsContainer}>
-                <View style={styles.horizontalContainer}>
+                <View style={getRowOrdering(direction)}>
                     <Icon
                         name="ios-person"
                         style={[
                             styles.feedbackIcon,
+                            direction=='rtl' ? {marginLeft: 6} : {marginRight: 6},
                             theme=='dark' ? styles.textDark : styles.textLight
                         ]}
                     />
                     <Text style={[
                         generateTextStyles(language),
+                        getAlignItems(direction),
                         theme=='dark' ? styles.textDark : styles.textLight
                     ]}>
                         {row.name}
@@ -193,13 +201,14 @@ export default class ServiceDetails extends Component {
                 </View>
                 <Divider theme={theme} margin={2}/>
                 <Text style={[
+                    getAlignText(direction),
                     generateTextStyles(language),
                     theme=='dark' ? styles.textDark : styles.textLight,
                     {marginBottom: 8, fontSize: 12}
                 ]}>
                     {row.extra_comments}
                 </Text>
-                <View style={styles.horizontalContainer}>
+                <View style={[getRowOrdering(direction)]}>
                     {stars}
                 </View>
             </View>
@@ -209,22 +218,7 @@ export default class ServiceDetails extends Component {
     renderFeedbackContainer() {
         let {direction, theme, language} = this.props;
         let rateStars;
-        if (direction == 'rtl') rateStars = [...new Array(5)].map((x, i) => (
-            <FontAwesomeIcon
-                key={i}
-                name={(Math.abs(this.state.rating - 5) < i + 1) ? 'star' : 'star-o'}
-                onPress={() => {
-                    this._setFormDirty(false);
-                    this._setModalVisible(true);
-                    this._setRating(Math.abs(i - 5));
-                }}
-                style={[
-                    styles.starIcon,
-                    (Math.abs(this.state.rating - 5) < i + 1) ? null : {color: themes.light.dividerColor}
-                ]}
-            />
-        ));
-        else rateStars = [...new Array(5)].map((x, i) => (
+        rateStars = [...new Array(5)].map((x, i) => (
             <FontAwesomeIcon
                 key={i}
                 name={(this.state.rating >= i + 1) ? 'star' : 'star-o'}
@@ -253,14 +247,13 @@ export default class ServiceDetails extends Component {
                                 theme=='dark' ? styles.modalInnerContainerDark : styles.modalInnerContainerLight
                             ]}>
                             <Text style={[
-                                styles.textCenter,
                                 generateTextStyles(language),
-                                {marginBottom: 10},
+                                {marginBottom: 10, textAlign: 'center'},
                                 theme=='dark' ? styles.textAccentYellow : styles.textLight
                             ]}>
                                 {I18n.t('YOUR_RATING')}
                             </Text>
-                            <View style={styles.starContainer}>
+                            <View style={[styles.starContainer, getRowOrdering(direction)]}>
                                 {rateStars}
                             </View>
                             <Divider theme={theme} margin={4}/>
@@ -308,7 +301,7 @@ export default class ServiceDetails extends Component {
                             </Text>
                             }
                             <Divider theme={theme} margin={4}/>
-                            <View style={styles.modalButtonContainer}>
+                            <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
                                     onPress={() => {
                                         this._setModalVisible(false);
@@ -331,7 +324,6 @@ export default class ServiceDetails extends Component {
                                 >
                                     <View style={styles.modalButton}>
                                         <Text style={[
-                                            styles.textRight,
                                             generateTextStyles(language),
                                             theme=='dark' ? styles.textAccentYellow : styles.textLight
                                         ]}>
@@ -348,12 +340,13 @@ export default class ServiceDetails extends Component {
                 >
                     <Text style={[
                             styles.sectionHeader, {marginBottom: 0},
+                            getAlignText(direction),
                             theme=='dark' ? styles.textDark : styles.textLight
                         ]}>
                         {I18n.t('RATE_THIS_SERVICE')}
                     </Text>
                     <Divider theme={theme}/>
-                    <View style={styles.starContainer}>
+                    <View style={[styles.starContainer, getRowOrdering(direction)]}>
                         {rateStars}
                     </View>
                 </View>
@@ -361,7 +354,7 @@ export default class ServiceDetails extends Component {
                     dataSource={this.state.dataSource}
                     enableEmptySections
                     renderRow={(row) => this.renderFeedback(row)}
-                    style={styles.feedbackContainer}
+                    style={{marginTop: 10}}
                     direction={direction}
                 />
 
@@ -370,7 +363,7 @@ export default class ServiceDetails extends Component {
     }
 
     render() {
-        const {service, serviceType, location, theme, direction, language, primary} = this.props;
+        const {service, serviceType, location, theme, direction, language} = this.props;
 
         let locationName = (location) ? location.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
@@ -384,7 +377,7 @@ export default class ServiceDetails extends Component {
         let close = service[`${weekDay}_close`];
         let openingHours = (!!open && !!close) ?
             `${open.substr(0, open.lastIndexOf(':'))} - ${close.substr(0, close.lastIndexOf(':'))}` : null;
-        let rating = this.serviceCommons.renderStars(service.rating, direction);
+        let rating = this.serviceCommons.renderStars(service.rating);
 
         return (
             <ScrollView
@@ -418,11 +411,15 @@ export default class ServiceDetails extends Component {
                     />
                 </MapView>
                 <View style={styles.detailsContainer}>
-                    <View style={[styles.horizontalContainer, {paddingBottom: 5}]}>
+                    <View style={[
+                        getRowOrdering(direction),
+                        {paddingBottom: 5}
+                        ]}>
                         <Icon
                             name="ios-pin"
                             style={[
-                                {fontSize: 13, marginRight: 8},
+                                direction=='rtl' ? {marginLeft: 8} : {marginRight: 8},
+                                {fontSize: 13},
                                 {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor}
                             ]}
                         />
@@ -434,7 +431,7 @@ export default class ServiceDetails extends Component {
                             {locationName}
                         </Text>
                     </View>
-                    <View style={styles.horizontalContainer}>
+                    <View style={getRowOrdering(direction)}>
                         <Text style={[
                                         generateTextStyles(language),
                                         {color: themes.light.darkerDividerColor, fontSize: 12, marginRight: 5}]
@@ -448,6 +445,7 @@ export default class ServiceDetails extends Component {
                     <View>
                         <Text style={[
                                 styles.sectionHeader,
+                                getAlignText(direction),
                                 generateTextStyles(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}
@@ -456,6 +454,7 @@ export default class ServiceDetails extends Component {
                         </Text>
                         <Text style={[
                             styles.sectionContent,
+                            getAlignText(direction),
                             generateTextStyles(language),
                             theme=='dark' ? styles.textDark : styles.textLight
                         ]}>
@@ -466,6 +465,7 @@ export default class ServiceDetails extends Component {
                     {!!openingHours &&
                     <Text style={[
                         styles.sectionContent,
+                        getAlignText(direction),
                         generateTextStyles(language),
                         theme=='dark' ? styles.textDark : styles.textLight
                     ]}>
@@ -476,6 +476,7 @@ export default class ServiceDetails extends Component {
                     {!!service.cost_of_service &&
                     <Text style={[
                         styles.sectionContent,
+                        getAlignText(direction),
                         generateTextStyles(language),
                         theme=='dark' ? styles.textDark : styles.textLight
                     ]}>
@@ -486,6 +487,7 @@ export default class ServiceDetails extends Component {
                     {service.selection_criteria.length > 0 &&
                     <Text style={[
                         styles.sectionContent,
+                        getAlignText(direction),
                         generateTextStyles(language),
                         theme=='dark' ? styles.textDark : styles.textLight
                     ]}>
@@ -538,7 +540,6 @@ export default class ServiceDetails extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         theme: state.theme.theme,
         direction: state.direction,
         language: state.language

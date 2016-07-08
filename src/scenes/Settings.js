@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {themes, generateTextStyles, getUnderlayColor} from '../styles';
+import styles, {themes, generateTextStyles, getUnderlayColor, getRowOrdering} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ListItem} from '../components';
 
@@ -87,7 +87,7 @@ class Settings extends Component {
                 />
 
                 <View style={[
-                    direction=='rtl' ? styles.rowRTL : styles.row,
+                    getRowOrdering(direction),
                     {marginTop: 30, borderBottomWidth: 1},
                     theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
                 ]}>
@@ -132,7 +132,7 @@ class Settings extends Component {
                 />
                 
                 <View style={[
-                    direction=='rtl' ? styles.rowRTL : styles.row,
+                    getRowOrdering(direction),
                     {marginTop: 40, borderBottomWidth: 1},
                     theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
                 ]}>
