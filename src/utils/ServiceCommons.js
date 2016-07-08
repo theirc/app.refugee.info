@@ -11,17 +11,7 @@ import styles, {themes} from '../styles';
 
 export default class ServiceCommons {
 
-    renderStars(rating, direction) {
-        if (direction=='rtl') return ([...new Array(5)].map((x, i) => (
-            <Icon
-                key={i}
-                name={(Math.abs(rating-5) < i + 1) ? 'star' : 'star-o'}
-                style={[
-                    styles.ratingIcon,
-                    (Math.abs(rating-5) < i + 1) ? null : {color: themes.light.dividerColor}
-                ]}
-            />
-        )));
+    renderStars(rating) {
         return ([...new Array(5)].map((x, i) => (
             <Icon
                 key={i}

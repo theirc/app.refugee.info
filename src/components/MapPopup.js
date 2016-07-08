@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Text, View, Image, Dimensions, StyleSheet} from 'react-native';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles} from '../styles';
+import styles, {generateTextStyles, getRowOrdering} from '../styles';
 
 export default class MapPopup extends Component {
 
@@ -24,7 +24,7 @@ export default class MapPopup extends Component {
                 {padding: 10},
                 theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
             ]}>
-                <View style={direction=='rtl' ? styles.rowRTL : styles.row}>
+                <View style={getRowOrdering(direction)}>
                     <View style={[
                         styles.iconContainer,
                         direction=='rtl' ? {marginLeft: 10, marginRight: 0} : {}
@@ -52,8 +52,8 @@ export default class MapPopup extends Component {
                         ]}>
                             {marker.service.provider.name}
                         </Text>
-                        <View style={styles.horizontalContainer}>
-                            {this.serviceCommons.renderStars(marker.service.rating, direction)}
+                        <View style={getRowOrdering(direction)}>
+                            {this.serviceCommons.renderStars(marker.service.rating)}
                         </View>
                     </View>
                 </View>

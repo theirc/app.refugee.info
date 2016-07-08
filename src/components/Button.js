@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
-import styles, {themes, generateTextStyles} from '../styles';
+import styles, {themes, generateTextStyles, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -54,7 +54,7 @@ export default class Button extends Component {
                         componentStyles.button,
                         this.getButtonColor(color),
                         buttonStyle,
-                        direction=='rtl' ? styles.rowRTL : styles.row
+                        getRowOrdering(direction)
                     ]}
                 >
                     {iconImage}
