@@ -99,12 +99,16 @@ const styles = StyleSheet.create({
     listItemIcon: {
         position: 'absolute',
         left: 15,
-        top: 8
+        top: 9,
+        width: 32,
+        height: 32
     },
     listItemIconRTL: {
         position: 'absolute',
         right: 15,
-        top: 8
+        top: 9,
+        width: 32,
+        height: 32
     },
     listItemIconInline: {
         marginTop: 8,
