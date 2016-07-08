@@ -3708,9 +3708,9 @@
       "resolved": "./node_shrinkwrap/react-native-mail-1.2.0.tgz"
     },
     "react-native-maps": {
-      "version": "0.6.1",
-      "from": "git://github.com/reyrodrigues/react-native-maps.git",
-      "resolved": "./node_shrinkwrap/react-native-maps-0.6.1.tgz"
+      "version": "0.4.2",
+      "from": "react-native-maps@>=0.4.0 <0.5.0",
+      "resolved": "./node_shrinkwrap/react-native-maps-0.4.2.tgz"
     },
     "react-native-scrollable-mixin": {
       "version": "1.0.1",

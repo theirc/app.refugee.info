@@ -10,15 +10,16 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
+import styles, {themes} from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import OfflineView from '../components/OfflineView';
 import {connect} from 'react-redux';
-import {MapPopup} from '../components';
+import {MapPopup, Button} from '../components';
 import {Regions, Services} from '../data';
 
 var _ = require('underscore');
+var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
 const RADIUS = 0.01;
@@ -63,11 +64,12 @@ class ServiceMap extends Component {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1.id !== row2.id
                 }),
-                loaded: true,
+                loaded: false,
                 iconsLoaded: false,
                 markers: [],
                 offline: false,
                 refreshing: false,
+                mapMoved: false,
                 lastSync: null
             };
         }
@@ -81,14 +83,8 @@ class ServiceMap extends Component {
 
         let currentEnvelope = ServiceMap.getInitialRegion(region);
         this.setState({ intialEnvelope: currentEnvelope });
-        
         if (!this.state.loaded) {
-            if (this.timeout) {
-                clearTimeout(this.timeout);
-            }
-            this.timeout = setTimeout(() => {
-                 this.fetchData().done();
-            }, 200);
+            this.fetchData().done();
         }
     }
 
@@ -105,11 +101,18 @@ class ServiceMap extends Component {
     }
 
     onRegionChange(region) {
+        if (this.state.loaded) {
+        
+        this.setState({
+            envelope: region,
+            mapMoved: true,
+        });
+        }
         if (this.timeout) {
-            clearTimeout(this.timeout);
+            // clearTimeout(this.timeout);
         }
         setTimeout(() => {
-            this.timeout = this.fetchData(region).done();
+            // this.timeout = this.fetchData(region).done();
         }, 200);
     }
 
@@ -130,6 +133,7 @@ class ServiceMap extends Component {
         const regionData = new Regions(this.apiClient);
         const serviceData = new Services(this.apiClient);
 
+
         let currentEnvelope = envelope;
         if (!region) {
             this.setState({
@@ -143,7 +147,9 @@ class ServiceMap extends Component {
             let serviceResult = await serviceData.pageServices(
                 region.slug,
                 currentEnvelope,
-                criteria
+                criteria,
+                1,
+                50
             );
             let newServices = serviceResult.results;
             let services = (this.state.services || []).concat(newServices);
@@ -167,6 +173,7 @@ class ServiceMap extends Component {
 
             this.setState({
                 loaded: true,
+                mapMoved: false,
                 serviceTypes,
                 locations: [region],
                 searchCriteria: criteria,
@@ -184,14 +191,14 @@ class ServiceMap extends Component {
     }
 
     render() {
-        const {width, height} = Dimensions.get('window');
-        this.markers = this.state.markers.map(()=>null);
+        const {theme} = this.props;
+        this.markers = this.state.markers.map(() => null);
         return (
             <View style={styles.container}>
                 <MapView
-                    onRegionChangeComplete={(region) => this.onRegionChange(region) }
                     initialRegion={this.state.intialEnvelope}
                     style={styles.flex}
+                    onRegionChange={(e) => this.onRegionChange(e) }
                     >
                     {this.state.markers.map((marker, i) => (
                         <MapView.Marker
@@ -203,7 +210,7 @@ class ServiceMap extends Component {
                             key={i}
                             ref={(r) => this.markers[i] = r}
                             onCalloutPress={() => this.onCalloutPress(marker) }
-                            onPress={()=>console.log('Pressed', this.markers[i].props)}
+                            onPress={() => console.log('Pressed', this.markers[i].props) }
                             title={marker.title}
                             >
                             <View>
@@ -212,7 +219,7 @@ class ServiceMap extends Component {
                                     style={styles.mapIcon}
                                     />
                             </View>
-                            <MapView.Callout style={[styles.mapPopupContainer, {width}]}>
+                            <MapView.Callout tooltip={true} style={[styles.mapPopupContainer, { width: width - 50 }]}>
                                 <MapPopup
                                     marker={marker}
                                     direction={this.props.direction}
@@ -221,12 +228,38 @@ class ServiceMap extends Component {
                         </MapView.Marker>
                     )) }
                 </MapView>
+                {this.state.mapMoved &&
+                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor, }]}>
+                        <Button
+                            color="green"
+                            icon="refresh"
+                            text={I18n.t('RELOAD_MAP') }
+                            onPress={() => this.fetchData(this.state.currentEnvelope) }
+                            style={{ flex: 1, margin: 0 }}
+                            buttonStyle={{ height: 40, flex: 1 }}
+                            />
+                    </View>
+                }
             </View>
         )
     }
 
 }
 
+const localStyles = StyleSheet.create({
+    refreshButton: {
+        position: 'absolute',
+        flexDirection: 'row',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 5,
+        bottom: 10,
+        width: width - 20,
+        height: 50,
+        margin: 10
+    }
+});
 
 const mapStateToProps = (state) => {
     return {
