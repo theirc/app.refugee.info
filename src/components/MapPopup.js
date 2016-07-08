@@ -18,10 +18,15 @@ export default class MapPopup extends Component {
         this.serviceCommons = new ServiceCommons();
     }
 
+
     render() {
+        const containerStyle = {
+            backgroundColor: '#ffffff',
+            padding: 10,
+        }
         let {direction, marker} = this.props;
         if (direction == 'rtl') return (
-            <View style={styles.container}>
+            <View style={[styles.container, containerStyle]}>
                 <View style={[styles.rowContainer, styles.itemsToEnd]}>
                     <View style={[styles.container, { marginRight: 20, alignItems: 'flex-end' }]}>
                         <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
@@ -42,7 +47,7 @@ export default class MapPopup extends Component {
         );
 
         return (
-            <View style={styles.container}>
+            <View style={[styles.container, containerStyle]}>
                 <View style={styles.rowContainer}>
                     <View style={styles.iconContainer}>
                         <Image
@@ -57,14 +62,14 @@ export default class MapPopup extends Component {
                     </View>
                 </View>
                 <View>
-                    <Text style={[componentStyles.mapPopupDescription, { width: width - 40 }]}>{marker.description}</Text>
+                    <Text style={[componentStyles.mapPopupDescription, { width: width - 80 }]}>{marker.description}</Text>
                 </View>
             </View>
         )
     }
 };
 
-        const {width} = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 const componentStyles = StyleSheet.create({
     mapPopupTitle: {
@@ -78,6 +83,5 @@ const componentStyles = StyleSheet.create({
     mapPopupDescription: {
         marginTop: 5,
         fontSize: 12,
-        width
     }
 });

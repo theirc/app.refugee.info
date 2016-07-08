@@ -75,5 +75,6 @@
   "WHERE_ARE_YOU": "Where are you?",
   "EMAIL": "Email",
   "SUBJECT": "Subject",
-  "MESSAGE": "Message"
+  "MESSAGE": "Message",
+  "RELOAD_MAP": "Redo search in this area",
 }
