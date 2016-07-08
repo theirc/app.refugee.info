@@ -193,11 +193,11 @@ const styles = StyleSheet.create({
     },
     textInputMultiline: {
         height: 144,
-        fontSize: 16
+        fontSize: 15
     },
     textInputModal: {
-        margin: 0,
-        height: 48
+        height: 48,
+        fontSize: 16
     },
     mapIcon: {
         width: 32,

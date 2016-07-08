@@ -64,8 +64,9 @@ export default class ServiceDetails extends Component {
             modalVisible: false,
             refreshing: false,
             service: this.props.service,
-            isFormDirty: false,
-            offline: false
+            offline: false,
+            name: '',
+            comment: ''
         };
         this.serviceCommons = new ServiceCommons();
     }
@@ -81,24 +82,12 @@ export default class ServiceDetails extends Component {
         this.setState({modalVisible: visible});
     }
 
-    _setFormDirty(dirty) {
-        this.setState({isFormDirty: dirty});
-    }
-
     _setRating(rating) {
         this.setState({rating});
     }
 
     _setLoaded(loaded) {
         this.setState({loaded});
-    }
-
-    _isNameInvalid() {
-        return this.state.isFormDirty && !this.state.name;
-    }
-
-    _isCommentInvalid() {
-        return this.state.isFormDirty && !this.state.comment;
     }
 
     async fetchData(update) {
@@ -163,19 +152,17 @@ export default class ServiceDetails extends Component {
     }
 
     postComment() {
-        this.setState({isFormDirty: true}, function () {
-            let rating = this.state.rating;
-            if (!this._isNameInvalid() && !this._isCommentInvalid() && !!rating) {
-                this.apiClient.postFeedback(this.state.service, this.state.name, rating, this.state.comment).then(
-                    (response) => {
-                        this._setModalVisible(false);
-                        this._setLoaded(false);
-                        this.fetchData(update = true);
-                    }
-                );
+        let {rating, service, name, comment} = this.state;
+        this.apiClient.postFeedback(service, name, rating, comment).then(
+            (response) => {
+                console.log(response);
+                this._setModalVisible(false);
+                this._setLoaded(false);
+                this.fetchData(update = true);
             }
-        });
+        );
     }
+
 
     renderFeedback(row) {
         const {direction, theme, language} = this.props;
@@ -223,7 +210,6 @@ export default class ServiceDetails extends Component {
                 key={i}
                 name={(this.state.rating >= i + 1) ? 'star' : 'star-o'}
                 onPress={() => {
-                    this._setFormDirty(false);
                     this._setModalVisible(true);
                     this._setRating(i + 1);
                 }}
@@ -263,7 +249,6 @@ export default class ServiceDetails extends Component {
                                 }
                                 placeholder={I18n.t('NAME')}
                                 placeholderTextColor={
-                                    this._isCommentInvalid() ? '#a94442' :
                                     theme=='dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
                                 }
                                 value={this.state.name}
@@ -273,11 +258,6 @@ export default class ServiceDetails extends Component {
                                     direction=='rtl' ? styles.alignRight : null
                                 ]}
                             />
-                            {this._isNameInvalid() &&
-                            <Text style={styles.validationText}>
-                                {I18n.t('FIELD_REQUIRED')}
-                            </Text>
-                            }
                             <TextInput
                                 multiline
                                 onChangeText={
@@ -285,7 +265,6 @@ export default class ServiceDetails extends Component {
                                 }
                                 placeholder={I18n.t('COMMENT')}
                                 placeholderTextColor={
-                                    this._isCommentInvalid() ? '#a94442' :
                                     theme=='dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
                                 }
                                 value={this.state.comment}
@@ -295,11 +274,6 @@ export default class ServiceDetails extends Component {
                                     direction=='rtl' ? styles.alignRight : null
                                 ]}
                             />
-                            {this._isCommentInvalid() &&
-                            <Text style={styles.validationText}>
-                                {I18n.t('FIELD_REQUIRED')}
-                            </Text>
-                            }
                             <Divider theme={theme} margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
