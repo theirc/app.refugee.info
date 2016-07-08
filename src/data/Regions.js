@@ -39,7 +39,7 @@ export default class Regions extends Component {
             }));
         }
 
-        return countries.filter((r) => !r.hidden);
+        return countries;//.filter((r) => !r.hidden);
     }
 
     async listChildren(country, network = false) {
