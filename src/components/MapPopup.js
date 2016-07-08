@@ -1,75 +1,76 @@
 import React, {Component, PropTypes} from 'react';
 import {Text, View, Image, Dimensions, StyleSheet} from 'react-native';
 import ServiceCommons from '../utils/ServiceCommons';
-import styles from '../styles';
+import {connect} from 'react-redux';
+import styles, {generateTextStyles} from '../styles';
 
 export default class MapPopup extends Component {
 
     static propTypes = {
-        direction: PropTypes.oneOf(['rtl', 'ltr']),
         marker: PropTypes.object
     };
 
     constructor(props) {
         super(props);
-        if (!props.direction) {
-            this.props.direction = 'ltr';
-        }
         this.serviceCommons = new ServiceCommons();
     }
 
 
     render() {
-        const containerStyle = {
-            backgroundColor: '#ffffff',
-            padding: 10,
-        }
-        let {direction, marker} = this.props;
-        if (direction == 'rtl') return (
-            <View style={[styles.container, containerStyle]}>
-                <View style={[styles.rowContainer, styles.itemsToEnd]}>
-                    <View style={[styles.container, { marginRight: 20, alignItems: 'flex-end' }]}>
-                        <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
-                        <Text style={componentStyles.mapPopupProvider}>{marker.service.provider.name}</Text>
-                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction) }</Text>
-                    </View>
-                    <View style={[styles.iconContainer, { marginRight: 0, alignSelf: 'center' }]}>
-                        <Image
-                            source={{ uri: marker.icon_url }}
-                            style={styles.mapIcon}
-                            />
-                    </View>
-                </View>
-                <View>
-                    <Text style={[componentStyles.mapPopupDescription, styles.alignRight]}>{marker.description}</Text>
-                </View>
-            </View>
-        );
-
+        let {direction, marker, theme, language} = this.props;
         return (
-            <View style={[styles.container, containerStyle]}>
-                <View style={styles.rowContainer}>
-                    <View style={styles.iconContainer}>
+            <View style={[
+                styles.container,
+                {padding: 10},
+                theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+            ]}>
+                <View style={direction=='rtl' ? styles.rowRTL : styles.row}>
+                    <View style={[
+                        styles.iconContainer,
+                        direction=='rtl' ? {marginLeft: 10, marginRight: 0} : {}
+                    ]}>
                         <Image
                             source={{ uri: marker.icon_url }}
                             style={styles.mapIcon}
-                            />
+                        />
                     </View>
-                    <View style={styles.container}>
-                        <Text style={componentStyles.mapPopupTitle}>{marker.title}</Text>
-                        <Text style={componentStyles.mapPopupProvider}>{marker.service.provider.name}</Text>
-                        <Text>{this.serviceCommons.renderStars(marker.service.rating, direction) }</Text>
+                    <View style={[
+                        styles.container,
+                        {alignItems: (direction=='rtl') ? 'flex-end' : 'flex-start'}
+                    ]}>
+                        <Text style={[
+                            componentStyles.mapPopupTitle,
+                            theme=='dark' ? styles.textDark : styles.textLight,
+                            generateTextStyles(language)
+                        ]}>
+                            {marker.title}
+                        </Text>
+                        <Text style={[
+                            componentStyles.mapPopupProvider,
+                            theme=='dark' ? styles.textDark : styles.textLight,
+                            generateTextStyles(language)
+                        ]}>
+                            {marker.service.provider.name}
+                        </Text>
+                        <View style={styles.horizontalContainer}>
+                            {this.serviceCommons.renderStars(marker.service.rating, direction)}
+                        </View>
                     </View>
                 </View>
                 <View>
-                    <Text style={[componentStyles.mapPopupDescription, { width: width - 80 }]}>{marker.description}</Text>
+                    <Text style={[
+                        componentStyles.mapPopupDescription,
+                        theme=='dark' ? styles.textDark : styles.textLight,
+                        generateTextStyles(language),
+                        {textAlign: (direction=='rtl') ? 'right' : 'left'}
+                    ]}>
+                        {marker.description}
+                    </Text>
                 </View>
             </View>
         )
     }
 };
-
-const {width} = Dimensions.get('window');
 
 const componentStyles = StyleSheet.create({
     mapPopupTitle: {
@@ -82,6 +83,16 @@ const componentStyles = StyleSheet.create({
     },
     mapPopupDescription: {
         marginTop: 5,
-        fontSize: 12,
+        fontSize: 12
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+        direction: state.direction,
+        language: state.language,
+        theme: state.theme.theme
+    };
+};
+
+export default connect(mapStateToProps)(MapPopup);
