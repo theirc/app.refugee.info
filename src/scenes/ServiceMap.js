@@ -179,7 +179,7 @@ class ServiceMap extends Component {
                 searchCriteria: criteria,
                 markers,
                 region,
-                services,
+                services
             });
         } catch (e) {
             console.log(e);
@@ -210,7 +210,6 @@ class ServiceMap extends Component {
                             key={i}
                             ref={(r) => this.markers[i] = r}
                             onCalloutPress={() => this.onCalloutPress(marker) }
-                            onPress={() => console.log('Pressed', this.markers[i].props) }
                             title={marker.title}
                             >
                             <View>
@@ -219,11 +218,8 @@ class ServiceMap extends Component {
                                     style={styles.mapIcon}
                                     />
                             </View>
-                            <MapView.Callout tooltip={true} style={[styles.mapPopupContainer, { width: width - 50 }]}>
-                                <MapPopup
-                                    marker={marker}
-                                    direction={this.props.direction}
-                                    />
+                            <MapView.Callout tooltip={true} style={[{ width: width - 50 }]}>
+                                <MapPopup marker={marker} />
                             </MapView.Callout>
                         </MapView.Marker>
                     )) }

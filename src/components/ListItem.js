@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles, getUnderlayColor, themes} from '../styles';
+import styles, {generateTextStyles, getUnderlayColor, themes, getRowOrdering, getAlignItems} from '../styles';
 
 export default class ListItem extends Component {
 
@@ -46,7 +46,7 @@ export default class ListItem extends Component {
                     <View
                         style={[
                             componentStyles.listItemContainer,
-                            direction=='rtl' ? styles.rowRTL : styles.row,
+                            getRowOrdering(direction),
                             theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
                         ]}
                         >
@@ -63,7 +63,7 @@ export default class ListItem extends Component {
                         ]}/>
                         <View style={[
                             componentStyles.listItemTextContainer,
-                            {alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'},
+                            getAlignItems(direction),
                             {borderBottomWidth: 1},
                             theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
 
@@ -95,8 +95,6 @@ const mapStateToProps = (state) => {
 const componentStyles = StyleSheet.create({
     listItemContainer: {
         flex: 1,
-        paddingLeft: 10,
-        paddingRight: 10,
         height: 50
     },
     listItemContainerLight: {
@@ -119,6 +117,8 @@ const componentStyles = StyleSheet.create({
         width: 50,
         height: 50,
         padding: 13,
+        marginLeft: 5,
+        marginRight: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'

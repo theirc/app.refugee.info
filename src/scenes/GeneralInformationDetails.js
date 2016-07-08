@@ -85,7 +85,7 @@ export class GeneralInformationDetails extends Component {
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
         let url = state.url;
-        if (url.indexOf('data:') == 0) {
+        if (url.indexOf('data:') == 0 || url.indexOf('about:') == 0) {
             return;
         }
 
