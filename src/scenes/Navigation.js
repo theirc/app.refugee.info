@@ -70,7 +70,15 @@ class Navigation extends Component {
         if (!region || !region.important_information) {
             return <View />;
         }
-        let s = (scene, props) => this.drawerCommons.changeScene(scene, null, props);
+
+        let s = (scene, information) => {
+            if (information.content && information.content.length == 1) {
+                return this.drawerCommons.changeScene('infoDetails', null, { section: information.content[0].section, sectionTitle: information.pageTitle });
+            } else {
+                return this.drawerCommons.changeScene('info',null, null, store.getState());
+            }
+        }
+
         return region.important_information.map((i, index) => {
             if (i && i.metadata) {
                 const pageTitle = (i.metadata.page_title || '')
@@ -82,7 +90,7 @@ class Navigation extends Component {
                 <MenuItem
                     image={this._getImportantInformationImage(theme, i.pageTitle)}
                     key={index}
-                    onPress={() => s('info', {information:i,title: i.pageTitle}) }
+                    onPress={() => s('info', i) }
                 >
                     {i.pageTitle}
                 </MenuItem>
