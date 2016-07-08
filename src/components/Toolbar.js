@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Image, Text, StyleSheet} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {generateTextStyles, themes} from '../styles';
@@ -37,18 +37,21 @@ export default class Toolbar extends Component {
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;
         if (navigator) {
-            icon = <Icon
-                name={navigator.isChild ? backIcon : menuIcon}
-                style={
-                    navigator.isChild ? [
-                        componentStyles.backIcon,
-                        theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
-                    ] : [
-                            componentStyles.menuIcon,
-                            theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
-                        ]}
+            icon = (<TouchableOpacity
+                style={{ width: 40, alignItems: 'flex-end' }}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
-                />;
+                ><Icon
+                    name={navigator.isChild ? backIcon : menuIcon}
+                    style={
+                        navigator.isChild ? [
+                            componentStyles.backIcon,
+                            theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
+                        ] : [
+                                componentStyles.menuIcon,
+                                theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
+                            ]}
+                    />
+            </TouchableOpacity>);
         }
 
         let showIcon = navigator && (region || navigator.isChild);
@@ -67,7 +70,7 @@ export default class Toolbar extends Component {
                         />
                     {showIcon && icon}
                 </View>
-                <View style={[componentStyles.toolbarBottom, ]}>
+                <View style={[componentStyles.toolbarBottom,]}>
                     <DirectionalText direction={direction} style={[
                         componentStyles.toolbarTitle,
                         generateTextStyles(language),
