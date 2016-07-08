@@ -71,14 +71,6 @@ class Navigation extends Component {
             return <View />;
         }
 
-        let s = (scene, information) => {
-            if (information.content && information.content.length == 1) {
-                return this.drawerCommons.changeScene('infoDetails', null, { section: information.content[0].section, sectionTitle: information.pageTitle });
-            } else {
-                return this.drawerCommons.changeScene('info',null, null, store.getState());
-            }
-        }
-
         return region.important_information.map((i, index) => {
             if (i && i.metadata) {
                 const pageTitle = (i.metadata.page_title || '')
@@ -90,12 +82,22 @@ class Navigation extends Component {
                 <MenuItem
                     image={this._getImportantInformationImage(theme, i.pageTitle)}
                     key={index}
-                    onPress={() => s('info', i) }
+                    onPress={() => this._defaultOrFirst(i) }
                 >
                     {i.pageTitle}
                 </MenuItem>
             );
         });
+    }
+
+    _defaultOrFirst(page) {
+        this.drawerCommons.closeDrawer();
+        
+        if (page.content && page.content.length == 1) {
+            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle });
+        } else {
+            return this.context.navigator.to('info',null, null, store.getState());
+        }
     }
 
     async selectCity(city) {
@@ -111,13 +113,8 @@ class Navigation extends Component {
         dispatch({type: 'REGION_CHANGED', payload: city});
         dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
-        this.drawerCommons.closeDrawer();
 
-        if (city.content && city.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: city.content[0].section, sectionTitle: city.pageTitle });
-        } else {
-            return this.context.navigator.to('info',null, null, store.getState());
-        }
+        return this._defaultOrFirst(city);
     }
 
     render() {
@@ -170,7 +167,7 @@ class Navigation extends Component {
                         require('../assets/icons/information-light.png')
                     }
                     active={route === 'info'}
-                    onPress={() => s('info') }
+                    onPress={() => this._defaultOrFirst(region) }
                 >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>

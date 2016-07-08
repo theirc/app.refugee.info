@@ -25,8 +25,13 @@ class Initial extends Component {
         await dispatch(fetchThemeFromStorage());
 
         const region = await AsyncStorage.getItem('regionCache');
-        if (region && region != 'null') { 
-            navigator.to('info');
+        if (region && region != 'null') {
+            if (region.content && region.content.length == 1) {
+                this.context.navigator.to('infoDetails', null,
+                    { section: region.content[0].section, sectionTitle: region.pageTitle })
+            } else {
+                this.context.navigator.to('info');
+            }
         } else {
             navigator.to('countryChoice');
         }
