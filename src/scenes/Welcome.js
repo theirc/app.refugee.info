@@ -96,7 +96,7 @@ class Welcome extends Component {
             dispatch({ type: "THEME_CHANGED", payload: theme }),
         ]).then(() => this.props.finished());
     }
-    
+
 
     renderLanguageSelection() {
         let {language} = this.props;
