@@ -16,6 +16,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles, {getUnderlayColor, themes} from '../styles';
 import store from '../store';
+import {Regions, Services} from '../data';
 
 export class GeneralInformation extends Component {
 
@@ -45,12 +46,12 @@ export class GeneralInformation extends Component {
     }
 
     componentDidMount() {
-        this.apiClient = new ApiClient(this.context, this.props);
+        this.regionData = new Regions(this.props);
         this._loadInitialState();
     }
 
     async _loadInitialState() {
-        let {region, information} = this.props;
+        let {region, information, country} = this.props;
         const {navigator} = this.context;
 
         if (information) {
@@ -80,7 +81,7 @@ export class GeneralInformation extends Component {
         });
 
         try {
-            region = await this.apiClient.getLocation(region.id, true);
+            region = await this.regionData.getLocation(region.id, null, true);
             await AsyncStorage.setItem('regionCache', JSON.stringify(region));
             await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
             this.setState({
@@ -198,6 +199,7 @@ const mapStateToProps = (state) => {
         primary: state.theme.primary,
         language: state.language,
         region: state.region,
+        country: state.country,
         theme: state.theme.theme,
         direction: state.direction
     };

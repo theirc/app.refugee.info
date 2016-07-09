@@ -35,7 +35,6 @@ class Welcome extends Component {
             return;
         }
 
-        console.log(props);
         if (['ar', 'fa'].indexOf(language) > -1) {
             /* Showing theme selection to arabic and farsi speakers
             TODO: Make this a little more dynamic */

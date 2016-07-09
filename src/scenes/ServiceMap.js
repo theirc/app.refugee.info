@@ -78,7 +78,6 @@ class ServiceMap extends Component {
     }
 
     componentDidMount() {
-        this.apiClient = new ApiClient(this.context, this.props);
         const {region} = this.props;
 
         let currentEnvelope = ServiceMap.getInitialRegion(region);
@@ -130,8 +129,8 @@ class ServiceMap extends Component {
     async fetchData(envelope = {}, criteria = "") {
         // the region comes from the state now
         const {region} = this.props;
-        const regionData = new Regions(this.apiClient);
-        const serviceData = new Services(this.apiClient);
+        const regionData = new Regions(this.props);
+        const serviceData = new Services(this.props);
 
 
         let currentEnvelope = envelope;

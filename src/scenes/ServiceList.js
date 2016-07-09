@@ -56,8 +56,7 @@ export default class ServiceList extends Component {
 
 
     componentWillMount() {
-        this.apiClient = new ApiClient(this.context, this.props);
-        this.serviceData = new Services(this.apiClient);
+        this.serviceData = new Services(this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
@@ -87,7 +86,7 @@ export default class ServiceList extends Component {
     async fetchData(criteria = "") {
         // the region comes from the state now
         const {region} = this.props;
-        const regionData = new Regions(this.apiClient);
+        const regionData = new Regions(this.props);
         if (!region) {
             this.setState({
                 loaded: true
