@@ -194,7 +194,7 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection title={I18n.t("MESSAGES") }>
                 <MenuItem
-                    icon="ios-mail" onPress={()=>false}>{I18n.t('NOTIFICATIONS') }</MenuItem>
+                    icon="ios-mail" onPress={()=>s('notifications')}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
                     icon="ios-paper" onPress={()=>false}>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
