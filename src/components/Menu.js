@@ -115,7 +115,6 @@ class MenuItem extends Component {
                             source={item.image}
                             style={[
                                 styles.image,
-                                {marginLeft: direction=='rtl' ? 5 : 0}
                             ]}
                         />
                         }
@@ -247,11 +246,13 @@ const lightStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 10,
+        marginLeft: 10
     },
     icon: {
         width: 21,
-        marginRight: 15
+        marginRight: 10,
+        marginLeft: 10
     }
 };
 
@@ -302,11 +303,13 @@ const darkStyleDefaults = {
     image: {
         height: 17,
         width: 21,
-        marginRight: 15
+        marginRight: 10,
+        marginLeft: 10
     },
     icon: {
         width: 21,
-        marginRight: 15
+        marginRight: 10,
+        marginLeft: 10
     }
 };
 
