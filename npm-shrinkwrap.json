@@ -3672,11 +3672,6 @@
       "from": "react-native-drawer@2.2.6",
       "resolved": "./node_shrinkwrap/react-native-drawer-2.2.6.tgz"
     },
-    "react-native-htmlview": {
-      "version": "0.5.0",
-      "from": "react-native-htmlview@latest",
-      "resolved": "./node_shrinkwrap/react-native-htmlview-0.5.0.tgz"
-    },
     "react-native-i18n": {
       "version": "0.0.8",
       "from": "react-native-i18n@>=0.0.8 <0.0.9",
