@@ -77,4 +77,7 @@
   "SUBJECT": "Subject",
   "MESSAGE": "Message",
   "RELOAD_MAP": "Redo search in this area",
+  "NOTIFICATIONS": "Notifications",
+  "MESSAGES": "MESSAGES",
+  "NEWS": "News",
 }

@@ -248,6 +248,10 @@ const lightStyleDefaults = {
         height: 17,
         width: 21,
         marginRight: 15
+    },
+    icon: {
+        width: 21,
+        marginRight: 15
     }
 };
 
@@ -257,7 +261,9 @@ const darkStyleDefaults = {
         borderBottomColor: themes.dark.darkerDividerColor,
         borderBottomWidth: 1,
         paddingBottom: 12,
-        paddingTop: 12
+        paddingTop: 12,
+        paddingRight: 10,
+        paddingLeft: 10
     },
     headerWrapper: {
         paddingBottom: 30
@@ -283,7 +289,7 @@ const darkStyleDefaults = {
     text: {
         color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-        fontSize: 14
+        fontSize: 14,
     },
     label: {
         flex: 1
@@ -295,6 +301,10 @@ const darkStyleDefaults = {
     },
     image: {
         height: 17,
+        width: 21,
+        marginRight: 15
+    },
+    icon: {
         width: 21,
         marginRight: 15
     }

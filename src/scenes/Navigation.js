@@ -31,7 +31,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({otherLocations: children});
+            this.setState({ otherLocations: children });
         }
     }
 
@@ -39,7 +39,7 @@ class Navigation extends Component {
         let cities = [];
         const regionData = new Regions(this.props);
 
-        let children = (await regionData.listChildren(country)).filter((c)=>c.level==3);
+        let children = (await regionData.listChildren(country)).filter((c) => c.level == 3);
 
         children.forEach((c) => {
             if (c && c.metadata) {
@@ -52,8 +52,8 @@ class Navigation extends Component {
         return children;
     }
 
-    _getImportantInformationImage(theme, pageTitle){
-        if (theme=='dark'){
+    _getImportantInformationImage(theme, pageTitle) {
+        if (theme == 'dark') {
             if (pageTitle.toLowerCase().includes('safe'))
                 return require('../assets/icons/staying-safe-dark.png');
             else return require('../assets/icons/asylum-procedure-dark.png')
@@ -80,10 +80,10 @@ class Navigation extends Component {
 
             return (
                 <MenuItem
-                    image={this._getImportantInformationImage(theme, i.pageTitle)}
+                    image={this._getImportantInformationImage(theme, i.pageTitle) }
                     key={index}
                     onPress={() => this._defaultOrFirst(i) }
-                >
+                    >
                     {i.pageTitle}
                 </MenuItem>
             );
@@ -92,11 +92,11 @@ class Navigation extends Component {
 
     _defaultOrFirst(page) {
         this.drawerCommons.closeDrawer();
-        
+
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle });
         } else {
-            return this.context.navigator.to('info',null, null, store.getState());
+            return this.context.navigator.to('info', null, null, store.getState());
         }
     }
 
@@ -110,8 +110,8 @@ class Navigation extends Component {
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
 
         return this._defaultOrFirst(city);
@@ -138,10 +138,10 @@ class Navigation extends Component {
         let headerImage = <Icon
             name="md-locate"
             style={[
-                {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
-                (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
+                { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
+                (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
             ]}
-        />;
+            />;
 
 
         const isLTR = direction == 'ltr';
@@ -156,41 +156,47 @@ class Navigation extends Component {
                     generateTextStyles(language),
                     styles.cityText
                 ]}>
-                    {region.pageTitle.toUpperCase()}
+                    {region.pageTitle.toUpperCase() }
                 </Text>
                 {(!isLTR) && headerImage}
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/information-dark.png') :
                         require('../assets/icons/information-light.png')
                     }
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
-                >
+                    >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/services-dark.png') :
                         require('../assets/icons/services-light.png')
                     }
                     active={route === 'services'}
                     onPress={() => s('services') }
-                >
+                    >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/map-dark.png') :
                         require('../assets/icons/map-light.png')
                     }
                     active={route === 'map'}
                     onPress={() => s('map') }
-                >
+                    >
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
+            </MenuSection>
+            <MenuSection title={I18n.t("MESSAGES") }>
+                <MenuItem
+                    icon="ios-mail" onPress={()=>false}>{I18n.t('NOTIFICATIONS') }</MenuItem>
+                <MenuItem
+                    icon="ios-paper" onPress={()=>false}>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}
@@ -200,43 +206,43 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/settings-dark.png') :
                         require('../assets/icons/settings-light.png')
                     }
                     active={route === 'settings'}
-                    onPress={() => s('settings')}
-                >
-                    {I18n.t('SETTINGS')}
+                    onPress={() => s('settings') }
+                    >
+                    {I18n.t('SETTINGS') }
                 </MenuItem>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/about-dark.png') :
                         require('../assets/icons/about-light.png')
                     }
                     active={route === 'about'}
                     onPress={() => s('about') }
-                >
+                    >
                     {I18n.t('ABOUT') }
                 </MenuItem>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/contact-dark.png') :
                         require('../assets/icons/contact-light.png')
                     }
                     active={route === 'contact'}
                     onPress={() => s('contact') }
-                >
+                    >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
-                    image={theme=='dark' ?
+                    image={theme == 'dark' ?
                         require('../assets/icons/give-feedback-dark.png') :
                         require('../assets/icons/give-feedback-light.png')
                     }
                     active={route === 'settings'}
-                    onPress={() => s('settings')}>
-                        {I18n.t('FEEDBACK') }
+                    onPress={() => s('settings') }>
+                    {I18n.t('FEEDBACK') }
                 </MenuItem>
             </MenuSection>
             <View style={{ paddingBottom: 15 }}>

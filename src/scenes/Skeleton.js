@@ -12,6 +12,8 @@ import {fetchCountryFromStorage} from '../actions/country';
 import {fetchThemeFromStorage} from '../actions/theme'
 
 
+var PushNotification = require('react-native-push-notification');
+
 /**
  This class is the skeleton of the app.
 
@@ -33,6 +35,8 @@ class Skeleton extends Component {
         this.languagePromise = this.checkLanguageSelected().then(()=>{
             this.setState({storageLoaded: true});
         });
+
+        this.askForPermissions();
     }
 
     componentDidMount() {
@@ -44,6 +48,36 @@ class Skeleton extends Component {
     }
 
     _handleAppStateChange() {
+    }
+
+
+    askForPermissions() {
+        PushNotification.configure({
+
+            // (optional) Called when Token is generated (iOS and Android)
+            onRegister: function (token) {
+            },
+
+            // (required) Called when a remote or local notification is opened or received
+            onNotification: function (notification) {
+            },
+
+            // ANDROID ONLY: (optional) GCM Sender ID.
+
+            // Should the initial notification be popped automatically
+            // default: true
+            popInitialNotification: true,
+            requestPermissions: true,
+        });
+
+         navigator.geolocation.getCurrentPosition(
+            (position) => {
+                // PUT ME IN THE REDUX
+            },
+            (error) => {
+               
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+        );
     }
 
     async checkLanguageSelected() {

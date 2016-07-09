@@ -2,6 +2,7 @@ package com.refugeeinfoapp;
 
 import android.app.Application;
 import android.util.Log;
+import android.content.Intent;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
@@ -14,11 +15,13 @@ import cl.json.RNSharePackage;
 import com.AirMaps.AirPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
 import com.chirag.RNMail.*;  // <--- import
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
+  private ReactNativePushNotificationPackage mReactNativePushNotificationPackage; // <------ Add Package Variable
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
     @Override
@@ -28,17 +31,28 @@ public class MainApplication extends Application implements ReactApplication {
 
     @Override
     protected List<ReactPackage> getPackages() {
+            mReactNativePushNotificationPackage = new ReactNativePushNotificationPackage(); // <------ Initialize the Package
+
       return Arrays.<ReactPackage>asList(
                   new MainReactPackage(),
                   new VectorIconsPackage(),
                   new RNSharePackage(),
                   new AirPackage(),
                   new ReactNativeI18n(),
-                  new RNMail()
+                  new RNMail(),
+                            mReactNativePushNotificationPackage // <---- Add the Package
+
               );
     }
   };
 
+   // Add onNewIntent
+   public void onNewIntent(Intent intent) {
+      if ( mReactNativePushNotificationPackage != null ) {
+          mReactNativePushNotificationPackage.newIntent(intent);
+      }
+   }
+   
   @Override
   public ReactNativeHost getReactNativeHost() {
       return mReactNativeHost;

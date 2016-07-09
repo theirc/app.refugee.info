@@ -34,9 +34,6 @@ export class App extends Component {
         });
     }
 
-    async componentWillMount() {
-
-    }
 
     componentWillReceiveProps(props) {
         /*
