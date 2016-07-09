@@ -37,7 +37,7 @@ class Navigation extends Component {
 
     async loadCities(country) {
         let cities = [];
-        const regionData = new Regions(new ApiClient(this.context, this.props));
+        const regionData = new Regions(this.props);
 
         let children = (await regionData.listChildren(country)).filter((c)=>c.level==3);
 

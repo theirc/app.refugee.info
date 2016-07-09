@@ -35,7 +35,7 @@ class CityChoice extends Component {
     }
 
     async componentDidMount() {
-        const regionData = new Regions(new ApiClient(this.context, this.props));
+        const regionData = new Regions(this.props);
         let cities = (await regionData.listChildren(this.props.country)).filter((c)=>c.level==3);
 
 

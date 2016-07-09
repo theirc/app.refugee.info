@@ -17,12 +17,14 @@ import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Translation from '../utils/Translation';
 
 export default class Services extends Component {
-    constructor(client) {
+    constructor(props, context=null) {
         super();
 
-        this.client = client;
+        this.language = props.language;
+        this.client = new ApiClient(context, props);
     }
 
 
@@ -38,6 +40,7 @@ export default class Services extends Component {
                 ]);
             }));
         }
+        serviceTypes.forEach(s=> Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
 
         return serviceTypes;
     }
@@ -48,7 +51,11 @@ export default class Services extends Component {
         /*
         How do we go about storing this in the AsyncStorage?
         */
-        return await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize);
+        let pagedResults = await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize);
+
+        pagedResults.results.forEach(s=> Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
+
+        return pagedResults;
     }
 
 

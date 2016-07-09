@@ -19,10 +19,10 @@ import store from '../store';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Regions extends Component {
-    constructor(client) {
+    constructor(props, context=null) {
         super();
 
-        this.client = client;
+        this.client = new ApiClient(context, props);
     }
 
     async listCountries(network = false) {

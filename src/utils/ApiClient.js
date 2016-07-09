@@ -4,7 +4,9 @@ const InteractionManager = require('InteractionManager');
 export default class ApiClient {
 
     constructor(context, props = { language: 'en' }, api_root = 'http://api.refugee.info') {
-        this.navigator = context.navigator;
+        if (context) {
+            this.navigator = context.navigator;
+        }
         this.apiRoot = api_root;
         this.language = props.language || 'en';
     }
@@ -78,14 +80,14 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServicePage(locationSlug, coords = {}, searchCriteria="", page = 1, pageSize = 10, raise_exception = false) {
+    getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, raise_exception = false) {
         let url = `/v1/services/search/?format=json&geographic_region=${locationSlug}`;
 
         if (coords.hasOwnProperty('latitude')) {
             const {latitude, longitude} = coords;
-            url +=  `&closest=${latitude},${longitude}`;
+            url += `&closest=${latitude},${longitude}`;
         }
-        if(!!searchCriteria) {
+        if (!!searchCriteria) {
             url += `&name=${searchCriteria}`;
         }
 

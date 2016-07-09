@@ -30,8 +30,8 @@ export default class CountryChoice extends Component {
 
     async componentDidMount() {
         const {dispatch} = this.props;
-
-        const regionData = new Regions(new ApiClient(this.context, this.props));
+        
+        const regionData = new Regions(this.props);
         this.regionData = regionData;
 
         const locations = await regionData.listCountries();
