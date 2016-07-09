@@ -79,18 +79,20 @@ export default class ServiceDetails extends Component {
     }
 
     _setModalVisible(visible) {
-        this.setState({modalVisible: visible});
+        this.setState({ modalVisible: visible });
     }
 
     _setRating(rating) {
-        this.setState({rating});
+        this.setState({ rating });
     }
 
     _setLoaded(loaded) {
-        this.setState({loaded});
+        this.setState({ loaded });
     }
 
+
     async fetchData(update) {
+        const {dispatch} = this.props;
         let service = this.props.service;
         try {
             if (update) {
@@ -104,6 +106,7 @@ export default class ServiceDetails extends Component {
             if (!feedbacks) {
                 return;
             }
+
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(feedbacks),
                 loaded: true,
@@ -122,9 +125,9 @@ export default class ServiceDetails extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData(update = true).then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -169,19 +172,19 @@ export default class ServiceDetails extends Component {
         let stars = this.serviceCommons.renderStars(row.quality);
         return (
             <View style={styles.detailsContainer}>
-                <View style={getRowOrdering(direction)}>
+                <View style={getRowOrdering(direction) }>
                     <Icon
                         name="ios-person"
                         style={[
                             styles.feedbackIcon,
-                            direction=='rtl' ? {marginLeft: 6} : {marginRight: 6},
-                            theme=='dark' ? styles.textDark : styles.textLight
+                            direction == 'rtl' ? { marginLeft: 6 } : { marginRight: 6 },
+                            theme == 'dark' ? styles.textDark : styles.textLight
                         ]}
-                    />
+                        />
                     <Text style={[
                         generateTextStyles(language),
                         getAlignItems(direction),
-                        theme=='dark' ? styles.textDark : styles.textLight
+                        theme == 'dark' ? styles.textDark : styles.textLight
                     ]}>
                         {row.name}
                     </Text>
@@ -190,8 +193,8 @@ export default class ServiceDetails extends Component {
                 <Text style={[
                     getAlignText(direction),
                     generateTextStyles(language),
-                    theme=='dark' ? styles.textDark : styles.textLight,
-                    {marginBottom: 8, fontSize: 12}
+                    theme == 'dark' ? styles.textDark : styles.textLight,
+                    { marginBottom: 8, fontSize: 12 }
                 ]}>
                     {row.extra_comments}
                 </Text>
@@ -212,32 +215,32 @@ export default class ServiceDetails extends Component {
                 onPress={() => {
                     this._setModalVisible(true);
                     this._setRating(i + 1);
-                }}
+                } }
                 style={[
                     styles.starIcon,
-                    (this.state.rating >= i + 1)  ? null: {color: themes.light.dividerColor}
+                    (this.state.rating >= i + 1) ? null : { color: themes.light.dividerColor }
                 ]}
-            />
+                />
         ));
         return (
             <View>
                 <Modal
                     animationType={'fade'}
-                    onRequestClose={() => this._setModalVisible(false)}
+                    onRequestClose={() => this._setModalVisible(false) }
                     transparent={true}
                     visible={this.state.modalVisible}
-                >
+                    >
                     <View style={[styles.modalContainer]}>
                         <View style={[
-                                styles.modalInnerContainer,
-                                theme=='dark' ? styles.modalInnerContainerDark : styles.modalInnerContainerLight
-                            ]}>
+                            styles.modalInnerContainer,
+                            theme == 'dark' ? styles.modalInnerContainerDark : styles.modalInnerContainerLight
+                        ]}>
                             <Text style={[
                                 generateTextStyles(language),
-                                {marginBottom: 10, textAlign: 'center'},
-                                theme=='dark' ? styles.textAccentYellow : styles.textLight
+                                { marginBottom: 10, textAlign: 'center' },
+                                theme == 'dark' ? styles.textAccentYellow : styles.textLight
                             ]}>
-                                {I18n.t('YOUR_RATING')}
+                                {I18n.t('YOUR_RATING') }
                             </Text>
                             <View style={[styles.starContainer, getRowOrdering(direction)]}>
                                 {rateStars}
@@ -245,63 +248,63 @@ export default class ServiceDetails extends Component {
                             <Divider theme={theme} margin={4}/>
                             <TextInput
                                 onChangeText={
-                                    (text) => this.setState({name: text})
+                                    (text) => this.setState({ name: text })
                                 }
-                                placeholder={I18n.t('NAME')}
+                                placeholder={I18n.t('NAME') }
                                 placeholderTextColor={
-                                    theme=='dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
+                                    theme == 'dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
                                 }
                                 value={this.state.name}
                                 style={[
                                     styles.textInputModal,
-                                    theme=='dark' ? styles.textDark : styles.textLight,
-                                    direction=='rtl' ? styles.alignRight : null
+                                    theme == 'dark' ? styles.textDark : styles.textLight,
+                                    direction == 'rtl' ? styles.alignRight : null
                                 ]}
-                            />
+                                />
                             <TextInput
                                 multiline
                                 onChangeText={
-                                    (text) => this.setState({comment: text})
+                                    (text) => this.setState({ comment: text })
                                 }
-                                placeholder={I18n.t('COMMENT')}
+                                placeholder={I18n.t('COMMENT') }
                                 placeholderTextColor={
-                                    theme=='dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
+                                    theme == 'dark' ? themes.light.dividerColor : themes.light.darkerDividerColor
                                 }
                                 value={this.state.comment}
                                 style={[
                                     styles.textInputMultiline,
-                                    theme=='dark' ? styles.textDark : styles.textLight,
-                                    direction=='rtl' ? styles.alignRight : null
+                                    theme == 'dark' ? styles.textDark : styles.textLight,
+                                    direction == 'rtl' ? styles.alignRight : null
                                 ]}
-                            />
+                                />
                             <Divider theme={theme} margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
                                     onPress={() => {
                                         this._setModalVisible(false);
-                                    }}
-                                    underlayColor={getUnderlayColor(theme)}
-                                >
+                                    } }
+                                    underlayColor={getUnderlayColor(theme) }
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             generateTextStyles(language),
-                                            theme=='dark' ? styles.textAccentYellow : styles.textLight
+                                            theme == 'dark' ? styles.textAccentYellow : styles.textLight
 
                                         ]}>
-                                            {I18n.t('CLOSE').toUpperCase()}
+                                            {I18n.t('CLOSE').toUpperCase() }
                                         </Text>
                                     </View>
                                 </TouchableHighlight>
                                 <TouchableHighlight
-                                    onPress={() => this.postComment()}
-                                    underlayColor={getUnderlayColor(theme)}
-                                >
+                                    onPress={() => this.postComment() }
+                                    underlayColor={getUnderlayColor(theme) }
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             generateTextStyles(language),
-                                            theme=='dark' ? styles.textAccentYellow : styles.textLight
+                                            theme == 'dark' ? styles.textAccentYellow : styles.textLight
                                         ]}>
-                                            {I18n.t('SUBMIT').toUpperCase()}
+                                            {I18n.t('SUBMIT').toUpperCase() }
                                         </Text>
                                     </View>
                                 </TouchableHighlight>
@@ -311,13 +314,13 @@ export default class ServiceDetails extends Component {
                 </Modal>
                 <View
                     style={styles.detailsContainer}
-                >
+                    >
                     <Text style={[
-                            styles.sectionHeader, {marginBottom: 0},
-                            getAlignText(direction),
-                            theme=='dark' ? styles.textDark : styles.textLight
-                        ]}>
-                        {I18n.t('RATE_THIS_SERVICE')}
+                        styles.sectionHeader, { marginBottom: 0 },
+                        getAlignText(direction),
+                        theme == 'dark' ? styles.textDark : styles.textLight
+                    ]}>
+                        {I18n.t('RATE_THIS_SERVICE') }
                     </Text>
                     <Divider theme={theme}/>
                     <View style={[styles.starContainer, getRowOrdering(direction)]}>
@@ -327,10 +330,10 @@ export default class ServiceDetails extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderRow={(row) => this.renderFeedback(row)}
-                    style={{marginTop: 10}}
+                    renderRow={(row) => this.renderFeedback(row) }
+                    style={{ marginTop: 10 }}
                     direction={direction}
-                />
+                    />
 
             </View>
         );
@@ -359,15 +362,15 @@ export default class ServiceDetails extends Component {
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh.bind(this)}
-                    />
+                        onRefresh={this.onRefresh.bind(this) }
+                        />
                 }
-            >
+                >
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this)}
+                    onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                />
+                    />
                 <MapView
                     initialRegion={{
                         latitude: lat,
@@ -376,134 +379,136 @@ export default class ServiceDetails extends Component {
                         longitudeDelta: RADIUS
                     }}
                     style={styles.map}
-                >
+                    >
                     <MapView.Marker
                         coordinate={{
                             latitude: lat,
                             longitude: long
                         }}
-                    />
+                        />
                 </MapView>
                 <View style={styles.detailsContainer}>
                     <View style={[
                         getRowOrdering(direction),
-                        {paddingBottom: 5}
-                        ]}>
+                        { paddingBottom: 5 }
+                    ]}>
                         <Icon
                             name="ios-pin"
                             style={[
-                                direction=='rtl' ? {marginLeft: 8} : {marginRight: 8},
-                                {fontSize: 13},
-                                {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor}
+                                direction == 'rtl' ? { marginLeft: 8 } : { marginRight: 8 },
+                                { fontSize: 13 },
+                                { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                             ]}
-                        />
+                            />
                         <Text style={[
-                                generateTextStyles(language),
-                                {color: theme=='dark' ? themes.dark.greenAccentColor : themes.light.textColor,
-                                fontSize: 12}
-                            ]}>
+                            generateTextStyles(language),
+                            {
+                                color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
+                                fontSize: 12
+                            }
+                        ]}>
                             {locationName}
                         </Text>
                     </View>
-                    <View style={getRowOrdering(direction)}>
+                    <View style={getRowOrdering(direction) }>
                         <Text style={[
-                                        generateTextStyles(language),
-                                        {color: themes.light.darkerDividerColor, fontSize: 12, marginRight: 5}]
-                                    }>
-                            {I18n.t('RATING').toUpperCase()}
+                            generateTextStyles(language),
+                            { color: themes.light.darkerDividerColor, fontSize: 12, marginRight: 5 }]
+                        }>
+                            {I18n.t('RATING').toUpperCase() }
                         </Text>
                         {rating}
                     </View>
                     <Divider theme={theme}/>
                     {!!service.description &&
-                    <View>
-                        <Text style={[
+                        <View>
+                            <Text style={[
                                 styles.sectionHeader,
                                 getAlignText(direction),
                                 generateTextStyles(language),
-                                theme=='dark' ? styles.textDark : styles.textLight
+                                theme == 'dark' ? styles.textDark : styles.textLight
                             ]}
-                        >
-                            {I18n.t('DESCRIPTION')}
-                        </Text>
+                                >
+                                {I18n.t('DESCRIPTION') }
+                            </Text>
+                            <Text style={[
+                                styles.sectionContent,
+                                getAlignText(direction),
+                                generateTextStyles(language),
+                                theme == 'dark' ? styles.textDark : styles.textLight
+                            ]}>
+                                {service.description}
+                            </Text>
+                        </View>
+                    }
+                    {!!openingHours &&
                         <Text style={[
                             styles.sectionContent,
                             getAlignText(direction),
                             generateTextStyles(language),
-                            theme=='dark' ? styles.textDark : styles.textLight
+                            theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
-                            {service.description}
+                            {I18n.t('OPENING_HOURS') }:
+                            {`\n${openingHours}`}
                         </Text>
-                    </View>
-                    }
-                    {!!openingHours &&
-                    <Text style={[
-                        styles.sectionContent,
-                        getAlignText(direction),
-                        generateTextStyles(language),
-                        theme=='dark' ? styles.textDark : styles.textLight
-                    ]}>
-                        {I18n.t('OPENING_HOURS')}:
-                        {`\n${openingHours}`}
-                    </Text>
                     }
                     {!!service.cost_of_service &&
-                    <Text style={[
-                        styles.sectionContent,
-                        getAlignText(direction),
-                        generateTextStyles(language),
-                        theme=='dark' ? styles.textDark : styles.textLight
-                    ]}>
-                        {I18n.t('COST_OF_SERVICE')}:
-                        {`\n${service.cost_of_service}`}
-                    </Text>
+                        <Text style={[
+                            styles.sectionContent,
+                            getAlignText(direction),
+                            generateTextStyles(language),
+                            theme == 'dark' ? styles.textDark : styles.textLight
+                        ]}>
+                            {I18n.t('COST_OF_SERVICE') }:
+                            {`\n${service.cost_of_service}`}
+                        </Text>
                     }
                     {service.selection_criteria.length > 0 &&
-                    <Text style={[
-                        styles.sectionContent,
-                        getAlignText(direction),
-                        generateTextStyles(language),
-                        theme=='dark' ? styles.textDark : styles.textLight
-                    ]}>
-                        {I18n.t('SELECTION_CRITERIA')}:
-                        {service.selection_criteria.map((criteria, i) => (
-                            `\n - ${criteria.text}`
-                        ))}
-                    </Text>
+                        <Text style={[
+                            styles.sectionContent,
+                            getAlignText(direction),
+                            generateTextStyles(language),
+                            theme == 'dark' ? styles.textDark : styles.textLight
+                        ]}>
+                            {I18n.t('SELECTION_CRITERIA') }:
+                            {service.selection_criteria.map((criteria, i) => (
+                                `\n - ${criteria.text}`
+                            )) }
+                        </Text>
                     }
                 </View>
                 <View style={styles.detailsContainer}>
                     <Button
                         color="green"
-                        text={I18n.t('GET_DIRECTIONS')}
-                        onPress={() => this.getDirections(lat, long)}
-                    />
+                        text={I18n.t('GET_DIRECTIONS') }
+                        onPress={() => this.getDirections(lat, long) }
+                        />
                     <Button
                         color="black"
-                        text={I18n.t('CALL')}
+                        text={I18n.t('CALL') }
                         onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                    />
+                        />
                     <Button
                         color="white"
-                        text={I18n.t('SHARE')}
-                        onPress={() => this.onShareClick()}
-                    />
+                        text={I18n.t('SHARE') }
+                        onPress={() => this.onShareClick() }
+                        />
                 </View>
                 {this.state.offline ?
                     <Text style={[
                         styles.loading,
-                        theme=='dark' ? styles.textDark : styles.textLight
+                        theme == 'dark' ? styles.textDark : styles.textLight
                     ]}>
-                        {I18n.t('FEEDBACK_OFFLINE')}
+                        {I18n.t('FEEDBACK_OFFLINE') }
                     </Text> :
                     this.state.loaded ?
                         this.renderFeedbackContainer()
                         :
                         <Text style={[
                             styles.loading,
-                            theme=='dark' ? styles.textDark : styles.textLight
+                            theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
-                            {I18n.t('LOADING')}
+                            {I18n.t('LOADING') }
                         </Text>
 
                 }

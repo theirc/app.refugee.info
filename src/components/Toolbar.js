@@ -24,14 +24,11 @@ export default class Toolbar extends Component {
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let {toolbarTitle} = this.props;
         let title = '';
-        if (!region) {
-            if (navigator && navigator.isChild)
-                title = navigator.currentRoute.title || navigator.childName;
-            else if (navigator && navigator.currentRoute)
-                title = navigator.currentRoute.title;
-        } else {
-            title = region.pageTitle || (region.metadata && region.metadata.page_title) || '';
-        }
+
+        if (navigator && navigator.isChild)
+            title = navigator.currentRoute.title || navigator.childName;
+        else if (navigator && navigator.currentRoute)
+            title = navigator.currentRoute.title;
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";

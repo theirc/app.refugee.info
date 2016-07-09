@@ -103,7 +103,15 @@ span.tel {
 img {
   max-width: 100%;
 }
+div.banner  {
+    margin: 0;
+    padding: 5px 5px;
+}
 
+div.banner p {
+    padding: 0;
+    margin: 0;
+}
 `;
 
 const lightTheme = `
@@ -128,6 +136,13 @@ a.link-button {
 div.table-responsive table td {
   border: 1px black solid;
 }
+
+div.banner {
+  border:  1px black solid;
+    background-color: #ededed;
+    color: #000 !important;
+    box-shadow: 0px 0px 3px 3px #eeeeee;
+}
 `;
 
 const darkTheme = `
@@ -148,8 +163,16 @@ a.link-button {
     background-color: #00BA50;
     color: #fff !important;
 }
+
 div.table-responsive table td {
   border: 1px white solid;
+}
+
+div.banner {
+    border:  1px white solid;
+    background-color: #4d4d4d;
+    color: #fff !important;
+    box-shadow: 0px 0px 3px 3px #444444;
 }
 `;
 
@@ -187,12 +210,12 @@ const cssFonts = `
 
 `;
 
-export function wrapHtmlContent(content:String, language:String, title:String=null, theme:String="light") : String {
+export function wrapHtmlContent(content: String, language: String, title: String = null, theme: String = "light"): String {
   language = language || 'en';
 
   let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
-  let titleHtml = title||false ? `<h2>${title}</h2>`:'';
-  let direction = ['ar','fa'].indexOf(language) > -1 ? 'rtl' : 'ltr'
+  let titleHtml = title || false ? `<h2>${title}</h2>` : '';
+  let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr'
   let htmlWrap = `
   <html>
   <head>

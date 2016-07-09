@@ -77,6 +77,11 @@ export default {
         component: require('./scenes/NetworkFailure').default
     },
 
+    notifications: {
+        title: I18n.t('ANNOUNCEMENTS'),
+        component: require('./scenes/Notifications').default
+    },
+
     settings: {
         title: I18n.t('SETTINGS'),
         component: require('./scenes/Settings').default

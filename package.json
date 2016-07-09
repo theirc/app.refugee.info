@@ -10,6 +10,7 @@
     "react": "^15.2.0",
     "react-native": "^0.29.0",
     "react-native-drawer": "^2.2.6",
+    "react-native-htmlview": "^0.5.0",
     "react-native-i18n": "0.0.8",
     "react-native-infinite-scroll-view": "^0.3.4",
     "react-native-mail": "^1.2.0",
