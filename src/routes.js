@@ -81,6 +81,10 @@ export default {
         title: I18n.t('ANNOUNCEMENTS'),
         component: require('./scenes/Notifications').default
     },
+    news: {
+        title: I18n.t('NEWS'),
+        component: require('./scenes/NewsThatMoves').default
+    },
 
     settings: {
         title: I18n.t('SETTINGS'),
