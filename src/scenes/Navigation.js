@@ -192,11 +192,11 @@ class Navigation extends Component {
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
             </MenuSection>
-            <MenuSection title={I18n.t("MESSAGES") }>
+            <MenuSection>
                 <MenuItem
                     icon="ios-mail" onPress={()=>s('notifications')}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
-                    icon="ios-paper" onPress={()=>false}>{I18n.t('NEWS') }</MenuItem>
+                    icon="ios-paper" onPress={()=>s('news')}>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}

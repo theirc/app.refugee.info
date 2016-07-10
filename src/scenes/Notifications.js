@@ -51,25 +51,6 @@ export class Notifications extends Component {
     }
 }
 
-const htmlStyles = StyleSheet.create({
-    div: {
-        padding: 0,
-        margin: 0,
-    },
-    p: {
-        padding: 0,
-        margin: 0,
-    },
-    strong: {
-        padding: 0,
-        margin: 0,
-    },
-    br: {
-        padding: 0,
-        margin: 0,
-    },
-});
-
 function mapStateToProps(state) {
     return {
         theme: state.theme.theme,

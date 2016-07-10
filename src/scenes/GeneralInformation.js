@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles, {getUnderlayColor, themes} from '../styles';
 import store from '../store';
-import {Regions, Services} from '../data';
+import {Regions, Services, News} from '../data';
 
 export class GeneralInformation extends Component {
 
@@ -35,11 +35,6 @@ export class GeneralInformation extends Component {
             refreshing: false,
             lastSync: null
         };
-    }
-
-    componentWillMount() {
-        const {region} = this.props;
-        const {dispatch} = this.props;
     }
 
     componentWillUnmount() {
