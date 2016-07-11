@@ -169,7 +169,7 @@ export default class Navigate {
 					props = { 'previousPath': previousPath };
 				}
 				const route = {
-					title: title ? title : (obj.title ? obj.title : path),
+					title: title ? title : (obj.title ? obj.title() : path),
 					path,
 					component: obj.component,
 					props
@@ -205,7 +205,7 @@ export default class Navigate {
 			}
 			this.isChild = path.split('.').length > 1;
 			const route = {
-				title: title ? title : (obj.title || this._getPathPrettyName(path)),
+				title: title ? title : (obj.title() || this._getPathPrettyName(path)),
 				path,
 				component: obj.component,
 				props
@@ -242,7 +242,7 @@ export default class Navigate {
 						props = { 'parentState': savedInstanceState };
 					}
 					const route = {
-						title: title ? title : (obj.title || this._getPathPrettyName(`${current}.${child}`)),
+						title: title ? title : (obj.title() || this._getPathPrettyName(`${current}.${child}`)),
 						path: `${current}.${child}`,
 						component: obj.component,
 						props
@@ -260,7 +260,7 @@ export default class Navigate {
 				const path = `${current}.${Object.keys(currentObject.children)[0]}`;
 				const obj = this._getRouteObject(path);
 				const route = {
-					title: title ? title : (obj.title ? obj.title : this._getPathPrettyName(path)),
+					title: title ? title : (obj.title ? obj.title() : this._getPathPrettyName(path)),
 					path,
 					component: obj.component,
 					props
