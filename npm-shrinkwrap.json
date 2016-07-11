@@ -2008,6 +2008,11 @@
       "from": "generate-object-property@>=1.1.0 <2.0.0",
       "resolved": "./node_shrinkwrap/generate-object-property-1.2.0.tgz"
     },
+    "geojson-utils": {
+      "version": "1.1.0",
+      "from": "geojson-utils@latest",
+      "resolved": "./node_shrinkwrap/geojson-utils-1.1.0.tgz"
+    },
     "get-proxy": {
       "version": "1.1.0",
       "from": "get-proxy@>=1.0.1 <2.0.0",
@@ -3711,6 +3716,11 @@
       "version": "0.8.0",
       "from": "react-native-slider@>=0.8.0 <0.9.0",
       "resolved": "./node_shrinkwrap/react-native-slider-0.8.0.tgz"
+    },
+    "react-native-swiper": {
+      "version": "1.4.6",
+      "from": "react-native-swiper@latest",
+      "resolved": "./node_shrinkwrap/react-native-swiper-1.4.6.tgz"
     },
     "react-native-vector-icons": {
       "version": "2.0.3",
