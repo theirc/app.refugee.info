@@ -37,7 +37,11 @@ class CityChoice extends Component {
     async componentDidMount() {
         const regionData = new Regions(this.props);
         let cities = (await regionData.listChildren(this.props.country)).filter((c)=>c.level==3);
-
+        if(!this.props.country.hidden) {
+            let countryAsRegion = {...this.props.country};
+            countryAsRegion.country = this.props.country;
+            cities.unshift(countryAsRegion);
+        }
 
         cities.forEach((c) => {
             if (c && c.metadata) {
