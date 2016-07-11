@@ -96,7 +96,8 @@ class Navigation extends Component {
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
         } else {
-            return this.context.navigator.to('info', null, null, store.getState());
+            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            return this.context.navigator.to('info', null, payload);
         }
     }
 
@@ -194,9 +195,9 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    icon="ios-mail" onPress={()=>s('notifications')}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
+                    icon="ios-mail" onPress={() => s('notifications') }>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
-                    icon="ios-paper" onPress={()=>s('news')}>{I18n.t('NEWS') }</MenuItem>
+                    icon="ios-paper" onPress={() => s('news') }>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}

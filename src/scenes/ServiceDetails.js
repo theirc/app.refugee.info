@@ -71,23 +71,31 @@ export default class ServiceDetails extends Component {
         this.serviceCommons = new ServiceCommons();
     }
 
-    componentDidMount() {
+    componentWillUnmount() {
+        const {dispatch} = this.props;
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: null });
+    }
+
+    componentWillMount() {
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
+        const {dispatch, service} = this.props;
+
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
     }
 
     _setModalVisible(visible) {
-        this.setState({modalVisible: visible});
+        this.setState({ modalVisible: visible });
     }
 
     _setRating(rating) {
-        this.setState({rating});
+        this.setState({ rating });
     }
 
     _setLoaded(loaded) {
-        this.setState({loaded});
+        this.setState({ loaded });
     }
 
 
@@ -125,9 +133,9 @@ export default class ServiceDetails extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData(update = true).then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -179,7 +187,7 @@ export default class ServiceDetails extends Component {
                             direction == 'rtl' ? { marginLeft: 6 } : { marginRight: 6 },
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}
-                    />
+                        />
                     <Text style={[
                         generateTextStyles(language),
                         getAlignItems(direction),
@@ -219,7 +227,7 @@ export default class ServiceDetails extends Component {
                     styles.starIcon,
                     (this.state.rating >= i + 1) ? null : { color: themes.light.dividerColor }
                 ]}
-            />
+                />
         ));
         return (
             <View>
@@ -228,7 +236,7 @@ export default class ServiceDetails extends Component {
                     onRequestClose={() => this._setModalVisible(false) }
                     transparent={true}
                     visible={this.state.modalVisible}
-                >
+                    >
                     <View style={[styles.modalContainer]}>
                         <View style={[
                             styles.modalInnerContainer,
@@ -259,7 +267,7 @@ export default class ServiceDetails extends Component {
                                     theme == 'dark' ? styles.textDark : styles.textLight,
                                     direction == 'rtl' ? styles.alignRight : null
                                 ]}
-                            />
+                                />
                             <TextInput
                                 multiline
                                 onChangeText={
@@ -275,7 +283,7 @@ export default class ServiceDetails extends Component {
                                     theme == 'dark' ? styles.textDark : styles.textLight,
                                     direction == 'rtl' ? styles.alignRight : null
                                 ]}
-                            />
+                                />
                             <Divider theme={theme} margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
@@ -283,7 +291,7 @@ export default class ServiceDetails extends Component {
                                         this._setModalVisible(false);
                                     } }
                                     underlayColor={getUnderlayColor(theme) }
-                                >
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             generateTextStyles(language),
@@ -297,7 +305,7 @@ export default class ServiceDetails extends Component {
                                 <TouchableHighlight
                                     onPress={() => this.postComment() }
                                     underlayColor={getUnderlayColor(theme) }
-                                >
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             generateTextStyles(language),
@@ -313,7 +321,7 @@ export default class ServiceDetails extends Component {
                 </Modal>
                 <View
                     style={styles.detailsContainer}
-                >
+                    >
                     <Text style={[
                         styles.sectionHeader, { marginBottom: 0 },
                         getAlignText(direction),
@@ -332,7 +340,7 @@ export default class ServiceDetails extends Component {
                     renderRow={(row) => this.renderFeedback(row) }
                     style={{ marginTop: 10 }}
                     direction={direction}
-                />
+                    />
 
             </View>
         );
@@ -346,13 +354,13 @@ export default class ServiceDetails extends Component {
             return (
                 <View style={[styles.row, styles.flex]}>
                     <Text style={[
-                    styles.flex,
-                    getAlignText(direction),
-                    generateTextStyles(language),
-                    {textAlign: 'center'},
-                    theme == 'dark' ? styles.textDark : styles.textLight
-                ]}>
-                        {I18n.t('CLOSED').toUpperCase()}</Text>
+                        styles.flex,
+                        getAlignText(direction),
+                        generateTextStyles(language),
+                        { textAlign: 'center' },
+                        theme == 'dark' ? styles.textDark : styles.textLight
+                    ]}>
+                        {I18n.t('CLOSED').toUpperCase() }</Text>
                 </View>
             )
         }
@@ -362,28 +370,28 @@ export default class ServiceDetails extends Component {
                     styles.flex,
                     getAlignText(direction),
                     generateTextStyles(language),
-                    {textAlign: 'right'},
+                    { textAlign: 'right' },
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>
                     {service[`${day}_open`] &&
-                    service[`${day}_open`].substr(0, service[`${day}_open`].lastIndexOf(':'))}
+                        service[`${day}_open`].substr(0, service[`${day}_open`].lastIndexOf(':')) }
                 </Text>
                 <Text style={[
-                    {flex: 0.5},
+                    { flex: 0.5 },
                     getAlignText(direction),
                     generateTextStyles(language),
-                    {textAlign: 'center'},
+                    { textAlign: 'center' },
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>-</Text>
                 <Text style={[
                     styles.flex,
                     getAlignText(direction),
                     generateTextStyles(language),
-                    {textAlign: 'left'},
+                    { textAlign: 'left' },
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>
                     {service[`${day}_close`] &&
-                    service[`${day}_close`].substr(0, service[`${day}_close`].lastIndexOf(':'))}
+                        service[`${day}_close`].substr(0, service[`${day}_close`].lastIndexOf(':')) }
                 </Text>
             </View>
         )
@@ -402,7 +410,7 @@ export default class ServiceDetails extends Component {
         let weekDay = days[new Date().getDay()];
 
         return (
-            <View style={[styles.detailsContainer, {paddingTop: 0}]}>
+            <View style={[styles.detailsContainer, { paddingTop: 0 }]}>
                 <Divider margin={4}/>
                 <Text
                     style={[
@@ -411,33 +419,33 @@ export default class ServiceDetails extends Component {
                         generateTextStyles(language),
                         theme == 'dark' ? styles.textDark : styles.textLight
                     ]}
-                >
+                    >
                     {I18n.t('OPENING_HOURS') }
                 </Text>
                 {days.map((day, i) => (
                     <View
                         style={[
                             getRowOrdering(direction),
-                            {borderBottomWidth: 1, paddingTop: 5, paddingBottom: 5},
-                            theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight,
-                            day===weekDay
-                                ? theme=='dark' ? styles.dividerDark : styles.dividerLight
+                            { borderBottomWidth: 1, paddingTop: 5, paddingBottom: 5 },
+                            theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight,
+                            day === weekDay
+                                ? theme == 'dark' ? styles.dividerDark : styles.dividerLight
                                 : null
                         ]}
                         key={day}
-                    >
+                        >
                         <Text style={[
-                            {flex: 0.5},
+                            { flex: 0.5 },
                             getAlignText(direction),
                             generateTextStyles(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}
-                        >
-                            {I18n.t(day.toUpperCase())}
+                            >
+                            {I18n.t(day.toUpperCase()) }
                         </Text>
-                        {this.renderOpeningHoursRow(day)}
+                        {this.renderOpeningHoursRow(day) }
                     </View>
-                ))}
+                )) }
             </View>
         )
     }
@@ -445,7 +453,8 @@ export default class ServiceDetails extends Component {
     render() {
         const {service, serviceType, location, theme, direction, language} = this.props;
 
-        let locationName = (location) ? location.name : '';
+        let locationName = (location) ? location.pageTitle || location.name : '';
+        let providerName = (this.state.provider) ? this.state.provider.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         let coordinates = service.location.match(/[\d\.]+/g);
@@ -463,12 +472,12 @@ export default class ServiceDetails extends Component {
                         onRefresh={this.onRefresh.bind(this) }
                         />
                 }
-            >
+                >
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                />
+                    />
                 <MapView
                     initialRegion={{
                         latitude: lat,
@@ -477,13 +486,13 @@ export default class ServiceDetails extends Component {
                         longitudeDelta: RADIUS
                     }}
                     style={styles.map}
-                >
+                    >
                     <MapView.Marker
                         coordinate={{
                             latitude: lat,
                             longitude: long
                         }}
-                    />
+                        />
                 </MapView>
                 <View style={styles.detailsContainer}>
                     <View style={[
@@ -497,7 +506,7 @@ export default class ServiceDetails extends Component {
                                 { fontSize: 13 },
                                 { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                             ]}
-                        />
+                            />
                         <Text style={[
                             generateTextStyles(language),
                             {
@@ -506,6 +515,20 @@ export default class ServiceDetails extends Component {
                             }
                         ]}>
                             {locationName}
+                        </Text>
+                    </View>
+                    <View style={[
+                        getRowOrdering(direction),
+                        { paddingBottom: 5 }
+                    ]}>
+                        <Text style={[
+                            generateTextStyles(language),
+                            {
+                                color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
+                                fontSize: 12
+                            }
+                        ]}>
+                            {providerName}
                         </Text>
                     </View>
                     <View style={getRowOrdering(direction) }>
@@ -519,49 +542,49 @@ export default class ServiceDetails extends Component {
                     </View>
                     <Divider theme={theme}/>
                     {!!service.description &&
-                    <View>
-                        <Text style={[
+                        <View>
+                            <Text style={[
                                 styles.sectionHeader,
                                 getAlignText(direction),
                                 generateTextStyles(language),
                                 theme == 'dark' ? styles.textDark : styles.textLight
                             ]}
-                        >
-                            {I18n.t('DESCRIPTION') }
-                        </Text>
-                        <Text style={[
+                                >
+                                {I18n.t('DESCRIPTION') }
+                            </Text>
+                            <Text style={[
                                 styles.sectionContent,
                                 getAlignText(direction),
                                 generateTextStyles(language),
                                 theme == 'dark' ? styles.textDark : styles.textLight
                             ]}>
-                            {service.description}
-                        </Text>
-                    </View>
+                                {service.description}
+                            </Text>
+                        </View>
                     }
                     {!!service.cost_of_service &&
-                    <Text style={[
+                        <Text style={[
                             styles.sectionContent,
                             getAlignText(direction),
                             generateTextStyles(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
-                        {I18n.t('COST_OF_SERVICE') }:
-                        {`\n${service.cost_of_service}`}
-                    </Text>
+                            {I18n.t('COST_OF_SERVICE') }:
+                            {`\n${service.cost_of_service}`}
+                        </Text>
                     }
                     {service.selection_criteria.length > 0 &&
-                    <Text style={[
+                        <Text style={[
                             styles.sectionContent,
                             getAlignText(direction),
                             generateTextStyles(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
-                        {I18n.t('SELECTION_CRITERIA') }:
-                        {service.selection_criteria.map((criteria, i) => (
-                            `\n - ${criteria.text}`
-                        )) }
-                    </Text>
+                            {I18n.t('SELECTION_CRITERIA') }:
+                            {service.selection_criteria.map((criteria, i) => (
+                                `\n - ${criteria.text}`
+                            )) }
+                        </Text>
                     }
                 </View>
                 {openingHoursView}
@@ -570,17 +593,17 @@ export default class ServiceDetails extends Component {
                         color="green"
                         text={I18n.t('GET_DIRECTIONS') }
                         onPress={() => this.getDirections(lat, long) }
-                    />
+                        />
                     <Button
                         color="black"
                         text={I18n.t('CALL') }
                         onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                    />
+                        />
                     <Button
                         color="white"
                         text={I18n.t('SHARE') }
                         onPress={() => this.onShareClick() }
-                    />
+                        />
                 </View>
                 {this.state.offline ?
                     <Text style={[

@@ -32,7 +32,6 @@ export default class News extends Component {
         let feed = await fetch(GOOGLE_API_PREFIX + NEWS_THAT_MOVES);
         let json = await feed.json();
 
-       // console.log(json.responseData);
         return json.responseData;
     }
 }
