@@ -93,7 +93,7 @@ export default class LocationListView extends Component {
                                 generateTextStyles(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}>
-                                {rowData.pageTitle || rowData.metadata.page_title}
+                                {rowData.pageTitle || rowData.metadata.page_title || rowData.name}
                             </Text>
                         </View>
                     </View>

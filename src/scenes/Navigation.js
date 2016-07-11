@@ -127,7 +127,7 @@ class Navigation extends Component {
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
-            return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle}</MenuItem>;
+            return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle || i.name}</MenuItem>;
         });
         let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
         let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
