@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import Welcome from './Welcome';
 import App from './App';
+import {Presence} from '../data'
 
 import {fetchRegionFromStorage} from '../actions/region';
 import {fetchDirectionFromStorage} from '../actions/direction';
@@ -29,11 +30,12 @@ class Skeleton extends Component {
             firstLoad: true,
             storageLoaded: false,
         }
+        this.presenceData = new Presence(props, props.context);
     }
 
     componentWillMount() {
-        this.languagePromise = this.checkLanguageSelected().then(()=>{
-            this.setState({storageLoaded: true});
+        this.languagePromise = this.checkLanguageSelected().then(() => {
+            this.setState({ storageLoaded: true });
         });
 
         this.askForPermissions();
@@ -50,12 +52,12 @@ class Skeleton extends Component {
     _handleAppStateChange() {
     }
 
-
     askForPermissions() {
         PushNotification.configure({
 
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function (token) {
+                Presence.registerToken(token);
             },
 
             // (required) Called when a remote or local notification is opened or received
@@ -70,14 +72,23 @@ class Skeleton extends Component {
             requestPermissions: true,
         });
 
-         navigator.geolocation.getCurrentPosition(
-            (position) => {
-                // PUT ME IN THE REDUX
-            },
-            (error) => {
-               
-            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
-        );
+        const monitor = () => {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    // PUT ME IN THE REDUX
+                    let {coords} = position;
+                    this.presenceData.registerPresence(coords, this.props.region);
+
+                    setTimeout(monitor, MONITOR_TIME_OUT);
+                },
+                (error) => {
+                    this.presenceData.registerPresence(null, this.props.region);
+
+                    setTimeout(monitor, MONITOR_TIME_OUT);
+                }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
+            );
+        }
+        monitor();
     }
 
     async checkLanguageSelected() {
@@ -98,7 +109,7 @@ class Skeleton extends Component {
         let theme = await AsyncStorage.getItem('theme');
 
         let isFirstLoad = (firstLoad !== 'false' || !(region && theme));
-        
+
         this.setState({ firstLoad: isFirstLoad });
     }
 
@@ -113,10 +124,10 @@ class Skeleton extends Component {
     }
 
     render() {
-        if(!this.state.storageLoaded) {
+        if (!this.state.storageLoaded) {
             return <View />;
         }
-        
+
         if (this.state.firstLoad) {
             return (
                 <Welcome
@@ -144,5 +155,6 @@ const mapStateToProps = (state) => {
         ...state
     };
 };
+const MONITOR_TIME_OUT = 5 * 60 * 1000; // 5 * 60 * 1000 milliseconds (5 minutes)
 
 export default connect(mapStateToProps)(Skeleton);
