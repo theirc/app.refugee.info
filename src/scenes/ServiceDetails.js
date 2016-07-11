@@ -479,6 +479,8 @@ export default class ServiceDetails extends Component {
                     lastSync={this.state.lastSync}
                     />
                 <MapView
+                    cacheEnabled={true}
+                    scrollEnabled={false}
                     initialRegion={{
                         latitude: lat,
                         longitude: long,
