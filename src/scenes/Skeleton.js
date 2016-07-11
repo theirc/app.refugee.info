@@ -58,13 +58,12 @@ class Skeleton extends Component {
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function (token) {
                 Presence.registerToken(JSON.stringify(token));
+                monitor();
             },
 
             // (required) Called when a remote or local notification is opened or received
             onNotification: function (notification) {
             },
-
-            // ANDROID ONLY: (optional) GCM Sender ID.
 
             // Should the initial notification be popped automatically
             // default: true
