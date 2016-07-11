@@ -25,11 +25,14 @@ export default class Toolbar extends Component {
         let {toolbarTitle} = this.props;
         let title = '';
 
-        if (navigator && navigator.isChild)
+        if (toolbarTitle) {
+            title = toolbarTitle;
+        } else if (navigator && navigator.isChild) {
             title = navigator.currentRoute.title || navigator.childName;
-        else if (navigator && navigator.currentRoute)
+        }
+        else if (navigator && navigator.currentRoute) {
             title = navigator.currentRoute.title;
-
+        }
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;

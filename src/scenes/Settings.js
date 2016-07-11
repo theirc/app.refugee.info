@@ -216,7 +216,7 @@ const mapStateToProps = (state) => {
     return {
         route: state.navigation,
         language: state.language,
-        theme: state.theme.theme,
+        theme: state.theme,
         direction: state.direction
     };
 };

@@ -140,7 +140,7 @@ class Skeleton extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme.theme,
+        theme: state.theme,
         ...state
     };
 };

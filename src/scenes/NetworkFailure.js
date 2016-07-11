@@ -50,7 +50,7 @@ class NetworkFailure extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.language,
-        theme: state.theme.theme
+        theme: state.theme
     };
 };
 

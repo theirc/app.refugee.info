@@ -1,4 +1,5 @@
 import {AsyncStorage} from 'react-native';
+import I18n from '../constants/Messages'
 
 function reloadDirection(direction) {
     return {
@@ -9,9 +10,12 @@ function reloadDirection(direction) {
 
 export function fetchDirectionFromStorage() {
     return async dispatch => {
+        let currentLocale = I18n.locale.split('-')[0];
+        let currentDirection = ['ar','fa'].indexOf(currentLocale) > -1 ? 'rtl' : 'ltr';
+
         return await AsyncStorage.getItem('direction')
             .then(direction => {
-              return dispatch(reloadDirection(direction || 'ltr'))
+                return dispatch(reloadDirection(direction || currentDirection))
             });
     };
 }

@@ -86,7 +86,7 @@ export default class ListItem extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme.theme,
+        theme: state.theme,
         direction: state.direction,
         language: state.language
     };

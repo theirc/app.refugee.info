@@ -47,10 +47,17 @@ export class GeneralInformationDetails extends Component {
     }
 
     _loadInitialState() {
-        const {section, sectionTitle, language, theme} = this.props;
+        const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
+
+        if (showTitle) {
+            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle });
+        } else {
+            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle });
+
+        }
 
         let source = {
-            html: wrapHtmlContent(section, language, sectionTitle, theme)
+            html: wrapHtmlContent(section, language, (!showTitle && !(region.content.length==1)) ? sectionTitle : null, theme)
         };
 
         this.setState({
@@ -161,8 +168,9 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         language: state.language,
-        theme: state.theme.theme,
-        direction: state.direction
+        theme: state.theme,
+        direction: state.direction,
+        region: state.region
     };
 };
 

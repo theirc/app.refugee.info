@@ -48,7 +48,7 @@ const localStyles = StyleSheet.create({
 const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
-        theme: state.theme.theme,
+        theme: state.theme,
         language: state.language
     };
 };

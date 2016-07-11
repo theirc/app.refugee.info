@@ -91,7 +91,7 @@ const mapStateToProps = (state) => {
     return {
         direction: state.direction,
         language: state.language,
-        theme: state.theme.theme
+        theme: state.theme
     };
 };
 
