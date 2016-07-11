@@ -144,7 +144,7 @@ class Navigation extends Component {
             ]}
             />;
 
-
+        let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.view}>
@@ -195,7 +195,7 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    icon="ios-mail" onPress={() => s('notifications') }>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
+                    icon="ios-mail" onPress={() => s('notifications') } badge={bannerCount}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
                     icon="ios-paper" onPress={() => s('news') }>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>

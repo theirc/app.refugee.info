@@ -17,6 +17,7 @@ class MenuItem extends Component {
     static propTypes = {
         icon: PropTypes.string,
         image: PropTypes.number,
+        badge: PropTypes.number,
         active: PropTypes.bool,
         direction: PropTypes.oneOf(['rtl', 'ltr']),
         onPress: PropTypes.func,
@@ -40,9 +41,9 @@ class MenuItem extends Component {
 
 
             if (defaultProps.theme == 'dark') {
-                styleDefaults = {...sharedStyles, ...darkStyleDefaults};
+                styleDefaults = {...sharedStyles, ...darkStyleDefaults };
             } else {
-                styleDefaults = {...sharedStyles, ...lightStyleDefaults};
+                styleDefaults = {...sharedStyles, ...lightStyleDefaults };
             }
 
             this.setState({
@@ -60,6 +61,10 @@ class MenuItem extends Component {
 
         const {styles, direction, language, theme} = this.state;
         const item = this.props;
+        let {badge} = this.props;
+        if(!badge) {
+            badge = false;
+        }
         const fontStyle = {...styles.itemText, ...generateTextStyles(language) };
 
         let press = (comp, ...args) => {
@@ -115,6 +120,11 @@ class MenuItem extends Component {
                                 {item.children}
                             </Text>
                         </View>
+                        {badge &&
+                            <View style={[sharedStyles.badge, { backgroundColor: styles.text.color, }]}>
+                                <Text style={{ color: styles.itemText.color, fontWeight: 'bold' }}>{badge}</Text>
+                            </View>
+                        }
                     </View>
                 </View>
             </TouchableHighlight>
@@ -147,9 +157,9 @@ class MenuSection extends Component {
             let styleDefaults;
 
             if (defaultProps.theme == 'dark') {
-                styleDefaults = {...sharedStyles, ...darkStyleDefaults};
+                styleDefaults = {...sharedStyles, ...darkStyleDefaults };
             } else {
-                styleDefaults = {...sharedStyles, ...lightStyleDefaults};
+                styleDefaults = {...sharedStyles, ...lightStyleDefaults };
             }
 
             this.setState({
@@ -212,6 +222,14 @@ const sharedStyles = {
         width: 21,
         marginRight: 5,
         marginLeft: 5
+    },
+    badge: {
+        marginHorizontal: 10,
+        width: 26,
+        height: 26,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 13,
     }
 };
 
@@ -220,24 +238,24 @@ const lightStyleDefaults = {
         borderBottomColor: themes.light.darkerDividerColor,
         ...sharedStyles.header
     },
-    itemActive: {
-        backgroundColor: '#fafafa',
+itemActive: {
+    backgroundColor: '#fafafa',
         borderBottomColor: themes.light.dividerColor,
+            borderBottomWidth: 1
+},
+itemLine: {
+    borderBottomColor: themes.light.dividerColor,
         borderBottomWidth: 1
-    },
-    itemLine: {
-        borderBottomColor: themes.light.dividerColor,
-        borderBottomWidth: 1
-    },
-    itemText: {
-        fontSize: 14,
+},
+itemText: {
+    fontSize: 14,
         color: themes.light.textColor,
-        marginHorizontal: 10,
+            marginHorizontal: 10,
     },
-    text: {
-        color: themes.light.greenAccentColor,
+text: {
+    color: themes.light.greenAccentColor,
         fontWeight: "bold"
-    },
+},
 };
 
 
@@ -246,24 +264,24 @@ const darkStyleDefaults = {
         borderBottomColor: themes.dark.darkerDividerColor,
         ...sharedStyles.header
     },
-    itemActive: {
-        backgroundColor: '#202020',
+itemActive: {
+    backgroundColor: '#202020',
         borderBottomColor: "#1c1c1c",
+            borderBottomWidth: 1
+},
+itemLine: {
+    borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
-    },
-    itemLine: {
-        borderBottomColor: "#1c1c1c",
-        borderBottomWidth: 1
-    },
-    itemText: {
-        fontSize: 14,
+},
+itemText: {
+    fontSize: 14,
         color: themes.dark.textColor,
-        marginHorizontal: 10,
+            marginHorizontal: 10,
     },
-    text: {
-        color: themes.dark.greenAccentColor,
+text: {
+    color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-        fontSize: 14,
+            fontSize: 14,
     },
 };
 
