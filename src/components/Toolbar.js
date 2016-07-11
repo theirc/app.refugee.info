@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {generateTextStyles, themes} from '../styles';
@@ -20,6 +20,7 @@ export default class Toolbar extends Component {
     };
 
     render() {
+        console.log()
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let {toolbarTitle} = this.props;
@@ -86,6 +87,9 @@ export default class Toolbar extends Component {
 
 }
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const mapStateToProps = (state) => {
     return {
         region: state.region,
@@ -106,7 +110,7 @@ const componentStyles = StyleSheet.create({
         paddingRight: 15,
         paddingLeft: 15,
         flexDirection: 'column',
-        height: 140,
+        height: windowHeight > 500 ? 140 : 110,
         borderBottomWidth: 2
     },
     toolbarContainerLight: {
@@ -130,7 +134,7 @@ const componentStyles = StyleSheet.create({
     brandImage: {
         marginTop: 5,
         height: 40,
-        width: 120
+        width: 120,
     },
     menuIcon: {
         fontSize: 28

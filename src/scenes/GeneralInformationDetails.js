@@ -89,8 +89,6 @@ export class GeneralInformationDetails extends Component {
 
 
     _defaultOrFirst(page, showTitle = false) {
-        this.drawerCommons.closeDrawer();
-
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
         } else {

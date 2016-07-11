@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions, TouchableHighlight} from 'react-native';
+import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {connect} from 'react-redux';
 import DrawerCommons from '../utils/DrawerCommons';
 import styles, {themes, generateTextStyles, getUnderlayColor} from '../styles';
@@ -121,72 +121,45 @@ class Welcome extends Component {
                             generateTextStyles(language),
                             { fontSize: 13, alignItems: 'center' }
                         ]}>
-                            {I18n.t('LANGUAGE').toUpperCase() } / LANGUAGE
+                            {I18n.t('LANGUAGE').toUpperCase() }
                         </Text>
                     </View>
                 </View>
                 <TouchableHighlight
                     onPress={this.setLanguage.bind(this, 'en') }
                     underlayColor={getUnderlayColor('light') }
-                    style={{ position: 'absolute', alignItems: 'center', bottom: 45 * 2, width: Dimensions.get('window').width }}
+                    style={[buttonStyle, { bottom: 45 * 2, }]}
                     >
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 45,
-                            justifyContent: 'center',
-                            backgroundColor: themes.light.backgroundColor,
-                        }}
-                        >
-                        <Text style={[
-                            { fontSize: 13, color: themes.light.textColor, },
-                            generateTextStyles('en')
-                        ]}>
-                            English
-                        </Text>
-                    </View>
+                    <Text style={[
+                        { fontSize: 13, color: themes.light.textColor, },
+                        generateTextStyles('en')
+                    ]}>
+                        English
+                    </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress={this.setLanguage.bind(this, 'ar') }
                     underlayColor={getUnderlayColor('light') }
-                    style={{ position: 'absolute', alignItems: 'center', bottom: 45, width: Dimensions.get('window').width }}
+                    style={[buttonStyle, { bottom: 45, }]}
                     >
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 45,
-                            justifyContent: 'center',
-                            backgroundColor: themes.light.backgroundColor,
-                        }}
-                        >
-                        <Text style={[
-                            { fontSize: 13, color: themes.light.textColor, },
-                            generateTextStyles('ar')
-                        ]}>
-                            العربيـة
-                        </Text>
-                    </View>
+                    <Text style={[
+                        { fontSize: 13, color: themes.light.textColor, },
+                        generateTextStyles('ar')
+                    ]}>
+                        العربيـة
+                    </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
                     onPress={this.setLanguage.bind(this, 'fa') }
                     underlayColor={getUnderlayColor('light') }
-                    style={{ position: 'absolute', alignItems: 'center', bottom: 0, width: Dimensions.get('window').width }}
+                    style={[buttonStyle, { bottom: 0, }]}
                     >
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 45,
-                            justifyContent: 'center',
-                            backgroundColor: themes.light.backgroundColor,
-                        }}
-                        >
-                        <Text style={[
-                            { fontSize: 13, color: themes.light.textColor, },
-                            generateTextStyles('fa')
-                        ]}>
-                            فارسی
-                        </Text>
-                    </View>
+                    <Text style={[
+                        { fontSize: 13, color: themes.light.textColor, },
+                        generateTextStyles('fa')
+                    ]}>
+                        فارسی
+                    </Text>
                 </TouchableHighlight>
             </View>);
     }
@@ -221,48 +194,28 @@ class Welcome extends Component {
                 <TouchableHighlight
                     onPress={this.setTheme.bind(this, 'light') }
                     underlayColor={getUnderlayColor('light') }
-                    style={{ position: 'absolute', alignItems: 'center', bottom: 45, width: Dimensions.get('window').width }}
+                    style={[buttonStyle, { bottom: 45 }]}
                     >
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 45,
-                            justifyContent: 'center',
-                        }}
-                        >
-                        <Text style={[
-                            { fontSize: 13, color: themes.light.textColor, },
-                            generateTextStyles(language)
-                        ]}>
-                            {I18n.t('LIGHT') }
-                        </Text>
-                    </View>
+                    <Text style={[
+                        { fontSize: 13, color: themes.light.textColor, },
+                        generateTextStyles(language)
+                    ]}>
+                        {I18n.t('LIGHT') }
+                    </Text>
                 </TouchableHighlight>
-
-                <TouchableHighlight
+                <TouchableOpacity
                     onPress={this.setTheme.bind(this, 'dark') }
                     underlayColor={getUnderlayColor('dark') }
-                    style={{
-                        position: 'absolute', bottom: 0, width: Dimensions.get('window').width,
-                        backgroundColor: themes.dark.toolbarColor,
-                    }}
+                    style={[buttonStyle,
+                        { bottom: 0, backgroundColor: themes.dark.toolbarColor, }]}
                     >
-                    <View
-                        style={{
-                            flex: 1,
-                            height: 45,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}
-                        >
-                        <Text style={[
-                            { fontSize: 13, color: themes.dark.textColor },
-                            generateTextStyles(language)
-                        ]}>
-                            {I18n.t('DARK') }
-                        </Text>
-                    </View>
-                </TouchableHighlight>
+                    <Text style={[
+                        { fontSize: 13, color: themes.dark.textColor },
+                        generateTextStyles(language)
+                    ]}>
+                        {I18n.t('DARK') }
+                    </Text>
+                </TouchableOpacity>
             </View>);
     }
 
@@ -276,7 +229,7 @@ class Welcome extends Component {
                 <View>
                     <Image
                         source={logo}
-                        resizeMode={Image.resizeMode.contain}
+                        resizeMode={Image.resizeMode.stretch}
                         style={[localStyles.logo]}
                         />
                     {showTheme && this.renderThemeSelection() }
@@ -287,6 +240,17 @@ class Welcome extends Component {
 
     }
 }
+
+
+
+const buttonStyle = {
+    position: 'absolute',
+    backgroundColor: "#ffffff",
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 45,
+    width: Dimensions.get('window').width
+};
 
 const localStyles = StyleSheet.create({
     screen: {
