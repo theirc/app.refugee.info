@@ -258,7 +258,7 @@ const mapStateToProps = (state) => {
         country: state.country,
         language: state.language,
         direction: state.direction,
-        theme: state.theme.theme,
+        theme: state.theme,
         drawerOpen: state.drawerOpen
     };
 };

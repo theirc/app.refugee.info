@@ -53,7 +53,7 @@ export class Notifications extends Component {
 
 function mapStateToProps(state) {
     return {
-        theme: state.theme.theme,
+        theme: state.theme,
         language: state.language,
         region: state.region,
     }

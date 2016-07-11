@@ -11,7 +11,7 @@ export function fetchThemeFromStorage() {
     return async (dispatch) => {
         return await AsyncStorage.getItem('theme')
             .then(theme => {
-              return dispatch(receiveTheme(JSON.parse(theme)))
+              return dispatch(receiveTheme(theme || 'dark'))
             });
     };
 }
@@ -19,6 +19,6 @@ export function fetchThemeFromStorage() {
 
 export function updateThemeIntoStorage(theme) {
     return async (dispatch) => {
-        return await AsyncStorage.setItem('theme', JSON.stringify(theme));
+        return await AsyncStorage.setItem('theme', theme);
     };
 }

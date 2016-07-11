@@ -260,7 +260,7 @@ const mapStateToProps = (state) => {
     return {
         country: state.country,
         region: state.region,
-        theme: state.theme.theme,
+        theme: state.theme,
         direction: state.direction
     };
 };
