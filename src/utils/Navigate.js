@@ -161,6 +161,8 @@ export default class Navigate {
 			if (!obj || !obj.component) {
 				console.warn(`[Navigate.to(${path})] No component exists at this path`);
 			} else {
+				this.store.dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: null });
+
 				this.isChild = path.split('.').length > 1;
 				const previousPath = (this.previousRoute) ? this.previousRoute.path : Navigate.getInitialRoute().path;
 				if (!!props) {

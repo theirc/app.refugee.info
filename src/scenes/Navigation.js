@@ -82,7 +82,7 @@ class Navigation extends Component {
                 <MenuItem
                     image={this._getImportantInformationImage(theme, i.pageTitle) }
                     key={index}
-                    onPress={() => this._defaultOrFirst(i) }
+                    onPress={() => this._defaultOrFirst(i, true) }
                     >
                     {i.pageTitle}
                 </MenuItem>
@@ -90,11 +90,11 @@ class Navigation extends Component {
         });
     }
 
-    _defaultOrFirst(page) {
+    _defaultOrFirst(page, showTitle = false) {
         this.drawerCommons.closeDrawer();
 
         if (page.content && page.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle });
+            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
         } else {
             return this.context.navigator.to('info', null, null, store.getState());
         }
