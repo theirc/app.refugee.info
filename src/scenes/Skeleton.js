@@ -57,7 +57,7 @@ class Skeleton extends Component {
 
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function (token) {
-                Presence.registerToken(JSON.stringify(token));
+                Presence.registerToken(token);
                 monitor();
             },
 
@@ -76,12 +76,14 @@ class Skeleton extends Component {
                 (position) => {
                     // PUT ME IN THE REDUX
                     let {coords} = position;
-                    this.presenceData.registerPresence(coords, this.props.region);
+                    Presence.registerLocation(coords).then(() => {
+                        this.presenceData.recordPresence(this.props.region);
+                    });
 
                     setTimeout(monitor, MONITOR_TIME_OUT);
                 },
                 (error) => {
-                    this.presenceData.registerPresence(null, this.props.region);
+                    this.presenceData.recordPresence(this.props.region);
 
                     setTimeout(monitor, MONITOR_TIME_OUT);
                 }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
