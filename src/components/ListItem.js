@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles, getUnderlayColor, themes, getRowOrdering, getAlignItems} from '../styles';
+import styles, {getFontFamily, getUnderlayColor, themes, getRowOrdering, getAlignItems} from '../styles';
 
 export default class ListItem extends Component {
 
@@ -71,7 +71,7 @@ export default class ListItem extends Component {
                             <Text style={[
                                 componentStyles.listItemText,
                                 theme == 'dark' ? styles.textDark : styles.textLight,
-                                generateTextStyles(language),
+                                getFontFamily(language),
                                 { fontSize } && { fontSize: fontSize }
                             ]}>
                                 {text}

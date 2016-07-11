@@ -15,7 +15,7 @@ import Drawer from 'react-native-drawer'
 import store from '../store';
 import {connect} from 'react-redux';
 
-import styles, {generateTextStyles, themes} from '../styles'
+import styles, {getFontFamily, themes} from '../styles'
 
 export class App extends Component {
 

@@ -10,7 +10,7 @@ import {
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {generateTextStyles, getUnderlayColor, themes} from '../styles'
+import {getFontFamily, getUnderlayColor, themes} from '../styles'
 
 
 class MenuItem extends Component {
@@ -60,7 +60,7 @@ class MenuItem extends Component {
 
         const {styles, direction, language, theme} = this.state;
         const item = this.props;
-        const fontStyle = {...styles.itemText, ...generateTextStyles(language) };
+        const fontStyle = {...styles.itemText, ...getFontFamily(language) };
 
         let press = (comp, ...args) => {
             if (item.onPress) {
@@ -166,7 +166,7 @@ class MenuSection extends Component {
 
         const {styles, direction, language} = this.state;
         const {title, children, theme} = this.props;
-        const fontStyle = {...styles.text, ...generateTextStyles(language) };
+        const fontStyle = {...styles.text, ...getFontFamily(language) };
 
         return (
             <View style={styles.headerWrapper}>

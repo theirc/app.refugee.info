@@ -24,11 +24,11 @@ import Share from 'react-native-share';
 import {OfflineView, Divider, Button} from '../components';
 import styles, {
     themes,
-    generateTextStyles,
+    getFontFamily,
     getUnderlayColor,
     getRowOrdering,
     getAlignItems,
-    getAlignText
+    getTextAlign
 } from '../styles';
 
 const RADIUS = 0.01;
@@ -72,6 +72,8 @@ export default class ServiceDetails extends Component {
     }
 
     componentDidMount() {
+        const {service, dispatch} = this.props;
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
@@ -181,7 +183,7 @@ export default class ServiceDetails extends Component {
                         ]}
                     />
                     <Text style={[
-                        generateTextStyles(language),
+                        getFontFamily(language),
                         getAlignItems(direction),
                         theme == 'dark' ? styles.textDark : styles.textLight
                     ]}>
@@ -190,8 +192,8 @@ export default class ServiceDetails extends Component {
                 </View>
                 <Divider theme={theme} margin={2}/>
                 <Text style={[
-                    getAlignText(direction),
-                    generateTextStyles(language),
+                    getTextAlign(direction),
+                    getFontFamily(language),
                     theme == 'dark' ? styles.textDark : styles.textLight,
                     { marginBottom: 8, fontSize: 12 }
                 ]}>
@@ -235,7 +237,7 @@ export default class ServiceDetails extends Component {
                             theme == 'dark' ? styles.modalInnerContainerDark : styles.modalInnerContainerLight
                         ]}>
                             <Text style={[
-                                generateTextStyles(language),
+                                getFontFamily(language),
                                 { marginBottom: 10, textAlign: 'center' },
                                 theme == 'dark' ? styles.textAccentYellow : styles.textLight
                             ]}>
@@ -286,7 +288,7 @@ export default class ServiceDetails extends Component {
                                 >
                                     <View style={styles.modalButton}>
                                         <Text style={[
-                                            generateTextStyles(language),
+                                            getFontFamily(language),
                                             theme == 'dark' ? styles.textAccentYellow : styles.textLight
 
                                         ]}>
@@ -300,7 +302,7 @@ export default class ServiceDetails extends Component {
                                 >
                                     <View style={styles.modalButton}>
                                         <Text style={[
-                                            generateTextStyles(language),
+                                            getFontFamily(language),
                                             theme == 'dark' ? styles.textAccentYellow : styles.textLight
                                         ]}>
                                             {I18n.t('SUBMIT').toUpperCase() }
@@ -316,7 +318,7 @@ export default class ServiceDetails extends Component {
                 >
                     <Text style={[
                         styles.sectionHeader, { marginBottom: 0 },
-                        getAlignText(direction),
+                        getTextAlign(direction),
                         theme == 'dark' ? styles.textDark : styles.textLight
                     ]}>
                         {I18n.t('RATE_THIS_SERVICE') }
@@ -347,8 +349,8 @@ export default class ServiceDetails extends Component {
                 <View style={[styles.row, styles.flex]}>
                     <Text style={[
                     styles.flex,
-                    getAlignText(direction),
-                    generateTextStyles(language),
+                    getTextAlign(direction),
+                    getFontFamily(language),
                     {textAlign: 'center'},
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>
@@ -360,8 +362,8 @@ export default class ServiceDetails extends Component {
             <View style={[styles.row, styles.flex]}>
                 <Text style={[
                     styles.flex,
-                    getAlignText(direction),
-                    generateTextStyles(language),
+                    getTextAlign(direction),
+                    getFontFamily(language),
                     {textAlign: 'right'},
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>
@@ -370,15 +372,15 @@ export default class ServiceDetails extends Component {
                 </Text>
                 <Text style={[
                     {flex: 0.5},
-                    getAlignText(direction),
-                    generateTextStyles(language),
+                    getTextAlign(direction),
+                    getFontFamily(language),
                     {textAlign: 'center'},
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>-</Text>
                 <Text style={[
                     styles.flex,
-                    getAlignText(direction),
-                    generateTextStyles(language),
+                    getTextAlign(direction),
+                    getFontFamily(language),
                     {textAlign: 'left'},
                     theme == 'dark' ? styles.textDark : styles.textLight
                 ]}>
@@ -407,8 +409,8 @@ export default class ServiceDetails extends Component {
                 <Text
                     style={[
                         styles.sectionHeader,
-                        getAlignText(direction),
-                        generateTextStyles(language),
+                        getTextAlign(direction),
+                        getFontFamily(language),
                         theme == 'dark' ? styles.textDark : styles.textLight
                     ]}
                 >
@@ -428,8 +430,8 @@ export default class ServiceDetails extends Component {
                     >
                         <Text style={[
                             {flex: 0.5},
-                            getAlignText(direction),
-                            generateTextStyles(language),
+                            getTextAlign(direction),
+                            getFontFamily(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}
                         >
@@ -499,7 +501,7 @@ export default class ServiceDetails extends Component {
                             ]}
                         />
                         <Text style={[
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             {
                                 color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
                                 fontSize: 12
@@ -510,7 +512,7 @@ export default class ServiceDetails extends Component {
                     </View>
                     <View style={getRowOrdering(direction) }>
                         <Text style={[
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             { color: themes.light.darkerDividerColor, fontSize: 12, marginRight: 5 }]
                         }>
                             {I18n.t('RATING').toUpperCase() }
@@ -522,8 +524,8 @@ export default class ServiceDetails extends Component {
                     <View>
                         <Text style={[
                                 styles.sectionHeader,
-                                getAlignText(direction),
-                                generateTextStyles(language),
+                                getTextAlign(direction),
+                                getFontFamily(language),
                                 theme == 'dark' ? styles.textDark : styles.textLight
                             ]}
                         >
@@ -531,8 +533,8 @@ export default class ServiceDetails extends Component {
                         </Text>
                         <Text style={[
                                 styles.sectionContent,
-                                getAlignText(direction),
-                                generateTextStyles(language),
+                                getTextAlign(direction),
+                                getFontFamily(language),
                                 theme == 'dark' ? styles.textDark : styles.textLight
                             ]}>
                             {service.description}
@@ -542,8 +544,8 @@ export default class ServiceDetails extends Component {
                     {!!service.cost_of_service &&
                     <Text style={[
                             styles.sectionContent,
-                            getAlignText(direction),
-                            generateTextStyles(language),
+                            getTextAlign(direction),
+                            getFontFamily(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
                         {I18n.t('COST_OF_SERVICE') }:
@@ -553,8 +555,8 @@ export default class ServiceDetails extends Component {
                     {service.selection_criteria.length > 0 &&
                     <Text style={[
                             styles.sectionContent,
-                            getAlignText(direction),
-                            generateTextStyles(language),
+                            getTextAlign(direction),
+                            getFontFamily(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
                         ]}>
                         {I18n.t('SELECTION_CRITERIA') }:

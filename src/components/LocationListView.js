@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react-native';
 import {I18n} from '../constants';
-import styles, {getUnderlayColor, generateTextStyles, getRowOrdering} from '../styles';
+import styles, {getUnderlayColor, getFontFamily, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
 
 export default class LocationListView extends Component {
@@ -90,7 +90,7 @@ export default class LocationListView extends Component {
                         <View style={styles.listItemTextContainer}>
                             <Text style={[
                                 styles.listItemText,
-                                generateTextStyles(language),
+                                getFontFamily(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}>
                                 {rowData.pageTitle || rowData.metadata.page_title || rowData.name}

@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {generateTextStyles, themes} from '../styles';
+import {getFontFamily, themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {DirectionalText} from '../components';
 
@@ -27,10 +27,7 @@ export default class Toolbar extends Component {
 
         if (toolbarTitle) {
             title = toolbarTitle;
-        } else if (navigator && navigator.isChild) {
-            title = navigator.currentRoute.title || navigator.childName;
-        }
-        else if (navigator && navigator.currentRoute) {
+        } else if (navigator && navigator.currentRoute) {
             title = navigator.currentRoute.title;
         }
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
@@ -38,7 +35,7 @@ export default class Toolbar extends Component {
         let icon = null;
         if (navigator) {
             icon = (<TouchableOpacity
-                style={{ width: 40, alignItems: 'flex-end' }}
+                style={{ width: 40, alignItems: 'flex-end'}}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 ><Icon
                     name={navigator.isChild ? backIcon : menuIcon}
@@ -47,10 +44,11 @@ export default class Toolbar extends Component {
                             componentStyles.backIcon,
                             theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
                         ] : [
-                                componentStyles.menuIcon,
-                                theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
-                            ]}
-                    />
+                            componentStyles.menuIcon,
+                            theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
+                        ]
+                    }
+                />
             </TouchableOpacity>);
         }
 
@@ -73,7 +71,7 @@ export default class Toolbar extends Component {
                 <View style={[componentStyles.toolbarBottom,]}>
                     <DirectionalText direction={direction} style={[
                         componentStyles.toolbarTitle,
-                        generateTextStyles(language),
+                        getFontFamily(language),
                         theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
                     ]}>
                         {title}

@@ -10,7 +10,7 @@ import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 import {Regions} from '../data';
 import Icon from 'react-native-vector-icons/Ionicons';
-import styles, {generateTextStyles, themes} from '../styles'
+import styles, {getFontFamily, themes} from '../styles'
 
 class Navigation extends Component {
 
@@ -153,7 +153,7 @@ class Navigation extends Component {
             <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
                 {(isLTR) && headerImage}
                 <Text style={[
-                    generateTextStyles(language),
+                    getFontFamily(language),
                     styles.cityText
                 ]}>
                     {region.pageTitle.toUpperCase() }

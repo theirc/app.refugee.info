@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, ScrollView, Text, Dimensions, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles from '../styles';
+import styles, {getFontFamily, getAlignItems} from '../styles';
 import {Button} from '../components';
 import ApiClient from '../utils/ApiClient';
 
@@ -51,11 +51,15 @@ class Contact extends Component {
     }
 
     render() {
-        const {theme, direction} = this.props;
+        const {theme, direction, language} = this.props;
 
         return (
             <ScrollView style={styles.detailsContainer}>
-                <Text style={[styles.sectionContent, theme=='dark' ? styles.textDark : styles.textLight]}>
+                <Text style={[
+                    styles.sectionContent,
+                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getFontFamily(language)
+                ]}>
                     {I18n.t('NAME')}
                 </Text>
                 <View style={[
@@ -70,17 +74,26 @@ class Contact extends Component {
                         style={[
                             styles.textInputModal,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null
+                            direction=='rtl' ? styles.alignRight : null,
+                            getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
+                        autoCorrect={false}
                     />
                 </View>
                 {this._isNameInvalid() &&
-                    <Text style={styles.validationText}>
+                    <Text style={[
+                        styles.validationText,
+                        getFontFamily(language)
+                    ]}>
                         {I18n.t('FIELD_REQUIRED')}
                     </Text>
                 }
-                <Text style={[styles.sectionContent, theme=='dark' ? styles.textDark : styles.textLight]}>
+                <Text style={[
+                    styles.sectionContent,
+                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getFontFamily(language)
+                ]}>
                     {I18n.t('EMAIL')}
                 </Text>
                 <View style={[
@@ -95,17 +108,27 @@ class Contact extends Component {
                         style={[
                             styles.textInputModal,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null
+                            direction=='rtl' ? styles.alignRight : null,
+                            getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
+                        autoCorrect={false}
+                        autoCapitalize="none"
                     />
                 </View>
                 {this._isEmailInvalid() &&
-                    <Text style={styles.validationText}>
+                    <Text style={[
+                        styles.validationText,
+                        getFontFamily(language)
+                    ]}>
                         {I18n.t('FIELD_REQUIRED')}
                     </Text>
                 }
-                <Text style={[styles.sectionContent, theme=='dark' ? styles.textDark : styles.textLight]}>
+                <Text style={[
+                    styles.sectionContent,
+                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getFontFamily(language)
+                    ]}>
                     {I18n.t('SUBJECT')}
                 </Text>
                 <View style={[
@@ -120,17 +143,25 @@ class Contact extends Component {
                         style={[
                             styles.textInputModal,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null
+                            direction=='rtl' ? styles.alignRight : null,
+                            getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
                     />
                 </View>
                 {this._isSubjectInvalid() &&
-                    <Text style={styles.validationText}>
+                    <Text style={[
+                        styles.validationText,
+                        getFontFamily(language)
+                    ]}>
                         {I18n.t('FIELD_REQUIRED')}
                     </Text>
                 }
-                <Text style={[styles.sectionContent, theme=='dark' ? styles.textDark : styles.textLight]}>
+                <Text style={[
+                    styles.sectionContent,
+                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getFontFamily(language)
+                ]}>
                     {I18n.t('MESSAGE')}
                 </Text>
                 <View style={[
@@ -146,13 +177,17 @@ class Contact extends Component {
                         style={[
                             styles.textInputMultiline,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null
+                            direction=='rtl' ? styles.alignRight : null,
+                            getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
                     />
                 </View>
                 {this._isMessageInvalid() &&
-                    <Text style={styles.validationText}>
+                    <Text style={[
+                        styles.validationText,
+                        getFontFamily(language)
+                    ]}>
                         {I18n.t('FIELD_REQUIRED')}
                     </Text>
                 }
@@ -160,6 +195,7 @@ class Contact extends Component {
                     color="green"
                     text={I18n.t('SUBMIT')}
                     onPress={() => this.onSubmitClick()}
+                    // style={{marginTop: 10}}
                 />
             </ScrollView>
         );
@@ -170,7 +206,8 @@ const mapStateToProps = (state) => {
     return {
         primary: state.theme.primary,
         theme: state.theme,
-        language: state.language
+        language: state.language,
+        direction: state.direction
     };
 };
 

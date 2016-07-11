@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet, TouchableHighlight} from 'react-nativ
 import Icon from 'react-native-vector-icons/Ionicons';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles, getUnderlayColor, themes} from '../styles';
+import styles, {getFontFamily, getUnderlayColor, themes} from '../styles';
 
 export default class SearchFilterButton extends Component {
 

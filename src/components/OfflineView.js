@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Button} from '../components'
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles} from '../styles';
+import styles, {getFontFamily} from '../styles';
 
 export default class OfflineView extends Component {
 
@@ -32,7 +32,7 @@ export default class OfflineView extends Component {
                     <View style={componentStyles.offlineModeTextContainer}>
                         <Text style={[
                                 componentStyles.offlineModeText,
-                                generateTextStyles(language),
+                                getFontFamily(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}
                         >
@@ -40,7 +40,7 @@ export default class OfflineView extends Component {
                         </Text>
                         <Text style={[
                                 componentStyles.OfflineModeLastSync,
-                                generateTextStyles(language),
+                                getFontFamily(language),
                                 theme=='dark' ? styles.textDark : styles.textLight
                             ]}
                         >

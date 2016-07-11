@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export function generateTextStyles(language='en') {
+export function getFontFamily(language='en') {
     let style;
     if (['ar', 'fa'].indexOf(language) > -1) {
         style = {
@@ -333,7 +333,7 @@ export function getAlignItems(direction){
     else return {alignItems: 'flex-start'};
 }
 
-export function getAlignText(direction){
+export function getTextAlign(direction){
     if (direction==='rtl')
         return {textAlign: 'right'};
     else return {textAlign: 'auto'};

@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {themes, generateTextStyles, getUnderlayColor, getRowOrdering} from '../styles';
+import styles, {themes, getFontFamily, getUnderlayColor, getRowOrdering} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ListItem} from '../components';
 
@@ -106,7 +106,7 @@ class Settings extends Component {
                     <View style={{justifyContent: 'center'}}>
                         <Text style={[
                             styles.textAccentGreen,
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             {fontSize: 13}
                         ]}>
                             {I18n.t('CHANGE_LANGUAGE').toUpperCase()}
@@ -151,7 +151,7 @@ class Settings extends Component {
                     <View style={{justifyContent: 'center'}}>
                         <Text style={[
                             styles.textAccentGreen,
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             {fontSize: 13}
                         ]}>
                             {I18n.t('CHANGE_THEME').toUpperCase()}
@@ -176,7 +176,7 @@ class Settings extends Component {
                     >
                         <Text style={[
                             {fontSize: 13, color: themes.light.textColor},
-                            generateTextStyles(language)
+                            getFontFamily(language)
                         ]}>
                             {I18n.t('LIGHT')}
                         </Text>
@@ -200,7 +200,7 @@ class Settings extends Component {
                     >
                         <Text style={[
                             {fontSize: 13, color: themes.dark.textColor},
-                            generateTextStyles(language)
+                            getFontFamily(language)
                         ]}>
                             {I18n.t('DARK')}
                         </Text>

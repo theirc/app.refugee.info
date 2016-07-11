@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {generateTextStyles, themes} from '../styles';
+import {getFontFamily, themes} from '../styles';
 
 export default class SearchBar extends Component {
 
@@ -38,7 +38,7 @@ export default class SearchBar extends Component {
                     <TextInput
                         style={[
                             componentStyles.searchBarInput,
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             theme=='dark' ? componentStyles.searchBarIconDark : componentStyles.searchBarIconLight
                         ]}
                         placeholder={I18n.t('SEARCH')}
