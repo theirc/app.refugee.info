@@ -33,6 +33,10 @@ export const themes = {
     }
 };
 
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
 
     // reusable view header
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
     borderDark: {
         borderColor: themes.dark.lighterDividerColor
     },
-    
+
     // generic text colors
 
     textLight: {
@@ -171,21 +175,21 @@ const styles = StyleSheet.create({
     textAccentGreen: {
         color: themes.light.greenAccentColor
     },
-    
+
     // other
-    
+
     flex: {
         flex: 1
     },
     scene: {
-        paddingTop: 140,
+        paddingTop: windowHeight > 500 ? 140 : 110,
         flex: 1
     },
     row: {
         flexDirection: 'row'
     },
     rowRTL: {
-        flexDirection: 'row-reverse'  
+        flexDirection: 'row-reverse'
     },
     container: {
         flex: 1,
@@ -288,20 +292,20 @@ const styles = StyleSheet.create({
     sectionContent: {
         fontSize: 13
     },
-    contactBorder:{
+    contactBorder: {
         marginTop: 5,
         marginBottom: 5,
         borderWidth: 0.5
     }
 });
 
-export function generateTextStyles(language='en') {
+export function generateTextStyles(language = 'en') {
     let style;
     if (['ar', 'fa'].indexOf(language) > -1) {
         style = {
             fontFamily: 'Montserrat'
         };
-    } else if (['el', ].indexOf(language) > -1) {
+    } else if (['el',].indexOf(language) > -1) {
         style = {
             fontFamily: 'Roboto'
         };
@@ -314,29 +318,29 @@ export function generateTextStyles(language='en') {
     return style;
 }
 
-export function getUnderlayColor(theme='light'){
-    if (theme=='light') 
+export function getUnderlayColor(theme = 'light') {
+    if (theme == 'light')
         return 'rgba(0, 0, 0, 0.2)';
-    else 
+    else
         return 'rgba(255, 255, 255, 0.6)'
 }
 
-export function getRowOrdering(direction){
-    if (direction==='rtl')
+export function getRowOrdering(direction) {
+    if (direction === 'rtl')
         return styles.rowRTL;
     else return styles.row;
 }
 
-export function getAlignItems(direction){
-    if (direction==='rtl')
-        return {alignItems: 'flex-end'};
-    else return {alignItems: 'flex-start'};
+export function getAlignItems(direction) {
+    if (direction === 'rtl')
+        return { alignItems: 'flex-end' };
+    else return { alignItems: 'flex-start' };
 }
 
-export function getAlignText(direction){
-    if (direction==='rtl')
-        return {textAlign: 'right'};
-    else return {textAlign: 'auto'};
+export function getAlignText(direction) {
+    if (direction === 'rtl')
+        return { textAlign: 'right' };
+    else return { textAlign: 'auto' };
 }
 
 export default styles;
