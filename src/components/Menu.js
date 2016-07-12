@@ -91,7 +91,7 @@ class MenuItem extends Component {
                     flexDirection: 'column'
                 }}
                 >
-                <View style={[styles.itemLine]}>
+                <View style={[styles.itemLine, direction==='rtl' ? {paddingRight: 15} : {}]}>
                     <View style={[
                         styles.item,
                         { flexDirection: (direction == 'rtl') ? 'row-reverse' : 'row' }
@@ -180,7 +180,7 @@ class MenuSection extends Component {
 
         return (
             <View style={styles.headerWrapper}>
-                {title && <View style={styles.header}>
+                {title && <View style={[styles.header, direction==='rtl' ? {paddingRight: 20} : {}]}>
                     <DirectionalText {...this.props} style={[fontStyle]} direction={direction}>{title}</DirectionalText>
                 </View>}
                 {children}
@@ -229,7 +229,7 @@ const sharedStyles = {
         height: 26,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 13,
+        borderRadius: 13
     }
 };
 

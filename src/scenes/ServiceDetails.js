@@ -267,6 +267,7 @@ export default class ServiceDetails extends Component {
                                     theme == 'dark' ? styles.textDark : styles.textLight,
                                     direction == 'rtl' ? styles.alignRight : null
                                 ]}
+                                underlineColorAndroid='transparent'
                             />
                             <TextInput
                                 multiline
@@ -283,6 +284,7 @@ export default class ServiceDetails extends Component {
                                     theme == 'dark' ? styles.textDark : styles.textLight,
                                     direction == 'rtl' ? styles.alignRight : null
                                 ]}
+                                underlineColorAndroid='transparent'
                             />
                             <Divider theme={theme} margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
