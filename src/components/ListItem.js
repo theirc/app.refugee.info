@@ -7,9 +7,10 @@ import {
     Image,
     Platform
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {connect} from 'react-redux';
 import styles, {generateTextStyles, getUnderlayColor, themes, getRowOrdering, getAlignItems} from '../styles';
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
 
 export default class ListItem extends Component {
 
@@ -23,20 +24,34 @@ export default class ListItem extends Component {
     };
 
     render() {
-        const {theme, onPress, text, icon, language, direction, iconColor, fontSize, image} = this.props;
+        const {theme, onPress, text, language, direction, iconColor, fontSize, image} = this.props;
+        let iconName = this.props.icon.trim();
         const defaultIcon = 'md-bus';
+        let Icon;
+        if(!iconName) {
+            iconName = defaultIcon;
+        }
+        if (iconName.indexOf('ion-') == 0) {
+            iconName = iconName.substring(4);
+            Icon = Ionicons;
+        } else if (iconName.indexOf('fa-') == 0) {
+            iconName = iconName.substring(3);
+            Icon = FontAwesome;
+        } else {
+            Icon = Ionicons;
+        }
         const button_icon = image ?
             <Image
                 source={image}
                 style={[componentStyles.listItemImageInline]}
-            /> :
+                /> :
             <Icon
-                name={icon || defaultIcon }
+                name={iconName || defaultIcon }
                 style={[
                     componentStyles.listItemIconInline,
                     iconColor && { color: iconColor }
                 ]}
-            />;
+                />;
         return (
             <View>
                 <TouchableHighlight
@@ -54,7 +69,7 @@ export default class ListItem extends Component {
                             style={[
                                 componentStyles.listItemIconContainer
                             ]}
-                        >
+                            >
                             {button_icon}
                         </View>
                         <View style={[
@@ -64,7 +79,7 @@ export default class ListItem extends Component {
                         <View style={[
                             componentStyles.listItemTextContainer,
                             getAlignItems(direction),
-                            {borderBottomWidth: 1},
+                            { borderBottomWidth: 1 },
                             theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
 
                         ]}>

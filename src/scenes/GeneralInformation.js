@@ -113,6 +113,7 @@ export class GeneralInformation extends Component {
     renderRow(rowData) {
         return (
             <ListItem
+            icon={rowData.vector_icon}
                 onPress={this.onClick.bind(this, rowData.title, rowData.section) }
                 text={rowData.title.trim() }
                 />

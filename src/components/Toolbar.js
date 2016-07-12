@@ -20,7 +20,6 @@ export default class Toolbar extends Component {
     };
 
     render() {
-        console.log()
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
         let {toolbarTitle} = this.props;

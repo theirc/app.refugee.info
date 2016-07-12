@@ -38,8 +38,9 @@ class Navigation extends Component {
     async loadCities(country) {
         let cities = [];
         const regionData = new Regions(this.props);
+        const {region} = this.props;
 
-        let children = (await regionData.listChildren(country)).filter((c) => c.level == 3);
+        let children = (await regionData.listChildren(country, false, region)).filter((c) => c.level != 2);
 
         children.forEach((c) => {
             if (c && c.metadata) {

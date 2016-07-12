@@ -17,23 +17,39 @@ export default class Presence extends Component {
         this.client = new ApiClient(context, props);
     }
 
-    static async registerToken(token) {
-        await AsyncStorage.setItem('notificationToken', token);
+    static pointFromDeviceCoords(c) {
+        return {
+            coordinates: [
+                c.longitude, // x
+                c.latitude, // x
+            ],
+            type: 'Point'
+        };
     }
 
-    async registerPresence(coords, region) {
-        const token = await AsyncStorage.getItem('notificationToken');
-        let pointFromDeviceCoords = (c) => {
-            return {
-                coordinates: [
-                    c.longitude, // x
-                    c.latitude, // x
-                ],
-                type: 'Point'
-            };
-        }
+    static async registerToken(token) {
+        await AsyncStorage.setItem('notificationToken', JSON.stringify(token));
+    }
+
+    static async registerLocation(deviceCoords) {
+        let currentLocation = Presence.pointFromDeviceCoords(deviceCoords);
+        await AsyncStorage.setItem('deviceCoordinates', JSON.stringify(currentLocation));
+    }
+    
+    static async getLocation() {
+        return JSON.parse(await AsyncStorage.getItem('deviceCoordinates'));
+    }
+    
+    static async getToken(deviceCoords) {
+        return await AsyncStorage.getItem('notificationToken');
+    }
+    
+    async recordPresence(region) {
+        const token = await Presence.getToken();
+        const location = await Presence.getLocation();
+        
         let payload = {
-            coordinates: coords ? pointFromDeviceCoords(coords) : (region ? region.centroid : null),
+            coordinates: location ? location : (region ? region.centroid : null),
             region: region ? region.id : null,
             token
         };

@@ -36,12 +36,8 @@ class CityChoice extends Component {
 
     async componentDidMount() {
         const regionData = new Regions(this.props);
-        let cities = (await regionData.listChildren(this.props.country)).filter((c)=>c.level==3);
-        if(!this.props.country.hidden) {
-            let countryAsRegion = {...this.props.country};
-            countryAsRegion.country = this.props.country;
-            cities.unshift(countryAsRegion);
-        }
+
+        let cities = (await regionData.listChildren(this.props.country)).filter((c) => c.level != 2);
 
         cities.forEach((c) => {
             if (c && c.metadata) {
@@ -66,8 +62,8 @@ class CityChoice extends Component {
         dispatch(updateCountryIntoStorage(city.country));
         dispatch(updateRegionIntoStorage(city));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
         if (city.content && city.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, {
@@ -87,7 +83,7 @@ class CityChoice extends Component {
                     header={I18n.t('SELECT_LOCATION') }
                     onPress={(rowData) => { this._onPress(rowData) } }
                     rows={this.state.cities}
-                />
+                    />
             </View>
         );
     }
