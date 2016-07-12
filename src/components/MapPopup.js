@@ -22,7 +22,7 @@ export default class MapPopup extends Component {
             <View style={[
                 styles.container,
                 {padding: 10},
-                theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+                theme=='dark' ? styles.containerDark : styles.containerLight
             ]}>
                 <View style={getRowOrdering(direction)}>
                     <View style={[

@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {getFontFamily, themes} from '../styles';
+import {getFontFamily, getRowOrdering, themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {DirectionalText} from '../components';
 
@@ -68,7 +68,10 @@ export default class Toolbar extends Component {
                         />
                     {showIcon && icon}
                 </View>
-                <View style={[componentStyles.toolbarBottom,]}>
+                <View style={[
+                    componentStyles.toolbarBottom,
+                    getRowOrdering(direction)
+                ]}>
                     <DirectionalText direction={direction} style={[
                         componentStyles.toolbarTitle,
                         getFontFamily(language),
@@ -125,7 +128,6 @@ const componentStyles = StyleSheet.create({
     },
     toolbarBottom: {
         flex: 1,
-        flexDirection: 'row',
         alignItems: 'flex-end'
     },
     brandImage: {

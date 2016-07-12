@@ -18,17 +18,19 @@ export default class ListItem extends Component {
         onPress: PropTypes.func,
         text: PropTypes.string,
         icon: PropTypes.string,
+        iconSize: PropTypes.number,
         iconColor: PropTypes.string,
         fontSize: PropTypes.number,
-        image: PropTypes.number
+        image: PropTypes.number,
+        centered: PropTypes.bool
     };
 
     render() {
-        const {theme, onPress, text, language, direction, iconColor, fontSize, image} = this.props;
-        let iconName = (this.props.icon||'').trim();
+        const {theme, onPress, text, language, direction, iconColor, fontSize, image, centered, iconSize} = this.props;
+        let iconName = (this.props.icon || '').trim();
         const defaultIcon = 'md-bus';
         let Icon;
-        if(!iconName) {
+        if (!iconName) {
             iconName = defaultIcon;
         }
         if (iconName.indexOf('ion-') == 0) {
@@ -43,33 +45,84 @@ export default class ListItem extends Component {
         const button_icon = image ?
             <Image
                 source={image}
-                style={[componentStyles.listItemImageInline]}
-                /> :
+                style={[
+                    componentStyles.listItemImageInline,
+                    {width: iconSize || 24, height: iconSize || 24}
+                ]}
+            /> :
             <Icon
                 name={iconName || defaultIcon }
                 style={[
-                    componentStyles.listItemIconInline,
+                    componentStyles.listItemIcon,
+                    {fontSize: iconSize || 24},
                     iconColor && { color: iconColor }
                 ]}
-                />;
-        return (
+            />;
+        if (centered) {
+            const imageElement = (image &&
+            <Image 
+                source={image} 
+                style={[
+                    (direction=='rtl')
+                        ? componentStyles.listItemImageAbsoluteRTL
+                        : componentStyles.listItemImageAbsolute
+                ]}
+            />);
+            const imageDivider = (image &&
+            <View
+                style={[
+                    componentStyles.dividerAbsolute,
+                    theme=='dark' ? styles.dividerDark : styles.dividerLight
+                ]}
+            />);
+            
+            return (
+                <TouchableHighlight
+                    onPress={onPress}
+                    underlayColor={getUnderlayColor(theme)}
+                >
+                    <View
+                        style={[
+                            styles.listItemContainer,
+                            getRowOrdering(direction),
+                            theme=='dark' ? styles.containerDark : styles.containerLight
+                        ]}
+                    >
+                        { imageElement }
+                        { imageDivider }
+                        <View style={componentStyles.listItemTextContainer}>
+                            <Text 
+                                style={[
+                                    componentStyles.listItemText,
+                                    getFontFamily(language),
+                                    theme=='dark' ? styles.textDark : styles.textLight
+                                ]}
+                            >
+                                {text}
+                            </Text>
+                        </View>
+                    </View>
+                </TouchableHighlight>
+            );
+        }
+        else return (
             <View>
                 <TouchableHighlight
                     onPress={onPress}
                     underlayColor={getUnderlayColor(theme) }
-                    >
+                >
                     <View
                         style={[
                             componentStyles.listItemContainer,
                             getRowOrdering(direction),
-                            theme == 'dark' ? componentStyles.listItemContainerDark : componentStyles.listItemContainerLight
+                            theme == 'dark' ? styles.containerDark : styles.containerLight
                         ]}
-                        >
+                    >
                         <View
                             style={[
                                 componentStyles.listItemIconContainer
                             ]}
-                            >
+                        >
                             {button_icon}
                         </View>
                         <View style={[
@@ -112,12 +165,6 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         height: 50
     },
-    listItemContainerLight: {
-        backgroundColor: themes.light.backgroundColor
-    },
-    listItemContainerDark: {
-        backgroundColor: themes.dark.backgroundColor
-    },
     listItemTextContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -138,20 +185,36 @@ const componentStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    listItemIconInline: {
-
-        fontSize: 24,
+    listItemIcon: {
         color: themes.light.greenAccentColor
     },
     listItemImageInline: {
-        width: 24,
-        height: 24,
         margin: 13
     },
+    listItemImageAbsolute: {
+        position: 'absolute',
+        left: 15,
+        top: 9,
+        width: 32,
+        height: 32
+    },
+    listItemImageAbsoluteRTL: {
+        position: 'absolute',
+        right: 15,
+        top: 9,
+        width: 32,
+        height: 32
+    },
     dividerInline: {
-        marginTop: 13,
+        marginVertical: 13,
+        width: 1
+    },
+    dividerAbsolute: {
+        position: 'absolute',
+        top: 13,
         width: 1,
-        height: 24
+        height: 24,
+        left: 63
     }
 
 });

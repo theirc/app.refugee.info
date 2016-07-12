@@ -3,6 +3,7 @@ import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react
 import {I18n} from '../constants';
 import styles, {getUnderlayColor, getFontFamily, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
+import {ListItem} from '../components';
 
 export default class LocationListView extends Component {
 
@@ -55,59 +56,18 @@ export default class LocationListView extends Component {
     }
 
     renderRow(rowData) {
-        let buttonIsSelected = (this.state.selected && this.state.selected.id === rowData.id);
-        let image = null;
-        if (this.props.image) {
-            image = this.props.image(rowData.code);
-        }
-        let {direction, theme, language} = this.props;
-        if (!(direction || false)) {
-            direction = 'ltr';
-        }
-
-        const imageElement = (image && 
-        <Image source={image} style={direction=='rtl' ? styles.listItemIconRTL : styles.listItemIcon} />);
-        const imageDivider = (image && 
-        <View style={[
-                styles.dividerAbsolute,
-                theme=='dark' ? styles.dividerDark : styles.dividerLight
-            ]} 
-        />);
         return (
-                <TouchableHighlight
-                    onPress={() => {this.props.onPress(rowData)}}
-                    underlayColor={getUnderlayColor(theme)}
-                >
-                    <View
-                        style={[
-                            styles.listItemContainer,
-                            getRowOrdering(direction),
-                            theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
-                        ]}
-                    >
-                        { imageElement }
-                        { imageDivider }
-                        <View style={styles.listItemTextContainer}>
-                            <Text style={[
-                                styles.listItemText,
-                                getFontFamily(language),
-                                theme=='dark' ? styles.textDark : styles.textLight
-                            ]}>
-                                {rowData.pageTitle || rowData.metadata.page_title || rowData.name}
-                            </Text>
-                        </View>
-                    </View>
-                </TouchableHighlight>
-        );
+            <ListItem
+                onPress={() => {this.props.onPress(rowData)}}
+                image={(this.props.image) ? this.props.image(rowData.code) : null}
+                text={rowData.pageTitle || rowData.metadata.page_title || rowData.name}
+                centered={true}
+            />
+        )
     }
 
     render() {
-        const primary = this.props.primary;
-        let {direction} = this.props;
-        if (!(direction || false)) {
-            direction = 'ltr';
-        }
-        let custom_header_text = null;
+        let custom_header_text;
         if (this.props.rows.length === 0 && this.props.loaded) {
             custom_header_text = I18n.t('NO_LOCATIONS_FOUND')
         }
@@ -121,7 +81,6 @@ export default class LocationListView extends Component {
                         enableEmptySections
                         renderHeader={() => this.renderHeader(custom_header_text)}
                         renderRow={(rowData) => !custom_header_text ? this.renderRow(rowData) : null}
-                        style={styles.listViewContainer}
                     />
                 </View>
             );

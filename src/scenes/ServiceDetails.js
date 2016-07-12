@@ -355,6 +355,7 @@ export default class ServiceDetails extends Component {
                 <View style={[styles.row, styles.flex]}>
                     <Text style={[
                         styles.flex,
+                        styles.sectionContent,
                         getTextAlign(direction),
                         getFontFamily(language),
                         { textAlign: 'center' },
@@ -368,6 +369,7 @@ export default class ServiceDetails extends Component {
             <View style={[styles.row, styles.flex]}>
                 <Text style={[
                     styles.flex,
+                    styles.sectionContent,
                     getTextAlign(direction),
                     getFontFamily(language),
                     {textAlign: 'right'},
@@ -378,6 +380,7 @@ export default class ServiceDetails extends Component {
                 </Text>
                 <Text style={[
                     {flex: 0.5},
+                    styles.sectionContent,
                     getTextAlign(direction),
                     getFontFamily(language),
                     {textAlign: 'center'},
@@ -385,6 +388,7 @@ export default class ServiceDetails extends Component {
                 ]}>-</Text>
                 <Text style={[
                     styles.flex,
+                    styles.sectionContent,
                     getTextAlign(direction),
                     getFontFamily(language),
                     {textAlign: 'left'},
@@ -436,6 +440,7 @@ export default class ServiceDetails extends Component {
                     >
                         <Text style={[
                             {flex: 0.5},
+                            styles.sectionContent,
                             getTextAlign(direction),
                             getFontFamily(language),
                             theme == 'dark' ? styles.textDark : styles.textLight
@@ -456,10 +461,8 @@ export default class ServiceDetails extends Component {
         let locationName = (location) ? location.pageTitle || location.name : '';
         let providerName = (this.state.provider) ? this.state.provider.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
-
-        let coordinates = service.location.match(/[\d\.]+/g);
-        let lat = parseFloat(coordinates[2]),
-            long = parseFloat(coordinates[1]);
+        let lat = parseFloat(service.location.coordinates[1]),
+            long = parseFloat(service.location.coordinates[0]);
 
         let rating = this.serviceCommons.renderStars(service.rating);
         let openingHoursView = this.renderOpeningHours();
@@ -524,7 +527,7 @@ export default class ServiceDetails extends Component {
                         { paddingBottom: 5 }
                     ]}>
                         <Text style={[
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             {
                                 color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
                                 fontSize: 12

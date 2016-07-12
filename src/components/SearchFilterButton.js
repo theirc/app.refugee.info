@@ -75,7 +75,9 @@ const componentStyles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
         shadowRadius: 1,
-        height: 36
+        height: 36,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     searchFilterButtonLight: {
         backgroundColor: themes.light.backgroundColor
@@ -84,9 +86,6 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.toolbarColor
     },
     searchFilterIcon: {
-        marginLeft: 7,
-        marginTop: 2,
-        marginBottom: 2,
         fontSize: 28
     },
     searchFilterIconDark: {

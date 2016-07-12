@@ -1,8 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {connect} from 'react-redux';
-import DrawerCommons from '../utils/DrawerCommons';
-import styles, {themes, generateTextStyles, getUnderlayColor} from '../styles';
+import styles, {themes, getFontFamily, getUnderlayColor} from '../styles';
 import I18n from '../constants/Messages'
 
 import {updateLanguageIntoStorage} from '../actions/language'
@@ -118,7 +117,7 @@ class Welcome extends Component {
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={[
                             styles.textAccentGreen,
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             { fontSize: 13, alignItems: 'center' }
                         ]}>
                             {I18n.t('LANGUAGE').toUpperCase() }
@@ -132,7 +131,7 @@ class Welcome extends Component {
                     >
                     <Text style={[
                         { fontSize: 13, color: themes.light.textColor, },
-                        generateTextStyles('en')
+                        getFontFamily('en')
                     ]}>
                         English
                     </Text>
@@ -144,7 +143,7 @@ class Welcome extends Component {
                     >
                     <Text style={[
                         { fontSize: 13, color: themes.light.textColor, },
-                        generateTextStyles('ar')
+                        getFontFamily('ar')
                     ]}>
                         العربيـة
                     </Text>
@@ -156,7 +155,7 @@ class Welcome extends Component {
                     >
                     <Text style={[
                         { fontSize: 13, color: themes.light.textColor, },
-                        generateTextStyles('fa')
+                        getFontFamily('fa')
                     ]}>
                         فارسی
                     </Text>
@@ -184,7 +183,7 @@ class Welcome extends Component {
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={[
                             styles.textAccentGreen,
-                            generateTextStyles(language),
+                            getFontFamily(language),
                             { fontSize: 13, alignItems: 'center' }
                         ]}>
                             {I18n.t('THEME').toUpperCase() }
@@ -198,7 +197,7 @@ class Welcome extends Component {
                     >
                     <Text style={[
                         { fontSize: 13, color: themes.light.textColor, },
-                        generateTextStyles(language)
+                        getFontFamily(language)
                     ]}>
                         {I18n.t('LIGHT') }
                     </Text>
@@ -211,7 +210,7 @@ class Welcome extends Component {
                     >
                     <Text style={[
                         { fontSize: 13, color: themes.dark.textColor },
-                        generateTextStyles(language)
+                        getFontFamily(language)
                     ]}>
                         {I18n.t('DARK') }
                     </Text>

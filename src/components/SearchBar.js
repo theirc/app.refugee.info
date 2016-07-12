@@ -84,10 +84,8 @@ const componentStyles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 1,
         flexDirection: 'row',
-        paddingTop: (Platform.OS==='ios') ? 5 : 0,
-        paddingBottom: (Platform.OS==='ios') ? 6 : 0,
-        paddingLeft: 10,
-        paddingRight: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
         height: 36
     },
     searchBarLight: {
@@ -97,13 +95,13 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.toolbarColor
     },
     searchBarIconContainer: {
+        height: 36,
+        width: 36,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
     },
     searchBarIcon: {
-        marginLeft: 5,
-        marginRight: 10,
         fontSize: 22
     },
     searchBarIconLight: {

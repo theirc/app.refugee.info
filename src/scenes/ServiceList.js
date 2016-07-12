@@ -156,7 +156,7 @@ export default class ServiceList extends Component {
                 <View
                     style={[
                         styles.listItemContainer,
-                        theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                        theme == 'dark' ? styles.containerDark : styles.containerLight,
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
                 >
@@ -178,7 +178,7 @@ export default class ServiceList extends Component {
                         <View style={[
                             styles.container,
                             getAlignItems(direction),
-                            theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                            theme == 'dark' ? styles.containerDark : styles.containerLight,
                             { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
                         ]}>
                             <Text
