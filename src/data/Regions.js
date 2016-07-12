@@ -18,8 +18,10 @@ import styles from '../styles';
 import store from '../store';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+var gju = require('geojson-utils');
+
 export default class Regions extends Component {
-    constructor(props, context=null) {
+    constructor(props, context = null) {
         super();
 
         this.client = new ApiClient(context, props);
@@ -42,7 +44,7 @@ export default class Regions extends Component {
         return countries;//.filter((r) => !r.hidden);
     }
 
-    async listChildren(country, network = false) {
+    async listChildren(country, network = false, region = null, point = null) {
         let countryId = country.id;
         let children = JSON.parse(await AsyncStorage.getItem('__children-' + countryId));
 
@@ -52,6 +54,7 @@ export default class Regions extends Component {
                 m.country = country;
                 m.countryId = countryId;
             });
+
             await AsyncStorage.setItem('__children-' + countryId, JSON.stringify(children));
             await Promise.all(children.map((c) => {
                 return Promise.all([
@@ -61,7 +64,34 @@ export default class Regions extends Component {
             }));
         }
 
+        if(region) {
+            children = children.filter(c=> c.id != region.id);
+            children = Regions.sortChildren(children, region.centroid);
+        }
+
+        if(point) {
+            children = Regions.sortChildren(children, point);
+        }
+
+        children = [{country, ...country}].concat(children);
+        
         return children.filter((r) => !r.hidden);
+    }
+
+    static sortChildren(children, region) {
+        if(region) {
+            children.sort((a, b) => {
+                if(!a.centroid || !b.centroid) {
+                    return 0;
+                }
+                var x = gju.pointDistance(region, a.centroid);
+                var y = gju.pointDistance(region, b.centroid);
+
+                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+            });
+        }
+
+        return children;
     }
 
     async getLocation(id, country, network = false) {

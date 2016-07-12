@@ -40,8 +40,6 @@ export class Notifications extends Component {
             html: wrapHtmlContent(html, language, '', theme)
         };
 
-        console.log(source.html);
-
         return <View style={styles.container}>
             <WebView ref={(v) => this.webView = v}
                 style={webViewStyle}

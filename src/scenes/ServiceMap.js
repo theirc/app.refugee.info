@@ -198,6 +198,7 @@ class ServiceMap extends Component {
                     initialRegion={this.state.intialEnvelope}
                     style={styles.flex}
                     onRegionChange={(e) => this.onRegionChange(e) }
+                    showsUserLocation={true}
                     >
                     {this.state.markers.map((marker, i) => (
                         <MapView.Marker

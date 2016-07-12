@@ -71,13 +71,19 @@ export default class ServiceDetails extends Component {
         this.serviceCommons = new ServiceCommons();
     }
 
-    componentDidMount() {
-        const {service, dispatch} = this.props;
-        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
+    componentWillUnmount() {
+        const {dispatch} = this.props;
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: null });
+    }
+
+    componentWillMount() {
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
+        const {dispatch, service} = this.props;
+
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
     }
 
     _setModalVisible(visible) {
@@ -348,12 +354,12 @@ export default class ServiceDetails extends Component {
             return (
                 <View style={[styles.row, styles.flex]}>
                     <Text style={[
-                    styles.flex,
-                    getTextAlign(direction),
-                    getFontFamily(language),
-                    {textAlign: 'center'},
-                    theme == 'dark' ? styles.textDark : styles.textLight
-                ]}>
+                        styles.flex,
+                        getTextAlign(direction),
+                        getFontFamily(language),
+                        { textAlign: 'center' },
+                        theme == 'dark' ? styles.textDark : styles.textLight
+                    ]}>
                         {I18n.t('CLOSED').toUpperCase()}</Text>
                 </View>
             )
@@ -447,7 +453,8 @@ export default class ServiceDetails extends Component {
     render() {
         const {service, serviceType, location, theme, direction, language} = this.props;
 
-        let locationName = (location) ? location.name : '';
+        let locationName = (location) ? location.pageTitle || location.name : '';
+        let providerName = (this.state.provider) ? this.state.provider.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
 
         let coordinates = service.location.match(/[\d\.]+/g);
@@ -472,6 +479,8 @@ export default class ServiceDetails extends Component {
                     lastSync={this.state.lastSync}
                 />
                 <MapView
+                    cacheEnabled={true}
+                    scrollEnabled={false}
                     initialRegion={{
                         latitude: lat,
                         longitude: long,
@@ -508,6 +517,20 @@ export default class ServiceDetails extends Component {
                             }
                         ]}>
                             {locationName}
+                        </Text>
+                    </View>
+                    <View style={[
+                        getRowOrdering(direction),
+                        { paddingBottom: 5 }
+                    ]}>
+                        <Text style={[
+                            generateTextStyles(language),
+                            {
+                                color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
+                                fontSize: 12
+                            }
+                        ]}>
+                            {providerName}
                         </Text>
                     </View>
                     <View style={getRowOrdering(direction) }>

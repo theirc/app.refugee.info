@@ -88,6 +88,14 @@ export class GeneralInformationDetails extends Component {
     }
 
 
+    _defaultOrFirst(page, showTitle = false) {
+        if (page.content && page.content.length == 1) {
+            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
+        } else {
+            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            return this.context.navigator.to('info', null, payload);
+        }
+    }Í
 
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
@@ -116,8 +124,7 @@ export class GeneralInformationDetails extends Component {
                 }
 
                 Regions.searchImportantInformation(fullSlug).then((info) => {
-                    const {navigator} = this.context;
-                    navigator.to('info', null, { information: info });
+                    this._defaultOrFirst(info, true);
                 });
             } else {
                 this.webView.goBack();
@@ -151,8 +158,6 @@ export class GeneralInformationDetails extends Component {
                         onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
                         source={this.state.source}
                         style={this.state.webViewStyle}
-                        onError={() => console.log(...arguments) }
-                        onLoad={() => console.log(...arguments) }
                         />
                 }
                 <MapButton

@@ -29,19 +29,22 @@ export class NewsThatMoves extends Component {
     }
 
     componentWillMount() {
+        this.onRefresh().done()
+    }
+
+    async onRefresh() {
         const {region, language} = this.props;
         const {dispatch} = this.props;
 
-        new News(language).downloadNews().then((n) => {
+        return new News(language).downloadNews().then((n) => {
             let entries = n.feed.entries
-            this.setState({
+            return this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(entries),
                 refreshing: false
             });
         });
     }
 
-    onRefresh() { }
     renderRow(data) {
         const theme = themes[this.props.theme];
         const font = getFontFamily(this.props.language);
@@ -73,7 +76,7 @@ export class NewsThatMoves extends Component {
         }
 
         return <View style={styles.container}>
-            <View style={{ paddingVertical: 10, marginBottom:5, backgroundColor: '#FFFFFF' }}>
+            <View style={{ paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF' }}>
                 <Image source={{ uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png' }}
                     style={{ height: 70, resizeMode: 'contain', }}/>
             </View>

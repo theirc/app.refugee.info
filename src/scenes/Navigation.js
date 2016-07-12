@@ -38,8 +38,9 @@ class Navigation extends Component {
     async loadCities(country) {
         let cities = [];
         const regionData = new Regions(this.props);
+        const {region} = this.props;
 
-        let children = (await regionData.listChildren(country)).filter((c) => c.level == 3);
+        let children = (await regionData.listChildren(country, false, region)).filter((c) => c.level != 2);
 
         children.forEach((c) => {
             if (c && c.metadata) {
@@ -96,7 +97,8 @@ class Navigation extends Component {
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
         } else {
-            return this.context.navigator.to('info', null, null, store.getState());
+            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            return this.context.navigator.to('info', null, payload);
         }
     }
 
@@ -143,7 +145,7 @@ class Navigation extends Component {
             ]}
             />;
 
-
+        let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.view}>
@@ -194,9 +196,9 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    icon="ios-mail" onPress={()=>s('notifications')}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
+                    icon="ios-mail" onPress={() => s('notifications') } badge={bannerCount}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
-                    icon="ios-paper" onPress={()=>s('news')}>{I18n.t('NEWS') }</MenuItem>
+                    icon="ios-paper" onPress={() => s('news') }>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}
