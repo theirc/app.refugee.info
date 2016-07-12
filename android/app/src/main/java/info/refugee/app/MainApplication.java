@@ -1,4 +1,4 @@
-package com.refugeeinfoapp;
+package info.refugee.app;
 
 import android.app.Application;
 import android.util.Log;

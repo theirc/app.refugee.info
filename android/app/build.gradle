@@ -82,7 +82,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.refugeeinfoapp"
+        applicationId "info.refugee.app"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode Integer.parseInt(System.getenv("BITRISE_BUILD_NUMBER") != null ? System.getenv("BITRISE_BUILD_NUMBER") : "1")
