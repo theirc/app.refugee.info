@@ -85,8 +85,8 @@ android {
         applicationId "com.refugeeinfoapp"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode (System.getenv("BITRISE_BUILD_NUMBER") || "1").toInteger()
-        versionName "1.0." + (System.getenv("BITRISE_BUILD_NUMBER") || "0")
+        versionCode Integer.parseInt(System.getenv("BITRISE_BUILD_NUMBER") != null ? System.getenv("BITRISE_BUILD_NUMBER") : "1")
+        versionName "1.0." + (System.getenv("BITRISE_BUILD_NUMBER") != null ? System.getenv("BITRISE_BUILD_NUMBER") : "1")
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
