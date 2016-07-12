@@ -25,7 +25,7 @@ export default class ListItem extends Component {
 
     render() {
         const {theme, onPress, text, language, direction, iconColor, fontSize, image} = this.props;
-        let iconName = this.props.icon.trim();
+        let iconName = (this.props.icon||'').trim();
         const defaultIcon = 'md-bus';
         let Icon;
         if(!iconName) {
