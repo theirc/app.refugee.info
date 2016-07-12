@@ -65,6 +65,8 @@ class Skeleton extends Component {
             onNotification: function (notification) {
             },
 
+            senderID: '5963561492',
+
             // Should the initial notification be popped automatically
             // default: true
             popInitialNotification: true,
