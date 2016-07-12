@@ -19,7 +19,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
-import styles, {themes, getUnderlayColor, generateTextStyles, getRowOrdering, getAlignItems} from '../styles';
+import styles, {themes, getUnderlayColor, getFontFamily, getRowOrdering, getAlignItems} from '../styles';
 
 var _ = require('underscore');
 
@@ -156,7 +156,7 @@ export default class ServiceList extends Component {
                 <View
                     style={[
                         styles.listItemContainer,
-                        theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                        theme == 'dark' ? styles.containerDark : styles.containerLight,
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
                 >
@@ -178,12 +178,12 @@ export default class ServiceList extends Component {
                         <View style={[
                             styles.container,
                             getAlignItems(direction),
-                            theme == 'dark' ? styles.listItemContainerDark : styles.listItemContainerLight,
+                            theme == 'dark' ? styles.containerDark : styles.containerLight,
                             { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
                         ]}>
                             <Text
                                 style={[
-                                    generateTextStyles(language),
+                                    getFontFamily(language),
                                     {fontSize: 15, paddingBottom: 2, fontWeight: '500',
                                     color: theme == 'dark' ? themes.dark.textColor : themes.light.textColor}
                                 ]}
@@ -199,7 +199,7 @@ export default class ServiceList extends Component {
                                     ]}
                                 />
                                 <Text style={[
-                                    generateTextStyles(language),
+                                    getFontFamily(language),
                                     {
                                         color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
                                         fontSize: 11
@@ -210,7 +210,7 @@ export default class ServiceList extends Component {
                             </View>
                             <View style={getRowOrdering(direction)}>
                                 <Text style={[
-                                        generateTextStyles(language),
+                                        getFontFamily(language),
                                         {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1},
                                         direction=='rtl' ? {paddingLeft: 5} : {paddingRight: 5}
                                     ]}

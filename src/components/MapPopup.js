@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Text, View, Image, Dimensions, StyleSheet} from 'react-native';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
-import styles, {generateTextStyles, getRowOrdering} from '../styles';
+import styles, {getFontFamily, getRowOrdering} from '../styles';
 
 export default class MapPopup extends Component {
 
@@ -22,7 +22,7 @@ export default class MapPopup extends Component {
             <View style={[
                 styles.container,
                 {padding: 10},
-                theme=='dark' ? styles.listItemContainerDark : styles.listItemContainerLight
+                theme=='dark' ? styles.containerDark : styles.containerLight
             ]}>
                 <View style={getRowOrdering(direction)}>
                     <View style={[
@@ -41,14 +41,14 @@ export default class MapPopup extends Component {
                         <Text style={[
                             componentStyles.mapPopupTitle,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            generateTextStyles(language)
+                            getFontFamily(language)
                         ]}>
                             {marker.title}
                         </Text>
                         <Text style={[
                             componentStyles.mapPopupProvider,
                             theme=='dark' ? styles.textDark : styles.textLight,
-                            generateTextStyles(language)
+                            getFontFamily(language)
                         ]}>
                             {marker.service.provider.name}
                         </Text>
@@ -61,7 +61,7 @@ export default class MapPopup extends Component {
                     <Text style={[
                         componentStyles.mapPopupDescription,
                         theme=='dark' ? styles.textDark : styles.textLight,
-                        generateTextStyles(language),
+                        getFontFamily(language),
                         {textAlign: (direction=='rtl') ? 'right' : 'left'}
                     ]}>
                         {marker.description}

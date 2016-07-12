@@ -137,7 +137,7 @@ export class GeneralInformation extends Component {
                     >
                     <Button
                         color="green"
-                        icon="info"
+                        icon="md-information-circle"
                         text={I18n.t('SERVICE_LIST') }
                         onPress={() => s('services') }
                         style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
@@ -146,7 +146,7 @@ export class GeneralInformation extends Component {
                         />
                     <Button
                         color="green"
-                        icon="map"
+                        icon="md-map"
                         text={I18n.t('EXPLORE_MAP') }
                         onPress={() => s('map') }
                         style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
