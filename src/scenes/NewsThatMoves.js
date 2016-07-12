@@ -16,7 +16,7 @@ import I18n from '../constants/Messages';
 import {MapButton, OfflineView, DirectionalText, SearchBar, ListItem, Button} from '../components';
 import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles, {getUnderlayColor, themes, generateTextStyles} from '../styles';
+import styles, {getUnderlayColor, themes, getFontFamily} from '../styles';
 import store from '../store';
 import {Regions, Services, News} from '../data';
 
@@ -47,7 +47,7 @@ export class NewsThatMoves extends Component {
 
     renderRow(data) {
         const theme = themes[this.props.theme];
-        const font = generateTextStyles(this.props.language);
+        const font = getFontFamily(this.props.language);
         let textStyles = {
             flexDirection: this.props.direction == 'rtl' ? 'row-reverse' : 'row',
             textAlign: this.props.direction == 'rtl' ? 'right' : 'auto',

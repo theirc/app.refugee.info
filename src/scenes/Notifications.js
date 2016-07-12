@@ -20,7 +20,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
-import styles, {themes, getUnderlayColor, generateTextStyles, getRowOrdering, getAlignItems} from '../styles';
+import styles, {themes, getUnderlayColor, getFontFamily, getRowOrdering, getAlignItems} from '../styles';
 import {wrapHtmlContent} from '../utils/htmlUtils'
 
 var _ = require('underscore');

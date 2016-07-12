@@ -81,65 +81,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    listItemContainerLight: {
-        borderBottomColor: themes.light.lighterDividerColor,
-        backgroundColor: themes.light.backgroundColor
-    },
-    listItemContainerDark: {
-        borderBottomColor: themes.dark.darkerDividerColor,
-        backgroundColor: themes.dark.backgroundColor
-    },
-    listItemTextContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingTop: 9,
-        paddingBottom: 12
-    },
-    listItemText: {
-        flex: 1,
-        fontSize: 15
-    },
-    listItemIcon: {
-        position: 'absolute',
-        left: 15,
-        top: 9,
-        width: 32,
-        height: 32
-    },
-    listItemIconRTL: {
-        position: 'absolute',
-        right: 15,
-        top: 9,
-        width: 32,
-        height: 32
-    },
-    listItemIconInline: {
-        marginTop: 8,
-        marginLeft: 10,
-        fontSize: 24,
-        color: themes.light.greenAccentColor
-    },
-    dividerAbsolute: {
-        position: 'absolute',
-        left: 62,
-        top: 13,
-        width: 1,
-        height: 22
-    },
-    dividerInline: {
-        marginTop: 9,
-        width: 1,
-        height: 22,
-        marginLeft: 20,
-        marginRight: 20
-    },
     dividerLongInline: {
         marginTop: 17,
         width: 1,
         height: 46
     },
-
+    // generic background colors
+    
+    containerLight: {
+        borderBottomColor: themes.light.lighterDividerColor,
+        backgroundColor: themes.light.backgroundColor
+    },
+    containerDark: {
+        borderBottomColor: themes.dark.darkerDividerColor,
+        backgroundColor: themes.dark.backgroundColor
+    },
+    
     // generic divider colors
 
     dividerLight: {
@@ -175,9 +132,9 @@ const styles = StyleSheet.create({
     textAccentGreen: {
         color: themes.light.greenAccentColor
     },
-
+    
     // other
-
+    
     flex: {
         flex: 1
     },
@@ -299,7 +256,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export function generateTextStyles(language = 'en') {
+export function getFontFamily(language='en') {
     let style;
     if (['ar', 'fa'].indexOf(language) > -1) {
         style = {
@@ -337,10 +294,10 @@ export function getAlignItems(direction) {
     else return { alignItems: 'flex-start' };
 }
 
-export function getAlignText(direction) {
-    if (direction === 'rtl')
-        return { textAlign: 'right' };
-    else return { textAlign: 'auto' };
+export function getTextAlign(direction){
+    if (direction==='rtl')
+        return {textAlign: 'right'};
+    else return {textAlign: 'auto'};
 }
 
 export default styles;

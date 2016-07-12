@@ -15,7 +15,7 @@ import Drawer from 'react-native-drawer'
 import store from '../store';
 import {connect} from 'react-redux';
 
-import styles, {generateTextStyles, themes} from '../styles'
+import styles, {getFontFamily, themes} from '../styles'
 
 export class App extends Component {
 
@@ -107,7 +107,12 @@ export class App extends Component {
                 shadowRadius: 3
             }
         };
-
+        let statusBar = (Platform.OS === 'ios')
+            ?   <StatusBar barStyle={theme == 'light' ? "default" : 'light-content'}/>
+            :   <StatusBar
+                    translucent={true}
+                    backgroundColor={theme == 'light' ? 'rgba(0,0,0,0.3)' : 'transparent'}
+                />;
         return (
             <Drawer
                 ref={(drawer) => {
@@ -136,9 +141,7 @@ export class App extends Component {
                 panOpenMask={0.02}
                 side={'right'}
             >
-                <StatusBar
-                    barStyle={theme == 'light' ? "default" : 'light-content'}
-                />
+                {statusBar}
                 {!drawer &&
                 <Navigator
                     configureScene={() => {

@@ -10,7 +10,7 @@ import {
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {generateTextStyles, getUnderlayColor, themes} from '../styles'
+import {getFontFamily, getUnderlayColor, themes} from '../styles'
 
 
 class MenuItem extends Component {
@@ -65,7 +65,7 @@ class MenuItem extends Component {
         if(!badge) {
             badge = false;
         }
-        const fontStyle = {...styles.itemText, ...generateTextStyles(language) };
+        const fontStyle = {...styles.itemText, ...getFontFamily(language) };
 
         let press = (comp, ...args) => {
             if (item.onPress) {
@@ -91,7 +91,7 @@ class MenuItem extends Component {
                     flexDirection: 'column'
                 }}
                 >
-                <View style={[styles.itemLine]}>
+                <View style={[styles.itemLine, direction==='rtl' ? {paddingRight: 15} : {}]}>
                     <View style={[
                         styles.item,
                         { flexDirection: (direction == 'rtl') ? 'row-reverse' : 'row' }
@@ -176,11 +176,11 @@ class MenuSection extends Component {
 
         const {styles, direction, language} = this.state;
         const {title, children, theme} = this.props;
-        const fontStyle = {...styles.text, ...generateTextStyles(language) };
+        const fontStyle = {...styles.text, ...getFontFamily(language) };
 
         return (
             <View style={styles.headerWrapper}>
-                {title && <View style={styles.header}>
+                {title && <View style={[styles.header, direction==='rtl' ? {paddingRight: 20} : {}]}>
                     <DirectionalText {...this.props} style={[fontStyle]} direction={direction}>{title}</DirectionalText>
                 </View>}
                 {children}
@@ -229,7 +229,7 @@ const sharedStyles = {
         height: 26,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 13,
+        borderRadius: 13
     }
 };
 
@@ -264,24 +264,24 @@ const darkStyleDefaults = {
         borderBottomColor: themes.dark.darkerDividerColor,
         ...sharedStyles.header
     },
-itemActive: {
-    backgroundColor: '#202020',
+    itemActive: {
+        backgroundColor: '#202020',
         borderBottomColor: "#1c1c1c",
-            borderBottomWidth: 1
-},
-itemLine: {
-    borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
-},
-itemText: {
-    fontSize: 14,
-        color: themes.dark.textColor,
-            marginHorizontal: 10,
     },
-text: {
-    color: themes.dark.greenAccentColor,
+    itemLine: {
+        borderBottomColor: "#1c1c1c",
+        borderBottomWidth: 1
+    },
+    itemText: {
+        fontSize: 14,
+        color: themes.dark.textColor,
+        marginHorizontal: 10,
+    },
+    text: {
+        color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-            fontSize: 14,
+        fontSize: 14,
     },
 };
 

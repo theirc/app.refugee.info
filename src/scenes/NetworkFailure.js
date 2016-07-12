@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {generateTextStyles} from '../styles';
+import styles, {getFontFamily} from '../styles';
 import {Button} from '../components';
 
 class NetworkFailure extends Component {
@@ -30,7 +30,7 @@ class NetworkFailure extends Component {
                 <Text style={[
                         {marginBottom: 5},
                         theme=='dark' ? styles.textDark : styles.textLight,
-                        generateTextStyles(language)
+                        getFontFamily(language)
                     ]}
                 >
                     {I18n.t('NETWORK_FAILURE')}

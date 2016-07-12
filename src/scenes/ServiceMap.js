@@ -156,20 +156,18 @@ class ServiceMap extends Component {
             services = _.uniq(services, false, (s) => s.id);
 
             let markers = services.map(service => {
-                let location = service.location.match(/[\d\.]+/g);
                 let serviceType = serviceTypes.find(function (type) {
                     return type.url == service.type;
                 });
                 return {
-                    latitude: parseFloat(location[2]),
-                    longitude: parseFloat(location[1]),
+                    latitude: service.location.coordinates[1],
+                    longitude: service.location.coordinates[0],
                     description: service.description,
                     title: service.name,
                     icon_url: serviceType.icon_base64,
                     service
                 };
             });
-
             this.setState({
                 loaded: true,
                 mapMoved: false,
