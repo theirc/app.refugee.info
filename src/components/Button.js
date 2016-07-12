@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
 import styles, {themes, getFontFamily, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Button extends Component {
 

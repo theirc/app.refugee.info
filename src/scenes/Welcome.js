@@ -203,8 +203,8 @@ class Welcome extends Component {
                     </Text>
                 </TouchableHighlight>
                 <TouchableOpacity
-                    onPress={this.setTheme.bind(this, 'dark') }
-                    underlayColor={getUnderlayColor('dark') }
+                    onPress={this.setTheme.bind(this, 'dark')}
+                    activeOpacity={0.8}
                     style={[buttonStyle,
                         { bottom: 0, backgroundColor: themes.dark.toolbarColor, }]}
                     >
@@ -228,7 +228,7 @@ class Welcome extends Component {
                 <View>
                     <Image
                         source={logo}
-                        resizeMode={Image.resizeMode.stretch}
+                        resizeMode={Image.resizeMode.cover}
                         style={[localStyles.logo]}
                         />
                     {showTheme && this.renderThemeSelection() }
@@ -244,7 +244,6 @@ class Welcome extends Component {
 
 const buttonStyle = {
     position: 'absolute',
-    backgroundColor: "#ffffff",
     alignItems: 'center',
     justifyContent: 'center',
     height: 45,
