@@ -2,13 +2,11 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, AsyncStorage, Linking, Platform, WebView} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils'
 import styles, {themes} from '../styles';
-import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {MapButton, OfflineView, SearchBar} from '../components';
+import {MapButton, OfflineView} from '../components';
 import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
 
-var WEBVIEW_REF = 'webview';
 export class GeneralInformationDetails extends Component {
 
     static propTypes = {
@@ -28,7 +26,7 @@ export class GeneralInformationDetails extends Component {
         this.state = {
             loading: false,
             source: false,
-            webViewStyle: { opacity: 0 }
+            webViewStyle: {opacity: 0}
         };
     }
 
@@ -42,7 +40,7 @@ export class GeneralInformationDetails extends Component {
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
 
         setTimeout(() => {
-            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 } });
+            this.setState({webViewStyle: {backgroundColor: backgroundColor, opacity: 1}});
         }, 400);
     }
 
@@ -50,14 +48,14 @@ export class GeneralInformationDetails extends Component {
         const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
 
         if (showTitle) {
-            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle });
+            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle});
         } else {
-            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle });
+            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle});
 
         }
 
         let source = {
-            html: wrapHtmlContent(section, language, (!showTitle && !(region.content.length==1)) ? sectionTitle : null, theme)
+            html: wrapHtmlContent(section, language, (!showTitle && !(region.content.length == 1)) ? sectionTitle : null, theme)
         };
 
         this.setState({
@@ -90,12 +88,16 @@ export class GeneralInformationDetails extends Component {
 
     _defaultOrFirst(page, showTitle = false) {
         if (page.content && page.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
+            return this.context.navigator.to('infoDetails', null, {
+                section: page.content[0].section,
+                sectionTitle: page.pageTitle,
+                showTitle: showTitle
+            });
         } else {
-            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            let payload = {region: page.code ? page : null, information: page.code ? null : page}
             return this.context.navigator.to('info', null, payload);
         }
-    }Í
+    }
 
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
@@ -154,15 +156,16 @@ export class GeneralInformationDetails extends Component {
         return (
             <View style={styles.container}>
                 {this.state.source &&
-                    <WebView ref={(v) => this.webView = v}
-                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                        source={this.state.source}
-                        style={this.state.webViewStyle}
-                        />
+                <WebView
+                    ref={(v) => this.webView = v}
+                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                    source={this.state.source}
+                    style={this.state.webViewStyle}
+                />
                 }
                 <MapButton
                     direction={this.props.direction}
-                    />
+                />
             </View>
         );
     }

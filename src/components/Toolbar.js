@@ -133,7 +133,7 @@ const componentStyles = StyleSheet.create({
     brandImage: {
         marginTop: 5,
         height: 40,
-        width: 120,
+        width: 120
     },
     menuIcon: {
         fontSize: 28

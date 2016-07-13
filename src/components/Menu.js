@@ -10,7 +10,12 @@ import {
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {getFontFamily, getUnderlayColor, themes} from '../styles'
+import {
+    getFontFamily,
+    getUnderlayColor,
+    getRowOrdering,
+    themes
+} from '../styles'
 
 
 class MenuItem extends Component {
@@ -94,7 +99,7 @@ class MenuItem extends Component {
                 <View style={[styles.itemLine, direction==='rtl' ? {paddingRight: 15} : {}]}>
                     <View style={[
                         styles.item,
-                        { flexDirection: (direction == 'rtl') ? 'row-reverse' : 'row' }
+                        getRowOrdering(direction)
                     ]}
                         >
                         {item.icon &&

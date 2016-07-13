@@ -10,7 +10,7 @@ import store from '../store';
 import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 
-import { Regions } from '../data'
+import {Regions} from '../data'
 
 
 export default class CountryChoice extends Component {
@@ -30,7 +30,7 @@ export default class CountryChoice extends Component {
 
     async componentDidMount() {
         const {dispatch} = this.props;
-        
+
         const regionData = new Regions(this.props);
         this.regionData = regionData;
 
@@ -77,7 +77,7 @@ export default class CountryChoice extends Component {
             buttonDisabled: true
         });
         navigator.geolocation.getCurrentPosition(
-            async (position) => {
+            async(position) => {
                 const {dispatch} = this.props;
                 let location = await this._getLocation(position, 3);
                 if (location) {
@@ -85,18 +85,18 @@ export default class CountryChoice extends Component {
                     dispatch(updateCountryIntoStorage(location.country));
                     dispatch(updateRegionIntoStorage(location));
 
-                    dispatch({ type: 'REGION_CHANGED', payload: location });
-                    dispatch({ type: 'COUNTRY_CHANGED', payload: location.country });
+                    dispatch({type: 'REGION_CHANGED', payload: location});
+                    dispatch({type: 'COUNTRY_CHANGED', payload: location.country});
                     Alert.alert(
                         I18n.t('LOCATION_TITLE_SUCCESS'),
                         `${I18n.t('LOCATION_SET_TO')} ${location.name}, ${location.country.name}.`,
                         [
-                            { text: I18n.t('OK') }
+                            {text: I18n.t('OK')}
                         ]
                     );
                     if (location.content && location.content.length == 1) {
                         this.context.navigator.to('infoDetails', null,
-                            { section: location.content[0].section, sectionTitle: location.pageTitle })
+                            {section: location.content[0].section, sectionTitle: location.pageTitle})
                     } else {
 
                         this.context.navigator.to('info');
@@ -108,16 +108,16 @@ export default class CountryChoice extends Component {
                             I18n.t('LOCATION_TITLE_SUCCESS'),
                             `${I18n.t('LOCATION_SET_TO')} ${location.name}. ${I18n.t('LOCATION_PICK_CITY')}`,
                             [
-                                { text: I18n.t('OK') }
+                                {text: I18n.t('OK')}
                             ]
                         );
-                        this.context.navigator.forward(null, '', { countryId: location.id });
+                        this.context.navigator.forward(null, '', {countryId: location.id});
                     } else {
                         Alert.alert(
                             I18n.t('LOCATION_TITLE_FAILED'),
                             `${I18n.t('LOCATION_SET_FAILED')}`,
                             [
-                                { text: I18n.t('OK') }
+                                {text: I18n.t('OK')}
                             ]
                         );
                         this._loadInitialState();
@@ -129,28 +129,28 @@ export default class CountryChoice extends Component {
                     I18n.t('LOCATION_TITLE_FAILED'),
                     `${I18n.t('LOCATION_SET_FAILED')}`,
                     [
-                        { text: I18n.t('OK') }
+                        {text: I18n.t('OK')}
                     ]
                 );
                 this._loadInitialState();
-            }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
         );
     }
 
     onPress(rowData) {
         const {navigator} = this.context;
-        navigator.forward(null, null, { countryId: rowData.id, country: rowData });
+        navigator.forward(null, null, {countryId: rowData.id, country: rowData});
     }
 
     render() {
         return (
             <View style={styles.container}>
-                    <LocationListView
-                        header={I18n.t('SELECT_COUNTRY') }
-                        image={(countryISO) => getCountryFlag(countryISO) }
-                        onPress={(rowData) => { this.onPress(rowData); } }
-                        rows={this.state.locations}
-                        />
+                <LocationListView
+                    header={I18n.t('SELECT_COUNTRY') }
+                    image={(countryISO) => getCountryFlag(countryISO) }
+                    onPress={(rowData) => { this.onPress(rowData); } }
+                    rows={this.state.locations}
+                />
             </View>
         );
     }

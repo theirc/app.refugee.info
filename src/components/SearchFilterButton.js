@@ -1,9 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, TextInput, StyleSheet, TouchableHighlight} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles, {getFontFamily, getUnderlayColor, themes} from '../styles';
+import {getUnderlayColor, themes} from '../styles';
 
 export default class SearchFilterButton extends Component {
 
@@ -27,7 +26,6 @@ export default class SearchFilterButton extends Component {
                 >
                     <View
                         style={[
-
                         componentStyles.searchFilterButton,
                         theme=='dark' ? componentStyles.searchFilterButtonDark : componentStyles.searchFilterButtonLight
                     ]}

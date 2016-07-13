@@ -27,9 +27,10 @@ class NetworkFailure extends Component {
         const {theme, language} = this.props;
         return (
             <View style={[styles.alignCenter, styles.flex]}>
-                <Text style={[
+                <Text 
+                    style={[
                         {marginBottom: 5},
-                        theme=='dark' ? styles.textDark : styles.textLight,
+                        getTextColor(theme),
                         getFontFamily(language)
                     ]}
                 >
