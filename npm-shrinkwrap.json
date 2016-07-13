@@ -3672,6 +3672,11 @@
         }
       }
     },
+    "react-native-device-info": {
+      "version": "0.9.3",
+      "from": "react-native-device-info@latest",
+      "resolved": "./node_shrinkwrap/react-native-device-info-0.9.3.tgz"
+    },
     "react-native-drawer": {
       "version": "2.2.6",
       "from": "react-native-drawer@2.2.6",

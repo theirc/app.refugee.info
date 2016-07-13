@@ -124,6 +124,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-device-info')
     compile project(':react-native-mail')
     compile project(':react-native-vector-icons')
     compile project(':react-native-share')
