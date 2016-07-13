@@ -35,25 +35,31 @@ export default class Presence extends Component {
         let currentLocation = Presence.pointFromDeviceCoords(deviceCoords);
         await AsyncStorage.setItem('deviceCoordinates', JSON.stringify(currentLocation));
     }
-    
+
     static async getLocation() {
         return JSON.parse(await AsyncStorage.getItem('deviceCoordinates'));
     }
-    
+
     static async getToken(deviceCoords) {
         return await AsyncStorage.getItem('notificationToken');
     }
-    
-    async recordPresence(region) {
+
+    async recordPresence(region, language) {
         const token = await Presence.getToken();
         const location = await Presence.getLocation();
-        
+
         let payload = {
             coordinates: location ? location : (region ? region.centroid : null),
             region: region ? region.id : null,
-            token
+            language,
+            token,
         };
 
-        await this.client.post('/v1/presence/', payload);
+        let promise = Promise.resolve(true);
+        await this.client.post('/v1/presence/', payload)
+            .then(() => promise)
+            .catch(() => promise);
+
+        await promise;
     }
 }

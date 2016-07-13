@@ -54,7 +54,6 @@ class Skeleton extends Component {
 
     askForPermissions() {
         PushNotification.configure({
-
             // (optional) Called when Token is generated (iOS and Android)
             onRegister: function (token) {
                 Presence.registerToken(token);
@@ -67,25 +66,25 @@ class Skeleton extends Component {
 
             senderID: '5963561492',
 
-            // Should the initial notification be popped automatically
-            // default: true
             popInitialNotification: true,
             requestPermissions: true,
         });
 
         const monitor = () => {
+            const {region, language} = this.props;
+
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     // PUT ME IN THE REDUX
                     let {coords} = position;
                     Presence.registerLocation(coords).then(() => {
-                        this.presenceData.recordPresence(this.props.region);
+                        this.presenceData.recordPresence(region, language);
                     });
 
                     setTimeout(monitor, MONITOR_TIME_OUT);
                 },
                 (error) => {
-                    this.presenceData.recordPresence(this.props.region);
+                    this.presenceData.recordPresence(region, language);
 
                     setTimeout(monitor, MONITOR_TIME_OUT);
                 }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
