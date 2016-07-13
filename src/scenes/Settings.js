@@ -27,7 +27,7 @@ class Settings extends Component {
     };
 
     componentDidMount() {
-        
+
     }
 
     setLanguage(lang) {
@@ -37,12 +37,11 @@ class Settings extends Component {
     }
 
     setTheme(theme) {
-        const {navigator} = this.context;
         const {dispatch} = this.props;
         Promise.all([
             dispatch(updateThemeIntoStorage(theme)),
             dispatch({type: "THEME_CHANGED", payload: theme})
-        ]).then(() => navigator.to('initial'));
+        ]);
     }
 
     updateSettings(language) {
@@ -130,7 +129,7 @@ class Settings extends Component {
                     onPress={this.setLanguage.bind(this, 'fa')}
                     image={require('../assets/flags/ir.png')}
                 />
-                
+
                 <View style={[
                     getRowOrdering(direction),
                     {marginTop: 40, borderBottomWidth: 1},
