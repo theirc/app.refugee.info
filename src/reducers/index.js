@@ -8,6 +8,7 @@ import theme from './theme';
 import country from './country';
 import drawerOpen from './drawerOpen';
 import toolbarTitle from './toolbarTitle';
+import toolbarTitleIcon from './toolbarTitleIcon';
 
 const refugeeApp = combineReducers({
     region,
@@ -17,7 +18,8 @@ const refugeeApp = combineReducers({
     theme,
     country,
     drawerOpen,
-    toolbarTitle
+    toolbarTitle,
+    toolbarTitleIcon
 });
 
 export default refugeeApp;
