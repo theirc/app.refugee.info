@@ -10,8 +10,7 @@ import {fetchRegionFromStorage} from '../actions/region';
 import {fetchDirectionFromStorage} from '../actions/direction';
 import {fetchLanguageFromStorage} from '../actions/language';
 import {fetchCountryFromStorage} from '../actions/country';
-import {fetchThemeFromStorage} from '../actions/theme'
-
+import {fetchThemeFromStorage} from '../actions/theme';
 
 var PushNotification = require('react-native-push-notification');
 
