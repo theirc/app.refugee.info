@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView} from '../components';
-import ApiClient from '../utils/ApiClient';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 import store from '../store';
@@ -10,9 +9,6 @@ import store from '../store';
 import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 
-import {fetchRegionFromStorage} from '../actions/region';
-import {fetchDirectionFromStorage} from '../actions/direction';
-import {fetchLanguageFromStorage} from '../actions/language';
 import {Regions} from '../data'
 
 class CityChoice extends Component {
@@ -93,7 +89,7 @@ const mapStateToProps = (state) => {
     return {
         language: state.language,
         direction: state.direction,
-        theme: state.theme,
+        theme: state.theme
     };
 };
 

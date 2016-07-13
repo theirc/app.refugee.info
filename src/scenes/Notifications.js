@@ -34,17 +34,18 @@ export class Notifications extends Component {
         const {language, theme} = this.props;
 
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-        let webViewStyle = { backgroundColor: backgroundColor, opacity: 1 };
+        let webViewStyle = {backgroundColor: backgroundColor, opacity: 1};
         let html = this.props.region.metadata.banners.map((b, i) => `<div class="banner">${b}</div>`).join('<br />');
         let source = {
             html: wrapHtmlContent(html, language, '', theme)
         };
 
         return <View style={styles.container}>
-            <WebView ref={(v) => this.webView = v}
+            <WebView
+                ref={(v) => this.webView = v}
                 style={webViewStyle}
                 source={source}
-                />
+            />
         </View>;
     }
 }
@@ -53,7 +54,7 @@ function mapStateToProps(state) {
     return {
         theme: state.theme,
         language: state.language,
-        region: state.region,
+        region: state.region
     }
 }
 

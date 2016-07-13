@@ -223,7 +223,7 @@ class ServiceMap extends Component {
                     )) }
                 </MapView>
                 {this.state.mapMoved &&
-                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor, }]}>
+                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor}]}>
                         <Button
                             color="green"
                             icon="refresh"

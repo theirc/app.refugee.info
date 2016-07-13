@@ -35,7 +35,7 @@ class Skeleton extends Component {
 
     componentWillMount() {
         this.languagePromise = this.checkLanguageSelected().then(() => {
-            this.setState({ storageLoaded: true });
+            this.setState({storageLoaded: true});
         });
 
         this.askForPermissions();
@@ -88,7 +88,7 @@ class Skeleton extends Component {
                     this.presenceData.recordPresence(this.props.region);
 
                     setTimeout(monitor, MONITOR_TIME_OUT);
-                }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
+                }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
             );
         }
         monitor();
@@ -113,7 +113,7 @@ class Skeleton extends Component {
 
         let isFirstLoad = (firstLoad !== 'false' || !(region && theme));
 
-        this.setState({ firstLoad: isFirstLoad });
+        this.setState({firstLoad: isFirstLoad});
     }
 
     async reloadStorage() {
@@ -142,7 +142,7 @@ class Skeleton extends Component {
                             this.setState({ firstLoad: false });
                         });
                     } }
-                    />
+                />
             );
         } else {
             return (

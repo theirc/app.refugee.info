@@ -2,7 +2,14 @@ import React, {Component, PropTypes} from 'react';
 import {Text, View, Image, Dimensions, StyleSheet} from 'react-native';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
-import styles, {getFontFamily, getRowOrdering} from '../styles';
+import styles, {
+    getFontFamily, 
+    getRowOrdering, 
+    getTextColor,
+    getContainerColor,
+    getAlignItems,
+    getTextAlign
+} from '../styles';
 
 export default class MapPopup extends Component {
 
@@ -21,8 +28,8 @@ export default class MapPopup extends Component {
         return (
             <View style={[
                 styles.container,
-                {padding: 10},
-                theme=='dark' ? styles.containerDark : styles.containerLight
+                getContainerColor(theme),
+                {padding: 10}
             ]}>
                 <View style={getRowOrdering(direction)}>
                     <View style={[
@@ -36,18 +43,18 @@ export default class MapPopup extends Component {
                     </View>
                     <View style={[
                         styles.container,
-                        {alignItems: (direction=='rtl') ? 'flex-end' : 'flex-start'}
+                        getAlignItems(direction)
                     ]}>
                         <Text style={[
                             componentStyles.mapPopupTitle,
-                            theme=='dark' ? styles.textDark : styles.textLight,
+                            getTextColor(theme),
                             getFontFamily(language)
                         ]}>
                             {marker.title}
                         </Text>
                         <Text style={[
                             componentStyles.mapPopupProvider,
-                            theme=='dark' ? styles.textDark : styles.textLight,
+                            getTextColor(theme),
                             getFontFamily(language)
                         ]}>
                             {marker.service.provider.name}
@@ -60,9 +67,9 @@ export default class MapPopup extends Component {
                 <View>
                     <Text style={[
                         componentStyles.mapPopupDescription,
-                        theme=='dark' ? styles.textDark : styles.textLight,
+                        getTextColor(theme),
                         getFontFamily(language),
-                        {textAlign: (direction=='rtl') ? 'right' : 'left'}
+                        getTextAlign(direction)
                     ]}>
                         {marker.description}
                     </Text>

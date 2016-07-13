@@ -34,8 +34,9 @@ export default class Toolbar extends Component {
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;
         if (navigator) {
-            icon = (<TouchableOpacity
-                style={{ width: 40, alignItems: 'flex-end'}}
+            icon = (
+            <TouchableOpacity
+                style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 ><Icon
                     name={navigator.isChild ? backIcon : menuIcon}
@@ -133,7 +134,7 @@ const componentStyles = StyleSheet.create({
     brandImage: {
         marginTop: 5,
         height: 40,
-        width: 120,
+        width: 120
     },
     menuIcon: {
         fontSize: 28

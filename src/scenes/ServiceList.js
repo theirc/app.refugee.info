@@ -11,7 +11,6 @@ import {
     Image
 } from 'react-native';
 import I18n from '../constants/Messages';
-import ApiClient from '../utils/ApiClient';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
 import {OfflineView, SearchBar, SearchFilterButton} from '../components';
@@ -19,7 +18,16 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
-import styles, {themes, getUnderlayColor, getFontFamily, getRowOrdering, getAlignItems} from '../styles';
+import styles, {
+    themes,
+    getUnderlayColor,
+    getFontFamily,
+    getRowOrdering,
+    getAlignItems,
+    getTextColor,
+    getContainerColor,
+    getDividerColor
+} from '../styles';
 
 var _ = require('underscore');
 
@@ -156,7 +164,7 @@ export default class ServiceList extends Component {
                 <View
                     style={[
                         styles.listItemContainer,
-                        theme == 'dark' ? styles.containerDark : styles.containerLight,
+                        getContainerColor(theme),
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
                 >
@@ -173,19 +181,19 @@ export default class ServiceList extends Component {
                         </View>
                         <View style={[
                             styles.dividerLongInline,
-                            theme == 'dark' ? styles.dividerDark : styles.dividerLight
+                            getDividerColor(theme)
                         ]}/>
                         <View style={[
                             styles.container,
                             getAlignItems(direction),
-                            theme == 'dark' ? styles.containerDark : styles.containerLight,
+                            getContainerColor(theme),
                             { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
                         ]}>
                             <Text
                                 style={[
                                     getFontFamily(language),
-                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500',
-                                    color: theme == 'dark' ? themes.dark.textColor : themes.light.textColor}
+                                    getTextColor(theme),
+                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500'}
                                 ]}
                             >
                                 {service.name}
@@ -199,8 +207,7 @@ export default class ServiceList extends Component {
                                     ]}
                                 />
                                 <Text style={[
-                                    getFontFamily(language),
-                                    {
+                                    getFontFamily(language), {
                                         color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
                                         fontSize: 11
                                     }
