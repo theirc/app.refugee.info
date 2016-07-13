@@ -8,7 +8,17 @@ import {
     Platform
 } from 'react-native';
 import {connect} from 'react-redux';
-import styles, {getFontFamily, getUnderlayColor, themes, getRowOrdering, getAlignItems} from '../styles';
+import styles, {
+    getFontFamily,
+    getUnderlayColor,
+    getRowOrdering,
+    getAlignItems,
+    getTextColor,
+    getContainerColor,
+    getBottomDividerColor,
+    getDividerColor,
+    themes
+} from '../styles';
 var Ionicons = require('react-native-vector-icons/Ionicons');
 var FontAwesome = require('react-native-vector-icons/FontAwesome');
 
@@ -60,8 +70,8 @@ export default class ListItem extends Component {
             />;
         if (centered) {
             const imageElement = (image &&
-            <Image 
-                source={image} 
+            <Image
+                source={image}
                 style={[
                     (direction=='rtl')
                         ? componentStyles.listItemImageAbsoluteRTL
@@ -72,10 +82,10 @@ export default class ListItem extends Component {
             <View
                 style={[
                     componentStyles.dividerAbsolute,
-                    theme=='dark' ? styles.dividerDark : styles.dividerLight
+                    getDividerColor(theme)
                 ]}
             />);
-            
+
             return (
                 <TouchableHighlight
                     onPress={onPress}
@@ -85,17 +95,17 @@ export default class ListItem extends Component {
                         style={[
                             styles.listItemContainer,
                             getRowOrdering(direction),
-                            theme=='dark' ? styles.containerDark : styles.containerLight
+                            getContainerColor(theme)
                         ]}
                     >
                         { imageElement }
                         { imageDivider }
                         <View style={componentStyles.listItemTextContainer}>
-                            <Text 
+                            <Text
                                 style={[
                                     componentStyles.listItemText,
                                     getFontFamily(language),
-                                    theme=='dark' ? styles.textDark : styles.textLight
+                                    getTextColor(theme)
                                 ]}
                             >
                                 {text}
@@ -115,7 +125,7 @@ export default class ListItem extends Component {
                         style={[
                             componentStyles.listItemContainer,
                             getRowOrdering(direction),
-                            theme == 'dark' ? styles.containerDark : styles.containerLight
+                            getContainerColor(theme)
                         ]}
                     >
                         <View
@@ -127,18 +137,17 @@ export default class ListItem extends Component {
                         </View>
                         <View style={[
                             componentStyles.dividerInline,
-                            theme == 'dark' ? styles.dividerDark : styles.dividerLight
+                            getDividerColor(theme)
                         ]}/>
                         <View style={[
                             componentStyles.listItemTextContainer,
                             getAlignItems(direction),
-                            { borderBottomWidth: 1 },
-                            theme == 'dark' ? styles.bottomDividerDark : styles.bottomDividerLight
-
+                            getBottomDividerColor(theme),
+                            { borderBottomWidth: 1 }
                         ]}>
                             <Text style={[
                                 componentStyles.listItemText,
-                                theme == 'dark' ? styles.textDark : styles.textLight,
+                                getTextColor(theme),
                                 getFontFamily(language),
                                 { fontSize } && { fontSize: fontSize }
                             ]}>

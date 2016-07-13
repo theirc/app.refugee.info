@@ -29,7 +29,9 @@ export default class MapButton extends Component {
                 underlayColor="white"
                 >
                 <View
-                    style={[componentStyles.mapButton, direction == 'rtl' ? componentStyles.MapButtonRTL : {}]}
+                    style={[
+                        componentStyles.mapButton,
+                        direction == 'rtl' ? {left: 20} : {}]}
                     >
                     <Icon
                         name="md-map"
@@ -54,16 +56,12 @@ const componentStyles = StyleSheet.create({
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.5,
-        shadowRadius: 3
-    },
-    MapButtonRTL: {
-        left: 20,
+        shadowRadius: 3,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     mapButtomIcon: {
         color: themes.light.backgroundColor,
-        fontSize: 20,
-        position: 'absolute',
-        left: 24,
-        top: 22
+        fontSize: 20
     }
 });

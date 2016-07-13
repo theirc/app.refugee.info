@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Button} from '../components'
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import styles, {getFontFamily} from '../styles';
+import {getFontFamily, getBottomDividerColor, getTextColor} from '../styles';
 
 export default class OfflineView extends Component {
 
@@ -25,7 +25,7 @@ export default class OfflineView extends Component {
                 <View style={[
                     componentStyles.offlineModeContainer,
                     {borderBottomWidth: 2},
-                    theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+                    getBottomDividerColor(theme)
 
                 ]}>
                     <Icon style={componentStyles.offlineModeIcon} name="md-warning"/>
@@ -33,7 +33,7 @@ export default class OfflineView extends Component {
                         <Text style={[
                                 componentStyles.offlineModeText,
                                 getFontFamily(language),
-                                theme=='dark' ? styles.textDark : styles.textLight
+                                getTextColor(theme)
                             ]}
                         >
                             {I18n.t('OFFLINE_MODE')}
@@ -41,7 +41,7 @@ export default class OfflineView extends Component {
                         <Text style={[
                                 componentStyles.OfflineModeLastSync,
                                 getFontFamily(language),
-                                theme=='dark' ? styles.textDark : styles.textLight
+                                getTextColor(theme)
                             ]}
                         >
                             {I18n.t('LAST_SYNC')}: {this.props.lastSync} {I18n.t('MINUTES_AGO')}

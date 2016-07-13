@@ -10,7 +10,13 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {themes, getFontFamily, getUnderlayColor, getRowOrdering} from '../styles';
+import styles, {
+    themes, 
+    getFontFamily, 
+    getUnderlayColor, 
+    getRowOrdering, 
+    getBottomDividerColor
+} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {ListItem} from '../components';
 
@@ -27,7 +33,7 @@ class Settings extends Component {
     };
 
     componentDidMount() {
-        
+
     }
 
     setLanguage(lang) {
@@ -37,12 +43,11 @@ class Settings extends Component {
     }
 
     setTheme(theme) {
-        const {navigator} = this.context;
         const {dispatch} = this.props;
         Promise.all([
             dispatch(updateThemeIntoStorage(theme)),
             dispatch({type: "THEME_CHANGED", payload: theme})
-        ]).then(() => navigator.to('initial'));
+        ]);
     }
 
     updateSettings(language) {
@@ -89,7 +94,7 @@ class Settings extends Component {
                 <View style={[
                     getRowOrdering(direction),
                     {marginTop: 30, borderBottomWidth: 1},
-                    theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+                    getBottomDividerColor(theme)
                 ]}>
                     <View style={[
                         styles.alignCenter,
@@ -130,11 +135,11 @@ class Settings extends Component {
                     onPress={this.setLanguage.bind(this, 'fa')}
                     image={require('../assets/flags/ir.png')}
                 />
-                
+
                 <View style={[
                     getRowOrdering(direction),
-                    {marginTop: 40, borderBottomWidth: 1},
-                    theme=='dark' ? styles.bottomDividerDark : styles.bottomDividerLight
+                    getBottomDividerColor(theme),
+                    {marginTop: 40, borderBottomWidth: 1}
                 ]}>
                     <View style={[
                         styles.alignCenter,

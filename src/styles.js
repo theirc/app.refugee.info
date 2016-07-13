@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         height: 46
     },
     // generic background colors
-    
+
     containerLight: {
         borderBottomColor: themes.light.lighterDividerColor,
         backgroundColor: themes.light.backgroundColor
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         borderBottomColor: themes.dark.darkerDividerColor,
         backgroundColor: themes.dark.backgroundColor
     },
-    
+
     // generic divider colors
 
     dividerLight: {
@@ -132,9 +132,9 @@ const styles = StyleSheet.create({
     textAccentGreen: {
         color: themes.light.greenAccentColor
     },
-    
+
     // other
-    
+
     flex: {
         flex: 1
     },
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export function getFontFamily(language='en') {
+export function getFontFamily(language = 'en') {
     let style;
     if (['ar', 'fa'].indexOf(language) > -1) {
         style = {
@@ -275,29 +275,80 @@ export function getFontFamily(language='en') {
     return style;
 }
 
-export function getUnderlayColor(theme = 'light') {
-    if (theme == 'light')
-        return 'rgba(0, 0, 0, 0.2)';
-    else
-        return 'rgba(255, 255, 255, 0.6)'
+// theming functions
+
+export function getTextColor(theme) {
+    if (theme === 'light') {
+        return styles.textLight
+    } else {
+        return styles.textDark
+    }
 }
 
+export function getBorderColor(theme) {
+    if (theme === 'light') {
+        return styles.borderLight
+    } else {
+        return styles.borderDark
+    }
+}
+
+export function getDividerColor(theme) {
+    if (theme === 'light') {
+        return styles.dividerLight
+    } else {
+        return styles.dividerDark
+    }
+}
+
+export function getBottomDividerColor(theme) {
+    if (theme === 'light') {
+        return styles.bottomDividerLight
+    } else {
+        return styles.bottomDividerDark
+    }
+}
+
+export function getContainerColor(theme) {
+    if (theme === 'light') {
+        return styles.containerLight
+    } else {
+        return styles.containerDark
+    }
+}
+
+export function getUnderlayColor(theme = 'light') {
+    if (theme === 'light') {
+        return 'rgba(0, 0, 0, 0.2)'
+    } else {
+        return 'rgba(255, 255, 255, 0.6)'
+    }
+}
+
+// RTL support functions
+
 export function getRowOrdering(direction) {
-    if (direction === 'rtl')
-        return styles.rowRTL;
-    else return styles.row;
+    if (direction === 'rtl') {
+        return styles.rowRTL
+    } else {
+        return styles.row
+    }
 }
 
 export function getAlignItems(direction) {
-    if (direction === 'rtl')
-        return { alignItems: 'flex-end' };
-    else return { alignItems: 'flex-start' };
+    if (direction === 'rtl') {
+        return {alignItems: 'flex-end'}
+    } else {
+        return {alignItems: 'flex-start'}
+    }
 }
 
-export function getTextAlign(direction){
-    if (direction==='rtl')
-        return {textAlign: 'right'};
-    else return {textAlign: 'auto'};
+export function getTextAlign(direction) {
+    if (direction === 'rtl') {
+        return {textAlign: 'right'}
+    } else {
+        return {textAlign: 'auto'}
+    }
 }
 
 export default styles;

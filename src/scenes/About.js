@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {getFontFamily, getTextAlign} from '../styles';
+import styles, {getFontFamily, getTextAlign, getTextColor} from '../styles';
 
 
 class About extends Component {
@@ -19,7 +19,7 @@ class About extends Component {
             <View style={styles.detailsContainer}>
                 <Text style={[
                     styles.sectionHeader,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
                 ]}>
@@ -27,7 +27,7 @@ class About extends Component {
                 </Text>
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
                 ]}>
@@ -40,7 +40,7 @@ class About extends Component {
                 />
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
                 ]}>

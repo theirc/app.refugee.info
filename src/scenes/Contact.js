@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, ScrollView, Text, Dimensions, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {getFontFamily, getAlignItems} from '../styles';
+import styles, {getFontFamily, getBorderColor, getTextAlign, getTextColor} from '../styles';
 import {Button} from '../components';
 import ApiClient from '../utils/ApiClient';
 
@@ -19,8 +19,8 @@ class Contact extends Component {
             isFormDirty: false
         };
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         this.apiClient = new ApiClient(this.context, this.props);
     }
 
@@ -36,7 +36,7 @@ class Contact extends Component {
         return this.state.isFormDirty && !this.state.message;
     }
 
-    _isEmailInvalid(){
+    _isEmailInvalid() {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return this.state.isFormDirty && !re.test(this.state.email);
     }
@@ -57,14 +57,14 @@ class Contact extends Component {
             <ScrollView style={styles.detailsContainer}>
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language)
                 ]}>
                     {I18n.t('NAME')}
                 </Text>
                 <View style={[
                     styles.contactBorder,
-                    theme=='dark' ? styles.borderDark : styles.borderLight
+                    getBorderColor(theme)
                 ]}>
                     <TextInput
                         onChangeText={
@@ -73,8 +73,8 @@ class Contact extends Component {
                         value={this.state.name}
                         style={[
                             styles.textInputModal,
-                            theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null,
+                            getTextColor(theme),
+                            getTextAlign(direction),
                             getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
@@ -82,23 +82,23 @@ class Contact extends Component {
                     />
                 </View>
                 {this._isNameInvalid() &&
-                    <Text style={[
+                <Text style={[
                         styles.validationText,
                         getFontFamily(language)
                     ]}>
-                        {I18n.t('FIELD_REQUIRED')}
-                    </Text>
+                    {I18n.t('FIELD_REQUIRED')}
+                </Text>
                 }
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language)
                 ]}>
                     {I18n.t('EMAIL')}
                 </Text>
                 <View style={[
                     styles.contactBorder,
-                    theme=='dark' ? styles.borderDark : styles.borderLight
+                    getBorderColor(theme)
                 ]}>
                     <TextInput
                         onChangeText={
@@ -107,8 +107,8 @@ class Contact extends Component {
                         value={this.state.email}
                         style={[
                             styles.textInputModal,
-                            theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null,
+                            getTextColor(theme),
+                            getTextAlign(direction),
                             getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
@@ -117,23 +117,23 @@ class Contact extends Component {
                     />
                 </View>
                 {this._isEmailInvalid() &&
-                    <Text style={[
+                <Text style={[
                         styles.validationText,
                         getFontFamily(language)
                     ]}>
-                        {I18n.t('FIELD_REQUIRED')}
-                    </Text>
+                    {I18n.t('FIELD_REQUIRED')}
+                </Text>
                 }
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language)
-                    ]}>
+                ]}>
                     {I18n.t('SUBJECT')}
                 </Text>
                 <View style={[
                     styles.contactBorder,
-                    theme=='dark' ? styles.borderDark : styles.borderLight
+                    getBorderColor(theme)
                 ]}>
                     <TextInput
                         onChangeText={
@@ -142,24 +142,24 @@ class Contact extends Component {
                         value={this.state.subject}
                         style={[
                             styles.textInputModal,
-                            theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null,
+                            getTextColor(theme),
+                            getTextAlign(direction),
                             getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
                     />
                 </View>
                 {this._isSubjectInvalid() &&
-                    <Text style={[
+                <Text style={[
                         styles.validationText,
                         getFontFamily(language)
                     ]}>
-                        {I18n.t('FIELD_REQUIRED')}
-                    </Text>
+                    {I18n.t('FIELD_REQUIRED')}
+                </Text>
                 }
                 <Text style={[
                     styles.sectionContent,
-                    theme=='dark' ? styles.textDark : styles.textLight,
+                    getTextColor(theme),
                     getFontFamily(language)
                 ]}>
                     {I18n.t('MESSAGE')}
@@ -176,26 +176,25 @@ class Contact extends Component {
                         value={this.state.message}
                         style={[
                             styles.textInputMultiline,
-                            theme=='dark' ? styles.textDark : styles.textLight,
-                            direction=='rtl' ? styles.alignRight : null,
+                            getTextColor(theme),
+                            getTextAlign(direction),
                             getFontFamily(language)
                         ]}
                         underlineColorAndroid='transparent'
                     />
                 </View>
                 {this._isMessageInvalid() &&
-                    <Text style={[
+                <Text style={[
                         styles.validationText,
                         getFontFamily(language)
                     ]}>
-                        {I18n.t('FIELD_REQUIRED')}
-                    </Text>
+                    {I18n.t('FIELD_REQUIRED')}
+                </Text>
                 }
                 <Button
                     color="green"
                     text={I18n.t('SUBMIT')}
                     onPress={() => this.onSubmitClick()}
-                    // style={{marginTop: 10}}
                 />
             </ScrollView>
         );
@@ -204,7 +203,6 @@ class Contact extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         theme: state.theme,
         language: state.language,
         direction: state.direction

@@ -15,7 +15,7 @@ import Drawer from 'react-native-drawer'
 import store from '../store';
 import {connect} from 'react-redux';
 
-import styles, {getFontFamily, themes} from '../styles'
+import styles, {themes} from '../styles'
 
 export class App extends Component {
 
@@ -30,7 +30,7 @@ export class App extends Component {
             drawer: null,
             navigator: null,
             drawerBackgroundColor: null,
-            drawerBorderColor: null,
+            drawerBorderColor: null
         });
     }
 
@@ -56,7 +56,7 @@ export class App extends Component {
             });
             this.drawer.main.setNativeProps({
                 style: {
-                    backgroundColor: backgroundColor,
+                    backgroundColor: backgroundColor
                 }
             });
         }
@@ -206,7 +206,6 @@ export class App extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         theme: state.theme,
         direction: state.direction,
         country: state.country

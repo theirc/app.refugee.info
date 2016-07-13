@@ -10,7 +10,7 @@ import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 import {Regions} from '../data';
 import Icon from 'react-native-vector-icons/Ionicons';
-import styles, {getFontFamily, themes} from '../styles'
+import styles, {getFontFamily, getRowOrdering, themes} from '../styles'
 
 class Navigation extends Component {
 
@@ -31,7 +31,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({ otherLocations: children });
+            this.setState({otherLocations: children});
         }
     }
 
@@ -84,7 +84,7 @@ class Navigation extends Component {
                     image={this._getImportantInformationImage(theme, i.pageTitle) }
                     key={index}
                     onPress={() => this._defaultOrFirst(i, true) }
-                    >
+                >
                     {i.pageTitle}
                 </MenuItem>
             );
@@ -95,9 +95,13 @@ class Navigation extends Component {
         this.drawerCommons.closeDrawer();
 
         if (page.content && page.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, { section: page.content[0].section, sectionTitle: page.pageTitle, showTitle: showTitle });
+            return this.context.navigator.to('infoDetails', null, {
+                section: page.content[0].section,
+                sectionTitle: page.pageTitle,
+                showTitle: showTitle
+            });
         } else {
-            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            let payload = {region: page.code ? page : null, information: page.code ? null : page}
             return this.context.navigator.to('info', null, payload);
         }
     }
@@ -112,8 +116,8 @@ class Navigation extends Component {
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 
-        dispatch({ type: 'REGION_CHANGED', payload: city });
-        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
+        dispatch({type: 'REGION_CHANGED', payload: city});
+        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
 
         return this._defaultOrFirst(city);
@@ -143,24 +147,29 @@ class Navigation extends Component {
                 { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
                 (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
             ]}
-            />;
+        />;
 
         let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.view}>
-            <View style={[styles.logoContainer, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end') }]}>
+            <View style={[styles.logoContainer, getRowOrdering(direction)]}>
                 <Image source={logo} style={ styles.logo }/>
             </View>
-            <View style={[styles.titleWrapper, { justifyContent: ((isLTR) ? 'flex-start' : 'flex-end'), }]}>
-                {(isLTR) && headerImage}
+            <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
+                <Icon
+                    name="md-locate"
+                    style={[
+                        { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
+                        (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
+                    ]}
+                />
                 <Text style={[
                     getFontFamily(language),
                     styles.cityText
                 ]}>
                     {region.pageTitle.toUpperCase() }
                 </Text>
-                {(!isLTR) && headerImage}
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
                 <MenuItem
@@ -170,7 +179,7 @@ class Navigation extends Component {
                     }
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
-                    >
+                >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
@@ -180,7 +189,7 @@ class Navigation extends Component {
                     }
                     active={route === 'services'}
                     onPress={() => s('services') }
-                    >
+                >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
@@ -190,13 +199,14 @@ class Navigation extends Component {
                     }
                     active={route === 'map'}
                     onPress={() => s('map') }
-                    >
+                >
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    icon="ios-mail" onPress={() => s('notifications') } badge={bannerCount}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
+                    icon="ios-mail" onPress={() => s('notifications') }
+                    badge={bannerCount}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
                 <MenuItem
                     icon="ios-paper" onPress={() => s('news') }>{I18n.t('NEWS') }</MenuItem>
             </MenuSection>
@@ -214,7 +224,7 @@ class Navigation extends Component {
                     }
                     active={route === 'settings'}
                     onPress={() => s('settings') }
-                    >
+                >
                     {I18n.t('SETTINGS') }
                 </MenuItem>
                 <MenuItem
@@ -224,7 +234,7 @@ class Navigation extends Component {
                     }
                     active={route === 'about'}
                     onPress={() => s('about') }
-                    >
+                >
                     {I18n.t('ABOUT') }
                 </MenuItem>
                 <MenuItem
@@ -234,7 +244,7 @@ class Navigation extends Component {
                     }
                     active={route === 'contact'}
                     onPress={() => s('contact') }
-                    >
+                >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
@@ -283,11 +293,11 @@ const lightNavigationStyles = StyleSheet.create({
     },
     middleBorder: {
         borderLeftColor: themes.light.darkerDividerColor,
-        borderLeftWidth: 1,
+        borderLeftWidth: 1
     },
     outermostBorder: {
         borderLeftColor: themes.light.dividerColor,
-        borderLeftWidth: 1,
+        borderLeftWidth: 1
     },
     titleWrapper: {
         flexDirection: 'row',
@@ -299,7 +309,7 @@ const lightNavigationStyles = StyleSheet.create({
     cityText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: themes.light.textColor,
+        color: themes.light.textColor
     }
 });
 
@@ -318,15 +328,15 @@ const darkNavigationStyles = StyleSheet.create({
     view: {
         flexDirection: 'column',
         flex: 1,
-        paddingLeft: 20,
+        paddingLeft: 20
     },
     middleBorder: {
         borderLeftColor: themes.dark.darkerDividerColor,
-        borderLeftWidth: 1,
+        borderLeftWidth: 1
     },
     outermostBorder: {
         borderLeftColor: themes.dark.dividerColor,
-        borderLeftWidth: 1,
+        borderLeftWidth: 1
     },
     titleWrapper: {
         flexDirection: 'row',
@@ -338,7 +348,7 @@ const darkNavigationStyles = StyleSheet.create({
     cityText: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: themes.dark.textColor,
+        color: themes.dark.textColor
     }
 });
 
