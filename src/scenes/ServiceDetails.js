@@ -76,6 +76,7 @@ export default class ServiceDetails extends Component {
 
     componentWillUnmount() {
         const {dispatch} = this.props;
+        dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
         dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
     }
 
@@ -84,9 +85,10 @@ export default class ServiceDetails extends Component {
         if (!this.state.loaded) {
             this.fetchData().done();
         }
-        const {dispatch, service} = this.props;
+        const {dispatch, service, serviceType} = this.props;
 
         dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: service.name});
+        dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: serviceType.icon_url});
     }
 
     _setModalVisible(visible) {
@@ -630,7 +632,6 @@ export default class ServiceDetails extends Component {
                         ]}>
                             {I18n.t('LOADING') }
                         </Text>
-
                 }
             </ScrollView>
         );
