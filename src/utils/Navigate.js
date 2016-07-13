@@ -162,6 +162,7 @@ export default class Navigate {
                 console.warn(`[Navigate.to(${path})] No component exists at this path`);
             } else {
                 this.store.dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
+                this.store.dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
 
                 this.isChild = path.split('.').length > 1;
                 const previousPath = (this.previousRoute) ? this.previousRoute.path : Navigate.getInitialRoute().path;
@@ -213,9 +214,11 @@ export default class Navigate {
                 props
             };
             this.currentRoute = route;
-            if (route.path==='services')
-                // ugly, clear toolbar title only when going back from service details to list
+            if (route.path === 'services') {
+                // ugly, clear toolbar title and icon only when going back from service details to list
                 this.store.dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
+                this.store.dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
+            }
             this.navigator.pop();
         }
     };
