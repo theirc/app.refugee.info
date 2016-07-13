@@ -16,28 +16,36 @@ export default class Toolbar extends Component {
         onMenuIconPress: PropTypes.func,
         theme: PropTypes.oneOf(['light', 'dark']),
         drawerOpen: PropTypes.bool,
-        toolbarTitle: PropTypes.string
+        toolbarTitle: PropTypes.string,
+        toolbarTitleIcon: PropTypes.string
     };
 
     render() {
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
-        let {toolbarTitle} = this.props;
+        let {toolbarTitle, toolbarTitleIcon} = this.props;
         let title = '';
-
         if (toolbarTitle) {
             title = toolbarTitle;
-        } else if (navigator && navigator.currentRoute) {
+        }
+        else if (navigator && navigator.currentRoute) {
             title = navigator.currentRoute.title;
+        }
+        let titleIcon = null;
+        if (toolbarTitleIcon) {
+            titleIcon = (<Image
+                source={{ uri: toolbarTitleIcon }}
+                style={componentStyles.titleIcon}
+            />);
         }
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;
         if (navigator) {
             icon = (
-            <TouchableOpacity
-                style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
-                onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
+                <TouchableOpacity
+                    style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
+                    onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 ><Icon
                     name={navigator.isChild ? backIcon : menuIcon}
                     style={
@@ -50,38 +58,37 @@ export default class Toolbar extends Component {
                         ]
                     }
                 />
-            </TouchableOpacity>);
+                </TouchableOpacity>);
         }
 
         let showIcon = navigator && (region || navigator.isChild);
-
         return (
             <View
                 style={[
                     componentStyles.toolbarContainer,
                     theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight
                 ]}
-                >
+            >
                 <View style={componentStyles.toolbarTop}>
                     <Image
                         style={componentStyles.brandImage}
                         source={theme == 'dark' ? themes.dark.logo : themes.light.logo }
-                        />
+                    />
                     {showIcon && icon}
                 </View>
                 <View style={[
                     componentStyles.toolbarBottom,
                     getRowOrdering(direction)
                 ]}>
-                    <DirectionalText direction={direction} style={[
+                    {titleIcon}
+                    <Text style={[
                         componentStyles.toolbarTitle,
                         getFontFamily(language),
                         theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
                     ]}>
                         {title}
-                    </DirectionalText>
+                    </Text>
                 </View>
-
             </View>
         );
     }
@@ -96,7 +103,8 @@ const mapStateToProps = (state) => {
         region: state.region,
         direction: state.direction,
         language: state.language,
-        toolbarTitle: state.toolbarTitle
+        toolbarTitle: state.toolbarTitle,
+        toolbarTitleIcon: state.toolbarTitleIcon
     };
 };
 
@@ -162,6 +170,12 @@ const componentStyles = StyleSheet.create({
     },
     toolbarTitleDark: {
         color: themes.dark.textColor
+    },
+    titleIcon: {
+        width: 26,
+        height: 26,
+        marginLeft: 5,
+        marginRight: 5
     }
 });
 
