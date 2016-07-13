@@ -34,8 +34,9 @@ export default class Toolbar extends Component {
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;
         if (navigator) {
-            icon = (<TouchableOpacity
-                style={{ width: 40, alignItems: 'flex-end'}}
+            icon = (
+            <TouchableOpacity
+                style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
                 onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 ><Icon
                     name={navigator.isChild ? backIcon : menuIcon}
