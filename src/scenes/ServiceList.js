@@ -299,6 +299,7 @@ export default class ServiceList extends Component {
                         <Text
                             style={[
                                 styles.viewHeaderText,
+                                getFontFamily(language),
                                 theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                             ]}
                         >
@@ -330,6 +331,7 @@ export default class ServiceList extends Component {
                     <Text
                         style={[
                             styles.viewHeaderText,
+                            getFontFamily(language),
                             theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                         ]}
                     >
@@ -360,7 +362,7 @@ export default class ServiceList extends Component {
                 />
                 <MapButton
                     direction={this.props.direction}
-                    services={this.state.filteredServices}
+                    services={this.state.services}
                 />
             </View>
         );
