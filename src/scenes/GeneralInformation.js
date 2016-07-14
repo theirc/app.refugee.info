@@ -100,12 +100,14 @@ export class GeneralInformation extends Component {
     }
 
     onClick(title, section) {
-        const {navigator} = this.context;
-        if (this.state.searchText) {
-            let reg = new RegExp(`(${this.state.searchText})`, 'ig');
-            section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
-        }
-        navigator.forward(null, null, {section, sectionTitle: title}, this.state);
+        requestAnimationFrame(() => {
+            const {navigator} = this.context;
+            if (this.state.searchText) {
+                let reg = new RegExp(`(${this.state.searchText})`, 'ig');
+                section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
+            }
+            navigator.forward(null, null, {section, sectionTitle: title}, this.state);
+        })
     }
 
     renderRow(rowData) {
@@ -137,7 +139,7 @@ export class GeneralInformation extends Component {
                         color="green"
                         icon="md-information-circle"
                         text={I18n.t('SERVICE_LIST') }
-                        onPress={() => s('services') }
+                        onPress={() => requestAnimationFrame(() => s('services'))}
                         style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
                         buttonStyle={{ height: 33 }}
                         textStyle={{ top: (isLatin ? -2 : 0), fontSize: 15 }}
@@ -146,7 +148,7 @@ export class GeneralInformation extends Component {
                         color="green"
                         icon="md-map"
                         text={I18n.t('EXPLORE_MAP') }
-                        onPress={() => s('map') }
+                        onPress={() => requestAnimationFrame(() => s('map'))}
                         style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
                         buttonStyle={{ height: 33 }}
                         textStyle={{ top: (isLatin ? -2 : 0), fontSize: 15 }}

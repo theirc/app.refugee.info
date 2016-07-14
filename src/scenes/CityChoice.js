@@ -54,21 +54,22 @@ class CityChoice extends Component {
 
         city.detected = false;
         city.coords = {};
+        requestAnimationFrame(() => {
+            dispatch(updateCountryIntoStorage(city.country));
+            dispatch(updateRegionIntoStorage(city));
 
-        dispatch(updateCountryIntoStorage(city.country));
-        dispatch(updateRegionIntoStorage(city));
+            dispatch({type: 'REGION_CHANGED', payload: city});
+            dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
-        dispatch({ type: 'REGION_CHANGED', payload: city });
-        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
-
-        if (city.content && city.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, {
-                section: city.content[0].section,
-                sectionTitle: city.pageTitle
-            });
-        } else {
-            return this.context.navigator.to('info', null, null, store.getState());
-        }
+            if (city.content && city.content.length == 1) {
+                return this.context.navigator.to('infoDetails', null, {
+                    section: city.content[0].section,
+                    sectionTitle: city.pageTitle
+                });
+            } else {
+                return this.context.navigator.to('info', null, null, store.getState());
+            }
+        })
     }
 
     render() {
