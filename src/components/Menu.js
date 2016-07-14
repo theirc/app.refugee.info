@@ -127,7 +127,7 @@ class MenuItem extends Component {
                         </View>
                         {badge &&
                             <View style={[sharedStyles.badge, { backgroundColor: styles.text.color, }]}>
-                                <Text style={{ color: styles.itemText.color, fontWeight: 'bold' }}>{badge}</Text>
+                                <Text style={{ color: themes.dark.textColor, fontWeight: 'bold' }}>{badge}</Text>
                             </View>
                         }
                     </View>

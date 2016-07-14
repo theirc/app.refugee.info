@@ -59,9 +59,6 @@ export default class MapPopup extends Component {
                         ]}>
                             {marker.service.provider.name}
                         </Text>
-                        <View style={getRowOrdering(direction)}>
-                            {this.serviceCommons.renderStars(marker.service.rating)}
-                        </View>
                     </View>
                 </View>
                 <View>

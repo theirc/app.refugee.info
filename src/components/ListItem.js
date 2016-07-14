@@ -17,6 +17,8 @@ import styles, {
     getContainerColor,
     getBottomDividerColor,
     getDividerColor,
+    getIconComponent,
+    getIconName,
     themes
 } from '../styles';
 var Ionicons = require('react-native-vector-icons/Ionicons');
@@ -39,19 +41,9 @@ export default class ListItem extends Component {
         const {theme, onPress, text, language, direction, iconColor, fontSize, image, centered, iconSize} = this.props;
         let iconName = (this.props.icon || '').trim();
         const defaultIcon = 'md-bus';
-        let Icon;
-        if (!iconName) {
-            iconName = defaultIcon;
-        }
-        if (iconName.indexOf('ion-') == 0) {
-            iconName = iconName.substring(4);
-            Icon = Ionicons;
-        } else if (iconName.indexOf('fa-') == 0) {
-            iconName = iconName.substring(3);
-            Icon = FontAwesome;
-        } else {
-            Icon = Ionicons;
-        }
+        const Icon = getIconComponent(iconName);
+        iconName = getIconName(iconName);
+
         const button_icon = image ?
             <Image
                 source={image}

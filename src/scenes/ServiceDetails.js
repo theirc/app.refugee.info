@@ -541,21 +541,12 @@ export default class ServiceDetails extends Component {
                         <Text style={[
                             getFontFamily(language),
                             {
-                                color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
+                                color: theme == 'dark' ? themes.dark.textColor : themes.light.textColor,
                                 fontSize: 12
                             }
                         ]}>
-                            {providerName}
+                            {service.provider.name}
                         </Text>
-                    </View>
-                    <View style={getRowOrdering(direction) }>
-                        <Text style={[
-                            getFontFamily(language),
-                            { color: themes.light.darkerDividerColor, fontSize: 12, marginRight: 5 }]
-                        }>
-                            {I18n.t('RATING').toUpperCase() }
-                        </Text>
-                        {rating}
                     </View>
                     <Divider theme={theme}/>
                     {!!service.description &&
@@ -622,23 +613,6 @@ export default class ServiceDetails extends Component {
                         onPress={() => this.onShareClick() }
                     />
                 </View>
-                {this.state.offline ?
-                    <Text style={[
-                        styles.loading,
-                        getTextColor(theme)
-                    ]}>
-                        {I18n.t('FEEDBACK_OFFLINE') }
-                    </Text> :
-                    this.state.loaded ?
-                        this.renderFeedbackContainer()
-                        :
-                        <Text style={[
-                            styles.loading,
-                            getTextColor(theme)
-                        ]}>
-                            {I18n.t('LOADING') }
-                        </Text>
-                }
             </ScrollView>
         );
     }

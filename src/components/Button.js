@@ -1,6 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
-import styles, {themes, getFontFamily, getRowOrdering} from '../styles';
+import styles, {
+    themes, 
+    getFontFamily, 
+    getRowOrdering,
+    getIconComponent,
+    getIconName,
+} from '../styles';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -33,13 +39,16 @@ export default class Button extends Component {
     render() {
         const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle} = this.props;
 
+        const Icon = getIconComponent(iconName);
+        let iconName = getIconName(icon);
+
         let iconImage = icon &&
             <View style={[
                 direction=='rtl' ? {paddingRight: 10} : {paddingLeft: 10},
                 styles.alignCenter
             ]}>
                 <Icon
-                    name={icon}
+                    name={iconName}
                     style={[
                         this.getButtonTextColor(color),
                         componentStyles.buttonIcon
