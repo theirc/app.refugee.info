@@ -13,7 +13,7 @@ import {
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
-import {OfflineView, SearchBar, SearchFilterButton} from '../components';
+import {OfflineView, SearchBar, SearchFilterButton, } from '../components';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
@@ -26,8 +26,16 @@ import styles, {
     getAlignItems,
     getTextColor,
     getContainerColor,
-    getDividerColor
+    getDividerColor,
+
+    getIconComponent,
+    getIconName,
 } from '../styles';
+
+
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
+var HumanitarianIcon = require('../components/HumanitarianIcon');
 
 var _ = require('underscore');
 
@@ -87,7 +95,7 @@ export default class ServiceList extends Component {
                         longitude: 0
                     }
                 });
-            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+            }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 1000 }
         );
     }
 
@@ -108,7 +116,7 @@ export default class ServiceList extends Component {
             let serviceTypes = await this.serviceData.listServiceTypes();
             let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                {latitude, longitude},
+                { latitude, longitude },
                 criteria
             );
             let services = serviceResult.results;
@@ -135,9 +143,9 @@ export default class ServiceList extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData().then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -156,28 +164,65 @@ export default class ServiceList extends Component {
         });
         let rating = this.serviceCommons.renderStars(service.rating);
         let locationName = (location) ? location.name : '';
+
+        let iconName = (serviceType.vector_icon || '').trim();
+        let widget = null;
+        if (iconName) {
+            const Icon = getIconComponent(iconName);
+            iconName = getIconName(iconName);
+
+            widget = (<View
+                style={[{
+                    width: 36,
+                    height: 36,
+                    padding: 2,
+                    backgroundColor: themes.light.greenAccentColor,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: themes[theme].backgroundColor,
+                    borderRadius: 10,
+                },
+                ]}>
+                <Icon
+                    name={iconName || defaultIcon }
+                    style={[
+                        {
+                            color: themes[theme].textColor,
+                            fontSize: 24,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        },
+                    ]}
+                    />
+            </View>);
+        } else {
+            widget = (<Image
+                source={{ uri: serviceType.icon_url }}
+                style={styles.mapIcon}
+                />);
+        }
+
+
+
         return (
             <TouchableHighlight
-                onPress={() => requestAnimationFrame(() => this.onClick({ service, serviceType, location}))}
+                onPress={() => requestAnimationFrame(() => this.onClick({ service, serviceType, location })) }
                 underlayColor={getUnderlayColor(theme) }
-            >
+                >
                 <View
                     style={[
                         styles.listItemContainer,
                         getContainerColor(theme),
                         { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
-                >
-                    <View style={[
-                            getRowOrdering(direction),
-                            styles.flex
-                        ]}
                     >
+                    <View style={[
+                        getRowOrdering(direction),
+                        styles.flex
+                    ]}
+                        >
                         <View style={styles.listItemIconContainer}>
-                            <Image
-                                source={{ uri: serviceType.icon_url }}
-                                style={styles.mapIcon}
-                            />
+                            {widget}
                         </View>
                         <View style={[
                             styles.dividerLongInline,
@@ -193,9 +238,9 @@ export default class ServiceList extends Component {
                                 style={[
                                     getFontFamily(language),
                                     getTextColor(theme),
-                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500'}
+                                    { fontSize: 15, paddingBottom: 2, fontWeight: '500' }
                                 ]}
-                            >
+                                >
                                 {service.name}
                             </Text>
                             <View style={[styles.row, { paddingBottom: 2 }]}>
@@ -205,7 +250,7 @@ export default class ServiceList extends Component {
                                         { fontSize: 13, marginRight: 8 },
                                         { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                                     ]}
-                                />
+                                    />
                                 <Text style={[
                                     getFontFamily(language), {
                                         color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
@@ -215,17 +260,15 @@ export default class ServiceList extends Component {
                                     {locationName}
                                 </Text>
                             </View>
-                            <View style={getRowOrdering(direction)}>
-                                <Text style={[
-                                        getFontFamily(language),
-                                        {color: themes.light.darkerDividerColor, fontSize: 11, marginTop: 1},
-                                        direction=='rtl' ? {paddingLeft: 5} : {paddingRight: 5}
-                                    ]}
+                            <Text
+                                style={[
+                                    getFontFamily(language),
+                                    getTextColor(theme),
+                                    { fontSize: 11, paddingBottom: 2, fontWeight: '500' }
+                                ]}
                                 >
-                                    {I18n.t('RATING').toUpperCase() }
-                                </Text>
-                                {rating}
-                            </View>
+                                {service.provider.name}
+                            </Text>
                         </View>
                     </View>
                 </View>
@@ -255,7 +298,7 @@ export default class ServiceList extends Component {
             const {latitude, longitude} = (this.state.location || {});
             let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                {latitude, longitude},
+                { latitude, longitude },
                 searchCriteria,
                 pageNumber + 1
             );
@@ -284,10 +327,10 @@ export default class ServiceList extends Component {
                     <View style={styles.row}>
                         <SearchBar
                             theme={theme}
-                        />
+                            />
                         <SearchFilterButton
                             theme={theme}
-                        />
+                            />
                     </View>
                     <View
                         style={[
@@ -295,14 +338,14 @@ export default class ServiceList extends Component {
                             { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
                             { paddingTop: 10 }
                         ]}
-                    >
+                        >
                         <Text
                             style={[
                                 styles.viewHeaderText,
                                 getFontFamily(language),
                                 theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                             ]}
-                        >
+                            >
                             {I18n.t('LOADING_SERVICES').toUpperCase() }
                         </Text>
                     </View>
@@ -315,11 +358,11 @@ export default class ServiceList extends Component {
                     <SearchBar
                         theme={theme}
                         searchFunction={(text) => this._onChangeText(text) }
-                    />
+                        />
                     <SearchFilterButton
                         theme={theme}
                         onPressAction={() => this.searchFilterButtonAction() }
-                    />
+                        />
                 </View>
                 <View
                     style={[
@@ -327,14 +370,14 @@ export default class ServiceList extends Component {
                         { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
                         { paddingTop: 10 }
                     ]}
-                >
+                    >
                     <Text
                         style={[
                             styles.viewHeaderText,
                             getFontFamily(language),
                             theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                         ]}
-                    >
+                        >
                         {I18n.t('NEAREST_SERVICES').toUpperCase() }
                     </Text>
                 </View>
@@ -342,7 +385,7 @@ export default class ServiceList extends Component {
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                />
+                    />
                 <ListView
                     refreshControl={
                         <RefreshControl
@@ -359,11 +402,11 @@ export default class ServiceList extends Component {
                     direction={this.props.direction}
                     canLoadMore={this.state.canLoadMoreContent}
                     onLoadMoreAsync={() => { this._loadMoreContentAsync() } }
-                />
+                    />
                 <MapButton
                     direction={this.props.direction}
                     searchCriteria={this.state.searchCriteria}
-                />
+                    />
             </View>
         );
     }

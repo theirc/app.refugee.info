@@ -2,6 +2,11 @@
 
 import {Platform, StyleSheet, Dimensions} from 'react-native';
 
+
+var Ionicons = require('react-native-vector-icons/Ionicons');
+var FontAwesome = require('react-native-vector-icons/FontAwesome');
+var HumanitarianIcon = require('./components/HumanitarianIcon');
+
 export const themes = {
     light: {
         logo: require("./assets/logo-light.png"),
@@ -337,17 +342,41 @@ export function getRowOrdering(direction) {
 
 export function getAlignItems(direction) {
     if (direction === 'rtl') {
-        return {alignItems: 'flex-end'}
+        return { alignItems: 'flex-end' }
     } else {
-        return {alignItems: 'flex-start'}
+        return { alignItems: 'flex-start' }
     }
 }
 
 export function getTextAlign(direction) {
     if (direction === 'rtl') {
-        return {textAlign: 'right'}
+        return { textAlign: 'right' }
     } else {
-        return {textAlign: 'auto'}
+        return { textAlign: 'auto' }
+    }
+}
+
+export function getIconComponent(iconName='') {
+    if (iconName.indexOf('ion-') == 0) {
+        return Ionicons;
+    } else if (iconName.indexOf('fa-') == 0) {
+        return FontAwesome;
+    } else if (iconName.indexOf('hi-') == 0) {
+        return HumanitarianIcon;
+    } else {
+        return Ionicons;
+    }
+}
+
+export function getIconName(iconName='') {
+    if (iconName.indexOf('ion-') == 0) {
+        return iconName.substring(4);
+    } else if (iconName.indexOf('fa-') == 0) {
+        return iconName.substring(3);
+    } else if (iconName.indexOf('hi-') == 0) {
+        return iconName.substring(3);
+    } else {
+        return iconName;
     }
 }
 
