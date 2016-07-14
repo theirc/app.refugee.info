@@ -27,11 +27,14 @@ export default class MapButton extends Component {
             <TouchableHighlight
                 onPress={() => this.onClick() }
                 underlayColor="white"
+                style={[{
+                    position: 'absolute',
+                    bottom: 20},
+                    direction == 'rtl' ? {left: 20} : {right: 20}
+                ]}
                 >
                 <View
-                    style={[
-                        componentStyles.mapButton,
-                        direction == 'rtl' ? {left: 20} : {}]}
+                    style={[componentStyles.mapButton]}
                     >
                     <Icon
                         name="md-map"
@@ -49,10 +52,6 @@ const componentStyles = StyleSheet.create({
         height: 64,
         borderRadius: 64,
         backgroundColor: themes.light.greenAccentColor,
-        position: 'absolute',
-        flex: 1,
-        right: 20,
-        bottom: 20,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.5,
