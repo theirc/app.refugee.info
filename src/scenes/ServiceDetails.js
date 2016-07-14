@@ -145,26 +145,32 @@ export default class ServiceDetails extends Component {
     }
 
     getDirections(lat, long) {
-        let location = `${lat},${long}`;
-        if (Platform.OS === 'ios') {
-            return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
-        }
-        return Linking.openURL(`geo:${location}?q=${location}`);
+        requestAnimationFrame(() => {
+            let location = `${lat},${long}`;
+            if (Platform.OS === 'ios') {
+                return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
+            }
+            return Linking.openURL(`geo:${location}?q=${location}`);
+        })
     }
 
     call() {
-        let provider = this.state.provider;
-        Linking.openURL(`tel:${provider.phone_number}`);
+        requestAnimationFrame(() => {
+            let provider = this.state.provider;
+            Linking.openURL(`tel:${provider.phone_number}`);
+        })
     }
 
     onShareClick() {
-        Share.open({
-            share_text: "Refugee Info",
-            share_URL: 'http://refugeeinfo.org',
-            title: 'Refugee Info'
-        }, (e) => {
-            console.log(e);
-        });
+        requestAnimationFrame(() => {
+            Share.open({
+                share_text: "Refugee Info",
+                share_URL: 'http://refugeeinfo.org',
+                title: 'Refugee Info'
+            }, (e) => {
+                console.log(e);
+            });
+        })
     }
 
     postComment() {

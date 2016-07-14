@@ -158,7 +158,7 @@ export default class ServiceList extends Component {
         let locationName = (location) ? location.name : '';
         return (
             <TouchableHighlight
-                onPress={() => this.onClick({ service, serviceType, location }) }
+                onPress={() => requestAnimationFrame(() => this.onClick({ service, serviceType, location}))}
                 underlayColor={getUnderlayColor(theme) }
             >
                 <View

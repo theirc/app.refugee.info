@@ -43,11 +43,13 @@ class Settings extends Component {
     }
 
     setTheme(theme) {
-        const {dispatch} = this.props;
-        Promise.all([
-            dispatch(updateThemeIntoStorage(theme)),
-            dispatch({type: "THEME_CHANGED", payload: theme})
-        ]);
+        requestAnimationFrame(() => {
+            const {dispatch} = this.props;
+            Promise.all([
+                dispatch(updateThemeIntoStorage(theme)),
+                dispatch({type: "THEME_CHANGED", payload: theme})
+            ]);
+        });
     }
 
     updateSettings(language) {
@@ -75,7 +77,7 @@ class Settings extends Component {
 
     goToCountryChoice() {
         const {navigator} = this.context;
-        navigator.to('countryChoice')
+        requestAnimationFrame(() => navigator.to('countryChoice'));
     }
 
     render() {

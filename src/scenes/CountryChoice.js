@@ -139,7 +139,9 @@ export default class CountryChoice extends Component {
 
     onPress(rowData) {
         const {navigator} = this.context;
-        navigator.forward(null, null, {countryId: rowData.id, country: rowData});
+        requestAnimationFrame(() => {
+            navigator.forward(null, null, {countryId: rowData.id, country: rowData})
+        });
     }
 
     render() {
