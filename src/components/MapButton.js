@@ -12,13 +12,13 @@ export default class MapButton extends Component {
 
     static propTypes = {
         direction: PropTypes.oneOf(['rtl', 'ltr']),
-        services: PropTypes.array,
+        searchCriteria: PropTypes.string,
         ...Component.propTypes
     };
 
     onClick() {
         const {navigator} = this.context;
-        navigator.to('map', null, { services: this.props.services });
+        navigator.to('map', null, {searchCriteria: this.props.searchCriteria});
     }
 
     render() {
@@ -32,14 +32,14 @@ export default class MapButton extends Component {
                     bottom: 20},
                     direction == 'rtl' ? {left: 20} : {right: 20}
                 ]}
-                >
+            >
                 <View
                     style={[componentStyles.mapButton]}
-                    >
+                >
                     <Icon
                         name="md-map"
                         style={componentStyles.mapButtomIcon}
-                        />
+                    />
                 </View>
             </TouchableHighlight>
         );
@@ -53,7 +53,7 @@ const componentStyles = StyleSheet.create({
         borderRadius: 64,
         backgroundColor: themes.light.greenAccentColor,
         shadowColor: 'black',
-        shadowOffset: { width: 0, height: 1 },
+        shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.5,
         shadowRadius: 3,
         alignItems: 'center',

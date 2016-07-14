@@ -362,7 +362,7 @@ export default class ServiceList extends Component {
                 />
                 <MapButton
                     direction={this.props.direction}
-                    services={this.state.services}
+                    searchCriteria={this.state.searchCriteria}
                 />
             </View>
         );

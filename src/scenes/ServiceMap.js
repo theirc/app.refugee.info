@@ -9,11 +9,9 @@ import {
     Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
-import ApiClient from '../utils/ApiClient';
 import styles, {themes} from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
-import OfflineView from '../components/OfflineView';
 import {connect} from 'react-redux';
 import {MapPopup, Button} from '../components';
 import {Regions, Services} from '../data';
@@ -27,7 +25,7 @@ const RADIUS = 0.01;
 class ServiceMap extends Component {
 
     static propTypes = {
-        services: React.PropTypes.array
+        searchCriteria: React.PropTypes.string
     };
 
     static contextTypes = {
@@ -56,7 +54,6 @@ class ServiceMap extends Component {
 
     constructor(props) {
         super(props);
-
         if (props.hasOwnProperty('savedState') && props.savedState) {
             this.state = props.savedState;
         } else {
@@ -78,12 +75,11 @@ class ServiceMap extends Component {
     }
 
     componentDidMount() {
-        const {region} = this.props;
-
+        const {region, searchCriteria} = this.props;
         let currentEnvelope = ServiceMap.getInitialRegion(region);
         this.setState({ intialEnvelope: currentEnvelope });
         if (!this.state.loaded) {
-            this.fetchData().done();
+            this.fetchData(currentEnvelope, searchCriteria).done();
         }
     }
 
@@ -226,7 +222,7 @@ class ServiceMap extends Component {
                     <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor}]}>
                         <Button
                             color="green"
-                            icon="refresh"
+                            icon="md-refresh"
                             text={I18n.t('RELOAD_MAP') }
                             onPress={() => this.fetchData(this.state.currentEnvelope) }
                             style={{ flex: 1, margin: 0 }}
