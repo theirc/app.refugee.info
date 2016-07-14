@@ -34,7 +34,7 @@ export default class CountryChoice extends Component {
         const regionData = new Regions(this.props);
         this.regionData = regionData;
 
-        const locations = await regionData.listCountries();
+        const locations = await regionData.listCountries(true);
 
 
         locations.forEach((c) => {
