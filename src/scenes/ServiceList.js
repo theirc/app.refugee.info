@@ -173,9 +173,11 @@ export default class ServiceList extends Component {
 
             widget = (<View
                 style={[{
+                    flex:1,
+                    flexDirection: 'row',
+                    paddingLeft: 2,
                     width: 36,
                     height: 36,
-                    padding: 2,
                     backgroundColor: themes.light.greenAccentColor,
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -187,8 +189,9 @@ export default class ServiceList extends Component {
                     name={iconName || defaultIcon }
                     style={[
                         {
-                            color: themes[theme].textColor,
                             fontSize: 24,
+                            color: themes.dark.textColor,
+                            textAlign: 'center',
                             alignItems: 'center',
                             justifyContent: 'center',
                         },

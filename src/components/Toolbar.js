@@ -57,8 +57,9 @@ export default class Toolbar extends Component {
                     name={iconName || defaultIcon }
                     style={[
                         {
-                            color: themes[theme].textColor,
                             fontSize: 18,
+                            color: themes.dark.textColor,
+                            textAlign: 'center',
                             alignItems: 'center',
                             justifyContent: 'center',
                         },
