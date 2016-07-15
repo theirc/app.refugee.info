@@ -5,6 +5,11 @@ import {connect} from 'react-redux';
 import {getFontFamily, getRowOrdering, themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {DirectionalText} from '../components';
+import {
+    theme,
+    getIconComponent,
+    getIconName,
+} from '../styles';
 
 export default class Toolbar extends Component {
 
@@ -23,7 +28,7 @@ export default class Toolbar extends Component {
     render() {
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
-        let {toolbarTitle, toolbarTitleIcon} = this.props;
+        let {toolbarTitle, toolbarTitleIcon, toolbarTitleImage} = this.props;
         let title = '';
         if (toolbarTitle) {
             title = toolbarTitle;
@@ -31,13 +36,42 @@ export default class Toolbar extends Component {
         else if (navigator && navigator.currentRoute) {
             title = navigator.currentRoute.title;
         }
+
+        let iconName = (toolbarTitleIcon || '').trim();
         let titleIcon = null;
-        if (toolbarTitleIcon) {
+        if (iconName) {
+            const Icon = getIconComponent(iconName);
+            iconName = getIconName(iconName);
+
+            titleIcon = (<View
+                style={[componentStyles.titleIcon, {
+                    padding: 2,
+                    backgroundColor: themes.light.greenAccentColor,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: themes[theme].backgroundColor,
+                    borderRadius: 7,
+                },
+                ]}>
+                <Icon
+                    name={iconName || defaultIcon }
+                    style={[
+                        {
+                            color: themes[theme].textColor,
+                            fontSize: 18,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        },
+                    ]}
+                    />
+            </View>);
+        } else if (toolbarTitleImage) {
             titleIcon = (<Image
-                source={{ uri: toolbarTitleIcon }}
+                source={{ uri: toolbarTitleImage }}
                 style={componentStyles.titleIcon}
-            />);
+                />);
         }
+
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
         let icon = null;
@@ -104,7 +138,8 @@ const mapStateToProps = (state) => {
         direction: state.direction,
         language: state.language,
         toolbarTitle: state.toolbarTitle,
-        toolbarTitleIcon: state.toolbarTitleIcon
+        toolbarTitleIcon: state.toolbarTitleIcon,
+        toolbarTitleImage: state.toolbarTitleImage
     };
 };
 
