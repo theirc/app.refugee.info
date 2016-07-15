@@ -186,7 +186,7 @@ export default class ServiceList extends Component {
                 },
                 ]}>
                 <Icon
-                    name={iconName || defaultIcon }
+                    name={iconName}
                     style={[
                         {
                             fontSize: 24,

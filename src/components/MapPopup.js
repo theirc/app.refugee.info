@@ -36,10 +36,7 @@ export default class MapPopup extends Component {
                         styles.iconContainer,
                         direction=='rtl' ? {marginLeft: 10, marginRight: 0} : {}
                     ]}>
-                        <Image
-                            source={{ uri: marker.icon_url }}
-                            style={styles.mapIcon}
-                        />
+                        {marker.widget}
                     </View>
                     <View style={[
                         styles.container,

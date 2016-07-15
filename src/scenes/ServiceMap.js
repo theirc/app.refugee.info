@@ -9,7 +9,10 @@ import {
     Dimensions
 } from 'react-native';
 import MapView from 'react-native-maps';
-import styles, {themes} from '../styles';
+import styles, {themes,
+    getIconComponent,
+    getIconName,
+} from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
@@ -97,11 +100,11 @@ class ServiceMap extends Component {
 
     onRegionChange(region) {
         if (this.state.loaded) {
-        
-        this.setState({
-            envelope: region,
-            mapMoved: true,
-        });
+
+            this.setState({
+                envelope: region,
+                mapMoved: true,
+            });
         }
         if (this.timeout) {
             // clearTimeout(this.timeout);
@@ -124,7 +127,7 @@ class ServiceMap extends Component {
 
     async fetchData(envelope = {}, criteria = "") {
         // the region comes from the state now
-        const {region} = this.props;
+        const {region, theme} = this.props;
         const regionData = new Regions(this.props);
         const serviceData = new Services(this.props);
 
@@ -155,13 +158,55 @@ class ServiceMap extends Component {
                 let serviceType = serviceTypes.find(function (type) {
                     return type.url == service.type;
                 });
+
+
+                let iconName = (serviceType.vector_icon || '').trim();
+                let widget = null;
+                if (iconName) {
+                    const Icon = getIconComponent(iconName);
+                    iconName = getIconName(iconName);
+
+                    widget = (<View
+                        style={[{
+                            flex: 1,
+                            flexDirection: 'row',
+                            paddingLeft: 2,
+                            width: 36,
+                            height: 36,
+                            backgroundColor: themes.light.greenAccentColor,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderColor: themes[theme].backgroundColor,
+                            borderRadius: 10,
+                        },
+                        ]}>
+                        <Icon
+                            name={iconName}
+                            style={[
+                                {
+                                    fontSize: 24,
+                                    color: themes.dark.textColor,
+                                    textAlign: 'center',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                },
+                            ]}
+                            />
+                    </View>);
+                } else {
+                    widget = (<Image
+                        source={{ uri: serviceType.icon_url }}
+                        style={styles.mapIcon}
+                        />);
+                }
+
                 return {
                     latitude: service.location.coordinates[1],
                     longitude: service.location.coordinates[0],
                     description: service.description,
                     title: service.name,
-                    icon_url: serviceType.icon_base64,
-                    service
+                    widget,
+                    service,
                 };
             });
             this.setState({
@@ -207,10 +252,7 @@ class ServiceMap extends Component {
                             title={marker.title}
                             >
                             <View>
-                                <Image
-                                    source={{ uri: marker.icon_url }}
-                                    style={styles.mapIcon}
-                                    />
+                                {marker.widget}
                             </View>
                             <MapView.Callout tooltip={true} style={[{ width: width - 50 }]}>
                                 <MapPopup marker={marker} />
@@ -219,7 +261,7 @@ class ServiceMap extends Component {
                     )) }
                 </MapView>
                 {this.state.mapMoved &&
-                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor}]}>
+                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor }]}>
                         <Button
                             color="green"
                             icon="md-refresh"
