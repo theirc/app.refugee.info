@@ -76,8 +76,9 @@ export default class ServiceDetails extends Component {
 
     componentWillUnmount() {
         const {dispatch} = this.props;
-        dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
+        dispatch({ type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null });
+        dispatch({ type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: null });
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: null });
     }
 
     componentWillMount() {
@@ -87,20 +88,25 @@ export default class ServiceDetails extends Component {
         }
         const {dispatch, service, serviceType} = this.props;
 
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: service.name});
-        dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: serviceType.icon_url});
+        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
+
+        if (serviceType.vector_icon) {
+            dispatch({ type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: serviceType.vector_icon });
+        } else if (serviceType.icon_url ){
+            dispatch({ type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: serviceType.icon_url });
+        }
     }
 
     _setModalVisible(visible) {
-        this.setState({modalVisible: visible});
+        this.setState({ modalVisible: visible });
     }
 
     _setRating(rating) {
-        this.setState({rating});
+        this.setState({ rating });
     }
 
     _setLoaded(loaded) {
-        this.setState({loaded});
+        this.setState({ loaded });
     }
 
 
@@ -138,9 +144,9 @@ export default class ServiceDetails extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData(update = true).then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -198,7 +204,7 @@ export default class ServiceDetails extends Component {
                             direction == 'rtl' ? { marginLeft: 6 } : { marginRight: 6 },
                             getTextColor(theme)
                         ]}
-                    />
+                        />
                     <Text style={[
                         getFontFamily(language),
                         getAlignItems(direction),
@@ -238,7 +244,7 @@ export default class ServiceDetails extends Component {
                     styles.starIcon,
                     (this.state.rating >= i + 1) ? null : { color: themes.light.dividerColor }
                 ]}
-            />
+                />
         ));
         return (
             <View>
@@ -247,7 +253,7 @@ export default class ServiceDetails extends Component {
                     onRequestClose={() => this._setModalVisible(false) }
                     transparent={true}
                     visible={this.state.modalVisible}
-                >
+                    >
                     <View style={[styles.modalContainer]}>
                         <View style={[
                             styles.modalInnerContainer,
@@ -263,8 +269,8 @@ export default class ServiceDetails extends Component {
                             <View style={[
                                 styles.starContainer,
                                 getRowOrdering(direction)
-                                ]}
-                            >
+                            ]}
+                                >
                                 {rateStars}
                             </View>
                             <Divider theme={theme} margin={4}/>
@@ -283,7 +289,7 @@ export default class ServiceDetails extends Component {
                                     getTextAlign(direction)
                                 ]}
                                 underlineColorAndroid='transparent'
-                            />
+                                />
                             <TextInput
                                 multiline
                                 onChangeText={
@@ -300,15 +306,15 @@ export default class ServiceDetails extends Component {
                                     getTextAlign(direction)
                                 ]}
                                 underlineColorAndroid='transparent'
-                            />
+                                />
                             <Divider theme={theme} margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
                                     onPress={() => {
                                         this._setModalVisible(false);
-                                    }}
+                                    } }
                                     underlayColor={getUnderlayColor(theme) }
-                                >
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             getFontFamily(language),
@@ -321,7 +327,7 @@ export default class ServiceDetails extends Component {
                                 <TouchableHighlight
                                     onPress={() => this.postComment() }
                                     underlayColor={getUnderlayColor(theme) }
-                                >
+                                    >
                                     <View style={styles.modalButton}>
                                         <Text style={[
                                             getFontFamily(language),
@@ -337,10 +343,10 @@ export default class ServiceDetails extends Component {
                 </Modal>
                 <View
                     style={styles.detailsContainer}
-                >
+                    >
                     <Text style={[
                         styles.sectionHeader,
-                        {marginBottom: 0},
+                        { marginBottom: 0 },
                         getTextAlign(direction),
                         getTextColor(theme)
                     ]}>
@@ -354,10 +360,10 @@ export default class ServiceDetails extends Component {
                 <ListView
                     dataSource={this.state.dataSource}
                     enableEmptySections
-                    renderRow={(row) => this.renderFeedback(row)}
-                    style={{marginTop: 10}}
+                    renderRow={(row) => this.renderFeedback(row) }
+                    style={{ marginTop: 10 }}
                     direction={direction}
-                />
+                    />
             </View>
         );
     }
@@ -374,9 +380,9 @@ export default class ServiceDetails extends Component {
                         styles.sectionContent,
                         getFontFamily(language),
                         getTextColor(theme),
-                        {textAlign: 'center'}
+                        { textAlign: 'center' }
                     ]}>
-                        {I18n.t('CLOSED').toUpperCase()}</Text>
+                        {I18n.t('CLOSED').toUpperCase() }</Text>
                 </View>
             )
         }
@@ -387,27 +393,27 @@ export default class ServiceDetails extends Component {
                     styles.sectionContent,
                     getFontFamily(language),
                     getTextColor(theme),
-                    {textAlign: 'right'}
+                    { textAlign: 'right' }
                 ]}>
                     {service[`${day}_open`] &&
-                    service[`${day}_open`].substr(0, service[`${day}_open`].lastIndexOf(':'))}
+                        service[`${day}_open`].substr(0, service[`${day}_open`].lastIndexOf(':')) }
                 </Text>
                 <Text style={[
-                    {flex: 0.5},
+                    { flex: 0.5 },
                     styles.sectionContent,
                     getFontFamily(language),
                     getTextColor(theme),
-                    {textAlign: 'center'}
+                    { textAlign: 'center' }
                 ]}>-</Text>
                 <Text style={[
                     styles.flex,
                     styles.sectionContent,
                     getFontFamily(language),
                     getTextColor(theme),
-                    {textAlign: 'left'}
+                    { textAlign: 'left' }
                 ]}>
                     {service[`${day}_close`] &&
-                    service[`${day}_close`].substr(0, service[`${day}_close`].lastIndexOf(':'))}
+                        service[`${day}_close`].substr(0, service[`${day}_close`].lastIndexOf(':')) }
                 </Text>
             </View>
         )
@@ -426,7 +432,7 @@ export default class ServiceDetails extends Component {
         let weekDay = days[new Date().getDay()];
 
         return (
-            <View style={[styles.detailsContainer, {paddingTop: 0}]}>
+            <View style={[styles.detailsContainer, { paddingTop: 0 }]}>
                 <Divider margin={4}/>
                 <Text
                     style={[
@@ -435,7 +441,7 @@ export default class ServiceDetails extends Component {
                         getFontFamily(language),
                         getTextColor(theme)
                     ]}
-                >
+                    >
                     {I18n.t('OPENING_HOURS') }
                 </Text>
                 {days.map((day, i) => (
@@ -443,26 +449,26 @@ export default class ServiceDetails extends Component {
                         style={[
                             getRowOrdering(direction),
                             getBottomDividerColor(theme),
-                            {borderBottomWidth: 1, paddingTop: 5, paddingBottom: 5},
-                            (day===weekDay)
+                            { borderBottomWidth: 1, paddingTop: 5, paddingBottom: 5 },
+                            (day === weekDay)
                                 ? getDividerColor(theme)
                                 : null
                         ]}
                         key={day}
-                    >
+                        >
                         <Text style={[
-                            {flex: 0.5},
+                            { flex: 0.5 },
                             styles.sectionContent,
                             getTextAlign(direction),
                             getFontFamily(language),
                             getTextColor(theme)
                         ]}
-                        >
-                            {I18n.t(day.toUpperCase())}
+                            >
+                            {I18n.t(day.toUpperCase()) }
                         </Text>
-                        {this.renderOpeningHoursRow(day)}
+                        {this.renderOpeningHoursRow(day) }
                     </View>
-                ))}
+                )) }
             </View>
         )
     }
@@ -487,12 +493,12 @@ export default class ServiceDetails extends Component {
                         onRefresh={this.onRefresh.bind(this) }
                         />
                 }
-            >
+                >
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                />
+                    />
                 <MapView
                     cacheEnabled={true}
                     scrollEnabled={false}
@@ -503,13 +509,13 @@ export default class ServiceDetails extends Component {
                         longitudeDelta: RADIUS
                     }}
                     style={styles.map}
-                >
+                    >
                     <MapView.Marker
                         coordinate={{
                             latitude: lat,
                             longitude: long
                         }}
-                    />
+                        />
                 </MapView>
                 <View style={styles.detailsContainer}>
                     <View style={[
@@ -523,7 +529,7 @@ export default class ServiceDetails extends Component {
                                 { fontSize: 13 },
                                 { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                             ]}
-                        />
+                            />
                         <Text style={[
                             getFontFamily(language),
                             {
@@ -550,49 +556,49 @@ export default class ServiceDetails extends Component {
                     </View>
                     <Divider theme={theme}/>
                     {!!service.description &&
-                    <View>
-                        <Text style={[
+                        <View>
+                            <Text style={[
                                 styles.sectionHeader,
                                 getTextAlign(direction),
                                 getFontFamily(language),
                                 getTextColor(theme)
                             ]}
-                        >
-                            {I18n.t('DESCRIPTION') }
-                        </Text>
-                        <Text style={[
+                                >
+                                {I18n.t('DESCRIPTION') }
+                            </Text>
+                            <Text style={[
                                 styles.sectionContent,
                                 getTextAlign(direction),
                                 getFontFamily(language),
                                 getTextColor(theme)
                             ]}>
-                            {service.description}
-                        </Text>
-                    </View>
+                                {service.description}
+                            </Text>
+                        </View>
                     }
                     {!!service.cost_of_service &&
-                    <Text style={[
+                        <Text style={[
                             styles.sectionContent,
                             getTextAlign(direction),
                             getFontFamily(language),
                             getTextColor(theme)
                         ]}>
-                        {I18n.t('COST_OF_SERVICE') }:
-                        {`\n${service.cost_of_service}`}
-                    </Text>
+                            {I18n.t('COST_OF_SERVICE') }:
+                            {`\n${service.cost_of_service}`}
+                        </Text>
                     }
                     {service.selection_criteria.length > 0 &&
-                    <Text style={[
+                        <Text style={[
                             styles.sectionContent,
                             getTextAlign(direction),
                             getFontFamily(language),
                             getTextColor(theme)
                         ]}>
-                        {I18n.t('SELECTION_CRITERIA') }:
-                        {service.selection_criteria.map((criteria, i) => (
-                            `\n - ${criteria.text}`
-                        )) }
-                    </Text>
+                            {I18n.t('SELECTION_CRITERIA') }:
+                            {service.selection_criteria.map((criteria, i) => (
+                                `\n - ${criteria.text}`
+                            )) }
+                        </Text>
                     }
                 </View>
                 {openingHoursView}
@@ -601,17 +607,17 @@ export default class ServiceDetails extends Component {
                         color="green"
                         text={I18n.t('GET_DIRECTIONS') }
                         onPress={() => this.getDirections(lat, long) }
-                    />
+                        />
                     <Button
                         color="black"
                         text={I18n.t('CALL') }
                         onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                    />
+                        />
                     <Button
                         color="white"
                         text={I18n.t('SHARE') }
                         onPress={() => this.onShareClick() }
-                    />
+                        />
                 </View>
             </ScrollView>
         );
