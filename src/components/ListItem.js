@@ -40,26 +40,27 @@ export default class ListItem extends Component {
     render() {
         const {theme, onPress, text, language, direction, iconColor, fontSize, image, centered, iconSize} = this.props;
         let iconName = (this.props.icon || '').trim();
-        const defaultIcon = 'md-bus';
         const Icon = getIconComponent(iconName);
         iconName = getIconName(iconName);
 
-        const button_icon = image ?
-            <Image
+        const button_icon = (image)
+            ? <Image
                 source={image}
                 style={[
                     componentStyles.listItemImageInline,
                     {width: iconSize || 24, height: iconSize || 24}
                 ]}
-            /> :
-            <Icon
-                name={iconName || defaultIcon }
-                style={[
-                    componentStyles.listItemIcon,
-                    {fontSize: iconSize || 24},
-                    iconColor && { color: iconColor }
-                ]}
-            />;
+            />
+            : (iconName)
+                ? <Icon
+                    name={iconName || defaultIcon }
+                    style={[
+                        componentStyles.listItemIcon,
+                        {fontSize: iconSize || 24},
+                        iconColor && { color: iconColor }
+                    ]}
+                />
+                : null;
         if (centered) {
             const imageElement = (image &&
             <Image
@@ -70,7 +71,7 @@ export default class ListItem extends Component {
                         : componentStyles.listItemImageAbsolute
                 ]}
             />);
-            const imageDivider = (image &&
+            const imageDivider = ((image || iconName) &&
             <View
                 style={[
                     componentStyles.dividerAbsolute,

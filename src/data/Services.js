@@ -47,11 +47,11 @@ export default class Services extends Component {
 
 
 
-    async pageServices(slug, coords = {}, searchCriteria="", page=1, pageSize = 10) {
+    async pageServices(slug, coords = {}, searchCriteria="", page=1, pageSize = 10, types) {
         /*
         How do we go about storing this in the AsyncStorage?
         */
-        let pagedResults = await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize);
+        let pagedResults = await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize, types);
 
         pagedResults.results.forEach(s=> Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
 

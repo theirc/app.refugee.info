@@ -80,7 +80,7 @@ export default class ApiClient {
         return this.fetch('/v1/servicetypes/?format=json', raise_exception);
     }
 
-    getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, raise_exception = false) {
+    getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raise_exception = false) {
         let url = `/v1/services/search/?format=json&geographic_region=${locationSlug}`;
 
         if (coords.hasOwnProperty('latitude')) {
@@ -90,9 +90,11 @@ export default class ApiClient {
         if (!!searchCriteria) {
             url += `&name=${searchCriteria}`;
         }
-
+        if (!!types) {
+            url += `&type_numbers=${types}`;
+        }
         url += `&page=${page}&page_size=${pageSize}`;
-
+        console.log(url);
         return this.fetch(url, raise_exception);
     }
 
