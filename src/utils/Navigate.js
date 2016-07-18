@@ -218,6 +218,7 @@ export default class Navigate {
                 // ugly, clear toolbar title and icon only when going back from service details to list
                 this.store.dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
                 this.store.dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
+                this.store.dispatch({type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: null});
             }
             this.navigator.pop();
         }
