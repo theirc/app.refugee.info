@@ -71,7 +71,7 @@ export default class ListItem extends Component {
                         : componentStyles.listItemImageAbsolute
                 ]}
             />);
-            const imageDivider = ((image || iconName) &&
+            const imageDivider = (image &&
             <View
                 style={[
                     componentStyles.dividerAbsolute,

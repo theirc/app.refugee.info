@@ -92,6 +92,7 @@ export default class ServiceList extends Component {
                 });
             },
             (error) => {
+                console.log(error);
                 this.setState({
                     location: {
                         latitude: 0,
@@ -106,7 +107,6 @@ export default class ServiceList extends Component {
         // the region comes from the state now
         const {region} = this.props;
         const criteria = this.state.searchCriteria;
-        const regionData = new Regions(this.props);
         if (!region) {
             this.setState({
                 loaded: true
@@ -379,7 +379,7 @@ export default class ServiceList extends Component {
         this.setState({
             serviceTypes: serviceTypes,
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
-        });
+        }, () => {this.fetchData().done()});
     }
 
     getServiceTypeNumbers(serviceTypes) {
@@ -413,7 +413,6 @@ export default class ServiceList extends Component {
                     />
                 }
                 dataSource={this.state.dataSource}
-                enableEmptySections={true}
                 renderRow={(service) => this.renderRow(service)}
                 renderScrollComponent={props => <InfiniteScrollView {...props} />}
                 keyboardShouldPersistTaps={true}
@@ -513,7 +512,6 @@ export default class ServiceList extends Component {
     }
 }
 
-
 const componentStyles = StyleSheet.create({
     searchBarContainer: {
         padding: 5,
@@ -527,7 +525,6 @@ const componentStyles = StyleSheet.create({
     searchBarContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor
     }
-
 });
 
 const mapStateToProps = (state) => {
