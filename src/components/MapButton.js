@@ -13,23 +13,25 @@ export default class MapButton extends Component {
     static propTypes = {
         direction: PropTypes.oneOf(['rtl', 'ltr']),
         searchCriteria: PropTypes.string,
+        serviceTypes: PropTypes.array,
         ...Component.propTypes
     };
 
     onClick() {
         const {navigator} = this.context;
-        navigator.to('map', null, {searchCriteria: this.props.searchCriteria});
+        navigator.to('map', null, {searchCriteria: this.props.searchCriteria, serviceTypes: this.props.serviceTypes});
     }
 
     render() {
         const {direction} = this.props;
         return (
             <TouchableHighlight
-                onPress={() => this.onClick() }
+                onPress={() => this.onClick()}
                 underlayColor="white"
                 style={[{
                     position: 'absolute',
-                    bottom: 20},
+                    bottom: 20
+                },
                     direction == 'rtl' ? {left: 20} : {right: 20}
                 ]}
             >

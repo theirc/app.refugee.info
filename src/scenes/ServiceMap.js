@@ -6,24 +6,31 @@ import {
     AsyncStorage,
     Image,
     Text,
-    Dimensions
+    Dimensions,
+    Platform
 } from 'react-native';
 import MapView from 'react-native-maps';
-import styles, {themes,
+import styles, {
+    themes,
     getIconComponent,
     getIconName,
 } from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
-import {MapPopup, Button} from '../components';
+import {
+    MapPopup,
+    Button,
+    SearchBar,
+    SearchFilterButton,
+    SelectableListItem
+} from '../components';
 import {Regions, Services} from '../data';
 
 var _ = require('underscore');
 var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
-const RADIUS = 0.01;
 
 class ServiceMap extends Component {
 
@@ -52,7 +59,6 @@ class ServiceMap extends Component {
         };
     }
 
-    timeout = null;
     markers = [];
 
     constructor(props) {
@@ -64,13 +70,12 @@ class ServiceMap extends Component {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1.id !== row2.id
                 }),
-                loaded: false,
-                iconsLoaded: false,
                 markers: [],
                 offline: false,
                 refreshing: false,
-                mapMoved: false,
-                lastSync: null
+                filteringView: false,
+                searchCriteria: '',
+                initialEnvelope: null
             };
         }
         this.icons = {};
@@ -78,12 +83,15 @@ class ServiceMap extends Component {
     }
 
     componentDidMount() {
-        const {region, searchCriteria} = this.props;
+        const {region, searchCriteria, serviceTypes} = this.props;
         let currentEnvelope = ServiceMap.getInitialRegion(region);
-        this.setState({ intialEnvelope: currentEnvelope });
-        if (!this.state.loaded) {
-            this.fetchData(currentEnvelope, searchCriteria).done();
-        }
+        this.setState({
+            initialEnvelope: currentEnvelope,
+            searchCriteria: searchCriteria,
+            serviceTypes: serviceTypes
+        }, () => {
+            this.fetchData(currentEnvelope).done();
+        });
     }
 
     onCalloutPress(marker) {
@@ -95,65 +103,39 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, { service, location, serviceType }, this.state);
+        navigator.forward(null, null, {service, location, serviceType}, this.state);
     }
 
-    onRegionChange(region) {
-        if (this.state.loaded) {
-
-            this.setState({
-                envelope: region,
-                mapMoved: true,
-            });
-        }
-        if (this.timeout) {
-            // clearTimeout(this.timeout);
-        }
-        setTimeout(() => {
-            // this.timeout = this.fetchData(region).done();
-        }, 200);
-    }
-
-    onLoadEnd(iconUrl) {
-        //TODO Find better way to make sure that images are rendered in marker.
-        this.icons[iconUrl] = true;
-        if (Object.values(this.icons).filter((x) => !x).length === 0 && !this.state.iconsLoaded) {
-            this.setState({
-                iconsLoaded: true
-            });
-        }
-    }
-
-
-    async fetchData(envelope = {}, criteria = "") {
-        // the region comes from the state now
+    async fetchData(envelope = {}) {
         const {region, theme} = this.props;
-        const regionData = new Regions(this.props);
+        const criteria = this.state.searchCriteria;
         const serviceData = new Services(this.props);
-
 
         let currentEnvelope = envelope;
         if (!region) {
-            this.setState({
-                loaded: true
-            });
             return;
         }
-
         try {
-            let serviceTypes = await serviceData.listServiceTypes();
+            let serviceTypes = null;
+            if (this.state.serviceTypes) {
+                serviceTypes = this.state.serviceTypes
+            } else {
+                serviceTypes = await serviceData.listServiceTypes();
+                for (let i = 0; i < serviceTypes.length; i++) {
+                    serviceTypes[i].active = false
+                }
+            }
+            let types = this.getServiceTypeNumbers(serviceTypes);
             let serviceResult = await serviceData.pageServices(
                 region.slug,
                 currentEnvelope,
                 criteria,
                 1,
-                50
+                50,
+                types
             );
-            let newServices = serviceResult.results;
-            let services = (this.state.services || []).concat(newServices);
-
+            let services = serviceResult.results;
             services = _.uniq(services, false, (s) => s.id);
-
             let markers = services.map(service => {
                 let serviceType = serviceTypes.find(function (type) {
                     return type.url == service.type;
@@ -191,13 +173,13 @@ class ServiceMap extends Component {
                                     justifyContent: 'center',
                                 },
                             ]}
-                            />
+                        />
                     </View>);
                 } else {
                     widget = (<Image
-                        source={{ uri: serviceType.icon_url }}
+                        source={{uri: serviceType.icon_url}}
                         style={styles.mapIcon}
-                        />);
+                    />);
                 }
 
                 return {
@@ -210,35 +192,107 @@ class ServiceMap extends Component {
                 };
             });
             this.setState({
-                loaded: true,
-                mapMoved: false,
                 serviceTypes,
                 locations: [region],
                 searchCriteria: criteria,
                 markers,
                 region,
-                services
+                services,
+                serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
+                offline: false
             });
         } catch (e) {
             console.log(e);
-
             this.setState({
                 offline: true
             });
         }
     }
 
+    toggleServiceType(type) {
+        let serviceTypes = this.state.serviceTypes;
+        let index = serviceTypes.findIndex((obj) => {
+            return obj.number === type.number
+        });
+        serviceTypes[index].active = !serviceTypes[index].active;
+        this.setState({
+            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
+        })
+    }
+
+    renderServiceTypeRow(type) {
+        return (
+            <SelectableListItem
+                text={type.name}
+                fontSize={13}
+                onPress={this.toggleServiceType.bind(this, type)}
+                selected={type.active}
+            />
+        );
+    }
+
+    filterByText(event) {
+        if (this.state.region) {
+            this.setState({
+                searchCriteria: event.nativeEvent.text,
+                filteringView: false
+            }, () => {
+                this.fetchData(this.state.initialEnvelope).done()
+            });
+        }
+    }
+
+    searchFilterButtonAction() {
+        if (this.state.region) {
+            this.setState({
+                filteringView: !this.state.filteringView
+            })
+        }
+    }
+
+    clearFilters() {
+        let serviceTypes = this.state.serviceTypes;
+        for (let i = 0; i < serviceTypes.length; i++) {
+            serviceTypes[i].active = false;
+        }
+        this.setState({
+            serviceTypes: serviceTypes,
+            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
+        }, () => {
+            this.fetchData(this.state.initialEnvelope).done()
+        });
+    }
+
+    getServiceTypeNumbers(serviceTypes) {
+        let types = [];
+        for (let i = 0; i < serviceTypes.length; i++) {
+            if (serviceTypes[i].active) {
+                types.push(serviceTypes[i].number)
+            }
+        }
+        return types.join()
+    }
+
+    filterByTypes() {
+        this.fetchData(this.state.initialEnvelope).then(() =>
+            this.setState({
+                filteringView: false
+            })
+        )
+    }
+
     render() {
         const {theme} = this.props;
+        let {filteringView} = this.state;
+
         this.markers = this.state.markers.map(() => null);
         return (
             <View style={styles.container}>
                 <MapView
-                    initialRegion={this.state.intialEnvelope}
+                    initialRegion={this.state.initialEnvelope}
                     style={styles.flex}
-                    onRegionChange={(e) => this.onRegionChange(e) }
                     showsUserLocation={true}
-                    >
+                >
                     {this.state.markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
@@ -250,48 +304,100 @@ class ServiceMap extends Component {
                             ref={(r) => this.markers[i] = r}
                             onCalloutPress={() => this.onCalloutPress(marker) }
                             title={marker.title}
-                            >
+                        >
                             <View>
                                 {marker.widget}
                             </View>
-                            <MapView.Callout tooltip={true} style={[{ width: width - 50 }]}>
-                                <MapPopup marker={marker} />
+                            <MapView.Callout tooltip={true} style={[{
+                                width: width - 50,
+                                shadowColor: 'black',
+                                shadowOffset: {width: 0, height: 1},
+                                shadowOpacity: 0.4,
+                                shadowRadius: 1,
+                                elevation: 2
+                            }]}>
+                                <MapPopup marker={marker}/>
                             </MapView.Callout>
                         </MapView.Marker>
-                    )) }
+                    ))}
                 </MapView>
-                {this.state.mapMoved &&
-                    <View style={[localStyles.refreshButton, { backgroundColor: themes[theme].backgroundColor }]}>
-                        <Button
-                            color="green"
-                            icon="md-refresh"
-                            text={I18n.t('RELOAD_MAP') }
-                            onPress={() => this.fetchData(this.state.currentEnvelope) }
-                            style={{ flex: 1, margin: 0 }}
-                            buttonStyle={{ height: 40, flex: 1 }}
+                <View
+                    style={[
+                        styles.row, {
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            height: 46,
+                            width: width
+                        }
+                    ]}
+                >
+                    <SearchBar
+                        theme={theme}
+                        floating={!filteringView}
+                        initialSearchText={this.props.searchCriteria}
+                        searchFunction={(text) => this.filterByText(text)}
+                    />
+                    <SearchFilterButton
+                        theme={theme}
+                        floating={!filteringView}
+                        onPressAction={() => this.searchFilterButtonAction()}
+                        active={filteringView}
+                    />
+                </View>
+                {filteringView && (
+                    <View
+                        style={[
+                            theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight, {
+                                flex: 1,
+                                position: 'absolute',
+                                top: 46,
+                                left: 0,
+                                width: width,
+                                height: (height > 500) ? height - 46 - 140 : height - 46 - 110
+                            }
+                        ]}
+                    >
+                        <View
+                            style={[
+                                styles.searchBarContainer,
+                                theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
+                            ]}
+                        >
+                            <Button
+                                color="green"
+                                icon="md-close"
+                                text={I18n.t('CLEAR_FILTERS').toUpperCase()}
+                                style={{flex: 1, marginRight: 2, marginBottom: 0}}
+                                onPress={this.clearFilters.bind(this)}
+                                buttonStyle={{height: 33}}
+                                textStyle={{fontSize: 12}}
+                                iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
                             />
+                            <Button
+                                color="green"
+                                icon="md-funnel"
+                                text={I18n.t('FILTER_SERVICES').toUpperCase()}
+                                style={{flex: 1, marginLeft: 2, marginBottom: 0}}
+                                onPress={this.filterByTypes.bind(this)}
+                                buttonStyle={{height: 33}}
+                                textStyle={{fontSize: 12}}
+                            />
+                        </View>
+                        <ListView
+                            dataSource={this.state.serviceTypeDataSource}
+                            renderRow={(type) => this.renderServiceTypeRow(type)}
+                            keyboardShouldPersistTaps={true}
+                            keyboardDismissMode="on-drag"
+                            direction={this.props.direction}
+                        />
                     </View>
-                }
+                )}
             </View>
-        )
-    }
+        );
 
+    }
 }
-
-const localStyles = StyleSheet.create({
-    refreshButton: {
-        position: 'absolute',
-        flexDirection: 'row',
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 5,
-        bottom: 10,
-        width: width - 20,
-        height: 50,
-        margin: 10
-    }
-});
 
 const mapStateToProps = (state) => {
     return {

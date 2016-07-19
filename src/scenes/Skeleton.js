@@ -1,5 +1,13 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text, AppState} from 'react-native';
+import {
+    AsyncStorage,
+    Image,
+    StyleSheet,
+    View,
+    Text,
+    AppState,
+    UIManager
+} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import Welcome from './Welcome';
@@ -28,7 +36,7 @@ class Skeleton extends Component {
         this.state = {
             firstLoad: true,
             storageLoaded: false,
-        }
+        };
         this.presenceData = new Presence(props, props.context);
     }
 
@@ -38,6 +46,7 @@ class Skeleton extends Component {
         });
 
         this.askForPermissions();
+        UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     }
 
     componentDidMount() {
@@ -88,7 +97,7 @@ class Skeleton extends Component {
                     setTimeout(monitor, MONITOR_TIME_OUT);
                 }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
             );
-        }
+        };
         monitor();
     }
 

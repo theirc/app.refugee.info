@@ -104,7 +104,6 @@ export default class ServiceList extends Component {
     }
 
     async fetchData() {
-        // the region comes from the state now
         const {region} = this.props;
         const criteria = this.state.searchCriteria;
         if (!region) {
@@ -317,11 +316,12 @@ export default class ServiceList extends Component {
         );
     }
 
-    _onChangeText(text) {
+    filterByText(event) {
         if (this.state.region) {
             this.setState({
-                searchCriteria: text
-            }, () => {this.fetchData().done()});
+                searchCriteria: event.nativeEvent.text,
+                filteringView: false
+            }, () => {this.fetchData().done()})
         }
     }
 
@@ -379,7 +379,9 @@ export default class ServiceList extends Component {
         this.setState({
             serviceTypes: serviceTypes,
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
-        }, () => {this.fetchData().done()});
+        }, () => {
+            this.fetchData().done()
+        });
     }
 
     getServiceTypeNumbers(serviceTypes) {
@@ -403,8 +405,7 @@ export default class ServiceList extends Component {
     render() {
         const {theme, language} = this.props;
         const {region, filteringView} = this.state;
-        const viewContent = (!filteringView)
-            ? (
+        const viewContent = (!filteringView) ? (
             <ListView
                 refreshControl={
                     <RefreshControl
@@ -412,6 +413,7 @@ export default class ServiceList extends Component {
                         onRefresh={this.onRefresh.bind(this) }
                     />
                 }
+                enableEmptySections={true}
                 dataSource={this.state.dataSource}
                 renderRow={(service) => this.renderRow(service)}
                 renderScrollComponent={props => <InfiniteScrollView {...props} />}
@@ -425,10 +427,11 @@ export default class ServiceList extends Component {
             />
         ) : (
             <View>
-                <View style={[
-                    componentStyles.searchBarContainer,
-                    theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
-                ]}
+                <View
+                    style={[
+                        styles.searchBarContainer,
+                        theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
+                    ]}
                 >
                     <Button
                         color="green"
@@ -451,6 +454,7 @@ export default class ServiceList extends Component {
                     />
                 </View>
                 <ListView
+                    enableEmptySections={true}
                     dataSource={this.state.serviceTypeDataSource}
                     renderRow={(type) => this.renderServiceTypeRow(type)}
                     keyboardShouldPersistTaps={true}
@@ -465,7 +469,8 @@ export default class ServiceList extends Component {
                 <View style={styles.row}>
                     <SearchBar
                         theme={theme}
-                        searchFunction={(text) => this._onChangeText(text) }
+                        searchText={this.state.searchCriteria}
+                        searchFunction={(event) => this.filterByText(event)}
                     />
                     <SearchFilterButton
                         theme={theme}
@@ -505,27 +510,13 @@ export default class ServiceList extends Component {
                 <MapButton
                     direction={this.props.direction}
                     searchCriteria={this.state.searchCriteria}
+                    serviceTypes={this.state.serviceTypes}
                 />
                 }
             </View>
         );
     }
 }
-
-const componentStyles = StyleSheet.create({
-    searchBarContainer: {
-        padding: 5,
-        paddingTop: 0,
-        height: 38,
-        flexDirection: 'row'
-    },
-    searchBarContainerLight: {
-        backgroundColor: themes.light.dividerColor
-    },
-    searchBarContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
-    }
-});
 
 const mapStateToProps = (state) => {
     return {

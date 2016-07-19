@@ -101,7 +101,8 @@ const componentStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         shadowOpacity: 0.4,
-        shadowRadius: 1
+        shadowRadius: 1,
+        elevation: 2
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
