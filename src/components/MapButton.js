@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {StyleSheet, TouchableHighlight, View} from 'react-native';
+import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import styles, {themes} from '../styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -25,9 +25,9 @@ export default class MapButton extends Component {
     render() {
         const {direction} = this.props;
         return (
-            <TouchableHighlight
+            <TouchableOpacity
                 onPress={() => this.onClick()}
-                underlayColor="white"
+                activeOpacity={0.8}
                 style={[{
                     position: 'absolute',
                     bottom: 20
@@ -43,7 +43,7 @@ export default class MapButton extends Component {
                         style={componentStyles.mapButtomIcon}
                     />
                 </View>
-            </TouchableHighlight>
+            </TouchableOpacity>
         );
     }
 }

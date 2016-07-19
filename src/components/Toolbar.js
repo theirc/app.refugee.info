@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions} from 'react-native';
+import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions, LayoutAnimation} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getRowOrdering, themes} from '../styles';
@@ -101,7 +101,8 @@ export default class Toolbar extends Component {
             <View
                 style={[
                     componentStyles.toolbarContainer,
-                    theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight
+                    theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
+                    (navigator && navigator.currentRoute && navigator.currentRoute.path == 'map') && {height: 80}
                 ]}
             >
                 <View style={componentStyles.toolbarTop}>
