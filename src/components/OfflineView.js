@@ -38,14 +38,6 @@ export default class OfflineView extends Component {
                         >
                             {I18n.t('OFFLINE_MODE')}
                         </Text>
-                        <Text style={[
-                                componentStyles.OfflineModeLastSync,
-                                getFontFamily(language),
-                                getTextColor(theme)
-                            ]}
-                        >
-                            {I18n.t('LAST_SYNC')}: {this.props.lastSync} {I18n.t('MINUTES_AGO')}
-                        </Text>
                     </View>
                     <View style={componentStyles.offlineModeButtonContainer}>
                         <Button

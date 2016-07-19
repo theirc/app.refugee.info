@@ -8,16 +8,17 @@ export default class SearchFilterButton extends Component {
 
     static propTypes = {
         theme: PropTypes.oneOf(['light', 'dark']),
+        active: PropTypes.bool,
         onPressAction: PropTypes.func
     };
 
     render() {
-        const {theme, onPressAction} = this.props;
+        const {theme, onPressAction, active} = this.props;
         return (
             <View
                 style={[
                     componentStyles.searchFilterButtonContainer,
-                    theme=='dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
+                    theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
                 ]}
             >
                 <TouchableHighlight
@@ -26,15 +27,21 @@ export default class SearchFilterButton extends Component {
                 >
                     <View
                         style={[
-                        componentStyles.searchFilterButton,
-                        theme=='dark' ? componentStyles.searchFilterButtonDark : componentStyles.searchFilterButtonLight
-                    ]}
+                            componentStyles.searchFilterButton,
+                            theme == 'dark'
+                                ? (active)
+                                    ? componentStyles.searchFilterButtonDarkActive
+                                    : componentStyles.searchFilterButtonDark
+                                : (active)
+                                ? componentStyles.searchFilterButtonLightActive
+                                : componentStyles.searchFilterButtonLight
+                        ]}
                     >
                         <Icon
-                            name="ios-options"
+                            name={active ? "md-funnel" : "ios-options"}
                             style={[
                                 componentStyles.searchFilterIcon,
-                                theme=='dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
+                                theme == 'dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
                             ]}
                         />
                     </View>
@@ -82,6 +89,12 @@ const componentStyles = StyleSheet.create({
     },
     searchFilterButtonDark: {
         backgroundColor: themes.dark.toolbarColor
+    },
+    searchFilterButtonLightActive: {
+        backgroundColor: themes.light.lighterDividerColor
+    },
+    searchFilterButtonDarkActive: {
+        backgroundColor: themes.dark.backgroundColor
     },
     searchFilterIcon: {
         fontSize: 28

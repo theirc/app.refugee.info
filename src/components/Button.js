@@ -18,6 +18,7 @@ export default class Button extends Component {
         style: PropTypes.object,
         textStyle: PropTypes.object,
         buttonStyle: PropTypes.object,
+        iconStyle: PropTypes.object,
         color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
         onPress: PropTypes.func
     };
@@ -37,7 +38,7 @@ export default class Button extends Component {
     }
 
     render() {
-        const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle} = this.props;
+        const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
 
         const Icon = getIconComponent(iconName);
         let iconName = getIconName(icon);
@@ -51,7 +52,8 @@ export default class Button extends Component {
                     name={iconName}
                     style={[
                         this.getButtonTextColor(color),
-                        componentStyles.buttonIcon
+                        componentStyles.buttonIcon,
+                        iconStyle
                     ]}
                 />
             </View>;

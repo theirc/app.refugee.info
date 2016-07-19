@@ -78,7 +78,7 @@ export default class LocationListView extends Component {
                 <View style={styles.container}>
                     <ListView
                         dataSource={this.dataSource.cloneWithRows(this.props.rows)}
-                        enableEmptySections
+                        enableEmptySections={true}
                         renderHeader={() => this.renderHeader(custom_header_text)}
                         renderRow={(rowData) => !custom_header_text ? this.renderRow(rowData) : null}
                     />
