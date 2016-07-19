@@ -9,15 +9,19 @@ export default class SearchBar extends Component {
 
     static propTypes = {
         theme: PropTypes.oneOf(['light', 'dark']),
-        searchFunction: PropTypes.func
+        searchFunction: PropTypes.func,
+        floating: PropTypes.bool,
+        initialSearchText: PropTypes.string
     };
 
     render() {
-        const {theme, searchFunction, language} = this.props;
+        const {theme, searchFunction, language, floating} = this.props;
         return (
             <View style={[
                     componentStyles.searchBarContainer,
-                    theme=='dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
+                    floating
+                        ? {}
+                        : theme=='dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
                 ]}
             >
                 <View
@@ -45,11 +49,13 @@ export default class SearchBar extends Component {
                         returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        onChangeText={searchFunction}
+                        onSubmitEditing={searchFunction}
                         placeholderTextColor={
                             theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor
                         }
                         underlineColorAndroid='transparent'
+                        defaultValue={this.props.initialSearchText}
+                        clearButtonMode="always"
                     />
                 </View>
             </View>
@@ -83,6 +89,7 @@ const componentStyles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
         shadowRadius: 1,
+        elevation : 2,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

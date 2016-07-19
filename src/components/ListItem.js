@@ -43,41 +43,39 @@ export default class ListItem extends Component {
         const Icon = getIconComponent(iconName);
         iconName = getIconName(iconName);
 
-        const button_icon = (image)
-            ? <Image
+        const button_icon = (image) ? (
+            <Image
                 source={image}
                 style={[
                     componentStyles.listItemImageInline,
                     {width: iconSize || 24, height: iconSize || 24}
                 ]}
-            />
-            : (iconName)
-                ? <Icon
-                    name={iconName || defaultIcon }
-                    style={[
-                        componentStyles.listItemIcon,
-                        {fontSize: iconSize || 24},
-                        iconColor && { color: iconColor }
-                    ]}
-                />
-                : null;
+            />) : (iconName) ? (
+            <Icon
+                name={iconName || defaultIcon }
+                style={[
+                    componentStyles.listItemIcon,
+                    {fontSize: iconSize || 24},
+                    iconColor && {color: iconColor}
+                ]}
+            />) : null;
         if (centered) {
             const imageElement = (image &&
             <Image
                 source={image}
                 style={[
-                    (direction=='rtl')
+                    (direction == 'rtl')
                         ? componentStyles.listItemImageAbsoluteRTL
                         : componentStyles.listItemImageAbsolute
                 ]}
             />);
-            const imageDivider = (image &&
-            <View
-                style={[
-                    componentStyles.dividerAbsolute,
-                    getDividerColor(theme)
-                ]}
-            />);
+            const imageDivider = (image && (
+                <View
+                    style={[
+                        componentStyles.dividerAbsolute,
+                        getDividerColor(theme)
+                    ]}
+                />));
 
             return (
                 <TouchableHighlight
@@ -136,13 +134,13 @@ export default class ListItem extends Component {
                             componentStyles.listItemTextContainer,
                             getAlignItems(direction),
                             getBottomDividerColor(theme),
-                            { borderBottomWidth: 1 }
+                            {borderBottomWidth: 1}
                         ]}>
                             <Text style={[
                                 componentStyles.listItemText,
                                 getTextColor(theme),
                                 getFontFamily(language),
-                                { fontSize } && { fontSize: fontSize }
+                                {fontSize} && {fontSize: fontSize}
                             ]}>
                                 {text}
                             </Text>

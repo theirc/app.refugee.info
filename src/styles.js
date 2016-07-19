@@ -91,6 +91,14 @@ const styles = StyleSheet.create({
         width: 1,
         height: 46
     },
+
+    searchBarContainer: {
+        padding: 5,
+        paddingTop: 0,
+        height: 38,
+        flexDirection: 'row'
+    },
+
     // generic background colors
 
     containerLight: {
@@ -100,6 +108,13 @@ const styles = StyleSheet.create({
     containerDark: {
         borderBottomColor: themes.dark.darkerDividerColor,
         backgroundColor: themes.dark.backgroundColor
+    },
+
+    searchBarContainerLight: {
+        backgroundColor: themes.light.dividerColor
+    },
+    searchBarContainerDark: {
+        backgroundColor: themes.dark.menuBackgroundColor
     },
 
     // generic divider colors

@@ -9,16 +9,19 @@ export default class SearchFilterButton extends Component {
     static propTypes = {
         theme: PropTypes.oneOf(['light', 'dark']),
         active: PropTypes.bool,
-        onPressAction: PropTypes.func
+        onPressAction: PropTypes.func,
+        floating: PropTypes.bool
     };
 
     render() {
-        const {theme, onPressAction, active} = this.props;
+        const {theme, onPressAction, active, floating} = this.props;
         return (
             <View
                 style={[
                     componentStyles.searchFilterButtonContainer,
-                    theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
+                    floating
+                    ? {}
+                    : theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
                 ]}
             >
                 <TouchableHighlight
@@ -80,6 +83,7 @@ const componentStyles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
         shadowRadius: 1,
+        elevation: 2,
         height: 36,
         alignItems: 'center',
         justifyContent: 'center'
