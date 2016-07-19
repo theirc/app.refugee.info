@@ -7,7 +7,8 @@ import {
     Image,
     Text,
     Dimensions,
-    Platform
+    Platform,
+    LayoutAnimation
 } from 'react-native';
 import MapView from 'react-native-maps';
 import styles, {
@@ -23,7 +24,8 @@ import {
     Button,
     SearchBar,
     SearchFilterButton,
-    SelectableListItem
+    SelectableListItem,
+    LoadingOverlay
 } from '../components';
 import {Regions, Services} from '../data';
 
@@ -75,11 +77,15 @@ class ServiceMap extends Component {
                 refreshing: false,
                 filteringView: false,
                 searchCriteria: '',
-                initialEnvelope: null
+                initialEnvelope: null,
+                loading: false
             };
         }
         this.icons = {};
         this.serviceCommons = new ServiceCommons();
+    }
+    componentWillUpdate() {
+        LayoutAnimation.easeInEaseOut();
     }
 
     componentDidMount() {
@@ -107,6 +113,9 @@ class ServiceMap extends Component {
     }
 
     async fetchData(envelope = {}) {
+        this.setState({
+            loading: true
+        });
         const {region, theme} = this.props;
         const criteria = this.state.searchCriteria;
         const serviceData = new Services(this.props);
@@ -148,33 +157,32 @@ class ServiceMap extends Component {
                     const Icon = getIconComponent(iconName);
                     iconName = getIconName(iconName);
 
-                    widget = (<View
-                        style={[{
-                            flex: 1,
-                            flexDirection: 'row',
-                            paddingLeft: 2,
-                            width: 36,
-                            height: 36,
-                            backgroundColor: themes.light.greenAccentColor,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderColor: themes[theme].backgroundColor,
-                            borderRadius: 10,
-                        },
-                        ]}>
-                        <Icon
-                            name={iconName}
-                            style={[
-                                {
+                    widget = (
+                        <View
+                            style={{
+                                flex: 1,
+                                flexDirection: 'row',
+                                paddingLeft: 2,
+                                width: 36,
+                                height: 36,
+                                backgroundColor: themes.light.greenAccentColor,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderColor: themes[theme].backgroundColor,
+                                borderRadius: 10,
+                            }}
+                        >
+                            <Icon
+                                name={iconName}
+                                style={{
                                     fontSize: 24,
                                     color: themes.dark.textColor,
                                     textAlign: 'center',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                },
-                            ]}
-                        />
-                    </View>);
+                                }}
+                            />
+                        </View>);
                 } else {
                     widget = (<Image
                         source={{uri: serviceType.icon_url}}
@@ -199,12 +207,14 @@ class ServiceMap extends Component {
                 region,
                 services,
                 serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
-                offline: false
+                offline: false,
+                loading: false
             });
         } catch (e) {
             console.log(e);
             this.setState({
-                offline: true
+                offline: true,
+                loading: false
             });
         }
     }
@@ -283,7 +293,7 @@ class ServiceMap extends Component {
 
     render() {
         const {theme} = this.props;
-        let {filteringView} = this.state;
+        let {filteringView, loading} = this.state;
 
         this.markers = this.state.markers.map(() => null);
         return (
@@ -309,12 +319,7 @@ class ServiceMap extends Component {
                                 {marker.widget}
                             </View>
                             <MapView.Callout tooltip={true} style={[{
-                                width: width - 50,
-                                shadowColor: 'black',
-                                shadowOffset: {width: 0, height: 1},
-                                shadowOpacity: 0.4,
-                                shadowRadius: 1,
-                                elevation: 2
+                                width: width - 50
                             }]}>
                                 <MapPopup marker={marker}/>
                             </MapView.Callout>
@@ -354,7 +359,7 @@ class ServiceMap extends Component {
                                 top: 46,
                                 left: 0,
                                 width: width,
-                                height: (height > 500) ? height - 46 - 140 : height - 46 - 110
+                                height: height - 46 - 80
                             }
                         ]}
                     >
@@ -393,6 +398,7 @@ class ServiceMap extends Component {
                         />
                     </View>
                 )}
+                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width} />}
             </View>
         );
 

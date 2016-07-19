@@ -10,12 +10,20 @@ import {
     TextInput,
     Image,
     LayoutAnimation,
-    Platform
+    Platform,
+    Dimensions
 } from 'react-native';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
-import {OfflineView, SearchBar, SearchFilterButton, SelectableListItem, Button} from '../components';
+import {
+    OfflineView,
+    SearchBar,
+    SearchFilterButton,
+    SelectableListItem,
+    Button,
+    LoadingOverlay
+} from '../components';
 import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
@@ -39,6 +47,7 @@ var FontAwesome = require('react-native-vector-icons/FontAwesome');
 var HumanitarianIcon = require('../components/HumanitarianIcon');
 
 var _ = require('underscore');
+var {width, height} = Dimensions.get('window');
 
 export default class ServiceList extends Component {
 
@@ -68,6 +77,7 @@ export default class ServiceList extends Component {
                 pageNumber: 1,
                 filteringView: false,
                 searchCriteria: '',
+                loading: false
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -99,11 +109,14 @@ export default class ServiceList extends Component {
                         longitude: 0
                     }
                 });
-            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
+            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 100000}
         );
     }
 
     async fetchData() {
+        this.setState({
+            loading: true
+        });
         const {region} = this.props;
         const criteria = this.state.searchCriteria;
         if (!region) {
@@ -148,12 +161,14 @@ export default class ServiceList extends Component {
                 services,
                 canLoadMoreContent: (!!serviceResult.next),
                 pageNumber: 1,
-                offline: false
+                offline: false,
+                loading: false
             });
         } catch (e) {
             console.log(e);
             this.setState({
-                offline: true
+                offline: true,
+                loading: false
             });
         }
     }
@@ -404,7 +419,7 @@ export default class ServiceList extends Component {
 
     render() {
         const {theme, language} = this.props;
-        const {region, filteringView} = this.state;
+        const {region, filteringView, loading} = this.state;
         const viewContent = (!filteringView) ? (
             <ListView
                 refreshControl={
@@ -506,13 +521,13 @@ export default class ServiceList extends Component {
                     lastSync={this.state.lastSync}
                 />
                 {viewContent}
-                {!filteringView &&
+                {!filteringView && (
                 <MapButton
                     direction={this.props.direction}
                     searchCriteria={this.state.searchCriteria}
                     serviceTypes={this.state.serviceTypes}
-                />
-                }
+                />)}
+                {loading && <LoadingOverlay theme={theme} height={height - 140} width={width} />}
             </View>
         );
     }

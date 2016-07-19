@@ -38,7 +38,7 @@ export default {
     },
 
     map: {
-        title: () => I18n.t('SERVICES'),
+        title: () => '',
         component: require('./scenes/ServiceMap').default,
 
         children: {
