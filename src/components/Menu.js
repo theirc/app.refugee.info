@@ -9,11 +9,12 @@ import {
 } from 'react-native';
 import DirectionalText from './DirectionalText'
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {
     getFontFamily,
     getUnderlayColor,
     getRowOrdering,
+    getIconComponent,
+    getIconName,
     themes
 } from '../styles'
 
@@ -67,7 +68,7 @@ class MenuItem extends Component {
         const {styles, direction, language, theme} = this.state;
         const item = this.props;
         let {badge} = this.props;
-        if(!badge) {
+        if (!badge) {
             badge = false;
         }
         const fontStyle = {...styles.itemText, ...getFontFamily(language) };
@@ -86,6 +87,26 @@ class MenuItem extends Component {
 
             return true;
         };
+        let widget = null;
+        if (item.icon) {
+            let iconName = getIconName(item.icon);
+            let Icon = getIconComponent(item.icon);
+
+            widget = (<Icon
+                name={iconName}
+                size={22}
+                style={styles.icon}
+                color={styles.itemText.color || '#000000'}
+                />);
+        } else if (item.image) {
+            widget = (<Image
+                source={item.image}
+                style={[
+                    styles.image,
+                ]}
+                />);
+        }
+
         return (
             <TouchableHighlight
                 underlayColor={getUnderlayColor(theme) }
@@ -96,28 +117,13 @@ class MenuItem extends Component {
                     flexDirection: 'column'
                 }}
                 >
-                <View style={[styles.itemLine, direction==='rtl' ? {paddingRight: 15} : {}]}>
+                <View style={[styles.itemLine, direction === 'rtl' ? { paddingRight: 15 } : {}]}>
                     <View style={[
                         styles.item,
                         getRowOrdering(direction)
                     ]}
                         >
-                        {item.icon &&
-                            <Icon
-                                name={item.icon}
-                                size={22}
-                                style={styles.icon}
-                                color={styles.itemText.color || '#000000'}
-                                />
-                        }
-                        {item.image &&
-                            <Image
-                                source={item.image}
-                                style={[
-                                    styles.image,
-                                ]}
-                                />
-                        }
+                        {widget}
                         <View style={[
                             direction == 'rtl' ? styles.labelRTL : styles.label
                         ]}>
@@ -185,7 +191,7 @@ class MenuSection extends Component {
 
         return (
             <View style={styles.headerWrapper}>
-                {title && <View style={[styles.header, direction==='rtl' ? {paddingRight: 20} : {}]}>
+                {title && <View style={[styles.header, direction === 'rtl' ? { paddingRight: 20 } : {}]}>
                     <DirectionalText {...this.props} style={[fontStyle]} direction={direction}>{title}</DirectionalText>
                 </View>}
                 {children}
@@ -225,8 +231,8 @@ const sharedStyles = {
     },
     icon: {
         width: 21,
-        marginRight: 5,
-        marginLeft: 5
+        textAlign: 'center',
+        fontSize: 20,
     },
     badge: {
         marginHorizontal: 10,
@@ -269,24 +275,24 @@ const darkStyleDefaults = {
         borderBottomColor: themes.dark.darkerDividerColor,
         ...sharedStyles.header
     },
-    itemActive: {
-        backgroundColor: '#202020',
+itemActive: {
+    backgroundColor: '#202020',
         borderBottomColor: "#1c1c1c",
+            borderBottomWidth: 1
+},
+itemLine: {
+    borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
-    },
-    itemLine: {
-        borderBottomColor: "#1c1c1c",
-        borderBottomWidth: 1
-    },
-    itemText: {
-        fontSize: 14,
+},
+itemText: {
+    fontSize: 14,
         color: themes.dark.textColor,
-        marginHorizontal: 10,
+            marginHorizontal: 10,
     },
-    text: {
-        color: themes.dark.greenAccentColor,
+text: {
+    color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-        fontSize: 14,
+            fontSize: 14,
     },
 };
 

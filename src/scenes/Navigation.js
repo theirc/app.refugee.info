@@ -81,7 +81,7 @@ class Navigation extends Component {
 
             return (
                 <MenuItem
-                    image={this._getImportantInformationImage(theme, i.pageTitle) }
+                    icon={i.icon}
                     key={index}
                     onPress={() => this._defaultOrFirst(i, true) }
                 >
@@ -173,30 +173,21 @@ class Navigation extends Component {
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/information-dark.png') :
-                        require('../assets/icons/information-light.png')
-                    }
+                    icon="fa-info"
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
                 >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/services-dark.png') :
-                        require('../assets/icons/services-light.png')
-                    }
+                    icon="fa-list"
                     active={route === 'services'}
                     onPress={() => s('services') }
                 >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/map-dark.png') :
-                        require('../assets/icons/map-light.png')
-                    }
+                    icon="fa-map"
                     active={route === 'map'}
                     onPress={() => s('map') }
                 >
@@ -218,40 +209,28 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/settings-dark.png') :
-                        require('../assets/icons/settings-light.png')
-                    }
+                    icon="fa-gear"
                     active={route === 'settings'}
                     onPress={() => s('settings') }
                 >
                     {I18n.t('SETTINGS') }
                 </MenuItem>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/about-dark.png') :
-                        require('../assets/icons/about-light.png')
-                    }
+                    icon="ion-ios-help"
                     active={route === 'about'}
                     onPress={() => s('about') }
                 >
                     {I18n.t('ABOUT') }
                 </MenuItem>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/contact-dark.png') :
-                        require('../assets/icons/contact-light.png')
-                    }
+                    icon="fa-envelope"
                     active={route === 'contact'}
                     onPress={() => s('contact') }
                 >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
-                    image={theme == 'dark' ?
-                        require('../assets/icons/give-feedback-dark.png') :
-                        require('../assets/icons/give-feedback-light.png')
-                    }
+                    icon="fa-comment"
                     active={route === 'settings'}
                     onPress={() => s('settings') }>
                     {I18n.t('FEEDBACK') }
