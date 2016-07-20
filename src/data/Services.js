@@ -16,7 +16,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 import Translation from '../utils/Translation';
 
 export default class Services extends Component {

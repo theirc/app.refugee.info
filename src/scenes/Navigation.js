@@ -9,7 +9,7 @@ import {updateRegionIntoStorage} from '../actions/region';
 import {updateCountryIntoStorage} from '../actions/country';
 import store from '../store';
 import {Regions} from '../data';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 import styles, {getFontFamily, getRowOrdering, themes} from '../styles'
 
 class Navigation extends Component {
@@ -216,7 +216,7 @@ class Navigation extends Component {
                     {I18n.t('SETTINGS') }
                 </MenuItem>
                 <MenuItem
-                    icon="ion-ios-help"
+                    icon="fa-question"
                     active={route === 'about'}
                     onPress={() => s('about') }
                 >

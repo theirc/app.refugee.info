@@ -3,13 +3,12 @@ import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions, LayoutAnima
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getRowOrdering, themes} from '../styles';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {DirectionalText} from '../components';
 import {
     theme,
-    getIconComponent,
-    getIconName,
 } from '../styles';
+
+import Icon from './Icon';
 
 export default class Toolbar extends Component {
 
@@ -40,9 +39,6 @@ export default class Toolbar extends Component {
         let iconName = (toolbarTitleIcon || '').trim();
         let titleIcon = null;
         if (iconName) {
-            const Icon = getIconComponent(iconName);
-            iconName = getIconName(iconName);
-
             titleIcon = (<View
                 style={[componentStyles.titleIcon, {
                     padding: 2,

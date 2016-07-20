@@ -25,7 +25,6 @@ import {
     LoadingOverlay
 } from '../components';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
 import styles, {
@@ -37,14 +36,10 @@ import styles, {
     getTextColor,
     getContainerColor,
     getDividerColor,
-    getIconComponent,
-    getIconName,
 } from '../styles';
 
+import { Icon } from '../components'
 
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var FontAwesome = require('react-native-vector-icons/FontAwesome');
-var HumanitarianIcon = require('../components/HumanitarianIcon');
 
 var _ = require('underscore');
 var {width, height} = Dimensions.get('window');
@@ -109,7 +104,7 @@ export default class ServiceList extends Component {
                         longitude: 0
                     }
                 });
-            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 100000}
+            }, { enableHighAccuracy: false, timeout: 5000, maximumAge: 100000 }
         );
     }
 
@@ -141,7 +136,7 @@ export default class ServiceList extends Component {
             let types = this.getServiceTypeNumbers(serviceTypes);
             let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                {latitude, longitude},
+                { latitude, longitude },
                 criteria,
                 1,
                 10,
@@ -174,9 +169,9 @@ export default class ServiceList extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData().then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
     }
 
@@ -199,9 +194,6 @@ export default class ServiceList extends Component {
         let iconName = (serviceType.vector_icon || '').trim();
         let widget = null;
         if (iconName) {
-            const Icon = getIconComponent(iconName);
-            iconName = getIconName(iconName);
-
             widget = (<View
                 style={[{
                     flex: 1,
@@ -227,33 +219,33 @@ export default class ServiceList extends Component {
                             justifyContent: 'center',
                         },
                     ]}
-                />
+                    />
             </View>);
         } else {
             widget = (<Image
-                source={{uri: serviceType.icon_url}}
+                source={{ uri: serviceType.icon_url }}
                 style={styles.mapIcon}
-            />);
+                />);
         }
 
 
         return (
             <TouchableHighlight
-                onPress={() => requestAnimationFrame(() => this.onClick({service, serviceType, location})) }
+                onPress={() => requestAnimationFrame(() => this.onClick({ service, serviceType, location })) }
                 underlayColor={getUnderlayColor(theme) }
-            >
+                >
                 <View
                     style={[
                         styles.listItemContainer,
                         getContainerColor(theme),
-                        {height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0}
+                        { height: 80, borderBottomWidth: 0, paddingBottom: 0, paddingTop: 0 }
                     ]}
-                >
+                    >
                     <View style={[
                         getRowOrdering(direction),
                         styles.flex
                     ]}
-                    >
+                        >
                         <View style={styles.listItemIconContainer}>
                             {widget}
                         </View>
@@ -265,25 +257,25 @@ export default class ServiceList extends Component {
                             styles.container,
                             getAlignItems(direction),
                             getContainerColor(theme),
-                            {borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20}
+                            { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
                         ]}>
                             <Text
                                 style={[
                                     getFontFamily(language),
                                     getTextColor(theme),
-                                    {fontSize: 15, paddingBottom: 2, fontWeight: '500'}
+                                    { fontSize: 15, paddingBottom: 2, fontWeight: '500' }
                                 ]}
-                            >
+                                >
                                 {service.name}
                             </Text>
-                            <View style={[styles.row, {paddingBottom: 2}]}>
+                            <View style={[styles.row, { paddingBottom: 2 }]}>
                                 <Icon
                                     name="ios-pin"
                                     style={[
-                                        {fontSize: 13, marginRight: 8},
-                                        {color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor}
+                                        { fontSize: 13, marginRight: 8 },
+                                        { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                                     ]}
-                                />
+                                    />
                                 <Text style={[
                                     getFontFamily(language), {
                                         color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
@@ -297,9 +289,9 @@ export default class ServiceList extends Component {
                                 style={[
                                     getFontFamily(language),
                                     getTextColor(theme),
-                                    {fontSize: 11, paddingBottom: 2, fontWeight: '500'}
+                                    { fontSize: 11, paddingBottom: 2, fontWeight: '500' }
                                 ]}
-                            >
+                                >
                                 {service.provider.name}
                             </Text>
                         </View>
@@ -325,9 +317,9 @@ export default class ServiceList extends Component {
             <SelectableListItem
                 text={type.name}
                 fontSize={13}
-                onPress={this.toggleServiceType.bind(this, type)}
+                onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
-            />
+                />
         );
     }
 
@@ -336,7 +328,7 @@ export default class ServiceList extends Component {
             this.setState({
                 searchCriteria: event.nativeEvent.text,
                 filteringView: false
-            }, () => {this.fetchData().done()})
+            }, () => { this.fetchData().done() })
         }
     }
 
@@ -359,7 +351,7 @@ export default class ServiceList extends Component {
             const {latitude, longitude} = (this.state.location || {});
             let serviceResult = await this.serviceData.pageServices(
                 region.slug,
-                {latitude, longitude},
+                { latitude, longitude },
                 searchCriteria,
                 pageNumber + 1,
                 10,
@@ -426,11 +418,11 @@ export default class ServiceList extends Component {
                     <RefreshControl
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh.bind(this) }
-                    />
+                        />
                 }
                 enableEmptySections={true}
                 dataSource={this.state.dataSource}
-                renderRow={(service) => this.renderRow(service)}
+                renderRow={(service) => this.renderRow(service) }
                 renderScrollComponent={props => <InfiniteScrollView {...props} />}
                 keyboardShouldPersistTaps={true}
                 keyboardDismissMode="on-drag"
@@ -438,46 +430,46 @@ export default class ServiceList extends Component {
                 canLoadMore={this.state.canLoadMoreContent}
                 onLoadMoreAsync={() => {
                     this._loadMoreContentAsync()
-                }}
-            />
-        ) : (
-            <View>
-                <View
-                    style={[
-                        styles.searchBarContainer,
-                        theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
-                    ]}
-                >
-                    <Button
-                        color="green"
-                        icon="md-close"
-                        text={I18n.t('CLEAR_FILTERS').toUpperCase()}
-                        style={{flex: 1, marginRight: 2, marginBottom: 0}}
-                        onPress={this.clearFilters.bind(this)}
-                        buttonStyle={{height: 33}}
-                        textStyle={{fontSize: 12}}
-                        iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
-                    />
-                    <Button
-                        color="green"
-                        icon="md-funnel"
-                        text={I18n.t('FILTER_SERVICES').toUpperCase()}
-                        style={{flex: 1, marginLeft: 2, marginBottom: 0}}
-                        onPress={this.filterByTypes.bind(this)}
-                        buttonStyle={{height: 33}}
-                        textStyle={{fontSize: 12}}
-                    />
-                </View>
-                <ListView
-                    enableEmptySections={true}
-                    dataSource={this.state.serviceTypeDataSource}
-                    renderRow={(type) => this.renderServiceTypeRow(type)}
-                    keyboardShouldPersistTaps={true}
-                    keyboardDismissMode="on-drag"
-                    direction={this.props.direction}
+                } }
                 />
-            </View>
-        );
+        ) : (
+                <View>
+                    <View
+                        style={[
+                            styles.searchBarContainer,
+                            theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
+                        ]}
+                        >
+                        <Button
+                            color="green"
+                            icon="md-close"
+                            text={I18n.t('CLEAR_FILTERS').toUpperCase() }
+                            style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
+                            onPress={this.clearFilters.bind(this) }
+                            buttonStyle={{ height: 33 }}
+                            textStyle={{ fontSize: 12 }}
+                            iconStyle={Platform.OS === 'ios' ? { top: 2 } : {}}
+                            />
+                        <Button
+                            color="green"
+                            icon="md-funnel"
+                            text={I18n.t('FILTER_SERVICES').toUpperCase() }
+                            style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
+                            onPress={this.filterByTypes.bind(this) }
+                            buttonStyle={{ height: 33 }}
+                            textStyle={{ fontSize: 12 }}
+                            />
+                    </View>
+                    <ListView
+                        enableEmptySections={true}
+                        dataSource={this.state.serviceTypeDataSource}
+                        renderRow={(type) => this.renderServiceTypeRow(type) }
+                        keyboardShouldPersistTaps={true}
+                        keyboardDismissMode="on-drag"
+                        direction={this.props.direction}
+                        />
+                </View>
+            );
 
         return (
             <View style={styles.container}>
@@ -485,33 +477,33 @@ export default class ServiceList extends Component {
                     <SearchBar
                         theme={theme}
                         searchText={this.state.searchCriteria}
-                        searchFunction={(event) => this.filterByText(event)}
-                    />
+                        searchFunction={(event) => this.filterByText(event) }
+                        />
                     <SearchFilterButton
                         theme={theme}
-                        onPressAction={() => this.searchFilterButtonAction()}
+                        onPressAction={() => this.searchFilterButtonAction() }
                         active={filteringView}
-                    />
+                        />
                 </View>
                 <View
                     style={[
                         styles.viewHeaderContainer,
-                        {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
-                        {paddingTop: 10}
+                        { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
+                        { paddingTop: 10 }
                     ]}
-                >
+                    >
                     <Text
                         style={[
                             styles.viewHeaderText,
                             getFontFamily(language),
                             theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                         ]}
-                    >
+                        >
                         {(!region)
                             ? I18n.t('LOADING_SERVICES').toUpperCase()
                             : (filteringView)
-                            ? I18n.t('FILTER_BY_CATEGORY').toUpperCase()
-                            : I18n.t('NEAREST_SERVICES').toUpperCase()
+                                ? I18n.t('FILTER_BY_CATEGORY').toUpperCase()
+                                : I18n.t('NEAREST_SERVICES').toUpperCase()
                         }
                     </Text>
                 </View>
@@ -519,14 +511,14 @@ export default class ServiceList extends Component {
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                     lastSync={this.state.lastSync}
-                />
+                    />
                 {viewContent}
                 {!filteringView && (
-                <MapButton
-                    direction={this.props.direction}
-                    searchCriteria={this.state.searchCriteria}
-                    serviceTypes={this.state.serviceTypes}
-                />)}
+                    <MapButton
+                        direction={this.props.direction}
+                        searchCriteria={this.state.searchCriteria}
+                        serviceTypes={this.state.serviceTypes}
+                        />) }
                 {loading && <LoadingOverlay theme={theme} height={height - 140} width={width} />}
             </View>
         );

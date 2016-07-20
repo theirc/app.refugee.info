@@ -13,11 +13,9 @@ import {
     getFontFamily,
     getUnderlayColor,
     getRowOrdering,
-    getIconComponent,
-    getIconName,
     themes
 } from '../styles'
-
+import { Icon } from '../components';
 
 class MenuItem extends Component {
     static propTypes = {
@@ -89,11 +87,8 @@ class MenuItem extends Component {
         };
         let widget = null;
         if (item.icon) {
-            let iconName = getIconName(item.icon);
-            let Icon = getIconComponent(item.icon);
-
             widget = (<Icon
-                name={iconName}
+                name={item.icon}
                 size={22}
                 style={styles.icon}
                 color={styles.itemText.color || '#000000'}

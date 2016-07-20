@@ -5,7 +5,7 @@ import {
     Image,
     StyleSheet
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {Icon} from '../components';
 import I18n from '../constants/Messages';
 import styles, {themes} from '../styles';
 
@@ -15,7 +15,7 @@ export default class ServiceCommons {
         return ([...new Array(5)].map((x, i) => (
             <Icon
                 key={i}
-                name={(rating >= i + 1) ? 'star' : 'star-o'}
+                name={(rating >= i + 1) ? 'fa-star' : 'fa-star-o'}
                 style={[
                     styles.ratingIcon,
                     (rating >= i + 1) ? null: {color: themes.light.dividerColor}

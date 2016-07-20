@@ -17,7 +17,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 
 const GOOGLE_API_PREFIX = 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=-1&q=';
 

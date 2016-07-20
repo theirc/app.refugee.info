@@ -4,11 +4,9 @@ import styles, {
     themes, 
     getFontFamily, 
     getRowOrdering,
-    getIconComponent,
-    getIconName,
 } from '../styles';
+import Icon from './Icon'
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 export default class Button extends Component {
 
@@ -40,16 +38,13 @@ export default class Button extends Component {
     render() {
         const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
 
-        const Icon = getIconComponent(iconName);
-        let iconName = getIconName(icon);
-
         let iconImage = icon &&
             <View style={[
                 direction=='rtl' ? {paddingRight: 10} : {paddingLeft: 10},
                 styles.alignCenter
             ]}>
                 <Icon
-                    name={iconName}
+                    name={icon}
                     style={[
                         this.getButtonTextColor(color),
                         componentStyles.buttonIcon,

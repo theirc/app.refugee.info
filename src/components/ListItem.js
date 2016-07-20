@@ -17,12 +17,9 @@ import styles, {
     getContainerColor,
     getBottomDividerColor,
     getDividerColor,
-    getIconComponent,
-    getIconName,
     themes
 } from '../styles';
-var Ionicons = require('react-native-vector-icons/Ionicons');
-var FontAwesome = require('react-native-vector-icons/FontAwesome');
+import Icon from './Icon';
 
 export default class ListItem extends Component {
 
@@ -40,8 +37,6 @@ export default class ListItem extends Component {
     render() {
         const {theme, onPress, text, language, direction, iconColor, fontSize, image, centered, iconSize} = this.props;
         let iconName = (this.props.icon || '').trim();
-        const Icon = getIconComponent(iconName);
-        iconName = getIconName(iconName);
 
         const button_icon = (image) ? (
             <Image

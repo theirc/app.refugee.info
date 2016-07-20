@@ -17,7 +17,7 @@ import ServiceCommons from '../utils/ServiceCommons';
 import MapButton from '../components/MapButton';
 import {OfflineView, SearchBar, SearchFilterButton} from '../components';
 import {connect} from 'react-redux';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Regions, Services} from '../data';
 import styles, {themes, getUnderlayColor, getFontFamily, getRowOrdering, getAlignItems} from '../styles';

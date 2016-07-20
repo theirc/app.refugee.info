@@ -146,7 +146,7 @@ export class GeneralInformation extends Component {
                     />
                     <Button
                         color="green"
-                        icon="md-map"
+                        icon="fa-map"
                         text={I18n.t('EXPLORE_MAP') }
                         onPress={() => requestAnimationFrame(() => s('map'))}
                         style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
