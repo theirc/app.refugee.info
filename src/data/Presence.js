@@ -8,7 +8,7 @@ import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 var DeviceInfo = require('react-native-device-info');
 
 export default class Presence extends Component {

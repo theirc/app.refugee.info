@@ -13,7 +13,7 @@ import {
     Platform,
     AsyncStorage
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 import {default as FontAwesomeIcon} from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import I18n from '../constants/Messages';

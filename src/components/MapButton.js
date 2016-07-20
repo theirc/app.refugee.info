@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import styles, {themes} from '../styles';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 
 
 export default class MapButton extends Component {
@@ -39,7 +39,7 @@ export default class MapButton extends Component {
                     style={[componentStyles.mapButton]}
                 >
                     <Icon
-                        name="md-map"
+                        name="fa-map"
                         style={componentStyles.mapButtomIcon}
                     />
                 </View>

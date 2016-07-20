@@ -94,7 +94,6 @@ export default class ApiClient {
             url += `&type_numbers=${types}`;
         }
         url += `&page=${page}&page_size=${pageSize}`;
-        console.log(url);
         return this.fetch(url, raise_exception);
     }
 

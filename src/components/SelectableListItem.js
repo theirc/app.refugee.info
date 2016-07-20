@@ -17,11 +17,9 @@ import styles, {
     getContainerColor,
     getBottomDividerColor,
     getDividerColor,
-    getIconComponent,
-    getIconName,
     themes
 } from '../styles';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Icon from './Icon';
 
 export default class SelectableListItem extends Component {
 

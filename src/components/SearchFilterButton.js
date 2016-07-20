@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, TextInput, StyleSheet, TouchableHighlight} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {Icon} from '../components';
 import {connect} from 'react-redux';
 import {getUnderlayColor, themes} from '../styles';
 

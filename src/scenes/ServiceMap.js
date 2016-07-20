@@ -13,8 +13,6 @@ import {
 import MapView from 'react-native-maps';
 import styles, {
     themes,
-    getIconComponent,
-    getIconName,
 } from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
@@ -25,7 +23,8 @@ import {
     SearchBar,
     SearchFilterButton,
     SelectableListItem,
-    LoadingOverlay
+    LoadingOverlay,
+    Icon
 } from '../components';
 import {Regions, Services} from '../data';
 
@@ -109,7 +108,7 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, {service, location, serviceType}, this.state);
+        navigator.forward(null, null, { service, location, serviceType }, this.state);
     }
 
     async fetchData(envelope = {}) {
@@ -140,7 +139,7 @@ class ServiceMap extends Component {
                 currentEnvelope,
                 criteria,
                 1,
-                50,
+                10,
                 types
             );
             let services = serviceResult.results;
@@ -154,9 +153,6 @@ class ServiceMap extends Component {
                 let iconName = (serviceType.vector_icon || '').trim();
                 let widget = null;
                 if (iconName) {
-                    const Icon = getIconComponent(iconName);
-                    iconName = getIconName(iconName);
-
                     widget = (
                         <View
                             style={{
@@ -171,7 +167,7 @@ class ServiceMap extends Component {
                                 borderColor: themes[theme].backgroundColor,
                                 borderRadius: 10,
                             }}
-                        >
+                            >
                             <Icon
                                 name={iconName}
                                 style={{
@@ -181,13 +177,13 @@ class ServiceMap extends Component {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                 }}
-                            />
+                                />
                         </View>);
                 } else {
                     widget = (<Image
-                        source={{uri: serviceType.icon_url}}
+                        source={{ uri: serviceType.icon_url }}
                         style={styles.mapIcon}
-                    />);
+                        />);
                 }
 
                 return {
@@ -199,6 +195,7 @@ class ServiceMap extends Component {
                     service,
                 };
             });
+
             this.setState({
                 serviceTypes,
                 locations: [region],
@@ -235,9 +232,9 @@ class ServiceMap extends Component {
             <SelectableListItem
                 text={type.name}
                 fontSize={13}
-                onPress={this.toggleServiceType.bind(this, type)}
+                onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
-            />
+                />
         );
     }
 
@@ -254,13 +251,18 @@ class ServiceMap extends Component {
 
     searchFilterButtonAction() {
         if (this.state.region) {
-            this.setState({
-                filteringView: !this.state.filteringView
-            })
+            if (this.state.filteringView) {
+                this.filterByTypes();
+            } else {
+                this.setState({
+                    filteringView: !this.state.filteringView
+                });
+            }
         }
     }
 
     clearFilters() {
+
         let serviceTypes = this.state.serviceTypes;
         for (let i = 0; i < serviceTypes.length; i++) {
             serviceTypes[i].active = false;
@@ -269,7 +271,11 @@ class ServiceMap extends Component {
             serviceTypes: serviceTypes,
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
         }, () => {
-            this.fetchData(this.state.initialEnvelope).done()
+            this.fetchData(this.state.initialEnvelope).then(() =>
+                this.setState({
+                    filteringView: false
+                })
+            );
         });
     }
 
@@ -302,7 +308,7 @@ class ServiceMap extends Component {
                     initialRegion={this.state.initialEnvelope}
                     style={styles.flex}
                     showsUserLocation={true}
-                >
+                    >
                     {this.state.markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
@@ -314,17 +320,15 @@ class ServiceMap extends Component {
                             ref={(r) => this.markers[i] = r}
                             onCalloutPress={() => this.onCalloutPress(marker) }
                             title={marker.title}
-                        >
-                            <View>
+                            >
                                 {marker.widget}
-                            </View>
                             <MapView.Callout tooltip={true} style={[{
                                 width: width - 50
                             }]}>
                                 <MapPopup marker={marker}/>
                             </MapView.Callout>
                         </MapView.Marker>
-                    ))}
+                    )) }
                 </MapView>
                 <View
                     style={[
@@ -336,19 +340,19 @@ class ServiceMap extends Component {
                             width: width
                         }
                     ]}
-                >
+                    >
                     <SearchBar
                         theme={theme}
                         floating={!filteringView}
                         initialSearchText={this.props.searchCriteria}
-                        searchFunction={(text) => this.filterByText(text)}
-                    />
+                        searchFunction={(text) => this.filterByText(text) }
+                        />
                     <SearchFilterButton
                         theme={theme}
                         floating={!filteringView}
-                        onPressAction={() => this.searchFilterButtonAction()}
+                        onPressAction={() => this.searchFilterButtonAction() }
                         active={filteringView}
-                    />
+                        />
                 </View>
                 {filteringView && (
                     <View
@@ -362,42 +366,42 @@ class ServiceMap extends Component {
                                 height: height - 46 - 80
                             }
                         ]}
-                    >
+                        >
                         <View
                             style={[
                                 styles.searchBarContainer,
                                 theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
                             ]}
-                        >
+                            >
                             <Button
                                 color="green"
                                 icon="md-close"
-                                text={I18n.t('CLEAR_FILTERS').toUpperCase()}
-                                style={{flex: 1, marginRight: 2, marginBottom: 0}}
-                                onPress={this.clearFilters.bind(this)}
-                                buttonStyle={{height: 33}}
-                                textStyle={{fontSize: 12}}
-                                iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
-                            />
+                                text={I18n.t('CLEAR_FILTERS').toUpperCase() }
+                                style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
+                                onPress={this.clearFilters.bind(this) }
+                                buttonStyle={{ height: 33 }}
+                                textStyle={{ fontSize: 12 }}
+                                iconStyle={Platform.OS === 'ios' ? { top: 2 } : {}}
+                                />
                             <Button
                                 color="green"
                                 icon="md-funnel"
-                                text={I18n.t('FILTER_SERVICES').toUpperCase()}
-                                style={{flex: 1, marginLeft: 2, marginBottom: 0}}
-                                onPress={this.filterByTypes.bind(this)}
-                                buttonStyle={{height: 33}}
-                                textStyle={{fontSize: 12}}
-                            />
+                                text={I18n.t('FILTER_SERVICES').toUpperCase() }
+                                style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
+                                onPress={this.filterByTypes.bind(this) }
+                                buttonStyle={{ height: 33 }}
+                                textStyle={{ fontSize: 12 }}
+                                />
                         </View>
                         <ListView
                             dataSource={this.state.serviceTypeDataSource}
-                            renderRow={(type) => this.renderServiceTypeRow(type)}
+                            renderRow={(type) => this.renderServiceTypeRow(type) }
                             keyboardShouldPersistTaps={true}
                             keyboardDismissMode="on-drag"
                             direction={this.props.direction}
-                        />
+                            />
                     </View>
-                )}
+                ) }
                 {loading && <LoadingOverlay theme={theme} height={height - 80} width={width} />}
             </View>
         );
