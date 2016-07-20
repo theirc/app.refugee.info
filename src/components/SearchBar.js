@@ -89,7 +89,7 @@ const componentStyles = StyleSheet.create({
         shadowOffset: {width: 0, height: 1},
         shadowOpacity: 0.4,
         shadowRadius: 1,
-        elevation : 2,
+        elevation : 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

@@ -60,22 +60,23 @@ export default class Toolbar extends Component {
                             justifyContent: 'center',
                         },
                     ]}
-                    />
+                />
             </View>);
         } else if (toolbarTitleImage) {
             titleIcon = (<Image
-                source={{ uri: toolbarTitleImage }}
+                source={{uri: toolbarTitleImage}}
                 style={componentStyles.titleIcon}
-                />);
+            />);
         }
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
+        let isMapView = navigator && navigator.currentRoute && navigator.currentRoute.path == 'map';
         let icon = null;
         if (navigator) {
             icon = (
                 <TouchableOpacity
-                    style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
+                    style={{width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
                     onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
                 ><Icon
                     name={navigator.isChild ? backIcon : menuIcon}
@@ -98,7 +99,7 @@ export default class Toolbar extends Component {
                 style={[
                     componentStyles.toolbarContainer,
                     theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
-                    (navigator && navigator.currentRoute && navigator.currentRoute.path == 'map') && {height: 80}
+                    isMapView && {height: 80}
                 ]}
             >
                 <View style={componentStyles.toolbarTop}>
@@ -108,6 +109,8 @@ export default class Toolbar extends Component {
                     />
                     {showIcon && icon}
                 </View>
+
+                {!isMapView && (
                 <View style={[
                     componentStyles.toolbarBottom,
                     getRowOrdering(direction)
@@ -120,7 +123,7 @@ export default class Toolbar extends Component {
                     ]}>
                         {title}
                     </Text>
-                </View>
+                </View>)}
             </View>
         );
     }

@@ -41,7 +41,7 @@ export default class SearchFilterButton extends Component {
                         ]}
                     >
                         <Icon
-                            name={active ? "md-funnel" : "ios-options"}
+                            name={"ios-options"}
                             style={[
                                 componentStyles.searchFilterIcon,
                                 theme == 'dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
@@ -84,6 +84,7 @@ const componentStyles = StyleSheet.create({
         shadowOpacity: 0.4,
         shadowRadius: 1,
         height: 36,
+        elevation: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },
