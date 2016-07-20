@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Text, Image, View, ScrollView, StyleSheet} from 'react-native';
+import {Text, Image, View, ScrollView, StyleSheet, Linking} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
@@ -11,6 +11,13 @@ import store from '../store';
 import {Regions} from '../data';
 import {Icon} from '../components';
 import styles, {getFontFamily, getRowOrdering, themes} from '../styles'
+
+const FEEDBACK_MAP = {
+    ar: 'https://docs.google.com/forms/d/16KxtpLbQbdj7ohkpAxws65aZuWfeQa8jjgCBvcptfkk/viewform?entry.1237329743=',
+    en: 'https://docs.google.com/forms/d/1gc-hN_p5pqC3DoPXxTfCAmlIiCEd1mOIdQMWeAz2n_U/viewform?entry.1237329743=',
+    fa: 'https://docs.google.com/forms/d/1Kn2L3mEEFAGgn1YrRpaA7bHNTrKXrw8-zp0w6xfz5o0/viewform?entry.1237329743=',
+    ps: 'https://docs.google.com/forms/d/1pQD6q3dE-0SsFtxmTGnn5q9GJHNeLBPoIJ_sZjBR1VQ/viewform?entry.1237329743=',
+};
 
 class Navigation extends Component {
 
@@ -126,6 +133,7 @@ class Navigation extends Component {
     render() {
         const {theme, route, region, country, direction, language} = this.props;
         const {navigator} = this.context;
+        let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
 
         if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
@@ -231,8 +239,7 @@ class Navigation extends Component {
                 </MenuItem>
                 <MenuItem
                     icon="fa-comment"
-                    active={route === 'settings'}
-                    onPress={() => s('settings') }>
+                    onPress={() => Linking.openURL(feedbackUrl) }>
                     {I18n.t('FEEDBACK') }
                 </MenuItem>
             </MenuSection>
