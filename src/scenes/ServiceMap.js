@@ -13,6 +13,9 @@ import {
 import MapView from 'react-native-maps';
 import styles, {
     themes,
+    getTextAlign,
+    getFontFamily,
+    getRowOrdering
 } from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
@@ -32,6 +35,7 @@ var _ = require('underscore');
 var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
+const MAX_SERVICES = 25;
 
 class ServiceMap extends Component {
 
@@ -139,7 +143,7 @@ class ServiceMap extends Component {
             currentEnvelope,
             criteria,
             1,
-            50,
+            MAX_SERVICES,
             types
         );
         let services = serviceResult.results;
@@ -289,10 +293,8 @@ class ServiceMap extends Component {
     }
 
     render() {
-        const {theme} = this.props;
-        let {filteringView, loading} = this.state;
-
-        this.markers = this.state.markers.map(() => null);
+        const {theme, language, direction} = this.props;
+        let {filteringView, loading, markers} = this.state;
         return (
             <View style={styles.container}>
                 <MapView
@@ -303,7 +305,7 @@ class ServiceMap extends Component {
                     showsPointsOfInterest={false}
                     showsCompass={false}
                 >
-                    {this.state.markers.map((marker, i) => (
+                    {markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
                                 latitude: marker.latitude,
@@ -311,7 +313,8 @@ class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
-                            ref={(r) => this.markers[i] = r}
+                            calloutOffset={{x: 0, y: 10}}
+                            onPress={() => console.log(marker.title)}
                             onCalloutPress={() => this.onCalloutPress(marker)}
                         >
                             {marker.widget}
@@ -347,6 +350,47 @@ class ServiceMap extends Component {
                         active={filteringView}
                     />
                 </View>
+                {markers.length == MAX_SERVICES && (
+                    <View
+                        style={[
+                            getRowOrdering(direction), {
+                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                position: 'absolute',
+                                top: 46,
+                                left: 0,
+                                width: width - 10,
+                                marginHorizontal: 5,
+                                padding: 5,
+                                shadowColor: 'black',
+                                shadowOffset: {width: 0, height: 1},
+                                shadowOpacity: 0.4,
+                                shadowRadius: 1,
+                                elevation: 3
+                        }]}>
+                        <View style={{
+                            width: 36,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <Icon
+                                style={{
+                                    color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
+                                    fontSize: 24
+                                }}
+                                name="md-warning"
+                            />
+                        </View>
+                        <Text style={[
+                            styles.flex,
+                            {color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
+                            getFontFamily(language),
+                            {textAlign: 'center'}
+                        ]}>
+                            {I18n.t('TOO_MANY_RESULTS')}
+                        </Text>
+                    </View>
+                )}
                 {filteringView && (
                     <View
                         style={[
@@ -363,7 +407,7 @@ class ServiceMap extends Component {
                         <View
                             style={[
                                 styles.searchBarContainer,
-                                theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight
+                                {backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor}
                             ]}
                         >
                             <Button
@@ -395,7 +439,7 @@ class ServiceMap extends Component {
                         />
                     </View>
                 ) }
-                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width}/>}
+                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width} />}
             </View>
         );
 
