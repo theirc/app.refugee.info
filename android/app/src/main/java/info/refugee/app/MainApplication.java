@@ -17,6 +17,7 @@ import com.i18n.reactnativei18n.ReactNativeI18n;
 import com.chirag.RNMail.*;  // <--- import
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
 
+import com.microsoft.codepush.react.CodePush;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,8 +41,8 @@ public class MainApplication extends Application implements ReactApplication {
                   new AirPackage(),
                   new ReactNativeI18n(),
                   new RNMail(),
-                            mReactNativePushNotificationPackage // <---- Add the Package
-
+                  new CodePush(BuildConfig.CODEPUSH_KEY, MainApplication.this, BuildConfig.DEBUG),
+                  mReactNativePushNotificationPackage // <---- Add the Package
               );
     }
   };

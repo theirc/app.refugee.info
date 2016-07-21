@@ -651,6 +651,11 @@
       "from": "balanced-match@>=0.4.1 <0.5.0",
       "resolved": "./node_shrinkwrap/balanced-match-0.4.1.tgz"
     },
+    "base-64": {
+      "version": "0.1.0",
+      "from": "base-64@>=0.1.0 <0.2.0",
+      "resolved": "./node_shrinkwrap/base-64-0.1.0.tgz"
+    },
     "base62": {
       "version": "1.1.1",
       "from": "base62@>=1.1.0 <2.0.0",
@@ -964,6 +969,11 @@
       "from": "code-point-at@>=1.0.0 <2.0.0",
       "resolved": "./node_shrinkwrap/code-point-at-1.0.0.tgz"
     },
+    "code-push": {
+      "version": "1.8.0-beta",
+      "from": "code-push@1.8.0-beta",
+      "resolved": "./node_shrinkwrap/code-push-1.8.0-beta.tgz"
+    },
     "colors": {
       "version": "1.0.3",
       "from": "colors@1.0.3",
@@ -988,6 +998,11 @@
       "version": "0.10.4",
       "from": "commoner@>=0.10.3 <0.11.0",
       "resolved": "./node_shrinkwrap/commoner-0.10.4.tgz"
+    },
+    "component-emitter": {
+      "version": "1.2.1",
+      "from": "component-emitter@>=1.2.0 <1.3.0",
+      "resolved": "./node_shrinkwrap/component-emitter-1.2.1.tgz"
     },
     "compressible": {
       "version": "2.0.8",
@@ -1043,6 +1058,11 @@
       "version": "1.0.6",
       "from": "cookie-signature@1.0.6",
       "resolved": "./node_shrinkwrap/cookie-signature-1.0.6.tgz"
+    },
+    "cookiejar": {
+      "version": "2.0.6",
+      "from": "cookiejar@2.0.6",
+      "resolved": "./node_shrinkwrap/cookiejar-2.0.6.tgz"
     },
     "core-js": {
       "version": "1.2.6",
@@ -1977,6 +1997,11 @@
       "version": "1.1.1",
       "from": "formatio@1.1.1",
       "resolved": "./node_shrinkwrap/formatio-1.1.1.tgz"
+    },
+    "formidable": {
+      "version": "1.0.17",
+      "from": "formidable@>=1.0.14 <1.1.0",
+      "resolved": "./node_shrinkwrap/formidable-1.0.17.tgz"
     },
     "fresh": {
       "version": "0.3.0",
@@ -3672,6 +3697,11 @@
         }
       }
     },
+    "react-native-code-push": {
+      "version": "1.13.5-beta",
+      "from": "react-native-code-push@latest",
+      "resolved": "./node_shrinkwrap/react-native-code-push-1.13.5-beta.tgz"
+    },
     "react-native-device-info": {
       "version": "0.9.3",
       "from": "react-native-device-info@latest",
@@ -3847,6 +3877,11 @@
       "version": "1.0.0",
       "from": "redent@>=1.0.0 <2.0.0",
       "resolved": "./node_shrinkwrap/redent-1.0.0.tgz"
+    },
+    "reduce-component": {
+      "version": "1.0.1",
+      "from": "reduce-component@1.0.1",
+      "resolved": "./node_shrinkwrap/reduce-component-1.0.1.tgz"
     },
     "redux": {
       "version": "3.5.2",
@@ -4317,6 +4352,38 @@
       "version": "1.0.3",
       "from": "sum-up@>=1.0.1 <2.0.0",
       "resolved": "./node_shrinkwrap/sum-up-1.0.3.tgz"
+    },
+    "superagent": {
+      "version": "1.8.3",
+      "from": "superagent@>=1.7.2 <2.0.0",
+      "resolved": "./node_shrinkwrap/superagent-1.8.3.tgz",
+      "dependencies": {
+        "async": {
+          "version": "1.5.2",
+          "from": "async@>=1.4.0 <2.0.0",
+          "resolved": "./node_shrinkwrap/async-1.5.2.tgz"
+        },
+        "form-data": {
+          "version": "1.0.0-rc3",
+          "from": "form-data@1.0.0-rc3",
+          "resolved": "./node_shrinkwrap/form-data-1.0.0-rc3.tgz"
+        },
+        "isarray": {
+          "version": "0.0.1",
+          "from": "isarray@0.0.1",
+          "resolved": "./node_shrinkwrap/isarray-0.0.1.tgz"
+        },
+        "qs": {
+          "version": "2.3.3",
+          "from": "qs@2.3.3",
+          "resolved": "./node_shrinkwrap/qs-2.3.3.tgz"
+        },
+        "readable-stream": {
+          "version": "1.0.27-1",
+          "from": "readable-stream@1.0.27-1",
+          "resolved": "./node_shrinkwrap/readable-stream-1.0.27-1.tgz"
+        }
+      }
     },
     "supports-color": {
       "version": "2.0.0",

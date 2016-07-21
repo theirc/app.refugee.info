@@ -10,6 +10,7 @@
     "geojson-utils": "^1.1.0",
     "react": "^15.2.0",
     "react-native": "^0.29.0",
+    "react-native-code-push": "^1.13.5-beta",
     "react-native-device-info": "^0.9.3",
     "react-native-drawer": "^2.2.6",
     "react-native-i18n": "0.0.8",

@@ -1,6 +1,7 @@
 package info.refugee.app;
 
 import com.facebook.react.ReactActivity;
+import com.microsoft.codepush.react.CodePush;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.chirag.RNMail.RNMail;
 import android.content.Intent;

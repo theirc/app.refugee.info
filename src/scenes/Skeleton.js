@@ -6,7 +6,7 @@ import {
     View,
     Text,
     AppState,
-    UIManager
+    UIManager,
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -19,6 +19,7 @@ import {fetchDirectionFromStorage} from '../actions/direction';
 import {fetchLanguageFromStorage} from '../actions/language';
 import {fetchCountryFromStorage} from '../actions/country';
 import {fetchThemeFromStorage} from '../actions/theme';
+import codePush from "react-native-code-push";
 
 var PushNotification = require('react-native-push-notification');
 
@@ -47,6 +48,7 @@ class Skeleton extends Component {
 
         this.askForPermissions();
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+
     }
 
     componentDidMount() {
@@ -57,7 +59,8 @@ class Skeleton extends Component {
         AppState.removeEventListener('change', this._handleAppStateChange);
     }
 
-    _handleAppStateChange() {
+    _handleAppStateChange(newState) {
+    newState === "active" && codePush.sync();
     }
 
     askForPermissions() {

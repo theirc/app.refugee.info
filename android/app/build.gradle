@@ -103,7 +103,12 @@ android {
         }
     }
     buildTypes {
+        debug {
+            buildConfigField "String", "CODEPUSH_KEY", '"plZxFa1buZtoy2gYgT7ZUP_JtfMiVyEie-9DW"'
+        }
         release {
+            buildConfigField "String", "CODEPUSH_KEY", '"KiFGr-rI8YsgalKziJKnRXrkQGznVyEie-9DW"'
+            
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
@@ -124,6 +129,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-code-push')
     compile project(':react-native-device-info')
     compile project(':react-native-mail')
     compile project(':react-native-vector-icons')
