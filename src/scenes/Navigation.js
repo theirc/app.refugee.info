@@ -38,7 +38,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({otherLocations: children});
+            this.setState({ otherLocations: children });
         }
     }
 
@@ -78,8 +78,10 @@ class Navigation extends Component {
         if (!region || !region.important_information) {
             return <View />;
         }
+        let importantInformation = region.important_information;
+        importantInformation = importantInformation.filter((i) => !i.hidden);
 
-        return region.important_information.map((i, index) => {
+        return importantInformation.map((i, index) => {
             if (i && i.metadata) {
                 const pageTitle = (i.metadata.page_title || '')
                     .replace('\u060c', ',').split(',')[0];
@@ -91,7 +93,7 @@ class Navigation extends Component {
                     icon={i.icon}
                     key={index}
                     onPress={() => this._defaultOrFirst(i, true) }
-                >
+                    >
                     {i.pageTitle}
                 </MenuItem>
             );
@@ -108,7 +110,7 @@ class Navigation extends Component {
                 showTitle: showTitle
             });
         } else {
-            let payload = {region: page.code ? page : null, information: page.code ? null : page}
+            let payload = { region: page.code ? page : null, information: page.code ? null : page }
             return this.context.navigator.to('info', null, payload);
         }
     }
@@ -123,8 +125,8 @@ class Navigation extends Component {
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
 
         return this._defaultOrFirst(city);
@@ -133,11 +135,13 @@ class Navigation extends Component {
     render() {
         const {theme, route, region, country, direction, language} = this.props;
         const {navigator} = this.context;
-        let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
 
         if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
         }
+        let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
+        const aboutUs = region.important_information.find(a => a.slug === 'about-us');
+        console.log(aboutUs)
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
@@ -155,7 +159,7 @@ class Navigation extends Component {
                 { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
                 (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
             ]}
-        />;
+            />;
 
         let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
@@ -171,7 +175,7 @@ class Navigation extends Component {
                         { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
                         (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
                     ]}
-                />
+                    />
                 <Text style={[
                     getFontFamily(language),
                     styles.cityText
@@ -184,21 +188,21 @@ class Navigation extends Component {
                     icon="fa-info"
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
-                >
+                    >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-list"
                     active={route === 'services'}
                     onPress={() => s('services') }
-                >
+                    >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-map"
                     active={route === 'map'}
                     onPress={() => s('map') }
-                >
+                    >
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
             </MenuSection>
@@ -220,21 +224,22 @@ class Navigation extends Component {
                     icon="fa-gear"
                     active={route === 'settings'}
                     onPress={() => s('settings') }
-                >
+                    >
                     {I18n.t('SETTINGS') }
                 </MenuItem>
-                <MenuItem
-                    icon="fa-question"
-                    active={route === 'about'}
-                    onPress={() => s('about') }
-                >
-                    {I18n.t('ABOUT') }
-                </MenuItem>
+                {aboutUs &&
+                    <MenuItem
+                        icon="fa-question"
+                        onPress={() => this._defaultOrFirst(aboutUs, true) }
+                        >
+                        {I18n.t('ABOUT') }
+                    </MenuItem>
+                }
                 <MenuItem
                     icon="fa-envelope"
                     active={route === 'contact'}
                     onPress={() => s('contact') }
-                >
+                    >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
