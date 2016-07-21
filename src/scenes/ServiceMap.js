@@ -27,7 +27,8 @@ import {
     SearchFilterButton,
     SelectableListItem,
     LoadingOverlay,
-    Icon
+    Icon,
+    OfflineView
 } from '../components';
 import {Regions, Services} from '../data';
 
@@ -78,7 +79,10 @@ class ServiceMap extends Component {
                 filteringView: false,
                 searchCriteria: '',
                 initialEnvelope: null,
-                loading: false
+                loading: false,
+                offline: false,
+                lastSync: null,
+                refreshing: false
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -138,27 +142,28 @@ class ServiceMap extends Component {
             }
         }
         let types = this.getServiceTypeNumbers(serviceTypes);
-        let serviceResult = await serviceData.pageServices(
-            region.slug,
-            currentEnvelope,
-            criteria,
-            1,
-            MAX_SERVICES,
-            types
-        );
-        let services = serviceResult.results;
-        services = _.uniq(services, false, (s) => s.id);
-        let markers = services.map(service => {
-            let serviceType = serviceTypes.find(function (type) {
-                return type.url == service.type;
-            });
+        try {
+            let serviceResult = await serviceData.pageServices(
+                region.slug,
+                currentEnvelope,
+                criteria,
+                1,
+                MAX_SERVICES,
+                types
+            );
+            let services = serviceResult.results;
+            services = _.uniq(services, false, (s) => s.id);
+            let markers = services.map(service => {
+                let serviceType = serviceTypes.find(function (type) {
+                    return type.url == service.type;
+                });
 
-            let iconName = (serviceType.vector_icon || '').trim();
-            let widget = null;
-            if (iconName) {
-                widget = (
-                    <View
-                        style={{
+                let iconName = (serviceType.vector_icon || '').trim();
+                let widget = null;
+                if (iconName) {
+                    widget = (
+                        <View
+                            style={{
                             flex: 1,
                             flexDirection: 'row',
                             paddingLeft: 2,
@@ -171,46 +176,58 @@ class ServiceMap extends Component {
                             borderRadius: 10,
                             borderWidth: 1
                         }}
-                    >
-                        <Icon
-                            name={iconName}
-                            style={{
+                        >
+                            <Icon
+                                name={iconName}
+                                style={{
                                 fontSize: 24,
                                 color: themes.dark.textColor,
                                 textAlign: 'center',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
-                        />
-                    </View>);
-            } else {
-                widget = (
-                    <Image
-                        source={{uri: serviceType.icon_url}}
-                        style={styles.mapIcon}
-                    />);
-            }
+                            />
+                        </View>);
+                } else {
+                    widget = (
+                        <Image
+                            source={{uri: serviceType.icon_url}}
+                            style={styles.mapIcon}
+                        />);
+                }
 
-            return {
-                latitude: service.location.coordinates[1],
-                longitude: service.location.coordinates[0],
-                description: service.description,
-                title: service.name,
-                widget,
-                service,
-            };
-        });
+                return {
+                    latitude: service.location.coordinates[1],
+                    longitude: service.location.coordinates[0],
+                    description: service.description,
+                    title: service.name,
+                    widget,
+                    service,
+                };
+            });
 
-        this.setState({
-            serviceTypes,
-            locations: [region],
-            searchCriteria: criteria,
-            markers,
-            region,
-            services,
-            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
-            loading: false
-        });
+            this.setState({
+                serviceTypes,
+                locations: [region],
+                searchCriteria: criteria,
+                markers,
+                region,
+                services,
+                serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
+                loading: false,
+                offline: false
+            });
+        } catch (e) {
+            this.setState({
+                serviceTypes,
+                locations: [region],
+                searchCriteria: criteria,
+                region,
+                serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
+                offline: true,
+                loading: false
+            });
+        }
     }
 
     toggleServiceType(type) {
@@ -292,11 +309,44 @@ class ServiceMap extends Component {
         )
     }
 
+    onRefresh() {
+        this.setState({refreshing: true});
+        this.fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
+    }
+
     render() {
         const {theme, language, direction} = this.props;
         let {filteringView, loading, markers} = this.state;
         return (
             <View style={styles.container}>
+                <View
+                    style={[
+                        styles.row, {
+                            height: 46,
+                            width: width
+                        }
+                    ]}
+                >
+                    <SearchBar
+                        theme={theme}
+                        floating={!filteringView}
+                        initialSearchText={this.props.searchCriteria}
+                        searchFunction={(text) => this.filterByText(text) }
+                    />
+                    <SearchFilterButton
+                        theme={theme}
+                        floating={!filteringView}
+                        onPressAction={() => this.searchFilterButtonAction() }
+                        active={filteringView}
+                    />
+                </View>
+                <OfflineView
+                    offline={this.state.offline}
+                    onRefresh={this.onRefresh.bind(this) }
+                    lastSync={this.state.lastSync}
+                />
                 <MapView
                     initialRegion={this.state.initialEnvelope}
                     style={styles.flex}
@@ -326,30 +376,6 @@ class ServiceMap extends Component {
                         </MapView.Marker>
                     ))}
                 </MapView>
-                <View
-                    style={[
-                        styles.row, {
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            height: 46,
-                            width: width
-                        }
-                    ]}
-                >
-                    <SearchBar
-                        theme={theme}
-                        floating={!filteringView}
-                        initialSearchText={this.props.searchCriteria}
-                        searchFunction={(text) => this.filterByText(text) }
-                    />
-                    <SearchFilterButton
-                        theme={theme}
-                        floating={!filteringView}
-                        onPressAction={() => this.searchFilterButtonAction() }
-                        active={filteringView}
-                    />
-                </View>
                 {markers.length == MAX_SERVICES && (
                     <View
                         style={[
@@ -439,7 +465,7 @@ class ServiceMap extends Component {
                         />
                     </View>
                 ) }
-                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width} />}
+                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width}/>}
             </View>
         );
 
