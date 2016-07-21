@@ -15,7 +15,8 @@ import styles, {
     themes,
     getTextAlign,
     getFontFamily,
-    getRowOrdering
+    getRowOrdering,
+    getElevation
 } from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
@@ -27,8 +28,7 @@ import {
     SearchFilterButton,
     SelectableListItem,
     LoadingOverlay,
-    Icon,
-    OfflineView
+    Icon
 } from '../components';
 import {Regions, Services} from '../data';
 
@@ -81,7 +81,6 @@ class ServiceMap extends Component {
                 initialEnvelope: null,
                 loading: false,
                 offline: false,
-                lastSync: null,
                 refreshing: false
             };
         }
@@ -176,7 +175,7 @@ class ServiceMap extends Component {
                                 borderRadius: 10,
                                 borderWidth: 1
                             }}
-                            >
+                        >
                             <Icon
                                 name={iconName}
                                 style={{
@@ -186,7 +185,7 @@ class ServiceMap extends Component {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                 }}
-                                />
+                            />
                         </View>);
                 } else {
                     widget = (
@@ -217,7 +216,8 @@ class ServiceMap extends Component {
                 loading: false,
                 offline: false
             });
-        } catch (e) {
+        }
+        catch (e) {
             this.setState({
                 serviceTypes,
                 locations: [region],
@@ -326,32 +326,6 @@ class ServiceMap extends Component {
         let {filteringView, loading, markers} = this.state;
         return (
             <View style={styles.container}>
-                <View
-                    style={[
-                        styles.row, {
-                            height: 46,
-                            width: width
-                        }
-                    ]}
-                    >
-                    <SearchBar
-                        theme={theme}
-                        floating={!filteringView}
-                        initialSearchText={this.props.searchCriteria}
-                        searchFunction={(text) => this.filterByText(text) }
-                        />
-                    <SearchFilterButton
-                        theme={theme}
-                        floating={!filteringView}
-                        onPressAction={() => this.searchFilterButtonAction() }
-                        active={filteringView}
-                        />
-                </View>
-                <OfflineView
-                    offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
-                    lastSync={this.state.lastSync}
-                    />
                 <MapView
                     initialRegion={this.state.initialEnvelope}
                     style={styles.flex}
@@ -381,9 +355,35 @@ class ServiceMap extends Component {
                         </MapView.Marker>
                     )) }
                 </MapView>
-                {markers.length == MAX_SERVICES && (
+                <View
+                    style={[
+                        styles.row, {
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            height: 46,
+                            width: width
+                        }
+                    ]}
+                >
+                    <SearchBar
+                        theme={theme}
+                        floating={!filteringView}
+                        initialSearchText={this.props.searchCriteria}
+                        searchFunction={(text) => this.filterByText(text) }
+                    />
+                    <SearchFilterButton
+                        theme={theme}
+                        floating={!filteringView}
+                        onPressAction={() => this.searchFilterButtonAction() }
+                        active={filteringView}
+                    />
+                </View>
+
+                {(markers.length == MAX_SERVICES && !filteringView) && (
                     <View
                         style={[
+                            getElevation(),
                             getRowOrdering(direction), {
                                 backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
@@ -391,12 +391,7 @@ class ServiceMap extends Component {
                                 left: 0,
                                 width: width - 10,
                                 marginHorizontal: 5,
-                                padding: 5,
-                                shadowColor: 'black',
-                                shadowOffset: { width: 0, height: 1 },
-                                shadowOpacity: 0.4,
-                                shadowRadius: 1,
-                                elevation: 3
+                                padding: 10
                             }]}>
                         <View style={{
                             width: 36,
@@ -414,14 +409,65 @@ class ServiceMap extends Component {
                         </View>
                         <Text style={[
                             styles.flex,
-                            { color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor },
+                            {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
                             { textAlign: 'center' }
                         ]}>
                             {I18n.t('TOO_MANY_RESULTS') }
                         </Text>
                     </View>
-                ) }
+                )}
+                {this.state.offline && (
+                    <View
+                        style={[
+                            getElevation(),
+                            getRowOrdering(direction), {
+                                backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                position: 'absolute',
+                                top: 46,
+                                left: 0,
+                                width: width - 10,
+                                marginHorizontal: 5,
+                                padding: 10,
+                            }]}>
+                        <View style={{
+                            width: 36,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <Icon
+                                style={{
+                                    color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
+                                    fontSize: 24
+                                }}
+                                name="md-warning"
+                            />
+                        </View>
+                        <View style={styles.container}>
+                            <Text style={[
+                                styles.flex,
+                                {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
+                                getFontFamily(language),
+                                {textAlign: 'center'}
+                            ]}>
+                                {I18n.t('OFFLINE_MODE')}
+                            </Text>
+                                <Button
+                                    color="green"
+                                    text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
+                                    onPress={this.onRefresh.bind(this)}
+                                    buttonStyle={{
+                                        width: 200,
+                                        height: 35,
+                                        marginTop: 5,
+                                        marginBottom: 5,
+                                        alignSelf: 'center'
+                                    }}
+                                />
+                        </View>
+                    </View>
+                )}
                 {filteringView && (
                     <View
                         style={[
@@ -437,29 +483,42 @@ class ServiceMap extends Component {
                         >
                         <View
                             style={[
+                                styles.viewHeaderContainer,
+                                {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                                {paddingTop: 10}
+                            ]}
+                        >
+                            <Text
+                                style={[
+                                    styles.viewHeaderText,
+                                    getFontFamily(language),
+                                    theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
+                                ]}
+                            >
+                                {I18n.t('FILTER_BY_CATEGORY').toUpperCase()}
+                            </Text>
+                        </View>
+                        <View
+                            style={[
                                 styles.searchBarContainer,
-                                { backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor }
+                                {backgroundColor: theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight}
                             ]}
                             >
                             <Button
                                 color="green"
                                 icon="md-close"
                                 text={I18n.t('CLEAR_FILTERS').toUpperCase() }
-                                style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
                                 onPress={this.clearFilters.bind(this) }
-                                buttonStyle={{ height: 33 }}
-                                textStyle={{ fontSize: 12 }}
-                                iconStyle={Platform.OS === 'ios' ? { top: 2 } : {}}
-                                />
+                                buttonStyle={{height: 33, marginRight: 2}}
+                                iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
+                            />
                             <Button
                                 color="green"
                                 icon="md-funnel"
                                 text={I18n.t('FILTER_SERVICES').toUpperCase() }
-                                style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
                                 onPress={this.filterByTypes.bind(this) }
-                                buttonStyle={{ height: 33 }}
-                                textStyle={{ fontSize: 12 }}
-                                />
+                                buttonStyle={{height: 33, marginLeft: 2}}
+                            />
                         </View>
                         <ListView
                             dataSource={this.state.serviceTypeDataSource}

@@ -394,5 +394,14 @@ export function getIconName(iconName='') {
         return iconName;
     }
 }
+export function getElevation(level = 3){
+    return {
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.33,
+        shadowRadius: level > 1 ? level - 1 : level,
+        elevation: level,
+    }
+}
 
 export default styles;

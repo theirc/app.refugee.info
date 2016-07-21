@@ -3,7 +3,7 @@ import {View, Text, TextInput, StyleSheet, Platform} from 'react-native';
 import {Icon} from '../components';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {getFontFamily, themes} from '../styles';
+import {getFontFamily, getElevation, themes} from '../styles';
 
 export default class SearchBar extends Component {
 
@@ -26,6 +26,7 @@ export default class SearchBar extends Component {
             >
                 <View
                     style={[
+                        getElevation(),
                         componentStyles.searchBar,
                         theme=='dark' ? componentStyles.searchBarDark : componentStyles.searchBarLight
                     ]}
@@ -85,11 +86,6 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.menuBackgroundColor
     },
     searchBar: {
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
-        elevation : 3,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
