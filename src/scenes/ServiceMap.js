@@ -79,7 +79,9 @@ class ServiceMap extends Component {
                 filteringView: false,
                 searchCriteria: '',
                 initialEnvelope: null,
-                loading: false
+                loading: false,
+                offline: false,
+                refreshing: false
             };
         }
         this.serviceCommons = new ServiceCommons();
@@ -139,27 +141,28 @@ class ServiceMap extends Component {
             }
         }
         let types = this.getServiceTypeNumbers(serviceTypes);
-        let serviceResult = await serviceData.pageServices(
-            region.slug,
-            currentEnvelope,
-            criteria,
-            1,
-            MAX_SERVICES,
-            types
-        );
-        let services = serviceResult.results;
-        services = _.uniq(services, false, (s) => s.id);
-        let markers = services.map(service => {
-            let serviceType = serviceTypes.find(function (type) {
-                return type.url == service.type;
-            });
+        try {
+            let serviceResult = await serviceData.pageServices(
+                region.slug,
+                currentEnvelope,
+                criteria,
+                1,
+                MAX_SERVICES,
+                types
+            );
+            let services = serviceResult.results;
+            services = _.uniq(services, false, (s) => s.id);
+            let markers = services.map(service => {
+                let serviceType = serviceTypes.find(function (type) {
+                    return type.url == service.type;
+                });
 
-            let iconName = (serviceType.vector_icon || '').trim();
-            let widget = null;
-            if (iconName) {
-                widget = (
-                    <View
-                        style={{
+                let iconName = (serviceType.vector_icon || '').trim();
+                let widget = null;
+                if (iconName) {
+                    widget = (
+                        <View
+                            style={{
                             flex: 1,
                             flexDirection: 'row',
                             paddingLeft: 2,
@@ -172,46 +175,59 @@ class ServiceMap extends Component {
                             borderRadius: 10,
                             borderWidth: 1
                         }}
-                    >
-                        <Icon
-                            name={iconName}
-                            style={{
+                        >
+                            <Icon
+                                name={iconName}
+                                style={{
                                 fontSize: 24,
                                 color: themes.dark.textColor,
                                 textAlign: 'center',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                             }}
-                        />
-                    </View>);
-            } else {
-                widget = (
-                    <Image
-                        source={{uri: serviceType.icon_url}}
-                        style={styles.mapIcon}
-                    />);
-            }
+                            />
+                        </View>);
+                } else {
+                    widget = (
+                        <Image
+                            source={{uri: serviceType.icon_url}}
+                            style={styles.mapIcon}
+                        />);
+                }
 
-            return {
-                latitude: service.location.coordinates[1],
-                longitude: service.location.coordinates[0],
-                description: service.description,
-                title: service.name,
-                widget,
-                service,
-            };
-        });
+                return {
+                    latitude: service.location.coordinates[1],
+                    longitude: service.location.coordinates[0],
+                    description: service.description,
+                    title: service.name,
+                    widget,
+                    service,
+                };
+            });
 
-        this.setState({
-            serviceTypes,
-            locations: [region],
-            searchCriteria: criteria,
-            markers,
-            region,
-            services,
-            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
-            loading: false
-        });
+            this.setState({
+                serviceTypes,
+                locations: [region],
+                searchCriteria: criteria,
+                markers,
+                region,
+                services,
+                serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
+                loading: false,
+                offline: false
+            });
+        }
+        catch (e) {
+            this.setState({
+                serviceTypes,
+                locations: [region],
+                searchCriteria: criteria,
+                region,
+                serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes),
+                offline: true,
+                loading: false
+            });
+        }
     }
 
     toggleServiceType(type) {
@@ -291,6 +307,13 @@ class ServiceMap extends Component {
                 filteringView: false
             })
         )
+    }
+
+    onRefresh() {
+        this.setState({refreshing: true});
+        this.fetchData().then(() => {
+            this.setState({refreshing: false});
+        });
     }
 
     render() {
@@ -387,6 +410,54 @@ class ServiceMap extends Component {
                         ]}>
                             {I18n.t('TOO_MANY_RESULTS')}
                         </Text>
+                    </View>
+                )}
+                {this.state.offline && (
+                    <View
+                        style={[
+                            getRowOrdering(direction), {
+                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                position: 'absolute',
+                                top: 46,
+                                left: 0,
+                                width: width - 10,
+                                marginHorizontal: 5,
+                                padding: 5,
+                                shadowColor: 'black',
+                                shadowOffset: {width: 0, height: 1},
+                                shadowOpacity: 0.4,
+                                shadowRadius: 1,
+                                elevation: 3
+                        }]}>
+                        <View style={{
+                            width: 36,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}>
+                            <Icon
+                                style={{
+                                    color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
+                                    fontSize: 24
+                                }}
+                                name="md-warning"
+                            />
+                        </View>
+                        <Text style={[
+                            styles.flex,
+                            {color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
+                            getFontFamily(language),
+                            {textAlign: 'center'}
+                        ]}>
+                            {I18n.t('OFFLINE_MODE')}
+                        </Text>
+                        <Button
+                            color="green"
+                            style={{flex: 1}}
+                            text={I18n.t('TRY_TO_REFRESH').toUpperCase() }
+                            onPress={this.onRefresh.bind(this)}
+                            textStyle={{fontSize: 12}}
+                        />
                     </View>
                 )}
                 {filteringView && (
