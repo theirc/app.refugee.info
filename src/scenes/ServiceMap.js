@@ -15,7 +15,8 @@ import styles, {
     themes,
     getTextAlign,
     getFontFamily,
-    getRowOrdering
+    getRowOrdering,
+    getElevation
 } from '../styles';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
@@ -350,23 +351,20 @@ class ServiceMap extends Component {
                         active={filteringView}
                     />
                 </View>
-                {markers.length == MAX_SERVICES && (
+
+                {(markers.length == MAX_SERVICES && !filteringView) && (
                     <View
                         style={[
+                            getElevation(),
                             getRowOrdering(direction), {
-                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
                                 top: 46,
                                 left: 0,
                                 width: width - 10,
                                 marginHorizontal: 5,
-                                padding: 5,
-                                shadowColor: 'black',
-                                shadowOffset: {width: 0, height: 1},
-                                shadowOpacity: 0.4,
-                                shadowRadius: 1,
-                                elevation: 3
-                        }]}>
+                                padding: 10
+                            }]}>
                         <View style={{
                             width: 36,
                             flexDirection: 'row',
@@ -375,7 +373,7 @@ class ServiceMap extends Component {
                         }}>
                             <Icon
                                 style={{
-                                    color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
+                                    color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
                                     fontSize: 24
                                 }}
                                 name="md-warning"
@@ -383,7 +381,7 @@ class ServiceMap extends Component {
                         </View>
                         <Text style={[
                             styles.flex,
-                            {color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
+                            {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
                             {textAlign: 'center'}
                         ]}>
@@ -406,28 +404,41 @@ class ServiceMap extends Component {
                     >
                         <View
                             style={[
+                                styles.viewHeaderContainer,
+                                {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                                {paddingTop: 10}
+                            ]}
+                        >
+                            <Text
+                                style={[
+                                    styles.viewHeaderText,
+                                    getFontFamily(language),
+                                    theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
+                                ]}
+                            >
+                                {I18n.t('FILTER_BY_CATEGORY').toUpperCase()}
+                            </Text>
+                        </View>
+                        <View
+                            style={[
                                 styles.searchBarContainer,
-                                {backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor}
+                                {backgroundColor: theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight}
                             ]}
                         >
                             <Button
                                 color="green"
                                 icon="md-close"
                                 text={I18n.t('CLEAR_FILTERS').toUpperCase() }
-                                style={{flex: 1, marginRight: 2, marginBottom: 0}}
                                 onPress={this.clearFilters.bind(this) }
-                                buttonStyle={{height: 33}}
-                                textStyle={{fontSize: 12}}
+                                buttonStyle={{height: 33, marginRight: 2}}
                                 iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
                             />
                             <Button
                                 color="green"
                                 icon="md-funnel"
                                 text={I18n.t('FILTER_SERVICES').toUpperCase() }
-                                style={{flex: 1, marginLeft: 2, marginBottom: 0}}
                                 onPress={this.filterByTypes.bind(this) }
-                                buttonStyle={{height: 33}}
-                                textStyle={{fontSize: 12}}
+                                buttonStyle={{height: 33, marginLeft: 2}}
                             />
                         </View>
                         <ListView
@@ -439,7 +450,7 @@ class ServiceMap extends Component {
                         />
                     </View>
                 ) }
-                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width} />}
+                {loading && <LoadingOverlay theme={theme} height={height - 80} width={width}/>}
             </View>
         );
 

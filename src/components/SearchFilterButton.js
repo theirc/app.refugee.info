@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableHighlight} from 'react-native';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon} from '../components';
 import {connect} from 'react-redux';
-import {getUnderlayColor, themes} from '../styles';
+import {getUnderlayColor, getElevation, themes} from '../styles';
 
 export default class SearchFilterButton extends Component {
 
@@ -20,25 +20,27 @@ export default class SearchFilterButton extends Component {
                 style={[
                     componentStyles.searchFilterButtonContainer,
                     floating
-                    ? {}
-                    : theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
+                        ? {}
+                        : theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
                 ]}
             >
-                <TouchableHighlight
+                <View
                     onPress={onPressAction}
-                    underlayColor={getUnderlayColor(theme)}
+                    style={[
+                        getElevation(),
+                        componentStyles.searchFilterButton,
+                        theme == 'dark'
+                            ? (active)
+                            ? componentStyles.searchFilterButtonDarkActive
+                            : componentStyles.searchFilterButtonDark
+                            : (active)
+                            ? componentStyles.searchFilterButtonLightActive
+                            : componentStyles.searchFilterButtonLight
+                    ]}
                 >
-                    <View
-                        style={[
-                            componentStyles.searchFilterButton,
-                            theme == 'dark'
-                                ? (active)
-                                    ? componentStyles.searchFilterButtonDarkActive
-                                    : componentStyles.searchFilterButtonDark
-                                : (active)
-                                ? componentStyles.searchFilterButtonLightActive
-                                : componentStyles.searchFilterButtonLight
-                        ]}
+                    <TouchableOpacity
+                        onPress={onPressAction}
+                        activeOpacity={0.6}
                     >
                         <Icon
                             name={"ios-options"}
@@ -47,8 +49,9 @@ export default class SearchFilterButton extends Component {
                                 theme == 'dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
                             ]}
                         />
-                    </View>
-                </TouchableHighlight>
+                    </TouchableOpacity>
+
+                </View>
             </View>
         )
     }
@@ -79,12 +82,7 @@ const componentStyles = StyleSheet.create({
     },
     searchFilterButton: {
         flex: 1,
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
         height: 36,
-        elevation: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },
