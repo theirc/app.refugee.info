@@ -1,9 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
 import styles, {
-    themes, 
-    getFontFamily, 
+    themes,
+    getFontFamily,
     getRowOrdering,
+    getElevation
 } from '../styles';
 import Icon from './Icon'
 import {connect} from 'react-redux';
@@ -13,7 +14,6 @@ export default class Button extends Component {
     static propTypes = {
         text: PropTypes.string,
         icon: PropTypes.string,
-        style: PropTypes.object,
         textStyle: PropTypes.object,
         buttonStyle: PropTypes.object,
         iconStyle: PropTypes.object,
@@ -28,6 +28,13 @@ export default class Button extends Component {
         else return componentStyles.buttonWhite
     }
 
+    getButtonUnderlayColor(color) {
+        if (color == 'black') return "rgba(255,255,255,0.2)";
+        else if (color == 'green') return "rgba(0,150,70,0.8)";
+        else if (color == 'yellow') return "rgba(255,255,255,0.5)";
+        else return "rgba(177,177,177,0.5)";
+    }
+
     getButtonTextColor(color) {
         if (color == 'black') return componentStyles.buttonTextBlack;
         else if (color == 'green') return componentStyles.buttonTextGreen;
@@ -36,11 +43,11 @@ export default class Button extends Component {
     }
 
     render() {
-        const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
+        const {text, color, onPress, language, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
 
         let iconImage = icon &&
             <View style={[
-                direction=='rtl' ? {paddingRight: 10} : {paddingLeft: 10},
+                direction == 'rtl' ? {paddingRight: 10} : {paddingLeft: 10},
                 styles.alignCenter
             ]}>
                 <Icon
@@ -54,27 +61,36 @@ export default class Button extends Component {
             </View>;
 
         return (
-            <TouchableHighlight onPress={onPress} style={[{ marginBottom: 10 }, style]}>
-                <View
-                    style={[
-                        componentStyles.button,
-                        this.getButtonColor(color),
-                        buttonStyle,
-                        getRowOrdering(direction)
-                    ]}
-                >
-                    {iconImage}
-                    <Text style={[
-                        componentStyles.buttonText,
-                        this.getButtonTextColor(color),
-                        getFontFamily(language),
-                        textStyle
-                    ]}>
-                        {text}
-                    </Text>
-                </View>
-            </TouchableHighlight>
 
+            <View
+                style={[
+                    getElevation(),
+                    this.getButtonColor(color),
+                    componentStyles.button,
+                    buttonStyle
+                ]}
+            >
+                <TouchableHighlight
+                    onPress={onPress}
+                    style={[styles.flex]}
+                    underlayColor={this.getButtonUnderlayColor(color)}
+                >
+                    <View style={[
+                        componentStyles.buttonInner,
+                        getRowOrdering(direction)
+                    ]}>
+                        {iconImage}
+                        <Text style={[
+                            componentStyles.buttonText,
+                            this.getButtonTextColor(color),
+                            getFontFamily(language),
+                            textStyle
+                        ]}>
+                            {text}
+                        </Text>
+                    </View>
+                </TouchableHighlight>
+            </View>
         );
     }
 }
@@ -91,13 +107,11 @@ const componentStyles = StyleSheet.create({
     button: {
         flex: 1,
         height: 45,
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
+    },
+    buttonInner: {
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'space-between',
-        shadowOpacity: 0.4,
-        shadowRadius: 1,
-        elevation: 2
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
@@ -113,7 +127,7 @@ const componentStyles = StyleSheet.create({
     },
 
     buttonText: {
-        fontSize: 16,
+        fontSize: 13,
         flex: 1,
         textAlign: 'center'
     },

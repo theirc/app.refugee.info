@@ -448,20 +448,16 @@ export default class ServiceList extends Component {
                         color="green"
                         icon="md-close"
                         text={I18n.t('CLEAR_FILTERS').toUpperCase() }
-                        style={{flex: 1, marginRight: 2, marginBottom: 0}}
                         onPress={this.clearFilters.bind(this) }
-                        buttonStyle={{height: 33}}
-                        textStyle={{fontSize: 12}}
+                        buttonStyle={{height: 33, marginRight: 2}}
                         iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
                     />
                     <Button
                         color="green"
                         icon="md-funnel"
                         text={I18n.t('FILTER_SERVICES').toUpperCase() }
-                        style={{flex: 1, marginLeft: 2, marginBottom: 0}}
                         onPress={this.filterByTypes.bind(this) }
-                        buttonStyle={{height: 33}}
-                        textStyle={{fontSize: 12}}
+                        buttonStyle={{height: 33, marginLeft: 2}}
                     />
                 </View>
                 <ListView

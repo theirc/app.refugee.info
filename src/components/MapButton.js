@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import styles, {themes} from '../styles';
+import styles, {getElevation, themes} from '../styles';
 import {Icon} from '../components';
 
 
@@ -36,7 +36,10 @@ export default class MapButton extends Component {
                 ]}
             >
                 <View
-                    style={[componentStyles.mapButton]}
+                    style={[
+                        getElevation(),
+                        componentStyles.mapButton
+                    ]}
                 >
                     <Icon
                         name="fa-map"
@@ -54,10 +57,6 @@ const componentStyles = StyleSheet.create({
         height: 64,
         borderRadius: 64,
         backgroundColor: themes.light.greenAccentColor,
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 1},
-        shadowOpacity: 0.5,
-        shadowRadius: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },

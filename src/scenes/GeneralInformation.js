@@ -8,7 +8,8 @@ import {
     TouchableHighlight,
     TextInput,
     ScrollView,
-    RefreshControl
+    RefreshControl,
+    Platform
 } from 'react-native';
 import I18n from '../constants/Messages';
 import {OfflineView, ListItem, Button} from '../components';
@@ -123,8 +124,6 @@ export class GeneralInformation extends Component {
     render() {
         const {theme, direction, language} = this.props;
         const {navigator} = this.context;
-
-        const isLatin = ['en', 'el', 'fr', 'de'].indexOf(language) > -1;
         let s = (scene) => navigator.to(scene);
 
         return (
@@ -138,20 +137,18 @@ export class GeneralInformation extends Component {
                     <Button
                         color="green"
                         icon="md-information-circle"
-                        text={I18n.t('SERVICE_LIST') }
+                        text={I18n.t('SERVICE_LIST').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('services'))}
-                        style={{ flex: 1, marginRight: 2, marginBottom: 0 }}
-                        buttonStyle={{ height: 33 }}
-                        textStyle={{ top: (isLatin ? -2 : 0), fontSize: 15 }}
+                        buttonStyle={{height: 33, marginRight: 2}}
+                        iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
                     />
                     <Button
                         color="green"
                         icon="fa-map"
-                        text={I18n.t('EXPLORE_MAP') }
+                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('map'))}
-                        style={{ flex: 1, marginLeft: 2, marginBottom: 0 }}
-                        buttonStyle={{ height: 33 }}
-                        textStyle={{ top: (isLatin ? -2 : 0), fontSize: 15 }}
+                        buttonStyle={{height: 33, marginLeft: 2}}
+                        iconStyle={{fontSize: 18}}
                     />
                 </View>
                 <OfflineView
@@ -164,7 +161,7 @@ export class GeneralInformation extends Component {
                         <RefreshControl
                             refreshing={this.state.refreshing}
                             onRefresh={this.onRefresh.bind(this) }
-                            />
+                        />
                     }
                     dataSource={this.state.dataSource}
                     enableEmptySections
