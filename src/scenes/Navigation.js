@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Text, Image, View, ScrollView, StyleSheet} from 'react-native';
+import {Text, Image, View, ScrollView, StyleSheet, Linking} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
@@ -11,6 +11,13 @@ import store from '../store';
 import {Regions} from '../data';
 import {Icon} from '../components';
 import styles, {getFontFamily, getRowOrdering, themes} from '../styles'
+
+const FEEDBACK_MAP = {
+    ar: 'https://docs.google.com/forms/d/16KxtpLbQbdj7ohkpAxws65aZuWfeQa8jjgCBvcptfkk/viewform?entry.1237329743=',
+    en: 'https://docs.google.com/forms/d/1gc-hN_p5pqC3DoPXxTfCAmlIiCEd1mOIdQMWeAz2n_U/viewform?entry.1237329743=',
+    fa: 'https://docs.google.com/forms/d/1Kn2L3mEEFAGgn1YrRpaA7bHNTrKXrw8-zp0w6xfz5o0/viewform?entry.1237329743=',
+    ps: 'https://docs.google.com/forms/d/1pQD6q3dE-0SsFtxmTGnn5q9GJHNeLBPoIJ_sZjBR1VQ/viewform?entry.1237329743=',
+};
 
 class Navigation extends Component {
 
@@ -31,7 +38,7 @@ class Navigation extends Component {
         if (props.country && props.region) {
             const children = await this.loadCities(props.country);
 
-            this.setState({otherLocations: children});
+            this.setState({ otherLocations: children });
         }
     }
 
@@ -67,28 +74,49 @@ class Navigation extends Component {
     }
 
     _getImportantInformation() {
-        const {region, theme} = this.props;
+        const { theme} = this.props;
+        const region = this._getRegion();
+
         if (!region || !region.important_information) {
             return <View />;
         }
 
-        return region.important_information.map((i, index) => {
-            if (i && i.metadata) {
-                const pageTitle = (i.metadata.page_title || '')
-                    .replace('\u060c', ',').split(',')[0];
-                i.pageTitle = pageTitle;
-            }
+        let importantInformation = region.important_information;
+        importantInformation = importantInformation.filter((i) => !i.hidden);
+
+        return importantInformation.map((i, index) => {
 
             return (
                 <MenuItem
                     icon={i.icon}
                     key={index}
                     onPress={() => this._defaultOrFirst(i, true) }
-                >
+                    >
                     {i.pageTitle}
                 </MenuItem>
             );
         });
+    }
+
+    _getRegion() {
+        const {region} = this.props;
+
+        if (!region) {
+            return null;
+        }
+
+        return {
+            important_information: region.important_information.map((i) => {
+                if (i && i.metadata) {
+                    const pageTitle = (i.metadata.page_title || '')
+                        .replace('\u060c', ',').split(',')[0];
+                    i.pageTitle = pageTitle;
+                }
+                i.type = 'info';
+                return i;
+            }),
+            ...region
+        }
     }
 
     _defaultOrFirst(page, showTitle = false) {
@@ -101,7 +129,7 @@ class Navigation extends Component {
                 showTitle: showTitle
             });
         } else {
-            let payload = {region: page.code ? page : null, information: page.code ? null : page}
+            let payload = { region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page }
             return this.context.navigator.to('info', null, payload);
         }
     }
@@ -116,20 +144,23 @@ class Navigation extends Component {
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
 
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        dispatch({ type: 'REGION_CHANGED', payload: city });
+        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
 
 
         return this._defaultOrFirst(city);
     }
 
     render() {
-        const {theme, route, region, country, direction, language} = this.props;
+        const {theme, route,  country, direction, language} = this.props;
         const {navigator} = this.context;
+        const region = this._getRegion();
 
         if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
         }
+        let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
+        const aboutUs = region.important_information.find(a => a.slug === 'about-us');
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
@@ -147,7 +178,7 @@ class Navigation extends Component {
                 { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
                 (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
             ]}
-        />;
+            />;
 
         let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
@@ -163,7 +194,7 @@ class Navigation extends Component {
                         { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
                         (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
                     ]}
-                />
+                    />
                 <Text style={[
                     getFontFamily(language),
                     styles.cityText
@@ -176,21 +207,21 @@ class Navigation extends Component {
                     icon="fa-info"
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
-                >
+                    >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-list"
                     active={route === 'services'}
                     onPress={() => s('services') }
-                >
+                    >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-map"
                     active={route === 'map'}
                     onPress={() => s('map') }
-                >
+                    >
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
             </MenuSection>
@@ -212,27 +243,27 @@ class Navigation extends Component {
                     icon="fa-gear"
                     active={route === 'settings'}
                     onPress={() => s('settings') }
-                >
+                    >
                     {I18n.t('SETTINGS') }
                 </MenuItem>
-                <MenuItem
-                    icon="fa-question"
-                    active={route === 'about'}
-                    onPress={() => s('about') }
-                >
-                    {I18n.t('ABOUT') }
-                </MenuItem>
+                {aboutUs &&
+                    <MenuItem
+                        icon="fa-question"
+                        onPress={() => this._defaultOrFirst(aboutUs, true) }
+                        >
+                        {I18n.t('ABOUT') }
+                    </MenuItem>
+                }
                 <MenuItem
                     icon="fa-envelope"
                     active={route === 'contact'}
                     onPress={() => s('contact') }
-                >
+                    >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-comment"
-                    active={route === 'settings'}
-                    onPress={() => s('settings') }>
+                    onPress={() => Linking.openURL(feedbackUrl) }>
                     {I18n.t('FEEDBACK') }
                 </MenuItem>
             </MenuSection>
