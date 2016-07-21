@@ -80,6 +80,7 @@
   "SUBJECT": "Subject",
   "MESSAGE": "Message",
   "RELOAD_MAP": "Redo search in this area",
+  "TOO_MANY_RESULTS": "Can not show all found services on the map.\nTry to narrow down your search criteria.",
   "ANNOUNCEMENTS": "Announcements",
   "MESSAGES": "MESSAGES",
   "NEWS": "News",
