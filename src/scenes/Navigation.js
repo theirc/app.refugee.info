@@ -74,19 +74,17 @@ class Navigation extends Component {
     }
 
     _getImportantInformation() {
-        const {region, theme} = this.props;
+        const { theme} = this.props;
+        const region = this._getRegion();
+
         if (!region || !region.important_information) {
             return <View />;
         }
+
         let importantInformation = region.important_information;
         importantInformation = importantInformation.filter((i) => !i.hidden);
 
         return importantInformation.map((i, index) => {
-            if (i && i.metadata) {
-                const pageTitle = (i.metadata.page_title || '')
-                    .replace('\u060c', ',').split(',')[0];
-                i.pageTitle = pageTitle;
-            }
 
             return (
                 <MenuItem
@@ -100,6 +98,27 @@ class Navigation extends Component {
         });
     }
 
+    _getRegion() {
+        const {region} = this.props;
+
+        if (!region) {
+            return null;
+        }
+
+        return {
+            important_information: region.important_information.map((i) => {
+                if (i && i.metadata) {
+                    const pageTitle = (i.metadata.page_title || '')
+                        .replace('\u060c', ',').split(',')[0];
+                    i.pageTitle = pageTitle;
+                }
+                i.type = 'info';
+                return i;
+            }),
+            ...region
+        }
+    }
+
     _defaultOrFirst(page, showTitle = false) {
         this.drawerCommons.closeDrawer();
 
@@ -110,7 +129,7 @@ class Navigation extends Component {
                 showTitle: showTitle
             });
         } else {
-            let payload = { region: page.code ? page : null, information: page.code ? null : page }
+            let payload = { region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page }
             return this.context.navigator.to('info', null, payload);
         }
     }
@@ -133,15 +152,15 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route, region, country, direction, language} = this.props;
+        const {theme, route,  country, direction, language} = this.props;
         const {navigator} = this.context;
+        const region = this._getRegion();
 
         if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
         }
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
         const aboutUs = region.important_information.find(a => a.slug === 'about-us');
-        console.log(aboutUs)
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
