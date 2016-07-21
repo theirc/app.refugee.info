@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Text, Image, View, ScrollView, StyleSheet, Linking} from 'react-native';
+import {Text, Image, View, ScrollView, StyleSheet, Linking, Platform} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
@@ -119,6 +119,20 @@ class Navigation extends Component {
         }
     }
 
+    _sendEmail() {
+        const destination = 'mailto:info@refugee.info';
+
+        if (Platform.OS == 'android') {
+            let email = destination.split('mailto:')[1];
+            Mailer.mail({
+                recipients: [email],
+            }, (error, event) => {
+            });
+        } else {
+            Linking.openURL(destination);
+        }
+    }
+
     _defaultOrFirst(page, showTitle = false) {
         this.drawerCommons.closeDrawer();
 
@@ -152,7 +166,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route,  country, direction, language} = this.props;
+        const {theme, route, country, direction, language} = this.props;
         const {navigator} = this.context;
         const region = this._getRegion();
 
@@ -256,8 +270,7 @@ class Navigation extends Component {
                 }
                 <MenuItem
                     icon="fa-envelope"
-                    active={route === 'contact'}
-                    onPress={() => s('contact') }
+                    onPress={() => this._sendEmail() }
                     >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
