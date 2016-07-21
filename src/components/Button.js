@@ -43,7 +43,7 @@ export default class Button extends Component {
     }
 
     render() {
-        const {text, color, onPress, language, style, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
+        const {text, color, onPress, language, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
 
         let iconImage = icon &&
             <View style={[
@@ -107,7 +107,6 @@ const componentStyles = StyleSheet.create({
     button: {
         flex: 1,
         height: 45,
-
     },
     buttonInner: {
         flex: 1,

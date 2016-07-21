@@ -163,28 +163,28 @@ class ServiceMap extends Component {
                     widget = (
                         <View
                             style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            paddingLeft: 2,
-                            width: 36,
-                            height: 36,
-                            backgroundColor: themes.light.greenAccentColor,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderColor: themes[theme].backgroundColor,
-                            borderRadius: 10,
-                            borderWidth: 1
-                        }}
+                                flex: 1,
+                                flexDirection: 'row',
+                                paddingLeft: 2,
+                                width: 36,
+                                height: 36,
+                                backgroundColor: themes.light.greenAccentColor,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                borderColor: themes[theme].backgroundColor,
+                                borderRadius: 10,
+                                borderWidth: 1
+                            }}
                         >
                             <Icon
                                 name={iconName}
                                 style={{
-                                fontSize: 24,
-                                color: themes.dark.textColor,
-                                textAlign: 'center',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                            }}
+                                    fontSize: 24,
+                                    color: themes.dark.textColor,
+                                    textAlign: 'center',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
                             />
                         </View>);
                 } else {
@@ -415,20 +415,16 @@ class ServiceMap extends Component {
                 {this.state.offline && (
                     <View
                         style={[
+                            getElevation(),
                             getRowOrdering(direction), {
-                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
                                 top: 46,
                                 left: 0,
                                 width: width - 10,
                                 marginHorizontal: 5,
-                                padding: 5,
-                                shadowColor: 'black',
-                                shadowOffset: {width: 0, height: 1},
-                                shadowOpacity: 0.4,
-                                shadowRadius: 1,
-                                elevation: 3
-                        }]}>
+                                padding: 10,
+                            }]}>
                         <View style={{
                             width: 36,
                             flexDirection: 'row',
@@ -437,27 +433,34 @@ class ServiceMap extends Component {
                         }}>
                             <Icon
                                 style={{
-                                    color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
+                                    color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
                                     fontSize: 24
                                 }}
                                 name="md-warning"
                             />
                         </View>
-                        <Text style={[
-                            styles.flex,
-                            {color: theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
-                            getFontFamily(language),
-                            {textAlign: 'center'}
-                        ]}>
-                            {I18n.t('OFFLINE_MODE')}
-                        </Text>
-                        <Button
-                            color="green"
-                            style={{flex: 1}}
-                            text={I18n.t('TRY_TO_REFRESH').toUpperCase() }
-                            onPress={this.onRefresh.bind(this)}
-                            textStyle={{fontSize: 12}}
-                        />
+                        <View style={styles.container}>
+                            <Text style={[
+                                styles.flex,
+                                {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
+                                getFontFamily(language),
+                                {textAlign: 'center'}
+                            ]}>
+                                {I18n.t('OFFLINE_MODE')}
+                            </Text>
+                                <Button
+                                    color="green"
+                                    text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
+                                    onPress={this.onRefresh.bind(this)}
+                                    buttonStyle={{
+                                        width: 200,
+                                        height: 35,
+                                        marginTop: 5,
+                                        marginBottom: 5,
+                                        alignSelf: 'center'
+                                    }}
+                                />
+                        </View>
                     </View>
                 )}
                 {filteringView && (

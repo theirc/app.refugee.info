@@ -31,10 +31,10 @@ export default class OfflineView extends Component {
                     <Icon style={componentStyles.offlineModeIcon} name="md-warning"/>
                     <View style={componentStyles.offlineModeTextContainer}>
                         <Text style={[
-                                componentStyles.offlineModeText,
-                                getFontFamily(language),
-                                getTextColor(theme)
-                            ]}
+                            componentStyles.offlineModeText,
+                            getFontFamily(language),
+                            getTextColor(theme)
+                        ]}
                         >
                             {I18n.t('OFFLINE_MODE')}
                         </Text>
@@ -43,8 +43,7 @@ export default class OfflineView extends Component {
                         <Button
                             text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
                             onPress={()=> this.onRefreshHandler()}
-                            style={{marginTop: 15}}
-                            buttonStyle={{height: 35}}
+                            buttonStyle={{height: 35, marginTop: 15, marginBottom: 5}}
                             textStyle={{fontSize: 14}}
                             color="green"
                         />
