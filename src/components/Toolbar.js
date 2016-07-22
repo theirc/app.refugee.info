@@ -1,5 +1,14 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Image, Text, StyleSheet, TouchableOpacity, Dimensions, LayoutAnimation} from 'react-native';
+import {
+    View,
+    Image,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Dimensions,
+    LayoutAnimation,
+    Platform
+} from 'react-native';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getRowOrdering, themes} from '../styles';
@@ -99,7 +108,7 @@ export default class Toolbar extends Component {
                 style={[
                     componentStyles.toolbarContainer,
                     theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
-                    isMapView && {height: 80}
+                    isMapView && {height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55}
                 ]}
             >
                 <View style={componentStyles.toolbarTop}>
@@ -150,12 +159,14 @@ const componentStyles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        paddingTop: 25,
+        paddingTop: (Platform.Version >= 21 || Platform.OS === 'ios') ? 25 : 0,
         paddingBottom: 15,
         paddingRight: 15,
         paddingLeft: 15,
         flexDirection: 'column',
-        height: windowHeight > 500 ? 140 : 110,
+        height: (Platform.Version >= 21 || Platform.OS === 'ios')
+            ? windowHeight > 500 ? 140 : 110
+            : windowHeight > 500 ? 115 : 85,
         borderBottomWidth: 2
     },
     toolbarContainerLight: {
