@@ -40,7 +40,8 @@ const RADIUS_MULTIPLIER = 1.2;
 const MAX_SERVICES = 25;
 
 class ServiceMap extends Component {
-
+    static smallHeader = true;
+    
     static propTypes = {
         searchCriteria: React.PropTypes.string
     };

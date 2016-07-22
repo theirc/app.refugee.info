@@ -14,3 +14,4 @@ export {default as HumanitarianIcon} from './HumanitarianIcon';
 export {default as SelectableListItem} from './SelectableListItem';
 export {default as LoadingOverlay} from './LoadingOverlay';
 export {default as Icon} from './Icon';
+export {default as ParallaxView} from './ParallaxView';

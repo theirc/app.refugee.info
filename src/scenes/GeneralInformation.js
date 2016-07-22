@@ -18,7 +18,7 @@ import styles, {themes} from '../styles';
 import {Regions} from '../data';
 
 export class GeneralInformation extends Component {
-
+    
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };

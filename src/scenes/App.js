@@ -185,14 +185,13 @@ export class App extends Component {
                                         title={route.title}
                                         {...route.props}
                                         />;
-
                                 return (
                                     <View
                                         pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
                                         showsVerticalScrollIndicator={true}
                                         style={[styles.scene,
                                             theme=='dark' && {backgroundColor: themes.dark.backgroundColor},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.path == 'map') &&
+                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) && 
                                             {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55}
                                         ]}
                                         >
