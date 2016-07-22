@@ -107,6 +107,7 @@ const componentStyles = StyleSheet.create({
     button: {
         flex: 1,
         height: 45,
+        borderRadius: 2
     },
     buttonInner: {
         flex: 1,

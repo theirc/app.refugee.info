@@ -89,7 +89,8 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 36
+        height: 36,
+        borderRadius: 2
     },
     searchBarLight: {
         backgroundColor: themes.light.backgroundColor

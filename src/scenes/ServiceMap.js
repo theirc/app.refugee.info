@@ -114,7 +114,7 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, { service, location, serviceType }, this.state);
+        navigator.forward(null, null, {service, location, serviceType}, this.state);
     }
 
     async fetchData(envelope = {}) {
@@ -286,7 +286,8 @@ class ServiceMap extends Component {
             filteringView: false,
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
         }, () => {
-            this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();;
+            this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();
+            ;
         });
     }
 
@@ -309,9 +310,9 @@ class ServiceMap extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this.fetchData().then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
@@ -334,7 +335,7 @@ class ServiceMap extends Component {
                     showsPointsOfInterest={false}
                     showsCompass={false}
                     ref={(r) => this.mapRef = r}
-                    >
+                >
                     {markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
@@ -343,9 +344,9 @@ class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
-                            calloutOffset={{ x: 0, y: 10 }}
+                            calloutOffset={{x: 0, y: 10}}
                             onCalloutPress={() => this.onCalloutPress(marker) }
-                            >
+                        >
                             {marker.widget}
                             <MapView.Callout tooltip={true} style={[{
                                 width: width - 50
@@ -385,13 +386,14 @@ class ServiceMap extends Component {
                         style={[
                             getElevation(),
                             getRowOrdering(direction), {
-                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
                                 top: 46,
                                 left: 0,
                                 width: width - 10,
                                 marginHorizontal: 5,
-                                padding: 10
+                                padding: 10,
+                                borderRadius: 2
                             }]}>
                         <View style={{
                             width: 36,
@@ -405,13 +407,13 @@ class ServiceMap extends Component {
                                     fontSize: 24
                                 }}
                                 name="md-warning"
-                                />
+                            />
                         </View>
                         <Text style={[
                             styles.flex,
                             {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
-                            { textAlign: 'center' }
+                            {textAlign: 'center'}
                         ]}>
                             {I18n.t('TOO_MANY_RESULTS') }
                         </Text>
@@ -429,6 +431,7 @@ class ServiceMap extends Component {
                                 width: width - 10,
                                 marginHorizontal: 5,
                                 padding: 10,
+                                borderRadius: 2
                             }]}>
                         <View style={{
                             width: 36,
@@ -439,7 +442,7 @@ class ServiceMap extends Component {
                             <Icon
                                 style={{
                                     color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor,
-                                    fontSize: 24
+                                    fontSize: 32
                                 }}
                                 name="md-warning"
                             />
@@ -453,6 +456,7 @@ class ServiceMap extends Component {
                             ]}>
                                 {I18n.t('OFFLINE_MODE')}
                             </Text>
+                            <View style={styles.flex}>
                                 <Button
                                     color="green"
                                     text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
@@ -465,6 +469,7 @@ class ServiceMap extends Component {
                                         alignSelf: 'center'
                                     }}
                                 />
+                            </View>
                         </View>
                     </View>
                 )}
@@ -501,7 +506,7 @@ class ServiceMap extends Component {
                         <View
                             style={[
                                 styles.searchBarContainer,
-                                {backgroundColor: theme == 'dark' ? styles.searchBarContainerDark : styles.searchBarContainerLight}
+                                {backgroundColor: theme == 'dark' ? styles.menuBackgroundColor : styles.dividerColor},
                             ]}
                         >
                             <Button

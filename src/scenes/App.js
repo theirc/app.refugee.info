@@ -190,7 +190,8 @@ export class App extends Component {
                                         showsVerticalScrollIndicator={true}
                                         style={[styles.scene,
                                             theme=='dark' && {backgroundColor: themes.dark.backgroundColor},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.path == 'map') && {paddingTop: 80}
+                                            (navigator && navigator.currentRoute && navigator.currentRoute.path == 'map') &&
+                                            {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55}
                                         ]}
                                         >
                                         {instance}

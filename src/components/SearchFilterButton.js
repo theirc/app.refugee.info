@@ -84,7 +84,8 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         height: 36,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRadius: 2
     },
     searchFilterButtonLight: {
         backgroundColor: themes.light.backgroundColor

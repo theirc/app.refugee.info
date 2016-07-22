@@ -159,7 +159,9 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scene: {
-        paddingTop: windowHeight > 500 ? 140 : 110,
+        paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios')
+            ? windowHeight > 500 ? 140 : 110
+            : windowHeight > 500 ? 115 : 85,
         flex: 1
     },
     row: {
@@ -357,21 +359,21 @@ export function getRowOrdering(direction) {
 
 export function getAlignItems(direction) {
     if (direction === 'rtl') {
-        return { alignItems: 'flex-end' }
+        return {alignItems: 'flex-end'}
     } else {
-        return { alignItems: 'flex-start' }
+        return {alignItems: 'flex-start'}
     }
 }
 
 export function getTextAlign(direction) {
     if (direction === 'rtl') {
-        return { textAlign: 'right' }
+        return {textAlign: 'right'}
     } else {
-        return { textAlign: 'auto' }
+        return {textAlign: 'auto'}
     }
 }
 
-export function getIconComponent(iconName='') {
+export function getIconComponent(iconName = '') {
     if (iconName.indexOf('ion-') == 0) {
         return Ionicons;
     } else if (iconName.indexOf('fa-') == 0) {
@@ -383,7 +385,7 @@ export function getIconComponent(iconName='') {
     }
 }
 
-export function getIconName(iconName='') {
+export function getIconName(iconName = '') {
     if (iconName.indexOf('ion-') == 0) {
         return iconName.substring(4);
     } else if (iconName.indexOf('fa-') == 0) {
@@ -394,14 +396,26 @@ export function getIconName(iconName='') {
         return iconName;
     }
 }
-export function getElevation(level = 3){
-    return {
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.33,
-        shadowRadius: level > 1 ? level - 1 : level,
-        elevation: level,
+export function getElevation(level = 3) {
+    if (Platform.OS == 'ios') {
+        return {
+            shadowColor: 'black',
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.33,
+            shadowRadius: level > 1 ? level - 1 : level,
+        }
     }
+    else if (Platform.Version >= 21) {
+        // Android Lollipop 5.0 and up supports elevation
+        return {
+            elevation: level,
+        }
+    }
+    else return {
+            // Android KitKat and JellyBean polyfill
+            borderBottomColor: 'rgba(0,0,0,0.3)',
+            borderBottomWidth: 0.5
+        }
 }
 
 export default styles;
