@@ -317,7 +317,7 @@ class ServiceMap extends Component {
     }
 
     _fitMap() {
-        if (this.mapRef) {
+        if (this.mapRef && this.state.markers.length > 0) {
             this.mapRef.fitToElements(true);
         }
     }
