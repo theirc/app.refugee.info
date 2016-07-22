@@ -28,7 +28,8 @@ import {
     SearchFilterButton,
     SelectableListItem,
     LoadingOverlay,
-    Icon
+    Icon,
+    OfflineView
 } from '../components';
 import {Regions, Services} from '../data';
 
@@ -113,7 +114,7 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, {service, location, serviceType}, this.state);
+        navigator.forward(null, null, { service, location, serviceType }, this.state);
     }
 
     async fetchData(envelope = {}) {
@@ -216,8 +217,7 @@ class ServiceMap extends Component {
                 loading: false,
                 offline: false
             });
-        }
-        catch (e) {
+        } catch (e) {
             this.setState({
                 serviceTypes,
                 locations: [region],
@@ -256,9 +256,10 @@ class ServiceMap extends Component {
         if (this.state.region) {
             this.setState({
                 searchCriteria: event.nativeEvent.text,
-                filteringView: false
+                filteringView: false,
+                markers: [],
             }, () => {
-                this.fetchData(this.state.initialEnvelope).done()
+                this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();
             });
         }
     }
@@ -274,6 +275,7 @@ class ServiceMap extends Component {
     }
 
     clearFilters() {
+        this.setState({markers: []});
 
         let serviceTypes = this.state.serviceTypes;
         for (let i = 0; i < serviceTypes.length; i++) {
@@ -281,13 +283,10 @@ class ServiceMap extends Component {
         }
         this.setState({
             serviceTypes: serviceTypes,
+            filteringView: false,
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
         }, () => {
-            this.fetchData(this.state.initialEnvelope).then(() =>
-                this.setState({
-                    filteringView: false
-                })
-            );
+            this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();;
         });
     }
 
@@ -302,18 +301,24 @@ class ServiceMap extends Component {
     }
 
     filterByTypes() {
-        this.fetchData(this.state.initialEnvelope).then(() =>
-            this.setState({
-                filteringView: false
-            })
-        )
+        this.setState({
+            filteringView: false,
+            markers: []
+        });
+        this.fetchData(this.state.initialEnvelope).then(() => this._fitMap());
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
+        this.setState({ refreshing: true });
         this.fetchData().then(() => {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
         });
+    }
+
+    _fitMap() {
+        if (this.mapRef) {
+            this.mapRef.fitToElements(true);
+        }
     }
 
     render() {
@@ -328,7 +333,8 @@ class ServiceMap extends Component {
                     showsMyLocationButton={false}
                     showsPointsOfInterest={false}
                     showsCompass={false}
-                >
+                    ref={(r) => this.mapRef = r}
+                    >
                     {markers.map((marker, i) => (
                         <MapView.Marker
                             coordinate={{
@@ -337,10 +343,9 @@ class ServiceMap extends Component {
                             }}
                             description={marker.description}
                             key={i}
-                            calloutOffset={{x: 0, y: 10}}
-                            onPress={() => console.log(marker.title)}
-                            onCalloutPress={() => this.onCalloutPress(marker)}
-                        >
+                            calloutOffset={{ x: 0, y: 10 }}
+                            onCalloutPress={() => this.onCalloutPress(marker) }
+                            >
                             {marker.widget}
                             <MapView.Callout tooltip={true} style={[{
                                 width: width - 50
@@ -348,7 +353,7 @@ class ServiceMap extends Component {
                                 <MapPopup marker={marker}/>
                             </MapView.Callout>
                         </MapView.Marker>
-                    ))}
+                    )) }
                 </MapView>
                 <View
                     style={[
@@ -380,7 +385,7 @@ class ServiceMap extends Component {
                         style={[
                             getElevation(),
                             getRowOrdering(direction), {
-                                backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
+                                backgroundColor: theme=='dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
                                 top: 46,
                                 left: 0,
@@ -400,15 +405,15 @@ class ServiceMap extends Component {
                                     fontSize: 24
                                 }}
                                 name="md-warning"
-                            />
+                                />
                         </View>
                         <Text style={[
                             styles.flex,
                             {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
-                            {textAlign: 'center'}
+                            { textAlign: 'center' }
                         ]}>
-                            {I18n.t('TOO_MANY_RESULTS')}
+                            {I18n.t('TOO_MANY_RESULTS') }
                         </Text>
                     </View>
                 )}
