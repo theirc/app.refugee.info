@@ -44,6 +44,8 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
@@ -54,19 +56,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-
-	<key>UILaunchImages</key>
-<array>
-<dict>
-<key>Launch image</key>
-<string>Default-Portrait@2x.png</string>
-<key>UILaunchImageName</key>
-<string>Default</string>
-<key>UILaunchImageSize</key>
-<string>{320,568}</string>
-<key>UILaunchImageMinimumOSVersion</key>
-<string>7.0</string>
-</dict>
-</array>
 </dict>
 </plist>
