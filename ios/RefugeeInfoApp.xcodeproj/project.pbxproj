@@ -14,6 +14,7 @@
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* RefugeeInfoAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RefugeeInfoAppTests.m */; };
 		061F3E031D3146AC0075C1CA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 061F3DF71D31469C0075C1CA /* libRCTPushNotification.a */; };
+		06AEC5FD1D41BB2300C061F1 /* Default-Portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06AEC5FC1D41BB2300C061F1 /* Default-Portrait@2x.png */; };
 		06D4EC301D2D89C30046FDB0 /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D4EC2B1D2D89A20046FDB0 /* libRNMail.a */; };
 		0B72CE9CF00A499A8BC282FB /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A38A3827CB94AD8BB6B98DC /* libRNDeviceInfo.a */; };
 		133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 78C398B91ACF4ADC00677621 /* libRCTLinking.a */; };
@@ -196,6 +197,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RefugeeInfoAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefugeeInfoAppTests.m; sourceTree = "<group>"; };
 		061F3DEC1D31469C0075C1CA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
+		06AEC5FC1D41BB2300C061F1 /* Default-Portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait@2x.png"; path = "RefugeeInfoApp/Default-Portrait@2x.png"; sourceTree = "<group>"; };
 		06D4EC181D2D89A10046FDB0 /* RNMail.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMail.xcodeproj; path = "../node_modules/react-native-mail/RNMail.xcodeproj"; sourceTree = "<group>"; };
 		103CB611C2BF42BAAC5B6922 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		139105B61AF99BAD00B5F7CC /* RCTSettings.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTSettings.xcodeproj; path = "../node_modules/react-native/Libraries/Settings/RCTSettings.xcodeproj"; sourceTree = "<group>"; };
@@ -360,6 +362,7 @@
 		13B07FAE1A68108700A75B9A /* RefugeeInfoApp */ = {
 			isa = PBXGroup;
 			children = (
+				06AEC5FC1D41BB2300C061F1 /* Default-Portrait@2x.png */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -806,6 +809,7 @@
 				43688CCC1D266420002E5F48 /* Montserrat-SemiBold.otf in Resources */,
 				4E3A4B951D37E09F00352D09 /* humanitarian_icons.ttf in Resources */,
 				43688CBB1D265BF8002E5F48 /* Montserrat-Regular.otf in Resources */,
+				06AEC5FD1D41BB2300C061F1 /* Default-Portrait@2x.png in Resources */,
 				37764F34849C4D2DBE593856 /* Entypo.ttf in Resources */,
 				64E294D541F9419F836AFD04 /* EvilIcons.ttf in Resources */,
 				AABF94441B4941B69C21C4E4 /* Foundation.ttf in Resources */,
