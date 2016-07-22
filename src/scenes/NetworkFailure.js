@@ -42,7 +42,7 @@ class NetworkFailure extends Component {
                     onPress={() => this._onPress()}
                     style={{marginTop: 15}}
                     buttonStyle={{paddingLeft: 30, paddingRight: 30}}
-                    textStyle={{textAlign: 'center'}}
+                    textStyle={{textAlign: 'center', fontSize: 14}}
                 />
             </View>
         );

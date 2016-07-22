@@ -195,6 +195,7 @@ class Contact extends Component {
                     color="green"
                     text={I18n.t('SUBMIT')}
                     onPress={() => this.onSubmitClick()}
+                    textStyle={{fontSize: 15}}
                 />
             </ScrollView>
         );

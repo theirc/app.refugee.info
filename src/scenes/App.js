@@ -5,7 +5,8 @@ import {
     Navigator,
     StatusBar,
     TouchableOpacity,
-    Platform
+    Platform,
+    BackAndroid
 } from 'react-native';
 import React, {Component, PropTypes} from 'react';
 import Navigation from './Navigation';
@@ -32,6 +33,7 @@ export class App extends Component {
             drawerBackgroundColor: null,
             drawerBorderColor: null
         });
+        BackAndroid.addEventListener('hardwareBackPress', this._hardwareBackPress);
     }
 
 
@@ -69,17 +71,20 @@ export class App extends Component {
         };
     };
 
-    closeDrawer = () => {
-        this.drawer.close()
-    };
-    openDrawer = () => {
-        this.drawer.open()
-    };
     toggleDrawer = () => {
         if (!this.state.drawerOpen) {
             this.drawer.open()
         } else {
             this.drawer.close();
+        }
+    };
+
+    _hardwareBackPress = () => {
+        if (this.state.drawerOpen) {
+            this.drawer.close();
+            return true;
+        } else {
+            return this.state.navigator._hardwareBackPress()
         }
     };
 
@@ -90,10 +95,8 @@ export class App extends Component {
     };
 
     render() {
-        const {drawer, navigator} = this.state;
-        let {direction, theme} = this.props;
-        const {country, dispatch} = this.props;
-
+        let {drawer, navigator} = this.state;
+        const {direction, theme, country, dispatch} = this.props;
 
         let drawerStyles = {
             main: {
@@ -142,7 +145,6 @@ export class App extends Component {
                 side={'right'}
             >
                 {statusBar}
-                {!drawer &&
                 <Navigator
                     configureScene={() => {
                             let sceneConfig = null;
@@ -175,7 +177,7 @@ export class App extends Component {
                             if (this.state.navigator && route.component) {
                                 if(navigator) { 
                                     navigator.updateIsChild(); 
-                                }; 
+                                }
 
                                 let instance =
                                     <route.component
@@ -189,7 +191,8 @@ export class App extends Component {
                                         showsVerticalScrollIndicator={true}
                                         style={[styles.scene,
                                             theme=='dark' && {backgroundColor: themes.dark.backgroundColor},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) && {paddingTop: 80}
+                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) && 
+                                            {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55}
                                         ]}
                                         >
                                         {instance}
@@ -198,7 +201,6 @@ export class App extends Component {
                             }
                         } }
                 />
-                }
             </Drawer>
         )
     }

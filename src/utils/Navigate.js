@@ -55,7 +55,6 @@ export default class Navigate {
         this.previousRoute = null;
         this.isChild = false;
         this.store = store;
-        BackAndroid.addEventListener('hardwareBackPress', this._hardwareBackPress);
     }
 
     /**
