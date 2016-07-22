@@ -71,7 +71,7 @@ export default class Toolbar extends Component {
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
-        let isMapView = navigator && navigator.currentRoute && navigator.currentRoute.path == 'map';
+        let isMapView = navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader;
         let icon = null;
         if (navigator) {
             icon = (

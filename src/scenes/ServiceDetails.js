@@ -11,9 +11,10 @@ import {
     TextInput,
     Modal,
     Platform,
-    AsyncStorage
+    AsyncStorage,
+    Image
 } from 'react-native';
-import {Icon} from '../components';
+import {Icon, ParallaxView} from '../components';
 import {default as FontAwesomeIcon} from 'react-native-vector-icons/FontAwesome';
 import MapView from 'react-native-maps';
 import I18n from '../constants/Messages';
@@ -34,11 +35,12 @@ import styles, {
     getDividerColor
 } from '../styles';
 
+
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
 export default class ServiceDetails extends Component {
-
+    static smallHeader = true;
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };
@@ -92,7 +94,7 @@ export default class ServiceDetails extends Component {
 
         if (serviceType.vector_icon) {
             dispatch({ type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: serviceType.vector_icon });
-        } else if (serviceType.icon_url ){
+        } else if (serviceType.icon_url) {
             dispatch({ type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: serviceType.icon_url });
         }
     }
@@ -474,7 +476,7 @@ export default class ServiceDetails extends Component {
     }
 
     render() {
-        const {service, serviceType, location, theme, direction, language} = this.props;
+        const {service, serviceType, toolbarTitleIcon, toolbarTitleImage, location, theme, direction, language} = this.props;
 
         let locationName = (location) ? location.pageTitle || location.name : '';
         let providerName = (this.state.provider) ? this.state.provider.name : '';
@@ -484,9 +486,70 @@ export default class ServiceDetails extends Component {
 
         let rating = this.serviceCommons.renderStars(service.rating);
         let openingHoursView = this.renderOpeningHours();
+        let containerBackground = { backgroundColor: themes[theme || 'light'].backgroundColor };
+
+
+        let iconName = (toolbarTitleIcon || '').trim();
+        let titleIcon = null;
+        if (iconName) {
+            titleIcon = (<View
+                style={[componentStyles.titleIcon, {
+                    padding: 2,
+                    backgroundColor: themes.light.greenAccentColor,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderColor: themes[theme].backgroundColor,
+                    borderRadius: 7,
+                },
+                ]}>
+                <Icon
+                    name={iconName || defaultIcon }
+                    style={[
+                        {
+                            fontSize: 18,
+                            color: themes.dark.textColor,
+                            textAlign: 'center',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        },
+                    ]}
+                    />
+            </View>);
+        } else if (toolbarTitleImage) {
+            titleIcon = (<Image
+                source={{ uri: toolbarTitleImage }}
+                style={componentStyles.titleIcon}
+                />);
+        }
+
+        const defaultServiceImage = {
+            dark: require('../assets/service-placeholder-dark.png'),
+            light: require('../assets/service-placeholder-light.png'),
+        };
+
+        const backgroundImage = { uri: service.image_data } || defaultServiceImage[theme || 'light'];
+        const textStyle = !service.image_data ? { color: themes[theme || 'light'].textColor } :
+            {
+                color: '#ffffff',
+                textShadowOffset: { width: -1, height: 1 },
+                textShadowRadius: service.image_data ? 0 : 1,
+                textShadowColor: '#000000',
+            };
+
         return (
-            <ScrollView
-                style={styles.container}
+            <ParallaxView
+                backgroundSource={backgroundImage}
+                windowHeight={service.image_data ? 130 : 60}
+                header={(
+                    <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
+                        <Text style={[textStyle, {
+                            fontSize: 24
+                        }]}>
+                            {service.name}
+                        </Text>
+                    </View>
+                ) }
+                scrollableViewStyle={[styles.container, containerBackground]}
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}
@@ -619,16 +682,33 @@ export default class ServiceDetails extends Component {
                         onPress={() => this.onShareClick() }
                         />
                 </View>
-            </ScrollView>
+            </ParallaxView >
         );
     }
 }
+const componentStyles = StyleSheet.create({
+    titleIcon: {
+        width: 26,
+        height: 26,
+        marginLeft: 5,
+        marginRight: 5
+    },
+
+    headerView: {
+        flex: 1,
+        alignItems: 'flex-end',
+        justifyContent: 'flex-start',
+        margin: 8
+    },
+});
 
 const mapStateToProps = (state) => {
     return {
         theme: state.theme,
         direction: state.direction,
-        language: state.language
+        language: state.language,
+        toolbarTitleIcon: state.toolbarTitleIcon,
+        toolbarTitleImage: state.toolbarTitleImage,
     };
 };
 
