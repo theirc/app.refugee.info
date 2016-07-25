@@ -10,6 +10,7 @@ import drawerOpen from './drawerOpen';
 import toolbarTitle from './toolbarTitle';
 import toolbarTitleIcon from './toolbarTitleIcon';
 import toolbarTitleImage from './toolbarTitleImage';
+import locations from './locations';
 
 const refugeeApp = combineReducers({
     region,
@@ -22,6 +23,7 @@ const refugeeApp = combineReducers({
     toolbarTitle,
     toolbarTitleIcon,
     toolbarTitleImage,
+    locations
 });
 
 export default refugeeApp;
