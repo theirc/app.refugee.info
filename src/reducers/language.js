@@ -3,7 +3,7 @@ import I18n from '../constants/Messages';
 
 export default (state = null, action) => {
     switch (action.type) {
-    case 'CHANGE_LANGUAGE':
+    case 'LANGUAGE_CHANGED':
         I18n.locale = action.payload;
 
         return action.payload;

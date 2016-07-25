@@ -41,7 +41,7 @@ export default class DrawerCommons {
     changeLanguage(code, reload = true) {
         const { dispatch } = this.component.props;
         I18n.locale = code;
-        dispatch({ type: 'CHANGE_LANGUAGE', payload: code });
+        dispatch({ type: 'LANGUAGE_CHANGED', payload: code });
         if (reload) {
             AsyncStorage.setItem('langCode', code);
             this.changeScene(this.component.props.route);
@@ -69,7 +69,7 @@ export default class DrawerCommons {
         const { dispatch } = this.component.props;
         InteractionManager.runAfterInteractions(() => {
             navigator.to(path, name, props);
-            dispatch({ type: 'CHANGE_ROUTE', payload: path });
+            dispatch({ type: 'ROUTE_CHANGED', payload: path });
             this.closeDrawer();
         });
     };

@@ -4,7 +4,7 @@ import I18n from '../constants/Messages'
 function reloadDirection(direction) {
     return {
         payload: direction,
-        type: 'CHANGE_DIRECTION'
+        type: 'DIRECTION_CHANGED'
     };
 }
 

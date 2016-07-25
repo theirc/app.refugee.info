@@ -3,7 +3,7 @@ import {AsyncStorage} from 'react-native';
 function receiveLocations(locations) {
     return {
         payload: locations,
-        type: 'RECEIVE_LOCATIONS'
+        type: 'LOCATIONS_CHANGED'
     };
 }
 

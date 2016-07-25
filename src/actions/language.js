@@ -4,7 +4,7 @@ import I18n from '../constants/Messages'
 function reloadLanguage(language) {
     return {
         payload: language,
-        type: 'CHANGE_LANGUAGE'
+        type: 'LANGUAGE_CHANGED'
     };
 }
 

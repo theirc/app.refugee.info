@@ -1,6 +1,6 @@
 export default (state = 'ltr', action) => {
     switch (action.type) {
-    case 'CHANGE_DIRECTION':
+    case 'DIRECTION_CHANGED':
         return action.payload;
     default:
         return state;

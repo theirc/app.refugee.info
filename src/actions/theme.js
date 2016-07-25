@@ -3,7 +3,7 @@ import {AsyncStorage} from 'react-native';
 function receiveTheme(theme) {
     return {
         payload: theme,
-        type: 'RECEIVE_THEME'
+        type: 'THEME_CHANGED'
     };
 }
 
