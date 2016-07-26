@@ -33,6 +33,21 @@ export default class Toolbar extends Component {
         toolbarTitleIcon: PropTypes.string
     };
 
+    back = false;
+
+    _goBack() {
+        const {navigator} = this.context;
+        
+        if (!this.back) {
+            this.back = true;
+            navigator.back();
+
+            setTimeout(() => {
+                this.back = false;
+            }, 1000);
+        }
+    }
+
     render() {
         const {navigator} = this.context;
         const {theme, onMenuIconPress, drawerOpen, direction, region, language} = this.props;
@@ -69,13 +84,13 @@ export default class Toolbar extends Component {
                             justifyContent: 'center',
                         },
                     ]}
-                />
+                    />
             </View>);
         } else if (toolbarTitleImage) {
             titleIcon = (<Image
-                source={{uri: toolbarTitleImage}}
+                source={{ uri: toolbarTitleImage }}
                 style={componentStyles.titleIcon}
-            />);
+                />);
         }
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
@@ -85,20 +100,20 @@ export default class Toolbar extends Component {
         if (navigator) {
             icon = (
                 <TouchableOpacity
-                    style={{width: 50, alignItems: 'flex-end', justifyContent: 'center'}}
-                    onPress={navigator.isChild ? () => navigator.back() : onMenuIconPress}
-                ><Icon
-                    name={navigator.isChild ? backIcon : menuIcon}
-                    style={
-                        navigator.isChild ? [
-                            componentStyles.backIcon,
-                            theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
-                        ] : [
-                            componentStyles.menuIcon,
-                            theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
-                        ]
-                    }
-                />
+                    style={{ width: 50, alignItems: 'flex-end', justifyContent: 'center' }}
+                    onPress={navigator.isChild ? () => this._goBack() : onMenuIconPress}
+                    ><Icon
+                        name={navigator.isChild ? backIcon : menuIcon}
+                        style={
+                            navigator.isChild ? [
+                                componentStyles.backIcon,
+                                theme == 'dark' ? componentStyles.backIconDark : componentStyles.backIconLight
+                            ] : [
+                                    componentStyles.menuIcon,
+                                    theme == 'dark' ? componentStyles.menuIconDark : componentStyles.menuIconLight
+                                ]
+                        }
+                        />
                 </TouchableOpacity>);
         }
 
@@ -108,31 +123,31 @@ export default class Toolbar extends Component {
                 style={[
                     componentStyles.toolbarContainer,
                     theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
-                    isMapView && {height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55}
+                    isMapView && { height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55 }
                 ]}
-            >
+                >
                 <View style={componentStyles.toolbarTop}>
                     <Image
                         style={componentStyles.brandImage}
                         source={theme == 'dark' ? themes.dark.logo : themes.light.logo }
-                    />
+                        />
                     {showIcon && icon}
                 </View>
 
                 {!isMapView && (
-                <View style={[
-                    componentStyles.toolbarBottom,
-                    getRowOrdering(direction)
-                ]}>
-                    {titleIcon}
-                    <Text style={[
-                        componentStyles.toolbarTitle,
-                        getFontFamily(language),
-                        theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
+                    <View style={[
+                        componentStyles.toolbarBottom,
+                        getRowOrdering(direction)
                     ]}>
-                        {title}
-                    </Text>
-                </View>)}
+                        {titleIcon}
+                        <Text style={[
+                            componentStyles.toolbarTitle,
+                            getFontFamily(language),
+                            theme == 'dark' ? componentStyles.toolbarTitleDark : componentStyles.toolbarTitleLight
+                        ]}>
+                            {title}
+                        </Text>
+                    </View>) }
             </View>
         );
     }

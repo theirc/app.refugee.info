@@ -21,6 +21,8 @@ import store from '../store';
 import {Regions, Services, News} from '../data';
 
 export class NewsThatMoves extends Component {
+    static smallHeader = true;
+
     state = {
         dataSource: new ListView.DataSource({
             rowHasChanged: (row1, row2) => row1 !== row2,

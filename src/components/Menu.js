@@ -112,7 +112,7 @@ class MenuItem extends Component {
                     flexDirection: 'column'
                 }}
                 >
-                <View style={[styles.itemLine, direction === 'rtl' ? { paddingRight: 15 } : {}]}>
+                <View style={[styles.itemLine, { paddingHorizontal: 5 }, direction === 'rtl' ? { paddingRight: 15 } : {}]}>
                     <View style={[
                         styles.item,
                         getRowOrdering(direction)

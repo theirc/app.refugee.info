@@ -32,7 +32,7 @@ export default class SelectableListItem extends Component {
     };
 
     render() {
-        const {theme, onPress, text, language, direction, fontSize, iconSize, selected} = this.props;
+        const {theme, onPress, text, language, direction, fontSize, iconSize, selected, icon, image} = this.props;
         let selectedIcon = (selected &&
             <View
                 style={[componentStyles.listItemIconContainer]}
@@ -43,6 +43,22 @@ export default class SelectableListItem extends Component {
                 />
             </View>
         );
+
+        const button_icon = (image) ? (
+            <Image
+                source={image}
+                style={[
+                    componentStyles.listItemImageInline,
+                    { width: iconSize || 24, height: iconSize || 24 }
+                ]}
+                />) : (icon) ? (
+                    <Icon
+                        name={icon}
+                        style={[
+                            componentStyles.listItemIcon,
+                            { fontSize: iconSize || 24, color: themes[theme||'light'].textColor },
+                        ]}
+                        />) : null;
         return (
             <View>
                 <TouchableHighlight
@@ -58,6 +74,20 @@ export default class SelectableListItem extends Component {
                             {borderBottomWidth: 1}
                         ]}
                     >
+                        {button_icon && (<View>
+                            <View
+                                style={[
+                                    componentStyles.listItemIconContainer
+                                ]}
+                                >
+                                {button_icon}
+                            </View>
+                            <View style={[
+                                componentStyles.dividerInline,
+                                getDividerColor(theme)
+                            ]}/>
+                        </View>
+                        ) }
                         <View style={[
                             componentStyles.listItemTextContainer,
                             getAlignItems(direction),
