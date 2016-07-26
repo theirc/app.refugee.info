@@ -102,7 +102,9 @@ class Settings extends Component {
                     dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
                     dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
                     dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
-                ]).then(this.setState({loading: false}))
+                ]).then(() => {
+                    this.setState({loading: false});
+                })
             })})
     }
 
