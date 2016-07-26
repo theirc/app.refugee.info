@@ -170,11 +170,21 @@ export default class ServiceDetails extends Component {
     }
 
     onShareClick() {
+          const {provider, service} = this.state;
+        let address = service.address || provider.address;
+        let phoneNumber = service.phone_number || provider.phone_number;
+        let text = `${service.name}
+        ${provider.name}
+
+        ${address}
+        ${phoneNumber}
+        `;
+
         requestAnimationFrame(() => {
             Share.open({
-                share_text: "Refugee Info",
-                share_URL: 'http://refugeeinfo.org',
-                title: 'Refugee Info'
+                share_text: text,
+                share_URL: 'http://refugee.info',
+                title: service.name
             }, (e) => {
                 console.log(e);
             });
