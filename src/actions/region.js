@@ -4,7 +4,7 @@ import {Regions} from '../data'
 function receiveRegion(region) {
     return {
         payload: region,
-        type: 'RECEIVE_REGION'
+        type: 'REGION_CHANGED'
     };
 }
 

@@ -5,10 +5,11 @@ import {LocationListView} from '../components';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 import store from '../store';
-
-import {updateRegionIntoStorage} from '../actions/region';
-import {updateCountryIntoStorage} from '../actions/country';
-
+import {
+    updateCountryIntoStorage,
+    updateRegionIntoStorage,
+    updateLocationsIntoStorage
+} from '../actions';
 import {Regions} from '../data'
 
 class CityChoice extends Component {
@@ -37,9 +38,7 @@ class CityChoice extends Component {
 
         cities.forEach((c) => {
             if (c && c.metadata) {
-                const pageTitle = (c.metadata.page_title || '')
-                    .replace('\u060c', ',').split(',')[0];
-                c.pageTitle = pageTitle;
+                c.pageTitle = (c.metadata.page_title || '').replace('\u060c', ',').split(',')[0]
             }
         });
 
@@ -54,13 +53,16 @@ class CityChoice extends Component {
 
         city.detected = false;
         city.coords = {};
+
         requestAnimationFrame(() => {
-            dispatch(updateCountryIntoStorage(city.country));
-            dispatch(updateRegionIntoStorage(city));
-
-            dispatch({type: 'REGION_CHANGED', payload: city});
-            dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
-
+            Promise.all([
+                dispatch(updateCountryIntoStorage(city.country)),
+                dispatch(updateRegionIntoStorage(city)),
+                dispatch(updateLocationsIntoStorage(this.state.cities)),
+                dispatch({type: 'REGION_CHANGED', payload: city}),
+                dispatch({type: 'COUNTRY_CHANGED', payload: city.country}),
+                dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
+            ]);
             if (city.content && city.content.length == 1) {
                 return this.context.navigator.to('infoDetails', null, {
                     section: city.content[0].section,
@@ -78,9 +80,11 @@ class CityChoice extends Component {
                 <LocationListView
                     loaded={this.state.loaded}
                     header={I18n.t('SELECT_LOCATION') }
-                    onPress={(rowData) => { this._onPress(rowData) } }
+                    onPress={(rowData) => {
+                        this._onPress(rowData)
+                    } }
                     rows={this.state.cities}
-                    />
+                />
             </View>
         );
     }

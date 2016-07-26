@@ -9,13 +9,16 @@ import {
     TextInput,
     ScrollView,
     RefreshControl,
-    Platform
+    Platform,
+    Dimensions
 } from 'react-native';
 import I18n from '../constants/Messages';
-import {OfflineView, ListItem, Button} from '../components';
+import {OfflineView, ListItem, Button, LoadingOverlay} from '../components';
 import {connect} from 'react-redux';
 import styles, {themes} from '../styles';
 import {Regions} from '../data';
+
+var {width, height} = Dimensions.get('window');
 
 export class GeneralInformation extends Component {
     
@@ -32,11 +35,9 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            lastSync: null
+            lastSync: null,
+            loading: false
         };
-    }
-
-    componentWillUnmount() {
     }
 
     componentDidMount() {
@@ -48,6 +49,10 @@ export class GeneralInformation extends Component {
     }
 
     async _loadInitialState() {
+        this.setState({
+            loading: true
+        });
+
         let {region, information, country} = this.props;
         const {navigator} = this.context;
 
@@ -83,12 +88,14 @@ export class GeneralInformation extends Component {
             await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
             this.setState({
                 offline: false,
-                region: region
+                region: region,
+                loading: false
             })
         }
         catch (e) {
             this.setState({
-                offline: true
+                offline: true,
+                loading: false
             })
         }
     }
@@ -124,6 +131,7 @@ export class GeneralInformation extends Component {
     render() {
         const {theme, direction, language} = this.props;
         const {navigator} = this.context;
+        const {loading, refreshing} = this.state;
         let s = (scene) => navigator.to(scene);
 
         return (
@@ -164,12 +172,13 @@ export class GeneralInformation extends Component {
                         />
                     }
                     dataSource={this.state.dataSource}
-                    enableEmptySections
+                    enableEmptySections={true}
                     renderRow={(rowData) => this.renderRow(rowData) }
                     keyboardShouldPersistTaps={true}
                     keyboardDismissMode="on-drag"
                 />
             </View>
+
         );
     }
 }

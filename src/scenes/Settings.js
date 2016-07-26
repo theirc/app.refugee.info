@@ -6,25 +6,36 @@ import {
     View,
     Text,
     ScrollView,
-    TouchableHighlight
+    TouchableHighlight,
+    Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import styles, {
-    themes, 
-    getFontFamily, 
-    getUnderlayColor, 
-    getRowOrdering, 
+    themes,
+    getFontFamily,
+    getUnderlayColor,
+    getRowOrdering,
     getBottomDividerColor
 } from '../styles';
-import {Icon} from '../components';
-import {ListItem} from '../components';
+import {
+    Icon,
+    LoadingOverlay,
+    ListItem
+} from '../components';
+import {
+    updateCountryIntoStorage,
+    updateDirectionIntoStorage,
+    updateLanguageIntoStorage,
+    updateLocationsIntoStorage,
+    updateRegionIntoStorage,
+    updateThemeIntoStorage
+} from '../actions'
 
-import {updateLanguageIntoStorage} from '../actions/language'
-import {updateDirectionIntoStorage} from '../actions/direction'
-import {updateRegionIntoStorage} from '../actions/region'
-import {updateCountryIntoStorage} from '../actions/country'
-import {updateThemeIntoStorage} from '../actions/theme'
+import ApiClient from '../utils/ApiClient';
+import {Regions} from '../data';
+
+var {width, height} = Dimensions.get('window');
 
 class Settings extends Component {
 
@@ -32,14 +43,12 @@ class Settings extends Component {
         navigator: PropTypes.object.isRequired
     };
 
-    componentDidMount() {
-
-    }
-
-    setLanguage(lang) {
-        this.setState({
-            language: lang
-        }, this.updateSettings(lang));
+    constructor(props) {
+        super(props);
+        this.state = {
+            lastSync: null,
+            loading: false
+        };
     }
 
     setTheme(theme) {
@@ -52,27 +61,49 @@ class Settings extends Component {
         });
     }
 
-    updateSettings(language) {
+    async updateSettings(language) {
+        this.setState({
+            loading: true
+        });
         const {navigator} = this.context;
-        const {theme, dispatch} = this.props;
+        const {dispatch, region, country} = this.props;
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
 
-        AsyncStorage.getAllKeys().then(k => {
-            AsyncStorage.multiRemove(k, (e) => {
+        this.apiClient = new ApiClient(this.context, {language: language});
+        const regionData = new Regions({language: language});
+
+        let newRegion = null;
+        let newCountry = null;
+        let newLocations = null;
+
+        Promise.all([
+            this.apiClient.getLocation(region.id),
+            this.apiClient.getLocation(country.id),
+        ]).then((values) => {
+            newRegion = values[0];
+            newCountry = values[1];
+        }).then(() => {
+            regionData.listChildren(newCountry, true, newRegion).then((value) => {
+                newLocations = value.filter((c) => c.level != 2);
+                newLocations.forEach((location) => {
+                    if (location && location.metadata) {
+                        location.pageTitle = (location.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
+                    }
+                });
                 Promise.all([
                     dispatch(updateLanguageIntoStorage(language)),
                     dispatch(updateDirectionIntoStorage(direction)),
-                    dispatch(updateRegionIntoStorage(null)),
-                    dispatch(updateCountryIntoStorage(null)),
-                    dispatch(updateThemeIntoStorage(theme)),
-                    dispatch({type: "REGION_CHANGED", payload: null}),
-                    dispatch({type: 'COUNTRY_CHANGED', payload: null}),
-                    dispatch({type: "CHANGE_LANGUAGE", payload: language}),
+                    dispatch(updateCountryIntoStorage(newCountry)),
+                    dispatch(updateRegionIntoStorage(newRegion)),
+                    dispatch(updateLocationsIntoStorage(newLocations)),
+                    dispatch({type: "LANGUAGE_CHANGED", payload: language}),
                     dispatch({type: "DIRECTION_CHANGED", payload: direction}),
-                    dispatch({type: "THEME_CHANGED", payload: theme})
-                ]).then(() => navigator.to('initial'))
-            });
-        });
+                    dispatch({type: "REGION_CHANGED", payload: newRegion}),
+                    dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
+                    dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
+                    dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
+                ]).then(this.setState({loading: false}))
+            })})
     }
 
     goToCountryChoice() {
@@ -82,13 +113,13 @@ class Settings extends Component {
 
     render() {
         const {theme, language, direction} = this.props;
-
+        const {loading} = this.state;
         return (
             <ScrollView style={styles.container}>
                 <ListItem
                     text={I18n.t('CHANGE_COUNTRY')}
                     icon="ios-flag"
-                    iconColor={theme=='dark' ? themes.dark.textColor : themes.light.textColor}
+                    iconColor={theme == 'dark' ? themes.dark.textColor : themes.light.textColor}
                     fontSize={13}
                     onPress={this.goToCountryChoice.bind(this)}
                 />
@@ -105,9 +136,9 @@ class Settings extends Component {
                         <Icon
                             name="ios-chatboxes"
                             style={[
-                            {fontSize: 24},
-                            styles.textAccentGreen
-                        ]}
+                                {fontSize: 24},
+                                styles.textAccentGreen
+                            ]}
                         />
                     </View>
                     <View style={{justifyContent: 'center'}}>
@@ -123,16 +154,16 @@ class Settings extends Component {
 
                 <ListItem
                     text={I18n.t('ENGLISH')}
-                    onPress={this.setLanguage.bind(this, 'en')}
+                    onPress={this.updateSettings.bind(this, 'en')}
                 />
                 <ListItem
                     text={I18n.t('ARABIC')}
-                    onPress={this.setLanguage.bind(this, 'ar')}
+                    onPress={this.updateSettings.bind(this, 'ar')}
 
                 />
                 <ListItem
                     text={I18n.t('FARSI')}
-                    onPress={this.setLanguage.bind(this, 'fa')}
+                    onPress={this.updateSettings.bind(this, 'fa')}
                 />
 
                 <View style={[
@@ -147,9 +178,9 @@ class Settings extends Component {
                         <Icon
                             name="md-color-palette"
                             style={[
-                            {fontSize: 24},
-                            styles.textAccentGreen
-                        ]}
+                                {fontSize: 24},
+                                styles.textAccentGreen
+                            ]}
                         />
                     </View>
                     <View style={{justifyContent: 'center'}}>
@@ -175,7 +206,7 @@ class Settings extends Component {
                             backgroundColor: themes.light.backgroundColor,
                             paddingLeft: 20,
                             paddingRight: 20,
-                            alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'
+                            alignItems: direction == 'rtl' ? 'flex-end' : 'flex-start'
                         }}
                     >
                         <Text style={[
@@ -199,7 +230,7 @@ class Settings extends Component {
                             backgroundColor: themes.dark.toolbarColor,
                             paddingLeft: 20,
                             paddingRight: 20,
-                            alignItems: direction=='rtl' ? 'flex-end' : 'flex-start'
+                            alignItems: direction == 'rtl' ? 'flex-end' : 'flex-start'
                         }}
                     >
                         <Text style={[
@@ -210,7 +241,7 @@ class Settings extends Component {
                         </Text>
                     </View>
                 </TouchableHighlight>
-
+                {loading && <LoadingOverlay theme={theme} height={height - 140} width={width}/>}
             </ScrollView>
         );
     }
@@ -221,7 +252,9 @@ const mapStateToProps = (state) => {
         route: state.navigation,
         language: state.language,
         theme: state.theme,
-        direction: state.direction
+        direction: state.direction,
+        region: state.region,
+        country: state.country
     };
 };
 

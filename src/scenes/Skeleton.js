@@ -13,12 +13,14 @@ import I18n from '../constants/Messages';
 import Welcome from './Welcome';
 import App from './App';
 import {Presence} from '../data'
-
-import {fetchRegionFromStorage} from '../actions/region';
-import {fetchDirectionFromStorage} from '../actions/direction';
-import {fetchLanguageFromStorage} from '../actions/language';
-import {fetchCountryFromStorage} from '../actions/country';
-import {fetchThemeFromStorage} from '../actions/theme';
+import {
+    fetchCountryFromStorage,
+    fetchDirectionFromStorage,
+    fetchLanguageFromStorage,
+    fetchLocationsFromStorage,
+    fetchRegionFromStorage,
+    fetchThemeFromStorage
+} from '../actions';
 
 var PushNotification = require('react-native-push-notification');
 
@@ -131,6 +133,7 @@ class Skeleton extends Component {
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchThemeFromStorage());
+        await dispatch(fetchLocationsFromStorage());
     }
 
     render() {

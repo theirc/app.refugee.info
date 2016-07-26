@@ -77,7 +77,7 @@ class Welcome extends Component {
             dispatch(updateDirectionIntoStorage(direction)),
             dispatch(updateLanguageIntoStorage(language)),
             dispatch({ type: "DIRECTION_CHANGED", payload: direction }),
-            dispatch({ type: "CHANGE_LANGUAGE", payload: language })
+            dispatch({ type: "LANGUAGE_CHANGED", payload: language })
         ]).then(() => {
             return this.setState({
                 language: language,

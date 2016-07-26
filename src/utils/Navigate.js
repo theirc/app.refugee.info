@@ -181,7 +181,7 @@ export default class Navigate {
                 }
                 this.currentRoute = route;
                 this.navigator.push(route);
-                this.store.dispatch({type: 'CHANGE_ROUTE', payload: path});
+                this.store.dispatch({type: 'ROUTE_CHANGED', payload: path});
             }
         }
     };

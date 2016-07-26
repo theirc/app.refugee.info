@@ -1,11 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text} from 'react-native';
 import {connect} from 'react-redux'
-import {fetchRegionFromStorage} from '../actions/region';
-import {fetchDirectionFromStorage} from '../actions/direction';
-import {fetchLanguageFromStorage} from '../actions/language';
-import {fetchCountryFromStorage} from '../actions/country';
-import {fetchThemeFromStorage} from '../actions/theme'
+import {
+    fetchCountryFromStorage,
+    fetchDirectionFromStorage,
+    fetchLanguageFromStorage,
+    fetchLocationsFromStorage,
+    fetchRegionFromStorage,
+    fetchThemeFromStorage
+} from '../actions'
 
 class Initial extends Component {
 
@@ -17,25 +20,27 @@ class Initial extends Component {
     async componentDidMount() {
         const {navigator} = this.context;
         const {dispatch} = this.props;
-
-        await dispatch(fetchRegionFromStorage());
-        await dispatch(fetchDirectionFromStorage());
-        await dispatch(fetchLanguageFromStorage());
-        await dispatch(fetchCountryFromStorage());
-        await dispatch(fetchThemeFromStorage());
-
-        const region = await AsyncStorage.getItem('regionCache');
-        if (region && region != 'null') {
-            if (region.content && region.content.length == 1) {
-                this.context.navigator.to('infoDetails', null,
-                    { section: region.content[0].section, sectionTitle: region.pageTitle })
+        Promise.all([
+            AsyncStorage.getItem('regionCache'),
+            dispatch(fetchRegionFromStorage()),
+            dispatch(fetchDirectionFromStorage()),
+            dispatch(fetchLanguageFromStorage()),
+            dispatch(fetchCountryFromStorage()),
+            dispatch(fetchThemeFromStorage()),
+            dispatch(fetchLocationsFromStorage())
+        ]).then((values) => {
+            const region = values[0];
+            if (region && region != 'null') {
+                if (region.content && region.content.length == 1) {
+                    this.context.navigator.to('infoDetails', null,
+                        { section: region.content[0].section, sectionTitle: region.pageTitle })
+                } else {
+                    this.context.navigator.to('info');
+                }
             } else {
-                this.context.navigator.to('info');
+                navigator.to('countryChoice');
             }
-        } else {
-            navigator.to('countryChoice');
-        }
-
+        })
     }
 
     render() {

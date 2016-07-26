@@ -29,35 +29,6 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
-        this.state = {
-            otherLocations: []
-        }
-    }
-
-    async componentWillReceiveProps(props) {
-        if (props.country && props.region) {
-            const children = await this.loadCities(props.country);
-
-            this.setState({ otherLocations: children });
-        }
-    }
-
-    async loadCities(country) {
-        let cities = [];
-        const regionData = new Regions(this.props);
-        const {region} = this.props;
-
-        let children = (await regionData.listChildren(country, false, region)).filter((c) => c.level != 2);
-
-        children.forEach((c) => {
-            if (c && c.metadata) {
-                const pageTitle = (c.metadata.page_title || '')
-                    .replace('\u060c', ',').split(',')[0];
-                c.pageTitle = pageTitle;
-            }
-        });
-
-        return children;
     }
 
     _getImportantInformationImage(theme, pageTitle) {
@@ -74,7 +45,6 @@ class Navigation extends Component {
     }
 
     _getImportantInformation() {
-        const { theme} = this.props;
         const region = this._getRegion();
 
         if (!region || !region.important_information) {
@@ -90,8 +60,8 @@ class Navigation extends Component {
                 <MenuItem
                     icon={i.icon}
                     key={index}
-                    onPress={() => this._defaultOrFirst(i, true) }
-                    >
+                    onPress={() => this._defaultOrFirst(i, true)}
+                >
                     {i.pageTitle}
                 </MenuItem>
             );
@@ -105,12 +75,14 @@ class Navigation extends Component {
             return null;
         }
 
+        if (!region.important_information) {
+            return region
+        }
+
         return {
             important_information: region.important_information.map((i) => {
                 if (i && i.metadata) {
-                    const pageTitle = (i.metadata.page_title || '')
-                        .replace('\u060c', ',').split(',')[0];
-                    i.pageTitle = pageTitle;
+                    i.pageTitle = (i.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
                 }
                 i.type = 'info';
                 return i;
@@ -143,30 +115,25 @@ class Navigation extends Component {
                 showTitle: showTitle
             });
         } else {
-            let payload = { region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page }
+            let payload = {region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page};
             return this.context.navigator.to('info', null, payload);
         }
     }
 
     async selectCity(city) {
         const {dispatch, country} = this.props;
-
         city.detected = false;
         city.coords = {};
         city.country = country;
-
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
-
-        dispatch({ type: 'REGION_CHANGED', payload: city });
-        dispatch({ type: 'COUNTRY_CHANGED', payload: city.country });
-
-
+        dispatch({type: 'REGION_CHANGED', payload: city});
+        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
         return this._defaultOrFirst(city);
     }
 
     render() {
-        const {theme, route, country, direction, language} = this.props;
+        const {theme, route, country, direction, language, locations} = this.props;
         const {navigator} = this.context;
         const region = this._getRegion();
 
@@ -177,9 +144,12 @@ class Navigation extends Component {
         const aboutUs = region.important_information.find(a => a.slug === 'about-us');
 
         let importantInformationItems = this._getImportantInformation();
-        let nearbyCitiesItems = this.state.otherLocations.map((i, index) => {
-            return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle || i.name}</MenuItem>;
-        });
+        let nearbyCitiesItems = null;
+        if (locations) {
+            nearbyCitiesItems = locations.map((i, index) => {
+                return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle || i.name}</MenuItem>;
+            });
+        }
         let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
         let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
 
@@ -189,10 +159,10 @@ class Navigation extends Component {
         let headerImage = <Icon
             name="md-locate"
             style={[
-                { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
-                (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
+                {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
+                (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
             ]}
-            />;
+        />;
 
         let bannerCount = region.metadata.banners.length;
         const isLTR = direction == 'ltr';
@@ -205,10 +175,10 @@ class Navigation extends Component {
                 <Icon
                     name="md-locate"
                     style={[
-                        { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2 },
-                        (direction == 'ltr' ? { marginRight: 10 } : { marginLeft: 10 })
+                        {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
+                        (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
                     ]}
-                    />
+                />
                 <Text style={[
                     getFontFamily(language),
                     styles.cityText
@@ -221,21 +191,21 @@ class Navigation extends Component {
                     icon="fa-info"
                     active={route === 'info'}
                     onPress={() => this._defaultOrFirst(region) }
-                    >
+                >
                     {I18n.t('GENERAL_INFO') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-list"
                     active={route === 'services'}
                     onPress={() => s('services') }
-                    >
+                >
                     {I18n.t('SERVICE_LIST') }
                 </MenuItem>
                 <MenuItem
                     icon="fa-map"
                     active={route === 'map'}
                     onPress={() => s('map') }
-                    >
+                >
                     {I18n.t('EXPLORE_MAP') }
                 </MenuItem>
             </MenuSection>
@@ -257,21 +227,21 @@ class Navigation extends Component {
                     icon="fa-gear"
                     active={route === 'settings'}
                     onPress={() => s('settings') }
-                    >
+                >
                     {I18n.t('SETTINGS') }
                 </MenuItem>
                 {aboutUs &&
-                    <MenuItem
-                        icon="fa-question"
-                        onPress={() => this._defaultOrFirst(aboutUs, true) }
-                        >
-                        {I18n.t('ABOUT') }
-                    </MenuItem>
+                <MenuItem
+                    icon="fa-question"
+                    onPress={() => this._defaultOrFirst(aboutUs, true) }
+                >
+                    {I18n.t('ABOUT') }
+                </MenuItem>
                 }
                 <MenuItem
                     icon="fa-envelope"
                     onPress={() => this._sendEmail() }
-                    >
+                >
                     {I18n.t('CONTACT_US') }
                 </MenuItem>
                 <MenuItem
@@ -280,7 +250,7 @@ class Navigation extends Component {
                     {I18n.t('FEEDBACK') }
                 </MenuItem>
             </MenuSection>
-            <View style={{ paddingBottom: 15 }}>
+            <View style={{paddingBottom: 15}}>
             </View>
         </ScrollView>;
     }
@@ -294,7 +264,8 @@ const mapStateToProps = (state) => {
         language: state.language,
         direction: state.direction,
         theme: state.theme,
-        drawerOpen: state.drawerOpen
+        drawerOpen: state.drawerOpen,
+        locations: state.locations
     };
 };
 
