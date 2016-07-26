@@ -53,7 +53,13 @@ export default class Services extends Component {
         */
         let pagedResults = await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize, types);
 
-        pagedResults.results.forEach(s=> Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
+        pagedResults.results.forEach(s=> {
+            // Adding translated properties for service
+            Translation.addTranslatedProperties(s, this.language, 'name', 'description', 'address', 'additional_info', 'cost_of_service');
+
+            // Adding translated properties for the provider
+            Translation.addTranslatedProperties(s.provider, this.language, 'name', 'description', 'address', 'focal_point_name');
+        });
 
         return pagedResults;
     }

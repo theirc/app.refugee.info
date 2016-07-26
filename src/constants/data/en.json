@@ -29,6 +29,7 @@
   "FRENCH": "French",
   "ARABIC": "Arabic",
   "FARSI": "Farsi",
+  "ADDRESS": "Address",
   "SELECT_COUNTRY": "Choose your country",
   "SELECT_LOCATION": "Choose your location",
   "SERVICE_LIST": "Directory",

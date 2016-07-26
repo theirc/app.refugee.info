@@ -270,12 +270,6 @@ class Navigation extends Component {
                 </MenuItem>
                 }
                 <MenuItem
-                    icon="fa-envelope"
-                    onPress={() => this._sendEmail() }
-                >
-                    {I18n.t('CONTACT_US') }
-                </MenuItem>
-                <MenuItem
                     icon="fa-comment"
                     onPress={() => Linking.openURL(feedbackUrl) }>
                     {I18n.t('FEEDBACK') }

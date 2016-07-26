@@ -133,7 +133,7 @@ export class GeneralInformation extends Component {
                 >
                     <Button
                         color="green"
-                        icon="md-information-circle"
+                        icon="fa-list"
                         text={I18n.t('SERVICE_LIST').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('services'))}
                         buttonStyle={{height: 33, marginRight: 2}}
