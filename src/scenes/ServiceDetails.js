@@ -123,7 +123,7 @@ export default class ServiceDetails extends Component {
                 }
             }
             let feedbacks = await this.apiClient.getFeedbacks(service.id, true);
-            let provider = await this.apiClient.fetch(service.provider_fetch_url, true);
+            let provider = service.provider;
             if (!feedbacks) {
                 return;
             }
@@ -164,8 +164,8 @@ export default class ServiceDetails extends Component {
 
     call() {
         requestAnimationFrame(() => {
-            let provider = this.state.provider;
-            Linking.openURL(`tel:${provider.phone_number}`);
+            const {provider, service} = this.state;
+            Linking.openURL(`tel:${service.phone_number||provider.phone_number}`);
         })
     }
 
@@ -621,15 +621,6 @@ export default class ServiceDetails extends Component {
                     {!!service.description &&
                         <View>
                             <Text style={[
-                                styles.sectionHeader,
-                                getTextAlign(direction),
-                                getFontFamily(language),
-                                getTextColor(theme)
-                            ]}
-                                >
-                                {I18n.t('DESCRIPTION') }
-                            </Text>
-                            <Text style={[
                                 styles.sectionContent,
                                 getTextAlign(direction),
                                 getFontFamily(language),
@@ -639,19 +630,28 @@ export default class ServiceDetails extends Component {
                             </Text>
                         </View>
                     }
-                    {!!service.cost_of_service &&
-                        <Text style={[
-                            styles.sectionContent,
-                            getTextAlign(direction),
-                            getFontFamily(language),
-                            getTextColor(theme),
-                            { marginTop: 15 }
-                        ]}>
-                            {I18n.t('COST_OF_SERVICE') }:
-                            {`\n${service.cost_of_service}`}
-                        </Text>
+                    {(!!service.address || !!service.provider.address) &&
+                        <View style={{ marginTop: 15 }}>
+                            <Text style={[
+                                styles.sectionHeader,
+                                getTextAlign(direction),
+                                getFontFamily(language),
+                                getTextColor(theme)
+                            ]}
+                                >
+                                {I18n.t('ADDRESS') }
+                            </Text>
+                            <Text style={[
+                                styles.sectionContent,
+                                getTextAlign(direction),
+                                getFontFamily(language),
+                                getTextColor(theme)
+                            ]}>
+                                {(service.address || service.provider.address) }
+                            </Text>
+                        </View>
                     }
-                    {service.selection_criteria.length > 0 &&
+                    {/*service.selection_criteria.length > 0 &&
                         <Text style={[
                             styles.sectionContent,
                             getTextAlign(direction),
@@ -663,7 +663,7 @@ export default class ServiceDetails extends Component {
                                 `\n - ${criteria.text}`
                             )) }
                         </Text>
-                    }
+                    */}
                 </View>
                 {openingHoursView}
                 <View style={styles.detailsContainer}>
