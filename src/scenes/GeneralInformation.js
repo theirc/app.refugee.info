@@ -21,7 +21,7 @@ import {Regions} from '../data';
 var {width, height} = Dimensions.get('window');
 
 export class GeneralInformation extends Component {
-    
+
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };
@@ -35,7 +35,6 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            lastSync: null,
             loading: false
         };
     }
@@ -48,12 +47,20 @@ export class GeneralInformation extends Component {
         this._loadInitialState();
     }
 
-    async _loadInitialState() {
-        this.setState({
-            loading: true
-        });
+    componentWillReceiveProps(nextProps, nextState) {
+        let {region, information} = this.props;
+        if (information) {
+            region = information;
+        }
+        if (region != nextProps.region) {
+            this.setState({
+                dataSource: this.state.dataSource.cloneWithRows(nextProps.region.content),
+            });
+        }
+    }
 
-        let {region, information, country} = this.props;
+    async _loadInitialState() {
+        let {region, information} = this.props;
         const {navigator} = this.context;
 
         if (information) {
@@ -72,32 +79,14 @@ export class GeneralInformation extends Component {
             }, 100);
             return;
         }
-        let lastSync = await AsyncStorage.getItem('lastGeneralSync');
 
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(region.content),
             generalInfo: region.content,
             region: region,
             loaded: true,
-            lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
+            offline: false,
         });
-
-        try {
-            region = await this.regionData.getLocation(region.id, null, true);
-            await AsyncStorage.setItem('regionCache', JSON.stringify(region));
-            await AsyncStorage.setItem('lastGeneralSync', new Date().toISOString());
-            this.setState({
-                offline: false,
-                region: region,
-                loading: false
-            })
-        }
-        catch (e) {
-            this.setState({
-                offline: true,
-                loading: false
-            })
-        }
     }
 
     onRefresh() {
@@ -162,7 +151,6 @@ export class GeneralInformation extends Component {
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
-                    lastSync={this.state.lastSync}
                 />
                 <ListView
                     refreshControl={
