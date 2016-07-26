@@ -1,16 +1,33 @@
-import React, {Component, PropTypes} from 'react';
-import {Text, Image, View, ScrollView, StyleSheet, Linking, Platform} from 'react-native';
+import React, {
+    Component,
+    PropTypes
+} from 'react';
+import {
+    Text,
+    Image,
+    View,
+    ScrollView,
+    StyleSheet,
+    Linking,
+    Platform
+} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import ApiClient from '../utils/ApiClient';
 import DrawerCommons from '../utils/DrawerCommons';
-import {MenuSection, MenuItem} from '../components'
-import {updateRegionIntoStorage} from '../actions/region';
-import {updateCountryIntoStorage} from '../actions/country';
-import store from '../store';
-import {Regions} from '../data';
+import {MenuSection, MenuItem} from '../components';
+import {
+    updateRegionIntoStorage,
+    updateCountryIntoStorage,
+    updateLocationsIntoStorage
+} from '../actions';
 import {Icon} from '../components';
-import styles, {getFontFamily, getRowOrdering, themes} from '../styles'
+import {
+    getFontFamily,
+    getRowOrdering,
+    themes
+} from '../styles'
+import {Regions} from '../data';
+import {RNMail as Mailer} from 'NativeModules';
 
 const FEEDBACK_MAP = {
     ar: 'https://docs.google.com/forms/d/16KxtpLbQbdj7ohkpAxws65aZuWfeQa8jjgCBvcptfkk/viewform?entry.1237329743=',
@@ -125,11 +142,25 @@ class Navigation extends Component {
         city.detected = false;
         city.coords = {};
         city.country = country;
+        const regionData = new Regions(this.props);
+        let cities = [];
+
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
         dispatch({type: 'REGION_CHANGED', payload: city});
         dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
-        return this._defaultOrFirst(city);
+
+        regionData.listChildren(city.country, true, city).then((value) => {
+            cities = value.filter((c) => c.level != 2);
+            cities.forEach((location) => {
+                if (location && location.metadata) {
+                    location.pageTitle = (location.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
+                }
+            });
+            dispatch(updateLocationsIntoStorage(cities));
+            dispatch({type: 'LOCATIONS_CHANGED', payload: cities});
+        });
+        return this._defaultOrFirst(city)
     }
 
     render() {
