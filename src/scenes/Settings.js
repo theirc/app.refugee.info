@@ -16,7 +16,8 @@ import styles, {
     getFontFamily,
     getUnderlayColor,
     getRowOrdering,
-    getBottomDividerColor
+    getBottomDividerColor,
+    getToolbarHeight
 } from '../styles';
 import {
     Icon,
@@ -243,7 +244,7 @@ class Settings extends Component {
                         </Text>
                     </View>
                 </TouchableHighlight>
-                {loading && <LoadingOverlay theme={theme} height={height - 140} width={width}/>}
+                {loading && <LoadingOverlay theme={theme} height={height - getToolbarHeight()} width={width}/>}
             </ScrollView>
         );
     }
