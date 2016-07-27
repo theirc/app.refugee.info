@@ -1,4 +1,6 @@
+
 import {AsyncStorage} from 'react-native';
+
 const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {

@@ -21,7 +21,6 @@ class Initial extends Component {
         const {navigator} = this.context;
         const {dispatch} = this.props;
         Promise.all([
-            AsyncStorage.getItem('regionCache'),
             dispatch(fetchRegionFromStorage()),
             dispatch(fetchDirectionFromStorage()),
             dispatch(fetchLanguageFromStorage()),
