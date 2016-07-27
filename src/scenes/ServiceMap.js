@@ -318,11 +318,13 @@ class ServiceMap extends Component {
     }
 
     _fitMap() {
-        setTimeout(() => {
+       /* 
+       setTimeout(() => {
             if (this.mapRef && this.state.markers.length > 0) {
                 this.mapRef.fitToElements(true);
             }
         }, 200);
+        */
     }
 
     render() {
