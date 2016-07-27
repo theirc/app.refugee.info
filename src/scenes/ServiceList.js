@@ -37,6 +37,7 @@ import styles, {
     getTextColor,
     getContainerColor,
     getDividerColor,
+    getToolbarHeight
 } from '../styles';
 
 import {Icon} from '../components'
@@ -523,7 +524,7 @@ export default class ServiceList extends Component {
                         searchCriteria={this.state.searchCriteria}
                         serviceTypes={this.state.serviceTypes}
                         />) }
-                {(loading && !refreshing) && <LoadingOverlay theme={theme} height={height - 140} width={width}/>}
+                {(loading && !refreshing) && <LoadingOverlay theme={theme} height={height - getToolbarHeight()} width={width}/>}
             </View>
         );
     }

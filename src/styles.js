@@ -159,9 +159,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     scene: {
-        paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios')
-            ? windowHeight > 500 ? 140 : 110
-            : windowHeight > 500 ? 115 : 85,
+        paddingTop: getToolbarHeight(),
         flex: 1
     },
     row: {
@@ -416,6 +414,12 @@ export function getElevation(level = 3) {
             borderBottomColor: 'rgba(0,0,0,0.3)',
             borderBottomWidth: 0.5
         }
+}
+
+export function getToolbarHeight(){
+    return (Platform.Version >= 21 || Platform.OS == 'ios')
+        ? windowHeight > 500 ? 140 : 110
+        : windowHeight > 500 ? 115 : 85
 }
 
 export default styles;

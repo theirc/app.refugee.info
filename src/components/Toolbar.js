@@ -9,12 +9,12 @@ import {
     LayoutAnimation,
     Platform
 } from 'react-native';
-import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
-import {getFontFamily, getRowOrdering, themes} from '../styles';
-import {DirectionalText} from '../components';
 import {
-    theme,
+    getFontFamily,
+    getRowOrdering,
+    getToolbarHeight,
+    themes
 } from '../styles';
 
 import Icon from './Icon';
@@ -179,9 +179,7 @@ const componentStyles = StyleSheet.create({
         paddingRight: 15,
         paddingLeft: 15,
         flexDirection: 'column',
-        height: (Platform.Version >= 21 || Platform.OS === 'ios')
-            ? windowHeight > 500 ? 140 : 110
-            : windowHeight > 500 ? 115 : 85,
+        height: getToolbarHeight(),
         borderBottomWidth: 2
     },
     toolbarContainerLight: {
