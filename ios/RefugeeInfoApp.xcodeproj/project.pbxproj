@@ -14,6 +14,7 @@
 		00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302E41ABCB9EE00DB3ED1 /* libRCTVibration.a */; };
 		00E356F31AD99517003FC87E /* RefugeeInfoAppTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RefugeeInfoAppTests.m */; };
 		061F3E031D3146AC0075C1CA /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 061F3DF71D31469C0075C1CA /* libRCTPushNotification.a */; };
+		06AB70FB1D483CDC00FE2FC7 /* icomoon.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06AB70FA1D483CDC00FE2FC7 /* icomoon.ttf */; };
 		06B313CB1D41BD880073E864 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 06B313CA1D41BD880073E864 /* Launch Screen.storyboard */; };
 		06D4EC301D2D89C30046FDB0 /* libRNMail.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06D4EC2B1D2D89A20046FDB0 /* libRNMail.a */; };
 		0B72CE9CF00A499A8BC282FB /* libRNDeviceInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A38A3827CB94AD8BB6B98DC /* libRNDeviceInfo.a */; };
@@ -32,7 +33,6 @@
 		43688CBB1D265BF8002E5F48 /* Montserrat-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CB91D265BF8002E5F48 /* Montserrat-Regular.otf */; };
 		43688CCC1D266420002E5F48 /* Montserrat-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */; };
 		43688CCE1D268F51002E5F48 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */; };
-		4E3A4B951D37E09F00352D09 /* humanitarian_icons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4E3A4B941D37E09F00352D09 /* humanitarian_icons.ttf */; };
 		64E294D541F9419F836AFD04 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */; };
 		6E4748D9323040E7B23A56CF /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B7CC5BEA19452D8E916112 /* libRNI18n.a */; };
 		7F30DA7AC2F4419F8A2FAB5C /* libRNShare.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B44D6DE350449B79BC406AC /* libRNShare.a */; };
@@ -197,6 +197,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RefugeeInfoAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RefugeeInfoAppTests.m; sourceTree = "<group>"; };
 		061F3DEC1D31469C0075C1CA /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
+		06AB70FA1D483CDC00FE2FC7 /* icomoon.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = icomoon.ttf; sourceTree = "<group>"; };
 		06B313CA1D41BD880073E864 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		06D4EC181D2D89A10046FDB0 /* RNMail.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNMail.xcodeproj; path = "../node_modules/react-native-mail/RNMail.xcodeproj"; sourceTree = "<group>"; };
 		103CB611C2BF42BAAC5B6922 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -216,7 +217,6 @@
 		43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBold.otf"; sourceTree = "<group>"; };
 		43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4D27116C92AA444499ABB45F /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
-		4E3A4B941D37E09F00352D09 /* humanitarian_icons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = humanitarian_icons.ttf; sourceTree = "<group>"; };
 		519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		52D18292794646A4B80B5F23 /* RNI18n.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNI18n.xcodeproj; path = "../node_modules/react-native-i18n/RNI18n.xcodeproj"; sourceTree = "<group>"; };
 		67C5B40F380248F28E5698AF /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -487,7 +487,7 @@
 		D54CDE32F96C47FF92FA2616 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				4E3A4B941D37E09F00352D09 /* humanitarian_icons.ttf */,
+				06AB70FA1D483CDC00FE2FC7 /* icomoon.ttf */,
 				43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */,
 				EA48357D3D0A4AE1B4821C2A /* FontAwesome.ttf */,
 				1E2426D2E1824D7180737C86 /* Ionicons.ttf */,
@@ -803,11 +803,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				43688CCE1D268F51002E5F48 /* Roboto-Medium.ttf in Resources */,
+				06AB70FB1D483CDC00FE2FC7 /* icomoon.ttf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				2336FFF9B1FF49B7B90CFB28 /* FontAwesome.ttf in Resources */,
 				1BF5AAD958AF4B778E9D4E4C /* Ionicons.ttf in Resources */,
 				43688CCC1D266420002E5F48 /* Montserrat-SemiBold.otf in Resources */,
-				4E3A4B951D37E09F00352D09 /* humanitarian_icons.ttf in Resources */,
 				06B313CB1D41BD880073E864 /* Launch Screen.storyboard in Resources */,
 				43688CBB1D265BF8002E5F48 /* Montserrat-Regular.otf in Resources */,
 				37764F34849C4D2DBE593856 /* Entypo.ttf in Resources */,
