@@ -118,14 +118,30 @@ export class GeneralInformation extends Component {
     }
 
     render() {
-        const {theme, direction, language} = this.props;
+        const {theme, direction, language, region} = this.props;
         const {navigator} = this.context;
         const {loading, refreshing} = this.state;
         let s = (scene) => navigator.to(scene);
 
         return (
             <View style={styles.container}>
-
+                <View style={[
+                    componentStyles.searchBarContainer,
+                    theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
+                ]}>
+                       <Button
+                            color="green"
+                            icon="md-locate"
+                            text={I18n.t('CHANGE_LOCATION').toUpperCase()}
+                            onPress={
+                                () => requestAnimationFrame(
+                                    () => navigator.to('cityChoice', null, {country: region.country})
+                                )
+                            }
+                            buttonStyle={{height: 33}}
+                            iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
+                        />
+                </View>
                 <View style={[
                     componentStyles.searchBarContainer,
                     theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight

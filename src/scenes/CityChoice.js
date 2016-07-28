@@ -15,7 +15,6 @@ import {Regions} from '../data'
 class CityChoice extends Component {
 
     static propTypes = {
-        countryId: React.PropTypes.number.isRequired,
         country: React.PropTypes.object.isRequired
     };
 
