@@ -20,16 +20,8 @@ class Initial extends Component {
     async componentDidMount() {
         const {navigator} = this.context;
         const {dispatch} = this.props;
-        Promise.all([
-            AsyncStorage.getItem('regionCache'),
-            dispatch(fetchRegionFromStorage()),
-            dispatch(fetchDirectionFromStorage()),
-            dispatch(fetchLanguageFromStorage()),
-            dispatch(fetchCountryFromStorage()),
-            dispatch(fetchThemeFromStorage()),
-            dispatch(fetchLocationsFromStorage())
-        ]).then((values) => {
-            const region = values[0];
+        AsyncStorage.getItem('regionCache').then((regionCache) => {
+            const region = regionCache;
             if (region && region != 'null') {
                 if (region.content && region.content.length == 1) {
                     this.context.navigator.to('infoDetails', null,

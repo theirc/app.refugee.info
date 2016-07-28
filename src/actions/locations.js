@@ -1,4 +1,9 @@
+import React from 'react';
 import {AsyncStorage} from 'react-native';
+import SQLite from 'react-native-sqlite-storage'
+import store from '../store';
+
+SQLite.enablePromise(true);
 
 function receiveLocations(locations) {
     return {
@@ -7,18 +12,45 @@ function receiveLocations(locations) {
     };
 }
 
+function queryLocations(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS locations (json blob)');
+
+    tx.executeSql('SELECT * FROM locations').then(([tx, results]) => {
+        let len = results.rows.length;
+        let locations = [];
+        for (let i = 0; i < len; i++) {
+            locations.push((JSON.parse(results.rows.item(i).json)));
+        }
+        store.dispatch(receiveLocations(locations));
+    }).catch((error) => {
+        console.log(error);
+    });
+}
+
+
 export function fetchLocationsFromStorage() {
-    return async dispatch => {
-        return await AsyncStorage.getItem('locationsCache')
-            .then(locations => {
-                return dispatch(receiveLocations(JSON.parse(locations)))
-            });
-    };
+    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
+        db.transaction(queryLocations)
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
 
 export function updateLocationsIntoStorage(locations) {
+    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
+        db.transaction((tx) => {
+            tx.executeSql('DELETE FROM locations');
+            locations.forEach((location) => {
+                tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)])
+            });
+            console.log('locations updated');
+        })
+    }).catch((error) => {
+        console.log(error);
+    });
+
     return async dispatch => {
-        return await AsyncStorage.setItem('locationsCache', JSON.stringify(locations));
+
     };
 }

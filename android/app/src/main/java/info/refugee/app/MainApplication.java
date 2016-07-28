@@ -16,6 +16,7 @@ import com.AirMaps.AirPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
 import com.chirag.RNMail.*;  // <--- import
 import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
+import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,7 @@ public class MainApplication extends Application implements ReactApplication {
                   new AirPackage(),
                   new ReactNativeI18n(),
                   new RNMail(),
+                  new SQLitePluginPackage(),
                             mReactNativePushNotificationPackage // <---- Add the Package
 
               );
