@@ -544,7 +544,7 @@ export default class ServiceDetails extends Component {
         return (
             <ParallaxView
                 backgroundSource={backgroundImage}
-                windowHeight={service.image ? windowWidth * .75 : 60}
+                windowHeight={service.image ? windowWidth * .55 : 60}
                 header={(
                     <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
                         <Text style={[textStyle, {

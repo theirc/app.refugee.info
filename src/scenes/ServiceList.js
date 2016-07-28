@@ -251,7 +251,7 @@ export default class ServiceList extends Component {
                     <Icon
                         name={iconName}
                         style={{
-                            fontSize: 24,
+                            fontSize: 22,
                             width: 24,
                             height: 24,
                             color: themes.dark.textColor,
