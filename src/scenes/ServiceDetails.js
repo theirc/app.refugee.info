@@ -159,12 +159,12 @@ export default class ServiceDetails extends Component {
     call() {
         requestAnimationFrame(() => {
             const {provider, service} = this.state;
-            Linking.openURL(`tel:${service.phone_number||provider.phone_number}`);
+            Linking.openURL(`tel:${service.phone_number || provider.phone_number}`);
         })
     }
 
     onShareClick() {
-          const {provider, service} = this.state;
+        const {provider, service} = this.state;
         let address = service.address || provider.address;
         let phoneNumber = service.phone_number || provider.phone_number;
         let text = `${service.name}
@@ -491,7 +491,7 @@ export default class ServiceDetails extends Component {
         let rating = this.serviceCommons.renderStars(service.rating);
         let openingHoursView = this.renderOpeningHours();
         let containerBackground = { backgroundColor: themes[theme || 'light'].backgroundColor };
-        
+
         const windowWidth = screen.width;
 
         let iconName = (toolbarTitleIcon || '').trim();
@@ -541,10 +541,12 @@ export default class ServiceDetails extends Component {
                 textShadowColor: '#000000',
             };
 
+        const imageAspectRatio = Math.sqrt(5);
+
         return (
             <ParallaxView
                 backgroundSource={backgroundImage}
-                windowHeight={service.image ? windowWidth * .55 : 60}
+                windowHeight={service.image ? windowWidth / imageAspectRatio : 60}
                 header={(
                     <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
                         <Text style={[textStyle, {

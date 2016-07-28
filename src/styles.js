@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     },
     map: {
         flex: 1,
-        height: 200
+        height: 150
     },
     modalContainer: {
         flex: 1,
