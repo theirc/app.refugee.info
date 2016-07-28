@@ -1,11 +1,9 @@
 import React from 'react';
 import {AsyncStorage} from 'react-native';
 import SQLite from 'react-native-sqlite-storage'
+import store from '../store';
 
-var db = SQLite.openDatabase({name: 'sqllite.db', location: 'default'},
-    (() => console.log('Database opened successfully')),
-    (() => console.log('Could not open database'))
-);
+SQLite.enablePromise(true);
 
 function receiveLocations(locations) {
     return {
@@ -14,40 +12,44 @@ function receiveLocations(locations) {
     };
 }
 
+function queryLocations(tx) {
+    tx.executeSql('CREATE TABLE IF NOT EXISTS locations (json blob)');
 
-export function fetchLocationsFromStorage() {
-    console.log('fetching');
-    return async dispatch => {
-        db.transaction((tx) => {
-            console.log('transaction started');
-            tx.executeSql(
-                'SELECT * FROM Locations', [], (tx, results) => {
-                    console.log('transaction success');
-                    console.log(JSON.parse(results.rows.item(0)));
-                    return dispatch(receiveLocations((results.rows.item(0))));
-                }
-            )
-        });
-    }
+    tx.executeSql('SELECT * FROM locations').then(([tx, results]) => {
+        let len = results.rows.length;
+        let locations = [];
+        for (let i = 0; i < len; i++) {
+            locations.push((JSON.parse(results.rows.item(i).json)));
+        }
+        store.dispatch(receiveLocations(locations));
+    }).catch((error) => {
+        console.log(error);
+    });
 }
 
-//     return async dispatch => {
-//         return await AsyncStorage.getItem('locationsCache')
-//             .then(locations => {
-//                 return dispatch(receiveLocations(JSON.parse(locations)))
-//             });
-//     };
-// }
+
+export function fetchLocationsFromStorage() {
+    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
+        db.transaction(queryLocations)
+    }).catch((error) => {
+        console.log(error);
+    });
+}
 
 
 export function updateLocationsIntoStorage(locations) {
-
-    db.transaction((tx) => {
-        tx.executeSql('DROP TABLE Locations', [], () => console.log('Locations dropped'));
-        tx.executeSql('CREATE TABLE Locations (json)', [], () => console.log('Locations created'));
-        tx.executeSql('INSERT INTO Locations (json) VALUES (?)', [JSON.stringify(locations)], () => {
-            console.log('locations updated')})
+    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
+        db.transaction((tx) => {
+            tx.executeSql('DELETE FROM locations');
+            locations.forEach((location) => {
+                tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)])
+            });
+            console.log('locations updated');
+        })
+    }).catch((error) => {
+        console.log(error);
     });
+
     return async dispatch => {
 
     };

@@ -133,7 +133,7 @@ class Skeleton extends Component {
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchThemeFromStorage());
-        await dispatch(fetchLocationsFromStorage());
+        await fetchLocationsFromStorage();
     }
 
     render() {
