@@ -198,7 +198,7 @@ export default class ServiceList extends Component {
                         }));
                     });
                 },
-                { enableHighAccuracy: false, timeout: 5000, maximumAge: forceRefresh ? 0 : 30 * 60 * 1000 }
+                {enableHighAccuracy: false, timeout: 5000, maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000}
             );
         } catch (e) {
             console.log(e);
