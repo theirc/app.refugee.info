@@ -85,8 +85,7 @@ export default class Navigate {
             return false;
         } else {
             if (!this.isChild) {
-                route = Navigate.getInitialRoute();
-                this.currentRoute = route;
+                this.currentRoute = this.navigator.getCurrentRoutes()[this.navigator.getCurrentRoutes().length - 2];
                 this.navigator.pop();
                 return true;
             } else {
@@ -213,12 +212,6 @@ export default class Navigate {
                 props
             };
             this.currentRoute = route;
-            if (route.path === 'services') {
-                // ugly, clear toolbar title and icon only when going back from service details to list
-                this.store.dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: null});
-                this.store.dispatch({type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null});
-                this.store.dispatch({type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: null});
-            }
             this.navigator.pop();
         }
     };
