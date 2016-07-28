@@ -537,19 +537,19 @@ export default class ServiceDetails extends Component {
             light: require('../assets/service-placeholder-light.png'),
         };
 
-        const backgroundImage = service.image_data ? { uri: service.image_data } : defaultServiceImage[theme || 'light'];
-        const textStyle = !service.image_data ? { color: themes[theme || 'light'].textColor } :
+        const backgroundImage = service.image ? { uri: service.image } : defaultServiceImage[theme || 'light'];
+        const textStyle = !service.image ? { color: themes[theme || 'light'].textColor } :
             {
                 color: '#ffffff',
                 textShadowOffset: { width: -1, height: 1 },
-                textShadowRadius: service.image_data ? 0 : 1,
+                textShadowRadius: service.image ? 0 : 1,
                 textShadowColor: '#000000',
             };
 
         return (
             <ParallaxView
                 backgroundSource={backgroundImage}
-                windowHeight={service.image_data ? 150 : 60}
+                windowHeight={service.image ? 150 : 60}
                 header={(
                     <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
                         <Text style={[textStyle, {
