@@ -12,7 +12,8 @@ import {
     Modal,
     Platform,
     AsyncStorage,
-    Image
+    Image,
+    Dimensions
 } from 'react-native';
 import {Icon, ParallaxView} from '../components';
 import {default as FontAwesomeIcon} from 'react-native-vector-icons/FontAwesome';
@@ -35,6 +36,7 @@ import styles, {
     getDividerColor
 } from '../styles';
 
+var screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -89,14 +91,6 @@ export default class ServiceDetails extends Component {
             this.fetchData().done();
         }
         const {dispatch, service, serviceType} = this.props;
-
-        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: service.name });
-
-        if (serviceType.vector_icon) {
-            dispatch({ type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: serviceType.vector_icon });
-        } else if (serviceType.icon_url) {
-            dispatch({ type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: serviceType.icon_url });
-        }
     }
 
     _setModalVisible(visible) {
@@ -497,7 +491,8 @@ export default class ServiceDetails extends Component {
         let rating = this.serviceCommons.renderStars(service.rating);
         let openingHoursView = this.renderOpeningHours();
         let containerBackground = { backgroundColor: themes[theme || 'light'].backgroundColor };
-
+        
+        const windowWidth = screen.width;
 
         let iconName = (toolbarTitleIcon || '').trim();
         let titleIcon = null;
@@ -549,7 +544,7 @@ export default class ServiceDetails extends Component {
         return (
             <ParallaxView
                 backgroundSource={backgroundImage}
-                windowHeight={service.image ? 150 : 60}
+                windowHeight={service.image ? windowWidth * .55 : 60}
                 header={(
                     <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
                         <Text style={[textStyle, {
