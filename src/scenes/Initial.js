@@ -20,12 +20,19 @@ class Initial extends Component {
     async componentDidMount() {
         const {navigator} = this.context;
         const {dispatch} = this.props;
-        AsyncStorage.getItem('regionCache').then((regionCache) => {
-            const region = regionCache;
+        Promise.all([
+            AsyncStorage.getItem('regionCache'),
+            dispatch(fetchRegionFromStorage()),
+            dispatch(fetchDirectionFromStorage()),
+            dispatch(fetchLanguageFromStorage()),
+            dispatch(fetchCountryFromStorage()),
+            dispatch(fetchThemeFromStorage())
+        ]).then((values) => {
+            const region = values[0];
             if (region && region != 'null') {
                 if (region.content && region.content.length == 1) {
                     this.context.navigator.to('infoDetails', null,
-                        { section: region.content[0].section, sectionTitle: region.pageTitle })
+                        {section: region.content[0].section, sectionTitle: region.pageTitle})
                 } else {
                     this.context.navigator.to('info');
                 }
