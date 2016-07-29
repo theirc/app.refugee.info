@@ -198,7 +198,7 @@ export default class ServiceList extends Component {
                         }));
                     });
                 },
-                {enableHighAccuracy: false, timeout: 5000, maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000}
+                { enableHighAccuracy: false, timeout: 5000, maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000 }
             );
         } catch (e) {
             console.log(e);
@@ -227,7 +227,9 @@ export default class ServiceList extends Component {
             return type.url == service.type;
         });
         let rating = this.serviceCommons.renderStars(service.rating);
-        let locationName = (location) ? location.name : '';
+        let locationName = (location) ? location.pageTitle : '';
+
+        let fontSize = service.name.length > 35 ? (service.name.length > 40 ? 10 : 12) : 15;
 
         let widget = null;
         if (serviceType) {
@@ -295,29 +297,29 @@ export default class ServiceList extends Component {
                             styles.container,
                             getAlignItems(direction),
                             getContainerColor(theme),
-                            { borderBottomWidth: 1, paddingLeft: 20, paddingTop: 14, paddingRight: 20 }
+                            { borderBottomWidth: 1, paddingHorizontal: 10, paddingTop: 14, }
                         ]}>
                             <Text
                                 style={[
                                     getFontFamily(language),
                                     getTextColor(theme),
-                                    { fontSize: 15, paddingBottom: 2, fontWeight: '500' }
+                                    { fontSize: fontSize, paddingBottom: 2, fontWeight: '500' }
                                 ]}
                                 >
                                 {service.name}
                             </Text>
-                            <View style={[styles.row, { paddingBottom: 2 }]}>
+                            <View style={[styles.row, getRowOrdering(direction), { paddingBottom: 2 }]}>
                                 <Icon
                                     name="ios-pin"
                                     style={[
-                                        { fontSize: 13, marginRight: 8 },
+                                        { fontSize: 13, marginHorizontal: 4 },
                                         { color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor }
                                     ]}
                                     />
                                 <Text style={[
                                     getFontFamily(language), {
                                         color: theme == 'dark' ? themes.dark.greenAccentColor : themes.light.textColor,
-                                        fontSize: 11
+                                        fontSize: 11,
                                     }
                                 ]}>
                                     {locationName}
@@ -330,7 +332,7 @@ export default class ServiceList extends Component {
                                     { fontSize: 11, paddingBottom: 2, fontWeight: '500' }
                                 ]}
                                 >
-                                {service.provider.name}
+                                {service.provider.name.substr(0, 40)}
                             </Text>
                         </View>
                     </View>

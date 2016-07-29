@@ -542,6 +542,7 @@ export default class ServiceDetails extends Component {
             };
 
         const imageAspectRatio = Math.sqrt(5);
+        let fontSize = service.name.length > 35 ? (service.name.length > 45 ? 12 : 20) : 24;
 
         return (
             <ParallaxView
@@ -550,7 +551,7 @@ export default class ServiceDetails extends Component {
                 header={(
                     <View style={[componentStyles.headerView, { flexDirection: direction == 'ltr' ? 'row' : 'row-reverse', }]}>
                         <Text style={[textStyle, {
-                            fontSize: 24
+                            fontSize
                         }]}>
                             {service.name}
                         </Text>
@@ -681,13 +682,15 @@ export default class ServiceDetails extends Component {
                         buttonStyle={{ marginBottom: 10 }}
                         textStyle={{ fontSize: 15 }}
                         />
-                    <Button
-                        color="black"
-                        text={I18n.t('CALL') }
-                        onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                        buttonStyle={{ marginBottom: 10 }}
-                        textStyle={{ fontSize: 15 }}
-                        />
+                    {hasPhoneNumber &&
+                        <Button
+                            color="black"
+                            text={I18n.t('CALL') }
+                            onPress={hasPhoneNumber ? this.call.bind(this) : null}
+                            buttonStyle={{ marginBottom: 10 }}
+                            textStyle={{ fontSize: 15 }}
+                            />
+                    }
                     <Button
                         color="white"
                         text={I18n.t('SHARE') }
