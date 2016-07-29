@@ -4,7 +4,7 @@ export default {
     initial: {
         initialRoute: true,
         exitOnBackPress: true,
-        title: () => I18n.t('REFUGEE_INFO'),
+        title: () => '',
         component: require('./scenes/Initial').default
     },
 
@@ -26,7 +26,7 @@ export default {
     },
 
     services: {
-        title: () => I18n.t('SERVICES'),
+        title: () => I18n.t('SERVICE_LIST'),
         component: require('./scenes/ServiceList').default,
 
         children: {

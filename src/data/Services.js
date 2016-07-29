@@ -20,7 +20,7 @@ import {Icon} from '../components';
 import Translation from '../utils/Translation';
 
 export default class Services extends Component {
-    constructor(props, context=null) {
+    constructor(props, context = null) {
         super();
 
         this.language = props.language;
@@ -40,20 +40,20 @@ export default class Services extends Component {
                 ]);
             }));
         }
-        serviceTypes.forEach(s=> Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
+        serviceTypes.forEach(s => Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
 
-        return serviceTypes;
+        return serviceTypes; 
     }
 
 
 
-    async pageServices(slug, coords = {}, searchCriteria="", page=1, pageSize = 10, types, raiseException = false) {
+    async pageServices(slug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raiseException = false) {
         /*
         How do we go about storing this in the AsyncStorage?
         */
         let pagedResults = await this.client.getServicePage(slug, coords, searchCriteria, page, pageSize, types, raiseException);
 
-        pagedResults.results.forEach(s=> {
+        pagedResults.results.forEach(s => {
             // Adding translated properties for service
             Translation.addTranslatedProperties(s, this.language, 'name', 'description', 'address', 'additional_info', 'cost_of_service');
 
