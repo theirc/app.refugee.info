@@ -38,6 +38,7 @@ var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
 const MAX_SERVICES = 25;
+const R = 6371e3; // earth R in metres
 
 class ServiceMap extends Component {
     static smallHeader = true;
@@ -231,6 +232,7 @@ class ServiceMap extends Component {
                 loading: false
             });
         }
+        this.redrawMarkers(this.state.initialEnvelope);
     }
 
     toggleServiceType(type) {
@@ -292,7 +294,6 @@ class ServiceMap extends Component {
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
         }, () => {
             this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();
-            ;
         });
     }
 
@@ -342,7 +343,6 @@ class ServiceMap extends Component {
         const lat2 = marker2.latitude;
         const lon2 = marker2.longitude;
 
-        const R = 6371e3; // metres
         const φ1 = lat1 * Math.PI / 180;
         const φ2 = lat2 * Math.PI / 180;
         const Δφ = (lat2 - lat1) * Math.PI / 180;
@@ -355,17 +355,21 @@ class ServiceMap extends Component {
         return R * c;
     }
 
-    redrawMarkers() {
+    redrawMarkers(region) {
         const {theme} = this.props;
         let {markers} = this.state;
         let markerElements = [];
+        this.setState({markerElements});
 
-        const clusterRadius = 200;
+        // needs to be tweaked
+        let clusterRadius = region.longitudeDelta * R / 180 / 6;
 
         // sort markers by neighbourCount count
+
         for (i = 0; i < markers.length; i += 1) {
             let counter = 0;
             markers[i].neighbours = [];
+            markers[i].hidden = false;
             for (j = i + 1; j < markers.length; j += 1) {
                 if (this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) {
                     counter += 1;
@@ -397,31 +401,31 @@ class ServiceMap extends Component {
                 calloutOffset={{x: 0, y: 10}}
                 onCalloutPress={() => this.onCalloutPress(marker) }
             >
-                {(marker.neighbourCount > 0) ?
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: 36,
-                        height: 36,
-                        backgroundColor: themes.light.greenAccentColor,
-                        borderColor: themes[theme].backgroundColor,
-                        borderRadius: 10,
-                        borderWidth: 1
-                    }}
-                >
-                    <Text
+                {(marker.neighbourCount) ?
+                    <View
                         style={{
-                            fontSize: 22,
-                            width: 24,
-                            height: 24,
-                            color: themes.dark.textColor,
-                            textAlign: 'center',
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 36,
+                            height: 36,
+                            backgroundColor: themes.light.greenAccentColor,
+                            borderColor: themes[theme].backgroundColor,
+                            borderRadius: 10,
+                            borderWidth: 1
                         }}
-                    >{marker.neighbourCount + 1}</Text>
-                </View> : marker.widget
+                    >
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                color: themes.dark.textColor,
+                                textAlign: 'center',
+                            }}
+                        >
+                            {marker.neighbourCount + 1}
+                        </Text>
+                    </View> : marker.widget
                 }
 
                 <MapView.Callout tooltip={true} style={[{
@@ -448,7 +452,7 @@ class ServiceMap extends Component {
                     showsPointsOfInterest={false}
                     showsCompass={false}
                     ref={(r) => this.mapRef = r}
-                    onRegionChangeComplete={() => this.redrawMarkers()}
+                    onRegionChangeComplete={(region) => this.redrawMarkers(region)}
                 >
                     {markerElements}
                 </MapView>
