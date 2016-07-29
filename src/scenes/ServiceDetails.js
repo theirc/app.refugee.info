@@ -682,13 +682,15 @@ export default class ServiceDetails extends Component {
                         buttonStyle={{ marginBottom: 10 }}
                         textStyle={{ fontSize: 15 }}
                         />
-                    <Button
-                        color="black"
-                        text={I18n.t('CALL') }
-                        onPress={hasPhoneNumber ? this.call.bind(this) : null}
-                        buttonStyle={{ marginBottom: 10 }}
-                        textStyle={{ fontSize: 15 }}
-                        />
+                    {hasPhoneNumber &&
+                        <Button
+                            color="black"
+                            text={I18n.t('CALL') }
+                            onPress={hasPhoneNumber ? this.call.bind(this) : null}
+                            buttonStyle={{ marginBottom: 10 }}
+                            textStyle={{ fontSize: 15 }}
+                            />
+                    }
                     <Button
                         color="white"
                         text={I18n.t('SHARE') }
