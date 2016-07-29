@@ -118,7 +118,7 @@ export class GeneralInformation extends Component {
     }
 
     render() {
-        const {theme, direction, language, region} = this.props;
+        const {theme, direction, language, region, country} = this.props;
         const {navigator} = this.context;
         const {loading, refreshing} = this.state;
         let s = (scene) => navigator.to(scene);
@@ -135,7 +135,7 @@ export class GeneralInformation extends Component {
                             text={I18n.t('CHANGE_LOCATION').toUpperCase()}
                             onPress={
                                 () => requestAnimationFrame(
-                                    () => navigator.to('cityChoice', null, {country: region.country})
+                                    () => navigator.to('cityChoice', null, {country: country})
                                 )
                             }
                             buttonStyle={{height: 33}}
