@@ -94,5 +94,6 @@
   "SATURDAY": "Saturday",
   "CLOSED": "Closed",
   "CLUSTERED_SERVICE_TITLE": "There are {0} services. Showing first {1} services.",
-  "SHOW_MORE": "Show more"
+  "SHOW_MORE": "Show more",
+  "CLUSTER_POPUP_TITLE": "There are {0} services in this location. Click on the service below for more details."
 }

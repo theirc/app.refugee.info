@@ -187,16 +187,7 @@ class Navigation extends Component {
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
 
-        let headerImage = <Icon
-            name="md-locate"
-            style={[
-                {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
-                (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
-            ]}
-        />;
-
         let bannerCount = region.metadata.banners.length;
-        const isLTR = direction == 'ltr';
 
         return <ScrollView style={styles.view}>
             <View style={[styles.logoContainer, getRowOrdering(direction)]}>
