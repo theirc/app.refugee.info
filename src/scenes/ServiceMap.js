@@ -38,6 +38,7 @@ var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
 const MAX_SERVICES = 25;
+const R = 6371e3; // earth R in metres
 
 class ServiceMap extends Component {
     static smallHeader = true;
@@ -102,8 +103,16 @@ class ServiceMap extends Component {
             searchCriteria: searchCriteria,
             serviceTypes: serviceTypes
         }, () => {
-            this.fetchData(currentEnvelope).then(() => this._fitMap()).done();
+            this.fetchData(currentEnvelope).then(() => {
+                this.redrawMarkers(currentEnvelope);
+                this._fitMap()
+            })
         });
+
+    }
+
+    onRegionChange(regionArea) {
+        this.setState({regionArea});
     }
 
     onCalloutPress(marker) {
@@ -115,7 +124,7 @@ class ServiceMap extends Component {
             return type.url == service.type;
         });
         const {navigator} = this.context;
-        navigator.forward(null, null, { service, location, serviceType }, this.state);
+        navigator.forward(null, null, {service, location, serviceType}, this.state);
     }
 
     async fetchData(envelope = {}) {
@@ -176,7 +185,7 @@ class ServiceMap extends Component {
                                 borderRadius: 10,
                                 borderWidth: 1
                             }}
-                            >
+                        >
                             <Icon
                                 name={iconName}
                                 style={{
@@ -186,14 +195,14 @@ class ServiceMap extends Component {
                                     color: themes.dark.textColor,
                                     textAlign: 'center',
                                 }}
-                                />
+                            />
                         </View>);
                     } else {
                         widget = (
                             <Image
-                                source={{ uri: serviceType.icon_url }}
+                                source={{uri: serviceType.icon_url}}
                                 style={styles.mapIcon}
-                                />);
+                            />);
                     }
                 }
 
@@ -251,9 +260,9 @@ class ServiceMap extends Component {
                 fontSize={13}
                 onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
-                image={type.icon_url ? { uri: type.icon_url } : null}
+                image={type.icon_url ? {uri: type.icon_url} : null}
                 icon={type.vector_icon || null}
-                />
+            />
         );
     }
 
@@ -280,7 +289,7 @@ class ServiceMap extends Component {
     }
 
     clearFilters() {
-        this.setState({ markers: [] });
+        this.setState({markers: []});
 
         let serviceTypes = this.state.serviceTypes;
         for (let i = 0; i < serviceTypes.length; i++) {
@@ -292,7 +301,6 @@ class ServiceMap extends Component {
             serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
         }, () => {
             this.fetchData(this.state.initialEnvelope).then(() => this._fitMap()).done();
-            ;
         });
     }
 
@@ -315,9 +323,9 @@ class ServiceMap extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this.fetchData().then(() => {
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
@@ -331,9 +339,114 @@ class ServiceMap extends Component {
          */
     }
 
+    /** returns distance between two markers in meters */
+    getDistanceBetweenMarkers(marker1, marker2) {
+
+        Math.radians = function (degrees) {
+            return degrees * Math.PI / 180;
+        };
+        const lat1 = marker1.latitude;
+        const lon1 = marker1.longitude;
+        const lat2 = marker2.latitude;
+        const lon2 = marker2.longitude;
+
+        const φ1 = lat1 * Math.PI / 180;
+        const φ2 = lat2 * Math.PI / 180;
+        const Δφ = (lat2 - lat1) * Math.PI / 180;
+        const Δλ = (lon2 - lon1) * Math.PI / 180;
+
+        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    redrawMarkers(region) {
+        const {theme} = this.props;
+        let {markers} = this.state;
+
+        let markerElements = [];
+
+        let clusterRadius = region.longitudeDelta * R / 180 / 5;
+
+        // sort markers by neighbourCount count
+
+        for (i = 0; i < markers.length; i += 1) {
+            let counter = 0;
+            markers[i].neighbours = [];
+            markers[i].hidden = false;
+            for (j = i + 1; j < markers.length; j += 1) {
+                if (this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) {
+                    counter += 1;
+                    markers[i].neighbours.push(markers[j])
+                }
+            }
+            markers[i].neighbourCount = counter;
+        }
+        markers.sort((a, b) => b.neighbourCount - a.neighbourCount);
+
+        // do clustering
+
+        markers.forEach((marker, i) => {
+            if (marker) {
+                marker.neighbours.forEach((neighbour) => {
+                    markers[markers.indexOf(neighbour)].hidden = true
+                })
+            }
+        });
+
+        markerElements = markers.map((marker, i) => (!marker.hidden &&
+            <MapView.Marker
+                coordinate={{
+                    latitude: marker.latitude,
+                    longitude: marker.longitude
+                }}
+                description={marker.description}
+                key={i}
+                calloutOffset={{x: 0, y: 10}}
+                onCalloutPress={() => this.onCalloutPress(marker)}
+            >
+                {(marker.neighbourCount) ?
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: 36,
+                            height: 36,
+                            backgroundColor: themes.light.greenAccentColor,
+                            borderColor: themes[theme].backgroundColor,
+                            borderRadius: 10,
+                            borderWidth: 1
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                color: themes.dark.textColor,
+                                textAlign: 'center',
+                            }}
+                        >
+                            {marker.neighbourCount + 1}
+                        </Text>
+                    </View> : marker.widget
+                }
+                <MapView.Callout tooltip={true} style={[{
+                    width: width - 20
+                }]}>
+                    <MapPopup marker={marker}/>
+                </MapView.Callout>
+            </MapView.Marker>
+        ));
+
+        this.setState({markerElements})
+    }
+
     render() {
         const {theme, language, direction} = this.props;
-        let {filteringView, loading, markers} = this.state;
+        let {filteringView, loading, markers, markerElements} = this.state;
         return (
             <View style={styles.container}>
                 <MapView
@@ -344,26 +457,10 @@ class ServiceMap extends Component {
                     showsPointsOfInterest={false}
                     showsCompass={false}
                     ref={(r) => this.mapRef = r}
-                    >
-                    {markers.map((marker, i) => (
-                        <MapView.Marker
-                            coordinate={{
-                                latitude: marker.latitude,
-                                longitude: marker.longitude
-                            }}
-                            description={marker.description}
-                            key={i}
-                            calloutOffset={{ x: 0, y: 10 }}
-                            onCalloutPress={() => this.onCalloutPress(marker) }
-                            >
-                            {marker.widget}
-                            <MapView.Callout tooltip={true} style={[{
-                                width: width - 50
-                            }]}>
-                                <MapPopup marker={marker}/>
-                            </MapView.Callout>
-                        </MapView.Marker>
-                    )) }
+                    onRegionChangeComplete={(region) => this.redrawMarkers(region)}
+                    onRegionChange={(region) =>this.onRegionChange(region)}
+                >
+                    {markerElements}
                 </MapView>
                 <View
                     style={[
@@ -375,21 +472,20 @@ class ServiceMap extends Component {
                             width: width
                         }
                     ]}
-                    >
+                >
                     <SearchBar
                         theme={theme}
                         floating={!filteringView}
                         initialSearchText={this.props.searchCriteria}
                         searchFunction={(text) => this.filterByText(text) }
-                        />
+                    />
                     <SearchFilterButton
                         theme={theme}
                         floating={!filteringView}
                         onPressAction={() => this.searchFilterButtonAction() }
                         active={filteringView}
-                        />
+                    />
                 </View>
-
                 {(markers.length == MAX_SERVICES && !filteringView) && (
                     <View
                         style={[
@@ -416,13 +512,13 @@ class ServiceMap extends Component {
                                     fontSize: 24
                                 }}
                                 name="md-warning"
-                                />
+                            />
                         </View>
                         <Text style={[
                             styles.flex,
-                            { color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor },
+                            {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
-                            { textAlign: 'center' }
+                            {textAlign: 'center'}
                         ]}>
                             {I18n.t('TOO_MANY_RESULTS') }
                         </Text>
@@ -454,14 +550,14 @@ class ServiceMap extends Component {
                                     fontSize: 32
                                 }}
                                 name="md-warning"
-                                />
+                            />
                         </View>
                         <View style={styles.container}>
                             <Text style={[
                                 styles.flex,
-                                { color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor },
+                                {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                                 getFontFamily(language),
-                                { textAlign: 'center' }
+                                {textAlign: 'center'}
                             ]}>
                                 {I18n.t('OFFLINE_MODE') }
                             </Text>
@@ -477,7 +573,7 @@ class ServiceMap extends Component {
                                         marginBottom: 5,
                                         alignSelf: 'center'
                                     }}
-                                    />
+                                />
                             </View>
                         </View>
                     </View>
@@ -494,45 +590,45 @@ class ServiceMap extends Component {
                                 height: height - 46 - 80
                             }
                         ]}
-                        >
+                    >
                         <View
                             style={[
                                 styles.viewHeaderContainer,
-                                { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
-                                { paddingTop: 10 }
+                                {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                                {paddingTop: 10}
                             ]}
-                            >
+                        >
                             <Text
                                 style={[
                                     styles.viewHeaderText,
                                     getFontFamily(language),
                                     theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                                 ]}
-                                >
+                            >
                                 {I18n.t('FILTER_BY_CATEGORY').toUpperCase() }
                             </Text>
                         </View>
                         <View
                             style={[
                                 styles.searchBarContainer,
-                                { backgroundColor: theme == 'dark' ? styles.menuBackgroundColor : styles.dividerColor },
+                                {backgroundColor: theme == 'dark' ? styles.menuBackgroundColor : styles.dividerColor},
                             ]}
-                            >
+                        >
                             <Button
                                 color="green"
                                 icon="md-close"
                                 text={I18n.t('CLEAR_FILTERS').toUpperCase() }
                                 onPress={this.clearFilters.bind(this) }
-                                buttonStyle={{ height: 33, marginRight: 2 }}
-                                iconStyle={Platform.OS === 'ios' ? { top: 2 } : {}}
-                                />
+                                buttonStyle={{height: 33, marginRight: 2}}
+                                iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
+                            />
                             <Button
                                 color="green"
                                 icon="md-funnel"
                                 text={I18n.t('FILTER_SERVICES').toUpperCase() }
                                 onPress={this.filterByTypes.bind(this) }
-                                buttonStyle={{ height: 33, marginLeft: 2 }}
-                                />
+                                buttonStyle={{height: 33, marginLeft: 2}}
+                            />
                         </View>
                         <ListView
                             dataSource={this.state.serviceTypeDataSource}
@@ -540,16 +636,16 @@ class ServiceMap extends Component {
                             keyboardShouldPersistTaps={true}
                             keyboardDismissMode="on-drag"
                             direction={this.props.direction}
-                            style={{ flex: 1 }}
-                            />
+                            style={{flex: 1}}
+                        />
                     </View>
                 ) }
                 {loading &&
-                    <LoadingOverlay
-                        theme={theme}
-                        height={height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55) }
-                        width={width}
-                        />}
+                <LoadingOverlay
+                    theme={theme}
+                    height={height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55) }
+                    width={width}
+                />}
             </View>
         );
 
