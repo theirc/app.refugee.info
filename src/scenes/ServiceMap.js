@@ -103,8 +103,16 @@ class ServiceMap extends Component {
             searchCriteria: searchCriteria,
             serviceTypes: serviceTypes
         }, () => {
-            this.fetchData(currentEnvelope).then(() => this._fitMap()).done();
+            this.fetchData(currentEnvelope).then(() => {
+                this.redrawMarkers(currentEnvelope);
+                this._fitMap()
+            })
         });
+
+    }
+
+    onRegionChange(regionArea) {
+        this.setState({regionArea});
     }
 
     onCalloutPress(marker) {
@@ -232,7 +240,6 @@ class ServiceMap extends Component {
                 loading: false
             });
         }
-        this.redrawMarkers(this.state.initialEnvelope);
     }
 
     toggleServiceType(type) {
@@ -358,11 +365,10 @@ class ServiceMap extends Component {
     redrawMarkers(region) {
         const {theme} = this.props;
         let {markers} = this.state;
-        let markerElements = [];
-        this.setState({markerElements});
 
-        // needs to be tweaked
-        let clusterRadius = region.longitudeDelta * R / 180 / 6;
+        let markerElements = [];
+
+        let clusterRadius = region.longitudeDelta * R / 180 / 5;
 
         // sort markers by neighbourCount count
 
@@ -399,7 +405,7 @@ class ServiceMap extends Component {
                 description={marker.description}
                 key={i}
                 calloutOffset={{x: 0, y: 10}}
-                onCalloutPress={() => this.onCalloutPress(marker) }
+                onCalloutPress={() => this.onCalloutPress(marker)}
             >
                 {(marker.neighbourCount) ?
                     <View
@@ -427,9 +433,8 @@ class ServiceMap extends Component {
                         </Text>
                     </View> : marker.widget
                 }
-
                 <MapView.Callout tooltip={true} style={[{
-                    width: width - 50
+                    width: width - 20
                 }]}>
                     <MapPopup marker={marker}/>
                 </MapView.Callout>
@@ -453,6 +458,7 @@ class ServiceMap extends Component {
                     showsCompass={false}
                     ref={(r) => this.mapRef = r}
                     onRegionChangeComplete={(region) => this.redrawMarkers(region)}
+                    onRegionChange={(region) =>this.onRegionChange(region)}
                 >
                     {markerElements}
                 </MapView>
@@ -480,7 +486,6 @@ class ServiceMap extends Component {
                         active={filteringView}
                     />
                 </View>
-
                 {(markers.length == MAX_SERVICES && !filteringView) && (
                     <View
                         style={[

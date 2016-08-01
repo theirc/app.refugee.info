@@ -92,6 +92,7 @@
   "THURSDAY": "Thursday",
   "FRIDAY": "Friday",
   "SATURDAY": "Saturday",
-  "CLOSED": "Closed"
-
+  "CLOSED": "Closed",
+  "CLUSTERED_SERVICE_TITLE": "There are {0} services. Showing first {1} services.",
+  "SHOW_MORE": "Show more"
 }

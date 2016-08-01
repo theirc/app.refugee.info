@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {View, Text, AsyncStorage, StyleSheet} from 'react-native';
-import {Icon} from '../components';
-import {Button} from '../components'
+import {Icon, Button} from '../components';
 import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getBottomDividerColor, getTextColor} from '../styles';
