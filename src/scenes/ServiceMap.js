@@ -121,7 +121,10 @@ class ServiceMap extends Component {
     onMarkerPress(marker) {
         this.setState({
             activeMarker: marker
-        }, () => this.redrawMarkers(this.state.regionArea))
+        }, () => {
+            // redrawing causes visual glitches on Android, because it center the view automatically at selected marker
+            (Platform.OS === 'ios') ? this.redrawMarkers(this.state.regionArea) : null
+        })
     }
 
     clearActiveMarker() {
