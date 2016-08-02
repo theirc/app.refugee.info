@@ -114,7 +114,9 @@ class ServiceMap extends Component {
     }
 
     onRegionChange(regionArea) {
-        this.clearActiveMarker();
+        if (Platform.OS === 'ios') {
+            this.clearActiveMarker();
+        }
         this.setState({regionArea});
     }
 
