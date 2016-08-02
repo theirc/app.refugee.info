@@ -362,7 +362,6 @@ class ServiceMap extends Component {
                 });
             }
         });
-        if (activeMarker && activeMarker.service) console.log(activeMarker.service);
         let markerElements = markers.map((marker, i) => (!marker.hidden &&
             <MapView.Marker
                 coordinate={{
