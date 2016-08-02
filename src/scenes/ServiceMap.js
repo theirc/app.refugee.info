@@ -114,7 +114,9 @@ class ServiceMap extends Component {
     }
 
     onRegionChange(regionArea) {
-        this.clearActiveMarker();
+        if (Platform.OS === 'ios') {
+            this.clearActiveMarker();
+        }
         this.setState({regionArea});
     }
 
@@ -435,8 +437,9 @@ class ServiceMap extends Component {
                 {activeMarker && (
                     <View
                         style={[
+                            {borderColor: themes[theme].darkerDividerColor},
                             getContainerColor(theme),
-                            {position: 'absolute', left: 0, bottom: 0, width: width},
+                            {position: 'absolute', left: 0, bottom: 0, width: width, borderTopWidth: 2},
                             {height: (height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55)) / 2.5}
                         ]}
                     >

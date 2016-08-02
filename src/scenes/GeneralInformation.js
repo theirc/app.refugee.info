@@ -126,21 +126,21 @@ export class GeneralInformation extends Component {
         return (
             <View style={styles.container}>
                 <View style={[
-                    componentStyles.searchBarContainer,
+                    {paddingLeft: 5, paddingRight: 5, paddingTop: 5, height: 38, flexDirection: 'row'},
                     theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
                 ]}>
-                       <Button
-                            color="green"
-                            icon="md-locate"
-                            text={I18n.t('CHANGE_LOCATION').toUpperCase()}
-                            onPress={
-                                () => requestAnimationFrame(
-                                    () => navigator.to('cityChoice', null, {country: country})
-                                )
-                            }
-                            buttonStyle={{height: 33}}
-                            iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
-                        />
+                    <Button
+                        color="green"
+                        icon="md-locate"
+                        text={I18n.t('CHANGE_LOCATION').toUpperCase()}
+                        onPress={
+                            () => requestAnimationFrame(
+                                () => navigator.to('cityChoice', null, {country: country})
+                            )
+                        }
+                        buttonStyle={{height: 33}}
+                        iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
+                    />
                 </View>
                 <View style={[
                     componentStyles.searchBarContainer,
