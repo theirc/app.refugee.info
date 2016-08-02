@@ -340,8 +340,8 @@ class ServiceMap extends Component {
             let counter = 0;
             markers[i].neighbours = [];
             markers[i].hidden = false;
-            for (j = i + 1; j < markers.length; j += 1) {
-                if (this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) {
+            for (j = 0; j < markers.length; j += 1) {
+                if ((this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) && (i != j)) {
                     counter += 1;
                     markers[i].neighbours.push(markers[j])
                 }
@@ -353,7 +353,7 @@ class ServiceMap extends Component {
         // do clustering
 
         markers.forEach((marker, i) => {
-            if (marker) {
+            if (!marker.hidden) {
                 marker.neighbours.forEach((neighbour) => {
                     markers[markers.indexOf(neighbour)].hidden = true
                 });
