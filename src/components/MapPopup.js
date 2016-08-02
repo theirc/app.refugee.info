@@ -83,7 +83,7 @@ export default class MapPopup extends Component {
                     {paddingLeft: 10, paddingRight: 10}
                 ]}>
                     <View style={[
-                        {justifyContent: 'center', height: 48},
+                        {justifyContent: 'center', height: 50},
                         styles.iconContainer,
                         direction == 'rtl' ? {marginLeft: 10, marginRight: 0} : {}
                     ]}>
@@ -134,7 +134,7 @@ export default class MapPopup extends Component {
                     >
                         <View style={[
                             styles.iconContainer,
-                            {justifyContent: 'center', height: 48},
+                            {justifyContent: 'center', height: 50},
                             direction == 'rtl' ? {marginLeft: 10, marginRight: 0} : {}
                         ]}>
                             {this.renderWidget(cluster)}
