@@ -171,16 +171,16 @@ export default class MapPopup extends Component {
         if (marker.neighbourCount) {
             let clusterRows = this.getClusterView(marker);
             return (
-                <ScrollView style={[
+                <View style={[
                     styles.container,
                     getContainerColor(theme)
                 ]}>
                     {clusterRows}
-                </ScrollView>
+                </View>
             );
         }
         return (
-            <ScrollView
+            <View
                 style={[
                     getContainerColor(theme),
                 ]}
@@ -232,7 +232,7 @@ export default class MapPopup extends Component {
                         {marker.description}
                     </Text>
                 </View>
-            </ScrollView>
+            </View>
         )
     }
 };

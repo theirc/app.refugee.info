@@ -8,7 +8,8 @@ import {
     Text,
     Dimensions,
     Platform,
-    LayoutAnimation
+    LayoutAnimation,
+    ScrollView
 } from 'react-native';
 import MapView from 'react-native-maps';
 import styles, {
@@ -40,6 +41,8 @@ var {width, height} = Dimensions.get('window');
 const RADIUS_MULTIPLIER = 1.2;
 const MAX_SERVICES = 50;
 const R = 6371e3; // earth R in metres
+
+let activeMarkerScrollViewRef;
 
 class ServiceMap extends Component {
     static smallHeader = true;
@@ -125,8 +128,14 @@ class ServiceMap extends Component {
             activeMarker: marker
         }, () => {
             // redrawing causes visual glitches on Android, because it center the view automatically at selected marker
-            (Platform.OS === 'ios') ? this.redrawMarkers(this.state.regionArea) : null
-        })
+            if (Platform.OS === 'ios') {
+                this.redrawMarkers(this.state.regionArea)
+            }
+        });
+        if (this.activeMarkerScrollViewRef && Platform.OS === 'android') {
+            // hacky way to make sure that ScrollView content renders when switching active marker on Android
+            this.activeMarkerScrollViewRef.scrollTo({x: 0, y: 0, animated: false})
+        }
     }
 
     clearActiveMarker() {
@@ -382,7 +391,9 @@ class ServiceMap extends Component {
                         alignItems: 'center',
                         width: 36,
                         height: 36,
-                        backgroundColor: (marker == activeMarker) ? '#009440' : themes.light.greenAccentColor,
+                        backgroundColor: (marker == activeMarker && Platform.OS === 'ios')
+                            ? '#009440'
+                            : themes.light.greenAccentColor,
                         borderColor: themes[theme].backgroundColor,
                         borderRadius: 10,
                         borderWidth: 1
@@ -435,7 +446,8 @@ class ServiceMap extends Component {
                     {markerElements}
                 </MapView>
                 {activeMarker && (
-                    <View
+                    <ScrollView
+                        ref={(ref) => this.activeMarkerScrollViewRef = ref}
                         style={[
                             {borderColor: themes[theme].darkerDividerColor},
                             getContainerColor(theme),
@@ -444,7 +456,7 @@ class ServiceMap extends Component {
                         ]}
                     >
                         <MapPopup marker={activeMarker}/>
-                    </View>
+                    </ScrollView>
                 )}
                 <View
                     style={[
