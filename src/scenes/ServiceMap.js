@@ -38,7 +38,7 @@ var _ = require('underscore');
 var {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
-const MAX_SERVICES = 25;
+const MAX_SERVICES = 50;
 const R = 6371e3; // earth R in metres
 
 class ServiceMap extends Component {
