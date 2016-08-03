@@ -380,7 +380,6 @@ class ServiceMap extends Component {
                     longitude: marker.longitude
                 }}
                 key={i}
-                calloutOffset={{x: 0, y: 10}}
                 onPress={() => this.onMarkerPress(marker)}
             >
                 <View
@@ -438,6 +437,9 @@ class ServiceMap extends Component {
                     showsMyLocationButton={false}
                     showsPointsOfInterest={false}
                     showsCompass={false}
+                    rotateEnabled={false}
+                    toolbarEnabled={false}
+                    pitchEnabled={false}
                     ref={(r) => this.mapRef = r}
                     onRegionChangeComplete={(region) => this.redrawMarkers(region)}
                     onRegionChange={(region) => this.onRegionChange(region)}
