@@ -33,12 +33,6 @@ export default class Regions extends Component {
         if (!countries || network) {
             countries = await this.client.getRootLocations();
             await AsyncStorage.setItem('__countries', JSON.stringify(countries));
-            await Promise.all(countries.map((c) => {
-                return Promise.all([
-                    AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c)),
-                    AsyncStorage.setItem('__slug-' + c.full_slug, JSON.stringify(c)),
-                ]);
-            }));
         }
 
         return countries;//.filter((r) => !r.hidden);
@@ -46,42 +40,30 @@ export default class Regions extends Component {
 
     async listChildren(country, network = false, region = null, point = null) {
         let countryId = country.id;
-        let children = JSON.parse(await AsyncStorage.getItem('__children-' + countryId));
+        children = await this.client.getAllChildrenOf(countryId);
+        (children || []).forEach((m) => {
+            m.country = country;
+            m.countryId = countryId;
+        });
 
-        if (!children || network) {
-            children = await this.client.getAllChildrenOf(countryId);
-            (children || []).forEach((m) => {
-                m.country = country;
-                m.countryId = countryId;
-            });
-
-            await AsyncStorage.setItem('__children-' + countryId, JSON.stringify(children));
-            await Promise.all(children.map((c) => {
-                return Promise.all([
-                    AsyncStorage.setItem('__region-' + c.id, JSON.stringify(c)),
-                    AsyncStorage.setItem('__slug-' + c.full_slug, JSON.stringify(c)),
-                ]);
-            }));
-        }
-
-        if(region) {
+        if (region) {
             children = children.filter(c=> c.id != region.id);
             children = Regions.sortChildren(children, region.centroid);
         }
 
-        if(point) {
+        if (point) {
             children = Regions.sortChildren(children, point);
         }
 
         children = [{country, ...country}].concat(children);
-        
+
         return children.filter((r) => !r.hidden);
     }
 
     static sortChildren(children, region) {
-        if(region) {
+        if (region) {
             children.sort((a, b) => {
-                if(!a.centroid || !b.centroid) {
+                if (!a.centroid || !b.centroid) {
                     return 0;
                 }
                 var x = gju.pointDistance(region, a.centroid);
@@ -96,33 +78,14 @@ export default class Regions extends Component {
 
     async getLocation(id, country, network = false) {
         if (!country) {
-            let location = JSON.parse(await AsyncStorage.getItem('__region-' + id));
-            if (!location || network) {
-                location = await this.client.getLocation(id);
-                await AsyncStorage.setItem('__region-' + location.id, JSON.stringify(location))
-                await AsyncStorage.setItem('__slug-' + location.full_slug, JSON.stringify(location));
-            }
-
-            return location;
+            return await this.client.getLocation(id);
         }
-
         let locations = (await this.listChildren(country, network)).filter((l) => l.id == id);
         return locations.length && locations[0];
     }
 
     async getLocationByPosition(longitude, latitude, level) {
         return await this.client(longitude, latitude, level);
-    }
-
-    static loadImportantInformation(region) {
-        if (!region) {
-            return true;
-        }
-
-        let importantInfo = region.important_information.map((i) => {
-            return AsyncStorage.setItem('__info-' + i.full_slug, JSON.stringify(i));
-        });
-        return Promise.all([Promise.all(importantInfo), importantInfo]);
     }
 
     static searchImportantInformation(fullSlug) {
@@ -136,7 +99,7 @@ export default class Regions extends Component {
                         }
                         return item;
                     });
-                };
+                }
                 return false;
             }).filter(r => r);
             if (promises) {
