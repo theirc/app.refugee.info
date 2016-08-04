@@ -90,7 +90,9 @@ export default class ServiceList extends Component {
     componentWillMount() {
         this.serviceData = new Services(this.props);
         if (!this.state.loaded) {
-            this.fetchData().done();
+            this.fetchData().then(() => {
+                this.setState({loading: false})
+            });
         }
     }
 
@@ -209,7 +211,10 @@ export default class ServiceList extends Component {
     onRefresh() {
         this.setState({ refreshing: true });
         this.fetchData(true).then(() => {
-            this.setState({ refreshing: false });
+            this.setState({
+                refreshing: false,
+                loading: false
+            });
         });
     }
 
@@ -391,11 +396,11 @@ export default class ServiceList extends Component {
         if (!canLoadMoreContent) {
             return;
         }
-        let types = this.getServiceTypeNumbers(serviceTypes);
 
         try {
+            const types = this.getServiceTypeNumbers(serviceTypes);
             const {latitude, longitude} = (this.state.location || {});
-            let serviceResult = await this.serviceData.pageServices(
+            const serviceResult = await this.serviceData.pageServices(
                 region.slug,
                 { latitude, longitude },
                 searchCriteria,
@@ -561,8 +566,9 @@ export default class ServiceList extends Component {
                         searchCriteria={this.state.searchCriteria}
                         serviceTypes={this.state.serviceTypes}
                         />) }
-                {(!!loading && !refreshing) &&
-                    <LoadingOverlay theme={theme} height={height - getToolbarHeight() } width={width}/>}
+                {(loading && !refreshing) &&
+                    <LoadingOverlay theme={theme} height={height - getToolbarHeight() } width={width}/>
+                }
             </View>
         );
     }
