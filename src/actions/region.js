@@ -20,10 +20,6 @@ export function fetchRegionFromStorage() {
 
 export function updateRegionIntoStorage(region) {
     return async dispatch => {
-        if (region) {
-            await Regions.loadImportantInformation(region);
-        }
-
         return await AsyncStorage.setItem('regionCache', JSON.stringify(region));
     };
 }
