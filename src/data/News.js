@@ -29,9 +29,14 @@ export default class News extends Component {
 
     async downloadNews() {
         const NEWS_THAT_MOVES = `https://newsthatmoves.org/${this.language}/feed/`;
-        let feed = await fetch(GOOGLE_API_PREFIX + NEWS_THAT_MOVES);
-        let json = await feed.json();
+        try {
+            let feed = await fetch(GOOGLE_API_PREFIX + NEWS_THAT_MOVES);
+            let json = await feed.json();
 
-        return json.responseData;
+            return json.responseData;
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
 }
