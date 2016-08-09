@@ -12,13 +12,10 @@ import {
     Linking,
     Image
 } from 'react-native';
-import I18n from '../constants/Messages';
-import {MapButton, OfflineView, DirectionalText, SearchBar, ListItem, Button} from '../components';
+import {OfflineView} from '../components';
 import {connect} from 'react-redux';
-import ApiClient from '../utils/ApiClient';
-import styles, {getUnderlayColor, themes, getFontFamily} from '../styles';
-import store from '../store';
-import {Regions, Services, News} from '../data';
+import styles, {themes, getFontFamily} from '../styles';
+import {News} from '../data';
 
 export class NewsThatMoves extends Component {
     static smallHeader = true;
@@ -28,7 +25,7 @@ export class NewsThatMoves extends Component {
             rowHasChanged: (row1, row2) => row1 !== row2,
         }),
         refreshing: false,
-    }
+    };
 
     componentWillMount() {
         this.onRefresh().done()
@@ -37,14 +34,14 @@ export class NewsThatMoves extends Component {
     async onRefresh() {
         const {region, language} = this.props;
         const {dispatch} = this.props;
-
         return new News(language).downloadNews().then((n) => {
-            let entries = n.feed.entries
+            let entries = n.feed.entries;
             return this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(entries),
-                refreshing: false
+                refreshing: false,
+                offline: false
             });
-        });
+        }).catch((e) => this.setState({offline: true}));
     }
 
     renderRow(data) {
@@ -63,38 +60,48 @@ export class NewsThatMoves extends Component {
         }}>
             <TouchableOpacity
                 onPress={() => Linking.openURL(data.link) }
-                style={[localStyles.article, { borderBottomColor: theme.dividerColor, }]}>
+                style={[localStyles.article, {borderBottomColor: theme.dividerColor,}]}>
                 <View>
-                    <Text style={[textStyles, font, { paddingBottom: 5, fontSize: 16, fontWeight: 'bold' }]}>{data.title}</Text>
-                    <Text style={[textStyles, font, { paddingBottom: 10, }]}>{data.contentSnippet}</Text>
+                    <Text style={[textStyles, font, {
+                        paddingBottom: 5,
+                        fontSize: 16,
+                        fontWeight: 'bold'
+                    }]}>{data.title}</Text>
+                    <Text style={[textStyles, font, {paddingBottom: 10,}]}>{data.contentSnippet}</Text>
                 </View>
             </TouchableOpacity>
         </View>;
     }
 
     render() {
+        if (this.state.offline) {
+            return <OfflineView
+                offline={this.state.offline}
+                onRefresh={this.onRefresh.bind(this)}
+            />
+        }
         if (!this.state.dataSource) {
             return <View />;
         }
 
         return <View style={styles.container}>
-            <View style={{ paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF' }}>
-                <Image source={{ uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png' }}
-                    style={{ height: 70, resizeMode: 'contain', }}/>
+            <View style={{paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF' }}>
+                <Image source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
+                       style={{height: 70, resizeMode: 'contain'}}/>
             </View>
             <ListView
                 refreshControl={
                     <RefreshControl
                         refreshing={this.state.refreshing}
                         onRefresh={this.onRefresh.bind(this) }
-                        />
+                    />
                 }
                 dataSource={this.state.dataSource}
                 enableEmptySections
                 renderRow={(rowData) => this.renderRow(rowData) }
                 keyboardShouldPersistTaps={true}
                 keyboardDismissMode="on-drag"
-                />
+            />
         </View>
     }
 }
