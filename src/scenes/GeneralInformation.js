@@ -41,7 +41,7 @@ export class GeneralInformation extends Component {
 
     componentDidMount() {
         const {region, dispatch} = this.props;
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle});
+        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle || region.name});
         this.context.navigator.currentRoute.title = region.pageTitle;
         this.regionData = new Regions(this.props);
         this._loadInitialState();
