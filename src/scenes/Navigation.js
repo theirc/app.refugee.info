@@ -191,7 +191,7 @@ class Navigation extends Component {
                     getFontFamily(language),
                     styles.cityText
                 ]}>
-                    {region.pageTitle.toUpperCase() }
+                    {(region.pageTitle || region.name).toUpperCase() }
                 </Text>
             </View>
             <MenuSection title={I18n.t("REFUGEE_INFO") }>
