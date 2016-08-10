@@ -59,7 +59,7 @@ export class NewsThatMoves extends Component {
             paddingRight: 5,
         }}>
             <TouchableOpacity
-                onPress={() => Linking.openURL(data.link) }
+                onPress={() => Linking.openURL(data.link)}
                 style={[localStyles.article, {borderBottomColor: theme.dividerColor,}]}>
                 <View>
                     <Text style={[textStyles, font, {

@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {getFontFamily} from '../styles';
+import styles, {getFontFamily, getTextColor} from '../styles';
 import {Button} from '../components';
 
 class NetworkFailure extends Component {

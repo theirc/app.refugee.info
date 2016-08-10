@@ -139,27 +139,13 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch, country} = this.props;
-        city.detected = false;
-        city.coords = {};
         city.country = country;
-        const regionData = new Regions(this.props);
-        let cities = [];
 
         dispatch(updateRegionIntoStorage(city));
         dispatch(updateCountryIntoStorage(city.country));
         dispatch({type: 'REGION_CHANGED', payload: city});
         dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
-        regionData.listChildren(city.country, true, city).then((value) => {
-            cities = value.filter((c) => c.level != 2);
-            cities.forEach((location) => {
-                if (location && location.metadata) {
-                    location.pageTitle = (location.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-                }
-            });
-            dispatch(updateLocationsIntoStorage(cities));
-            dispatch({type: 'LOCATIONS_CHANGED', payload: cities});
-        });
         return this._defaultOrFirst(city)
     }
 
@@ -177,7 +163,7 @@ class Navigation extends Component {
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = null;
         if (locations) {
-            nearbyCitiesItems = locations.map((i, index) => {
+            nearbyCitiesItems = locations.map((i, index) => { if (i.id != region.id)
                 return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle || i.name}</MenuItem>;
             });
         }

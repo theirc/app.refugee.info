@@ -93,7 +93,7 @@
   "FRIDAY": "Friday",
   "SATURDAY": "Saturday",
   "CLOSED": "Closed",
-  "CLUSTERED_SERVICE_TITLE": "There are {0} services. Showing first {1} services.",
+  "CANNOT_CHANGE_LANGUAGE": "Cannot change language",
   "SHOW_MORE": "Show more",
   "CLUSTER_POPUP_TITLE": "There are {0} services in this location. Click on the service below for more details."
 }

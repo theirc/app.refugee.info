@@ -7,7 +7,8 @@ import {
     Text,
     ScrollView,
     TouchableHighlight,
-    Dimensions
+    Dimensions,
+    Alert
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -62,7 +63,7 @@ class Settings extends Component {
         });
     }
 
-    async updateSettings(language) {
+    updateSettings(language) {
         this.setState({
             loading: true
         });
@@ -71,19 +72,18 @@ class Settings extends Component {
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
 
         this.apiClient = new ApiClient(this.context, {language: language});
-        const regionData = new Regions({language: language});
 
         let newRegion = null;
         let newCountry = null;
         let newLocations = null;
 
         Promise.all([
-            this.apiClient.getLocation(region.id),
-            this.apiClient.getLocation(country.id),
+            this.apiClient.getLocation(region.id, true),
+            this.apiClient.getLocation(country.id, true),
         ]).then((values) => {
             newRegion = values[0];
             newCountry = values[1];
-        }).then(() => {
+            const regionData = new Regions({language: language});
             regionData.listChildren(newCountry, true, newRegion).then((value) => {
                 newLocations = value.filter((c) => c.level != 2);
                 newLocations.forEach((location) => {
@@ -106,7 +106,19 @@ class Settings extends Component {
                 ]).then(() => {
                     this.setState({loading: false});
                 })
-            })})
+            })
+        }).catch((e) => {
+            this.setState({
+                loading: false,
+            });
+            Alert.alert(
+                I18n.t('CANNOT_CHANGE_LANGUAGE'),
+                `${I18n.t('NETWORK_PROBLEM')}`,
+                [
+                    {text: I18n.t('OK')}
+                ]
+            );
+        })
     }
 
     goToCountryChoice() {

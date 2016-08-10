@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
 import {connect} from 'react-redux';
-import {LocationListView} from '../components';
+import {LocationListView, OfflineView} from '../components';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 import store from '../store';
@@ -26,24 +26,31 @@ class CityChoice extends Component {
         super(props);
         this.state = Object.assign({}, store.getState(), {
             cities: [],
-            loaded: false
+            loaded: false,
+            offline: false
         });
     }
 
     async componentDidMount() {
         const regionData = new Regions(this.props);
+        let cities;
+        try {
+            cities = (await regionData.listChildren(this.props.country, true)).filter((c) => c.level != 2);
 
-        let cities = (await regionData.listChildren(this.props.country, true)).filter((c) => c.level != 2);
-
-        cities.forEach((c) => {
-            if (c && c.metadata) {
-                c.pageTitle = (c.metadata.page_title || '').replace('\u060c', ',').split(',')[0]
-            }
-        });
+            cities.forEach((c) => {
+                if (c && c.metadata) {
+                    c.pageTitle = (c.metadata.page_title || '').replace('\u060c', ',').split(',')[0]
+                }
+            });
+        } catch (e) {
+            this.setState({offline: true});
+            return;
+        }
 
         this.setState({
             cities,
-            loaded: true
+            loaded: true,
+            offline: false
         });
     }
 
@@ -74,6 +81,14 @@ class CityChoice extends Component {
     }
 
     render() {
+        if (this.state.offline) {
+            return (
+                <OfflineView
+                    onRefresh={this.componentDidMount.bind(this)}
+                    offline={this.state.offline}
+                />
+            )
+        }
         return (
             <View style={styles.container}>
                 <LocationListView
