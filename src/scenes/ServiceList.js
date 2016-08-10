@@ -550,7 +550,9 @@ export default class ServiceList extends Component {
                             ? I18n.t('LOADING_SERVICES').toUpperCase()
                             : (filteringView)
                                 ? I18n.t('FILTER_BY_CATEGORY').toUpperCase()
-                                : I18n.t('NEAREST_SERVICES').toUpperCase()
+                                : (this.state.dataSource._dataBlob.s1.length > 0)
+                                    ? I18n.t('NEAREST_SERVICES').toUpperCase()
+                                    : I18n.t('NO_SERVICES_FOUND').toUpperCase()
                         }
                     </Text>
                 </View>

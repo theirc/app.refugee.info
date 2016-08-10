@@ -8,6 +8,7 @@
   "LOADING": "Loading...",
   "SELECT": "Select",
   "NEAREST_SERVICES": "Nearest services in your location",
+  "NO_SERVICES_FOUND": "No services found",
   "COST_OF_SERVICE": "Cost of service",
   "CHOOSE_REGION": "Please choose region on home page",
   "SELECTION_CRITERIA": "Selection Criteria",
