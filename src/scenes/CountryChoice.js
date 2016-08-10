@@ -1,8 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, View, StyleSheet, Image, Alert} from 'react-native';
 import {connect} from 'react-redux';
-import {LocationListView} from '../components';
-import ApiClient from '../utils/ApiClient';
+import {LocationListView, OfflineView} from '../components';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
@@ -24,7 +23,8 @@ export default class CountryChoice extends Component {
 
         this.state = Object.assign({}, store.getState(), {
             locations: [],
-            loaded: false
+            loaded: false,
+            offline: false
         });
     }
 
@@ -33,9 +33,13 @@ export default class CountryChoice extends Component {
 
         const regionData = new Regions(this.props);
         this.regionData = regionData;
-
-        const locations = await regionData.listCountries(true);
-
+        let locations;
+        try {
+            locations = await regionData.listCountries(true);
+        } catch (e) {
+            this.setState({offline: true});
+            return;
+        }
 
         locations.forEach((c) => {
             if (c && c.metadata) {
@@ -48,7 +52,7 @@ export default class CountryChoice extends Component {
             locations,
             loaded: true,
             language: this.props.language,
-            buttonDisabled: false
+            offline: false
         });
     }
 
@@ -145,6 +149,14 @@ export default class CountryChoice extends Component {
     }
 
     render() {
+        if (this.state.offline) {
+            return (
+                <OfflineView
+                    onRefresh={this.componentDidMount.bind(this)}
+                    offline={this.state.offline}
+                />
+            )
+        }
         return (
             <View style={styles.container}>
                 <LocationListView
