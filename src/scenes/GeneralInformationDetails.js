@@ -141,7 +141,7 @@ export class GeneralInformationDetails extends Component {
                 const content = region.content.find((c) => c.anchor_name == anchorName);
 
                 if (path != 'info.details') {
-                     this.context.navigator.navigator.pop();
+                     this.context.navigator.back();
                 }
 
                 this.context.navigator.forward('detailsChild', null, {
