@@ -112,6 +112,10 @@ div.banner p {
     padding: 0;
     margin: 0;
 }
+
+h2 {
+  font-size: 140%;
+}
 `;
 
 const lightTheme = `
