@@ -138,8 +138,6 @@ export class GeneralInformationDetails extends Component {
                 // This means that the link is to a section that is hidden from the table of contents
                 const {region, path} = this.props;
                 const anchorName = url.substr(1);
-                console.log(this.props);
-
                 const content = region.content.find((c) => c.anchor_name == anchorName);
 
                 if (path != 'info.details') {
