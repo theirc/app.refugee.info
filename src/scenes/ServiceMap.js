@@ -94,11 +94,6 @@ class ServiceMap extends Component {
         this.serviceCommons = new ServiceCommons();
     }
 
-    componentWillUpdate() {
-        // animations on Android causes markers to stop rendering
-        Platform.OS === 'ios' && LayoutAnimation.easeInEaseOut();
-    }
-
     componentDidMount() {
         const {region, searchCriteria, serviceTypes} = this.props;
         let currentEnvelope = ServiceMap.getInitialRegion(region);
