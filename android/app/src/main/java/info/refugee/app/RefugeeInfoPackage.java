@@ -1,4 +1,4 @@
-package com.refugeeinfoapp;
+package info.refugee.app;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.JavaScriptModule;
