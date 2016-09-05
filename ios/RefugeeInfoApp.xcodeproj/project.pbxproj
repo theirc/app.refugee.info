@@ -1014,7 +1014,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.refugeeinfoapp;
+				PRODUCT_BUNDLE_IDENTIFIER = info.refugee.app;
 				PRODUCT_NAME = "Refugee Info";
 				PROVISIONING_PROFILE = "";
 			};
@@ -1046,7 +1046,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.refugeeinfoapp;
+				PRODUCT_BUNDLE_IDENTIFIER = info.refugee.app;
 				PRODUCT_NAME = "Refugee Info";
 				PROVISIONING_PROFILE = "";
 			};
