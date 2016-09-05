@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -32,6 +33,7 @@
 		43688CBB1D265BF8002E5F48 /* Montserrat-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CB91D265BF8002E5F48 /* Montserrat-Regular.otf */; };
 		43688CCC1D266420002E5F48 /* Montserrat-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */; };
 		43688CCE1D268F51002E5F48 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */; };
+		4E0F1BAC1D7DB980002D53A3 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0F1B9B1D7DB938002D53A3 /* libRCTLinking.a */; };
 		64E294D541F9419F836AFD04 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */; };
 		6E4748D9323040E7B23A56CF /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B7CC5BEA19452D8E916112 /* libRNI18n.a */; };
 		72263F12948C4E4B8456E35E /* libSQLite.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19AF022215E2454585020856 /* libSQLite.a */; };
@@ -164,6 +166,13 @@
 			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
 			remoteInfo = AirMaps;
 		};
+		4E0F1B9A1D7DB938002D53A3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTLinking;
+		};
 		4E3A4B8C1D37D02600352D09 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7A1B127AF0DC4EDCBCE269C7 /* RNDeviceInfo.xcodeproj */;
@@ -227,6 +236,7 @@
 		43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBold.otf"; sourceTree = "<group>"; };
 		43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4D27116C92AA444499ABB45F /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		52D18292794646A4B80B5F23 /* RNI18n.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNI18n.xcodeproj; path = "../node_modules/react-native-i18n/RNI18n.xcodeproj"; sourceTree = "<group>"; };
 		67C5B40F380248F28E5698AF /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -257,6 +267,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E0F1BAC1D7DB980002D53A3 /* libRCTLinking.a in Frameworks */,
 				061F3E031D3146AC0075C1CA /* libRCTPushNotification.a in Frameworks */,
 				06D4EC301D2D89C30046FDB0 /* libRNMail.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
@@ -427,6 +438,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4E0F1B931D7DB938002D53A3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4E0F1B9B1D7DB938002D53A3 /* libRCTLinking.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4E3A4B7D1D37D02600352D09 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,6 +481,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */,
 				061F3DEC1D31469C0075C1CA /* RCTPushNotification.xcodeproj */,
 				06D4EC181D2D89A10046FDB0 /* RNMail.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
@@ -623,6 +643,10 @@
 				{
 					ProductGroup = 00C302BC1ABCB91800DB3ED1 /* Products */;
 					ProjectRef = 00C302BB1ABCB91800DB3ED1 /* RCTImage.xcodeproj */;
+				},
+				{
+					ProductGroup = 4E0F1B931D7DB938002D53A3 /* Products */;
+					ProjectRef = 4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */;
 				},
 				{
 					ProductGroup = 78C398B11ACF4ADC00677621 /* Products */;
@@ -802,6 +826,13 @@
 			remoteRef = 4396D45E1D10435F003DBCA1 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		4E0F1B9B1D7DB938002D53A3 /* libRCTLinking.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTLinking.a;
+			remoteRef = 4E0F1B9A1D7DB938002D53A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		4E3A4B8D1D37D02600352D09 /* libRNDeviceInfo.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -972,6 +1003,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 				);
@@ -1003,6 +1035,7 @@
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/AirMaps/**",
 					"$(SRCROOT)/../node_modules/react-native-share/ios",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
 				);
