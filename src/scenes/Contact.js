@@ -7,7 +7,7 @@ import {Button} from '../components';
 import ApiClient from '../utils/ApiClient';
 
 
-class Contact extends Component {
+export class Contact extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired

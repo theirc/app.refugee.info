@@ -31,10 +31,10 @@ class SimpleAndroidTests(unittest.TestCase):
         self.assertIsNotNone(el)
 
     def test_installation(self):
-        self.driver.remove_app('info.refugee.app')
-        self.assertFalse(self.driver.is_app_installed('info.refugee.app'))
+        self.driver.remove_app('com.refugeeinfoapp')
+        self.assertFalse(self.driver.is_app_installed('com.refugeeinfoapp'))
         self.driver.install_app(self.path)
-        self.assertTrue(self.driver.is_app_installed('info.refugee.app'))
+        self.assertTrue(self.driver.is_app_installed('com.refugeeinfoapp'))
 
     def test_launching_application(self):
         el = self.driver.find_element_by_android_uiautomator('text("Select")')

@@ -21,7 +21,7 @@ import styles, {
 } from '../styles';
 import Icon from './Icon';
 
-export default class SelectableListItem extends Component {
+export class SelectableListItem extends Component {
 
     static propTypes = {
         onPress: PropTypes.func,

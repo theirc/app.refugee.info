@@ -48,7 +48,7 @@ var {width, height} = Dimensions.get('window');
 
 const PAGE_SIZE = 10;
 
-export default class ServiceList extends Component {
+export class ServiceList extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired

@@ -41,7 +41,7 @@ var screen = Dimensions.get('window');
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-export default class ServiceDetails extends Component {
+export class ServiceDetails extends Component {
     static smallHeader = true;
     static contextTypes = {
         navigator: PropTypes.object.isRequired

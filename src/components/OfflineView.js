@@ -5,7 +5,7 @@ import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getBottomDividerColor, getTextColor} from '../styles';
 
-export default class OfflineView extends Component {
+export class OfflineView extends Component {
 
     static propTypes = {
         onRefresh: PropTypes.func.isRequired,

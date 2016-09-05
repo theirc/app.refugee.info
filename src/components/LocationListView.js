@@ -5,7 +5,7 @@ import styles, {getUnderlayColor, getFontFamily, getRowOrdering} from '../styles
 import {connect} from 'react-redux';
 import {ListItem} from '../components';
 
-export default class LocationListView extends Component {
+export class LocationListView extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired
