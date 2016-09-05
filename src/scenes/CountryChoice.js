@@ -12,7 +12,7 @@ import {updateCountryIntoStorage} from '../actions/country';
 import {Regions} from '../data'
 
 
-export default class CountryChoice extends Component {
+export class CountryChoice extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired

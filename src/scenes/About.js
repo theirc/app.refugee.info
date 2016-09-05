@@ -5,7 +5,7 @@ import I18n from '../constants/Messages';
 import styles, {getFontFamily, getTextAlign, getTextColor} from '../styles';
 
 
-class About extends Component {
+export class About extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object.isRequired

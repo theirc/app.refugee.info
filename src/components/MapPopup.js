@@ -15,7 +15,7 @@ import styles, {
 import {Icon} from '../components';
 import I18n from '../constants/Messages';
 
-export default class MapPopup extends Component {
+export class MapPopup extends Component {
 
     static propTypes = {
         marker: PropTypes.object

@@ -12,7 +12,7 @@ import {
 } from '../actions';
 import {Regions} from '../data'
 
-class CityChoice extends Component {
+export class CityChoice extends Component {
 
     static propTypes = {
         country: React.PropTypes.object.isRequired

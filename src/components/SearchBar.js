@@ -5,7 +5,7 @@ import I18n from '../constants/Messages';
 import {connect} from 'react-redux';
 import {getFontFamily, getElevation, themes} from '../styles';
 
-export default class SearchBar extends Component {
+export class SearchBar extends Component {
 
     static propTypes = {
         theme: PropTypes.oneOf(['light', 'dark']),

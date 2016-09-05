@@ -9,7 +9,7 @@ import styles, {
 import Icon from './Icon'
 import {connect} from 'react-redux';
 
-export default class Button extends Component {
+export class Button extends Component {
 
     static propTypes = {
         text: PropTypes.string,

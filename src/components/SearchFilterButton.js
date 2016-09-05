@@ -4,7 +4,7 @@ import {Icon} from '../components';
 import {connect} from 'react-redux';
 import {getUnderlayColor, getElevation, themes} from '../styles';
 
-export default class SearchFilterButton extends Component {
+export class SearchFilterButton extends Component {
 
     static propTypes = {
         theme: PropTypes.oneOf(['light', 'dark']),

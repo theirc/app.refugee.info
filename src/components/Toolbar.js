@@ -19,7 +19,7 @@ import {
 
 import Icon from './Icon';
 
-export default class Toolbar extends Component {
+export class Toolbar extends Component {
 
     static contextTypes = {
         navigator: PropTypes.object

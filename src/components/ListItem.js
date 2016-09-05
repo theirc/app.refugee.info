@@ -21,7 +21,7 @@ import styles, {
 } from '../styles';
 import Icon from './Icon';
 
-export default class ListItem extends Component {
+export class ListItem extends Component {
 
     static propTypes = {
         onPress: PropTypes.func,
