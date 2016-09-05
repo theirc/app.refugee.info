@@ -26,7 +26,7 @@ export class GeneralInformationDetails extends Component {
         this.state = {
             loading: false,
             source: false,
-            webViewStyle: {opacity: 0}
+            webViewStyle: { opacity: 0 }
         };
     }
 
@@ -40,7 +40,7 @@ export class GeneralInformationDetails extends Component {
         let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
 
         setTimeout(() => {
-            this.setState({webViewStyle: {backgroundColor: backgroundColor, opacity: 1}});
+            this.setState({ webViewStyle: { backgroundColor: backgroundColor, opacity: 1 } });
         }, 400);
     }
 
@@ -48,9 +48,9 @@ export class GeneralInformationDetails extends Component {
         const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
 
         if (showTitle) {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle});
+            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle });
         } else {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle});
+            dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle });
 
         }
 
@@ -94,7 +94,7 @@ export class GeneralInformationDetails extends Component {
                 showTitle: showTitle
             });
         } else {
-            let payload = {region: page.code ? page : null, information: page.code ? null : page}
+            let payload = { region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page };
             return this.context.navigator.to('info', null, payload);
         }
     }
@@ -102,6 +102,12 @@ export class GeneralInformationDetails extends Component {
     _onNavigationStateChange(state) {
         // Opening all links in the external browser except for the internal links
         let url = state.url;
+        const decoded = decodeURIComponent(url);
+
+        if (decoded.indexOf('about:blank#') == 0) {
+            url = decoded.substr(11);
+        }
+
         if (url.indexOf('data:') == 0 || url.indexOf('about:') == 0) {
             return;
         }
@@ -127,6 +133,21 @@ export class GeneralInformationDetails extends Component {
 
                 Regions.searchImportantInformation(fullSlug).then((info) => {
                     this._defaultOrFirst(info, true);
+                });
+            } else if (url.indexOf('#') == 0) {
+                // This means that the link is to a section that is hidden from the table of contents
+                const {region, path} = this.props;
+                const anchorName = url.substr(1);
+                const content = region.content.find((c) => c.anchor_name == anchorName);
+
+                if (path != 'info.details') {
+                     this.context.navigator.back();
+                }
+
+                this.context.navigator.forward('detailsChild', null, {
+                    section: content.section,
+                    sectionTitle: content.title,
+                    showTitle: false
                 });
             } else {
                 this.webView.goBack();
@@ -156,16 +177,16 @@ export class GeneralInformationDetails extends Component {
         return (
             <View style={styles.container}>
                 {this.state.source &&
-                <WebView
-                    ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                    source={this.state.source}
-                    style={this.state.webViewStyle}
-                />
+                    <WebView
+                        ref={(v) => this.webView = v}
+                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                        source={this.state.source}
+                        style={this.state.webViewStyle}
+                        />
                 }
                 <MapButton
                     direction={this.props.direction}
-                />
+                    />
             </View>
         );
     }

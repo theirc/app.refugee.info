@@ -53,8 +53,10 @@ export class GeneralInformation extends Component {
             region = information;
         }
         if (region != nextProps.region) {
+            const content = nextProps.region.content.filter((c) => !c.hide_from_toc);
+
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(nextProps.region.content),
+                dataSource: this.state.dataSource.cloneWithRows(content),
             });
         }
     }
@@ -62,6 +64,7 @@ export class GeneralInformation extends Component {
     async _loadInitialState() {
         let {region, information} = this.props;
         const {navigator} = this.context;
+        const content = region.content.filter((c) => !c.hide_from_toc);
 
         if (information) {
             region = information;
@@ -81,7 +84,7 @@ export class GeneralInformation extends Component {
         }
 
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(region.content),
+            dataSource: this.state.dataSource.cloneWithRows(content),
             generalInfo: region.content,
             region: region,
             loaded: true,

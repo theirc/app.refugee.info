@@ -63,6 +63,12 @@ export default {
                         title: () => I18n.t('GENERAL_INFO'),
                         component: require('./scenes/GeneralInformation').default,
                     },
+
+                    // details linked from details
+                    detailsChild: {
+                        title: () => I18n.t('GENERAL_INFO'),
+                        component: require('./scenes/GeneralInformationDetails').default,
+                    }
                 }
             }
         }
