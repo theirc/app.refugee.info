@@ -50,7 +50,7 @@ export class SearchBar extends Component {
                         returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        onSubmitEditing={searchFunction}
+                        onEndEditing={searchFunction}
                         placeholderTextColor={
                             theme=='dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor
                         }

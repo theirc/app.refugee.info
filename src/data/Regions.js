@@ -87,25 +87,11 @@ export default class Regions extends Component {
     async getLocationByPosition(longitude, latitude, level) {
         return await this.client(longitude, latitude, level);
     }
-
-    static searchImportantInformation(fullSlug) {
-        return AsyncStorage.getAllKeys().then((k) => {
-            let promises = k.map((r) => {
-                if (r.indexOf(fullSlug) > -1) {
-                    return AsyncStorage.getItem(r).then(i => {
-                        let item = JSON.parse(i);
-                        if (item && item.metadata && item.metadata.page_title) {
-                            item.pageTitle = item.metadata.page_title;
-                        }
-                        return item;
-                    });
-                }
-                return false;
-            }).filter(r => r);
-            if (promises) {
-                return promises.pop();
-            }
-            return false;
+    static searchImportantInformation(region, fullSlug) {
+        let info = region.important_information.filter((info) => {
+            return info.full_slug === fullSlug
         });
+        return info[0] || null;
     }
+
 }

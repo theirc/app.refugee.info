@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, AsyncStorage, Linking, Platform, WebView} from 'react-native';
+import {View, Linking, Platform, WebView} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils'
 import styles, {themes} from '../styles';
 import {connect} from 'react-redux';
-import {MapButton, OfflineView} from '../components';
+import {MapButton} from '../components';
 import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
+import {getAllUrlParams} from "../utils/helpers";
 
 export class GeneralInformationDetails extends Component {
 
@@ -46,14 +47,12 @@ export class GeneralInformationDetails extends Component {
 
     _loadInitialState() {
         const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
-
         if (showTitle) {
             dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle});
         } else {
             dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle});
 
         }
-
         let source = {
             html: wrapHtmlContent(section, language, (!showTitle && !(region.content.length == 1)) ? sectionTitle : null, theme)
         };
@@ -88,20 +87,32 @@ export class GeneralInformationDetails extends Component {
 
     _defaultOrFirst(page, showTitle = false) {
         if (page.content && page.content.length == 1) {
+            console.log(page.content);
             return this.context.navigator.to('infoDetails', null, {
                 section: page.content[0].section,
                 sectionTitle: page.pageTitle,
                 showTitle: showTitle
             });
         } else {
-            let payload = {region: page.code ? page : null, information: page.code ? null : page}
+            let payload = {region: page.code ? page : null, information: page.code ? null : page};
             return this.context.navigator.to('info', null, payload);
         }
     }
 
     _onNavigationStateChange(state) {
-        // Opening all links in the external browser except for the internal links
         let url = state.url;
+        // check if it's a internal link to service filter
+        if (url.indexOf('services') > -1 && url.indexOf('refugee.info') > -1) {
+            let urlParams = getAllUrlParams(url);
+            return this.context.navigator.to('services', null, {
+                searchCriteria: urlParams.query,
+                serviceTypeIds: urlParams.type.constructor === Array
+                    ? urlParams.type.map((el) => parseInt(el))
+                    : [parseInt(urlParams.type)]
+
+            });
+        }
+        // Opening all links in the external browser except for the internal links
         if (url.indexOf('data:') == 0 || url.indexOf('about:') == 0) {
             return;
         }
@@ -124,13 +135,13 @@ export class GeneralInformationDetails extends Component {
                 if (Platform.OS == 'android') {
                     this.webView.goBack();
                 }
-
-                Regions.searchImportantInformation(fullSlug).then((info) => {
-                    this._defaultOrFirst(info, true);
-                });
+                let info = Regions.searchImportantInformation(this.props.region, fullSlug);
+                if (info) {
+                    let payload = {title: '', section: info.content[0].section};
+                    this.context.navigator.to('info.details', null, payload)
+                }
             } else {
                 this.webView.goBack();
-
                 if (state.url.indexOf('tel') == 0) {
                     /* Gotta test this */
                 } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {

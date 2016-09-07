@@ -129,8 +129,10 @@ a:active {
 }
 
 a.link-button {
+    margin: 0;
     background-color: #00BA50 !important;
     color: #FFFFFF !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.33);
 }
 
 div.table-responsive table td {
@@ -210,12 +212,12 @@ const cssFonts = `
 
 `;
 
-export function wrapHtmlContent(content: String, language: String, title: String = null, theme: String = "light"): String {
+export function wrapHtmlContent(content, language, title = null, theme = "light") {
   language = language || 'en';
 
   let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
   let titleHtml = title || false ? `<h2>${title}</h2>` : '';
-  let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr'
+  let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
   let htmlWrap = `
   <html>
   <head>
