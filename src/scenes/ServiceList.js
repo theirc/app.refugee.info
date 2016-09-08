@@ -55,7 +55,9 @@ export class ServiceList extends Component {
     };
 
     static propTypes = {
-        savedState: React.PropTypes.object
+        savedState: React.PropTypes.object,
+        searchCriteria: React.PropTypes.string,
+        serviceTypeIds: React.PropTypes.array
     };
 
     constructor(props) {
@@ -78,14 +80,14 @@ export class ServiceList extends Component {
                 canLoadMoreContent: true,
                 pageNumber: 1,
                 filteringView: false,
-                searchCriteria: '',
+                searchCriteria: props.searchCriteria || '',
+                serviceTypeIds: props.serviceTypeIds,
                 loading: false,
                 location: { latitude: 0, longitude: 0 }
             };
         }
         this.serviceCommons = new ServiceCommons();
     }
-
 
     componentWillMount() {
         this.serviceData = new Services(this.props);
@@ -97,8 +99,16 @@ export class ServiceList extends Component {
     }
 
     async getServiceTypes() {
+        if (this.state.serviceTypeIds) {
+            let serviceTypes = await this.serviceData.listServiceTypes();
+            for (let i = 0; i < serviceTypes.length; i++) {
+                serviceTypes[i].active = this.state.serviceTypeIds.indexOf(serviceTypes[i].number) > -1;
+            }
+            this.setState({serviceTypeIds: null});
+            return serviceTypes;
+        }
         if (this.state.serviceTypes) {
-            return this.state.serviceTypes
+            return this.state.serviceTypes;
         } else {
             let serviceTypes = await this.serviceData.listServiceTypes();
             for (let i = 0; i < serviceTypes.length; i++) {
@@ -524,6 +534,7 @@ export class ServiceList extends Component {
                     <SearchBar
                         theme={theme}
                         searchText={this.state.searchCriteria}
+                        initialSearchText={this.state.searchCriteria}
                         searchFunction={(event) => this.filterByText(event) }
                         />
                     <SearchFilterButton

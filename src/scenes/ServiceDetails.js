@@ -78,19 +78,11 @@ export class ServiceDetails extends Component {
         this.serviceCommons = new ServiceCommons();
     }
 
-    componentWillUnmount() {
-        const {dispatch} = this.props;
-        dispatch({ type: 'TOOLBAR_TITLE_ICON_CHANGED', payload: null });
-        dispatch({ type: 'TOOLBAR_TITLE_IMAGE_CHANGED', payload: null });
-        dispatch({ type: 'TOOLBAR_TITLE_CHANGED', payload: null });
-    }
-
     componentWillMount() {
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             this.fetchData().done();
         }
-        const {dispatch, service, serviceType} = this.props;
     }
 
     _setModalVisible(visible) {
