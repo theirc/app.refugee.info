@@ -93,5 +93,11 @@ export default class Regions extends Component {
         });
         return info[0] || null;
     }
+    static searchGeneralInformation(region, fullSlug) {
+        let info = region.content.filter((info) => {
+            return info.anchor_name === fullSlug
+        });
+        return info[0] || null;
+    }
 
 }
