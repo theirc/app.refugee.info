@@ -84,21 +84,6 @@ export class GeneralInformationDetails extends Component {
         });
     }
 
-
-    _defaultOrFirst(page, showTitle = false) {
-        if (page.content && page.content.length == 1) {
-            console.log(page.content);
-            return this.context.navigator.to('infoDetails', null, {
-                section: page.content[0].section,
-                sectionTitle: page.pageTitle,
-                showTitle: showTitle
-            });
-        } else {
-            let payload = {region: page.code ? page : null, information: page.code ? null : page};
-            return this.context.navigator.to('info', null, payload);
-        }
-    }
-
     _onNavigationStateChange(state) {
         let url = state.url;
         // check if it's a internal link to service filter
@@ -112,6 +97,15 @@ export class GeneralInformationDetails extends Component {
 
             });
         }
+        // check if it's anchor link with #
+        if (url.indexOf('%23') > -1) {
+            let fullSlug = url.split('%23')[1];
+            let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
+            if (info) {
+                let payload = {title: '', section: info.section};
+                this.context.navigator.to('info.details', null, payload)
+            }
+        }
         // Opening all links in the external browser except for the internal links
         if (url.indexOf('data:') == 0 || url.indexOf('about:') == 0) {
             return;
@@ -121,7 +115,6 @@ export class GeneralInformationDetails extends Component {
             url = url.substr(url.indexOf('://') + 3);
             url = url.substr(url.indexOf('/'));
         }
-
         if (this.webView) {
             if (state.navigationType && state.navigationType === 'click') {
                 // Image are loaded using this method. So this narrows down to prevent all clicks.

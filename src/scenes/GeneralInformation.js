@@ -81,7 +81,7 @@ export class GeneralInformation extends Component {
         }
 
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(region.content),
+            dataSource: this.state.dataSource.cloneWithRows(region.content.filter((info) => !info.hide_from_toc)),
             generalInfo: region.content,
             region: region,
             loaded: true,
