@@ -102,8 +102,7 @@ export default class ApiClient {
     getServices(locationSlug, latitude, longitude, raise_exception = false, page = 1, pageSize = 10) {
         let paging = `page=${page}&page_size=${pageSize}`;
         let map = (res) => {
-            let r = res.results;
-            return r;
+            return res.results;
         };
         if (latitude && longitude) {
             return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}

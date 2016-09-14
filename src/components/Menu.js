@@ -251,7 +251,7 @@ const lightStyleDefaults = {
         ...sharedStyles.header
     },
     itemActive: {
-        backgroundColor: '#fafafa',
+        backgroundColor: '#f1f1f1',
         borderBottomColor: themes.light.dividerColor,
         borderBottomWidth: 1
     },

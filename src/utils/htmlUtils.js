@@ -15,7 +15,10 @@ body.language-ar {
     font-family: Mada, Arial, 'sans serif';
     font-size: 100%;
 }
-
+table {
+  max-width: 100%;
+  width: 100%;
+}
 p, li {
   font-size: 80%;
 }

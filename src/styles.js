@@ -77,11 +77,8 @@ const styles = StyleSheet.create({
         height: 50
     },
     listItemIconContainer: {
-        width: 50,
+        width: 80,
         height: 80,
-        padding: 13,
-        marginLeft: 5,
-        marginRight: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -95,7 +92,7 @@ const styles = StyleSheet.create({
     searchBarContainer: {
         padding: 5,
         paddingTop: 0,
-        height: 38,
+        height: 52,
         flexDirection: 'row'
     },
 
@@ -449,11 +446,12 @@ export function getElevation(level = 3) {
             borderBottomWidth: 0.5
         }
 }
-
-export function getToolbarHeight(){
+export function isStatusBarTranslucent() {
     return (Platform.Version >= 21 || Platform.OS == 'ios')
-        ? windowHeight > 500 ? 140 : 110
-        : windowHeight > 500 ? 115 : 85
+}
+export function getToolbarHeight(){
+    // check if supports translucent status bar
+    return isStatusBarTranslucent() ? 120 : 95
 }
 
 export default styles;

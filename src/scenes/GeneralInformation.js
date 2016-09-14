@@ -119,47 +119,36 @@ export class GeneralInformation extends Component {
         const {theme, direction, language, region, country} = this.props;
         const {navigator} = this.context;
         const {loading, refreshing} = this.state;
-        let s = (scene) => navigator.to(scene);
+        let s = (scene, props) => navigator.to(scene);
 
         return (
             <View style={styles.container}>
-                <View style={[
-                    {paddingLeft: 5, paddingRight: 5, paddingTop: 5, height: 38, flexDirection: 'row'},
-                    theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
+                <View style={[{
+                    paddingHorizontal: 5, paddingVertical: 10, height: 80, flexDirection: 'row',
+                    borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor},
                 ]}>
-                    <Button
-                        color="green"
-                        icon="md-locate"
-                        text={I18n.t('CHANGE_LOCATION').toUpperCase()}
-                        onPress={
-                            () => requestAnimationFrame(
-                                () => navigator.to('cityChoice', null, {country: country})
-                            )
-                        }
-                        buttonStyle={{height: 33}}
-                        iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
-                    />
-                </View>
-                <View style={[
-                    componentStyles.searchBarContainer,
-                    theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
-                ]}
-                >
+
                     <Button
                         color="green"
                         icon="fa-list"
                         text={I18n.t('SERVICE_LIST').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('services'))}
-                        buttonStyle={{height: 33, marginRight: 2}}
-                        iconStyle={Platform.OS === 'ios' ? {top: 1} : {}}
+                        transparent={true}
+                    />
+                    <Button
+                        color="green"
+                        icon="md-locate"
+                        text={I18n.t('CHANGE_LOCATION').toUpperCase()}
+                        onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country: country}))}
+                        transparent={true}
                     />
                     <Button
                         color="green"
                         icon="fa-map"
                         text={I18n.t('EXPLORE_MAP').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('map'))}
-                        buttonStyle={{height: 33, marginLeft: 2}}
                         iconStyle={{fontSize: 18}}
+                        transparent={true}
                     />
                 </View>
                 <OfflineView
