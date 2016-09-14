@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-    View,
-    Text,
-    Image,
-    StyleSheet
-} from 'react-native';
 import {Icon} from '../components';
-import I18n from '../constants/Messages';
 import styles, {themes} from '../styles';
 
 export default class ServiceCommons {

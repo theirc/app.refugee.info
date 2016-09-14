@@ -8,7 +8,7 @@ import {StyleSheet, Platform} from 'react-native';
 
 export default class Icon extends Component {
     static propTypes = {
-    }
+    };
 
     render() {
         let props = {...this.props };
@@ -25,6 +25,6 @@ export default class Icon extends Component {
             }
         }
 
-        return (<IconComponent {...props}></IconComponent>)
+        return (<IconComponent {...props} />)
     }
 }

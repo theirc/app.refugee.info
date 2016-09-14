@@ -14,6 +14,7 @@ import {
     getFontFamily,
     getRowOrdering,
     getToolbarHeight,
+    isStatusBarTranslucent,
     themes
 } from '../styles';
 
@@ -95,7 +96,8 @@ export class Toolbar extends Component {
 
         let menuIcon = drawerOpen ? "md-close" : "ios-menu";
         let backIcon = direction == "rtl" ? "md-arrow-forward" : "md-arrow-back";
-        let isMapView = navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader;
+        let smallHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader;
+        let noHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader;
         let icon = null;
         if (navigator) {
             icon = (
@@ -118,13 +120,16 @@ export class Toolbar extends Component {
         }
 
         let showIcon = navigator && (region || navigator.isChild);
+        if (noHeader) {
+            return <View />
+        }
         return (
             <View
                 style={[
-                    componentStyles.toolbarContainer,
-                    theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
-                    isMapView && { height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55 }
-                ]}
+                        componentStyles.toolbarContainer,
+                        theme == 'dark' ? componentStyles.toolbarContainerDark : componentStyles.toolbarContainerLight,
+                        smallHeader && { height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55 }
+                    ]}
                 >
                 <View style={componentStyles.toolbarTop}>
                     <Image
@@ -134,7 +139,7 @@ export class Toolbar extends Component {
                     {showIcon && icon}
                 </View>
 
-                {!isMapView && (
+                {!smallHeader && (
                     <View style={[
                         componentStyles.toolbarBottom,
                         getRowOrdering(direction)
@@ -174,8 +179,8 @@ const componentStyles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        paddingTop: (Platform.Version >= 21 || Platform.OS === 'ios') ? 25 : 0,
-        paddingBottom: 15,
+        paddingTop: (isStatusBarTranslucent()) ? 25 : 0,
+        paddingBottom: 10,
         paddingRight: 15,
         paddingLeft: 15,
         flexDirection: 'column',

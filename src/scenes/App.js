@@ -111,7 +111,9 @@ export class App extends Component {
             }
         };
         let statusBar = (Platform.OS === 'ios')
-            ?   <StatusBar barStyle={theme == 'light' ? "default" : 'light-content'}/>
+            ?   <StatusBar
+                    barStyle={theme == 'light' ? "default" : 'light-content'}
+                />
             :   <StatusBar
                     translucent={true}
                     backgroundColor={theme == 'light' ? 'rgba(0,0,0,0.3)' : 'transparent'}
@@ -175,8 +177,8 @@ export class App extends Component {
                         }}
                     renderScene={(route) => {
                             if (this.state.navigator && route.component) {
-                                if(navigator) { 
-                                    navigator.updateIsChild(); 
+                                if(navigator) {
+                                    navigator.updateIsChild();
                                 }
 
                                 let instance =
@@ -191,8 +193,9 @@ export class App extends Component {
                                         showsVerticalScrollIndicator={true}
                                         style={[styles.scene,
                                             theme=='dark' && {backgroundColor: themes.dark.backgroundColor},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) && 
-                                            {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55}
+                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) &&
+                                            {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55},
+                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader) && {paddingTop: 0}
                                         ]}
                                         >
                                         {instance}

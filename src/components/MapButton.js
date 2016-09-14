@@ -53,15 +53,15 @@ export default class MapButton extends Component {
 
 const componentStyles = StyleSheet.create({
     mapButton: {
-        width: 64,
-        height: 64,
-        borderRadius: 64,
+        width: 56,
+        height: 56,
+        borderRadius: 56,
         backgroundColor: themes.light.greenAccentColor,
         alignItems: 'center',
         justifyContent: 'center'
     },
     mapButtomIcon: {
         color: themes.light.backgroundColor,
-        fontSize: 20
+        fontSize: 18
     }
 });

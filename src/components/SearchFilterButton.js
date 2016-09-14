@@ -43,7 +43,7 @@ export class SearchFilterButton extends Component {
                         activeOpacity={0.6}
                     >
                         <Icon
-                            name={"ios-options"}
+                            name={"md-funnel"}
                             style={[
                                 componentStyles.searchFilterIcon,
                                 theme == 'dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
@@ -67,8 +67,8 @@ const mapStateToProps = (state) => {
 
 const componentStyles = StyleSheet.create({
     searchFilterButtonContainer: {
-        width: 46,
-        height: 46,
+        width: 60,
+        height: 60,
         paddingTop: 5,
         paddingRight: 5,
         paddingBottom: 7,
@@ -82,7 +82,7 @@ const componentStyles = StyleSheet.create({
     },
     searchFilterButton: {
         flex: 1,
-        height: 36,
+        height: 48,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 2

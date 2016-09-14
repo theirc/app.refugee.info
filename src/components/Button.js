@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {StyleSheet, TouchableHighlight, Platform, View, Text} from 'react-native';
+import {StyleSheet, TouchableHighlight, TouchableOpacity, View, Text} from 'react-native';
 import styles, {
     themes,
     getFontFamily,
@@ -18,7 +18,8 @@ export class Button extends Component {
         buttonStyle: PropTypes.object,
         iconStyle: PropTypes.object,
         color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
-        onPress: PropTypes.func
+        onPress: PropTypes.func,
+        transparent: PropTypes.bool
     };
 
     getButtonColor(color) {
@@ -43,25 +44,58 @@ export class Button extends Component {
     }
 
     render() {
-        const {text, color, onPress, language, direction, icon, textStyle, buttonStyle, iconStyle} = this.props;
+        const {text, color, onPress, language, direction, icon, textStyle, buttonStyle, iconStyle, transparent} = this.props;
 
         let iconImage = icon &&
             <View style={[
                 direction == 'rtl' ? {paddingRight: 10} : {paddingLeft: 10},
-                styles.alignCenter
+                transparent && {paddingLeft: 0, paddingRight: 0},
+                styles.alignCenter,
+                {height: 24}
             ]}>
                 <Icon
                     name={icon}
                     style={[
-                        this.getButtonTextColor(color),
+                        transparent ? {color: themes.light.greenAccentColor} : this.getButtonTextColor(color),
                         componentStyles.buttonIcon,
                         iconStyle
                     ]}
                 />
             </View>;
+        if (transparent) {
+            return (
+                <View
+                    style={[
+                        {flex: 1},
+                        buttonStyle
+                    ]}
+                >
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        style={[{flex: 1, marginLeft: 5, marginRight: 5}]}
+                        onPress={onPress}
+                    >
+                        {iconImage}
+                        <View style={[
+                            {alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flex: 1},
+                        ]}>
+                        <Text style={[
+                            componentStyles.buttonText,
+                            transparent ? {color: themes.light.greenAccentColor} : this.getButtonTextColor(color),
+                            getFontFamily(language),
+                            {flex: null},
+                            textStyle
+                        ]}>
+                            {text}
+                        </Text>
+                        </View>
+
+                    </TouchableOpacity>
+                </View>
+            )
+        }
 
         return (
-
             <View
                 style={[
                     getElevation(),
