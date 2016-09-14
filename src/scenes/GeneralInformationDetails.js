@@ -27,7 +27,7 @@ export class GeneralInformationDetails extends Component {
         this.state = {
             loading: false,
             source: false,
-            webViewStyle: {opacity: 0}
+            navigating: false
         };
     }
 
@@ -35,15 +35,6 @@ export class GeneralInformationDetails extends Component {
         this._loadInitialState();
     }
 
-    componentDidMount() {
-        /* it aint pretty, but it keeps the webview from flashing white */
-        const {theme} = this.props;
-        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-
-        setTimeout(() => {
-            this.setState({webViewStyle: {backgroundColor: backgroundColor, opacity: 1}});
-        }, 400);
-    }
 
     _loadInitialState() {
         const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
@@ -62,109 +53,85 @@ export class GeneralInformationDetails extends Component {
         });
     }
 
-
-    _onChangeText(text) {
-        // TODO: Refactor this searches all of the text including tags
-
-        const {sectionTitle, language, theme} = this.props;
-
-        if (text.length < 5) {
-            return;
-        }
-
-        let reg = new RegExp(`(${text})`, 'ig');
-        section = (reg) ? this.props.section.replace(reg, '<mark>$1</mark>') : this.props.section;
-
-        let source = {
-            html: wrapHtmlContent(section, language, sectionTitle, theme)
-        };
-
-        this.setState({
-            source: source
-        });
-    }
-
     _onNavigationStateChange(state) {
-        let url = state.url;
-        // check if it's a internal link to service filter
-        if (url.indexOf('services') > -1 && url.indexOf('refugee.info') > -1) {
-            let urlParams = getAllUrlParams(url);
-            return this.context.navigator.to('services', null, {
-                searchCriteria: urlParams.query,
-                serviceTypeIds: urlParams.type.constructor === Array
-                    ? urlParams.type.map((el) => parseInt(el))
-                    : [parseInt(urlParams.type)]
-
-            });
-        }
-        // check if it's anchor link with #
-        if (url.indexOf('%23') > -1) {
-            let fullSlug = url.split('%23')[1];
-            let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
-            if (info) {
-                let payload = {title: '', section: info.section};
-                this.context.navigator.to('info.details', null, payload)
+        if (!this.state.navigating) {
+            let url = state.url;
+            if (url === 'about:blank' || url.indexOf('data:') == 0) {
+                return;
             }
-        }
-        // Opening all links in the external browser except for the internal links
-        if (url.indexOf('data:') == 0 || url.indexOf('about:') == 0) {
-            return;
-        }
-
-        if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
-            url = url.substr(url.indexOf('://') + 3);
-            url = url.substr(url.indexOf('/'));
-        }
-        if (this.webView) {
-            if (state.navigationType && state.navigationType === 'click') {
-                // Image are loaded using this method. So this narrows down to prevent all clicks.
-                this.webView.stopLoading();
+            if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
+                url = url.substr(url.indexOf('://') + 3);
+                url = url.substr(url.indexOf('/'));
             }
+            if (this.webView) {
 
-            if (url.indexOf('/') == 0) {
-                // If we get to this point, we need to point to the app
-                let fullSlug = url.substr(1).split('/')[0];
+                // check if it's anchor link with #
+                if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
+                    let fullSlug = url.split('%23')[1];
+                    let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
+                    if (info) {
+                        this.setState({navigating: true});
+                        let payload = {title: '', section: info.section};
+                        return this.context.navigator.to('info.details', null, payload)
+                    }
+                }
 
-                if (Platform.OS == 'android') {
-                    this.webView.goBack();
-                }
-                let info = Regions.searchImportantInformation(this.props.region, fullSlug);
-                if (info) {
-                    let payload = {title: '', section: info.content[0].section};
-                    this.context.navigator.to('info.details', null, payload)
-                }
-            } else {
-                this.webView.goBack();
-                if (state.url.indexOf('tel') == 0) {
-                    /* Gotta test this */
-                } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
-                    let email = state.url.split('mailto:')[1];
-                    Mailer.mail({
-                        recipients: [email],
-                    }, (error, event) => {
-                    });
+                if (url.indexOf('/') == 0) {
+                    // If we get to this point, we need to point to the app
+
+                    // check if it's a internal link to service filter
+                    if (url.indexOf('services') > -1) {
+                        let urlParams = getAllUrlParams(url);
+                        this.setState({navigating: true});
+                        return this.context.navigator.to('services', null, {
+                            searchCriteria: urlParams.query,
+                            serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
+                                ? urlParams.type.map((el) => parseInt(el))
+                                : [parseInt(urlParams.type)]
+                        });
+                    }
+
+                    let fullSlug = url.substr(1).split('/')[0];
+
+                    if (Platform.OS == 'android') {
+                        this.webView.goBack();
+                    }
+                    let info = Regions.searchImportantInformation(this.props.region, fullSlug);
+                    if (info) {
+                        let payload = {title: '', section: info.content[0].section};
+                        return this.context.navigator.to('info.details', null, payload)
+                    }
+
                 } else {
-                    Linking.openURL(state.url);
+                    this.webView.goBack();
+                    if (state.url.indexOf('tel') == 0) {
+                        /* Gotta test this */
+                    } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
+                        let email = state.url.split('mailto:')[1];
+                        Mailer.mail({
+                            recipients: [email],
+                        }, (error, event) => {
+                        });
+                    } else {
+                        this.setState({navigating: true});
+                        Linking.openURL(state.url);
+                    }
                 }
             }
+        } else {
+            this.webView.goBack();
         }
     }
 
     render() {
-        if (!this.state.source) {
-            return <View />;
-        }
-        const {theme} = this.props;
-        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-
         return (
             <View style={styles.container}>
                 {this.state.source &&
                 <WebView
                     ref={(v) => this.webView = v}
                     onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                    domStorageEnabled={true}
                     source={this.state.source}
-                    style={this.state.webViewStyle}
                 />
                 }
                 <MapButton

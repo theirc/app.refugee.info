@@ -54,7 +54,9 @@ export class GeneralInformation extends Component {
         }
         if (region != nextProps.region) {
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(nextProps.region.content),
+                dataSource: this.state.dataSource.cloneWithRows(
+                    nextProps.region.content.filter((info) => !info.hide_from_toc)
+                ),
             });
         }
     }
@@ -99,10 +101,6 @@ export class GeneralInformation extends Component {
     onClick(title, section) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            if (this.state.searchText) {
-                let reg = new RegExp(`(${this.state.searchText})`, 'ig');
-                section = (reg) ? section.replace(reg, '<mark>$1</mark>') : section;
-            }
             navigator.forward(null, null, {section, sectionTitle: title}, this.state);
         })
     }

@@ -48,19 +48,6 @@ class Navigation extends Component {
         this.drawerCommons = new DrawerCommons(this);
     }
 
-    _getImportantInformationImage(theme, pageTitle) {
-        if (theme == 'dark') {
-            if (pageTitle.toLowerCase().includes('safe'))
-                return require('../assets/icons/staying-safe-dark.png');
-            else return require('../assets/icons/asylum-procedure-dark.png')
-        }
-        else {
-            if (pageTitle.toLowerCase().includes('safe'))
-                return require('../assets/icons/staying-safe-light.png');
-            else return require('../assets/icons/asylum-procedure-light.png')
-        }
-    }
-
     _getImportantInformation() {
         const region = this._getRegion();
 
@@ -72,7 +59,6 @@ class Navigation extends Component {
         importantInformation = importantInformation.filter((i) => !i.hidden);
 
         return importantInformation.map((i, index) => {
-
             return (
                 <MenuItem
                     icon={i.icon}
@@ -163,8 +149,14 @@ class Navigation extends Component {
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = null;
         if (locations) {
-            nearbyCitiesItems = locations.map((i, index) => { if (i.id != region.id)
-                return <MenuItem key={index} onPress={() => this.selectCity(i) }>{i.pageTitle || i.name}</MenuItem>;
+            nearbyCitiesItems = locations.map((i, index) => {
+                return <MenuItem
+                    active={i.id == region.id}
+                    key={index}
+                    onPress={() => this.selectCity(i)}
+                >
+                    {i.pageTitle || i.name}
+                </MenuItem>;
             });
         }
         let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
