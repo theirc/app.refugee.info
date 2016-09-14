@@ -273,6 +273,40 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         borderWidth: 0.5
+    },
+    feedbackRow: {
+        height: 48,
+        flexDirection: 'row',
+        paddingLeft: 10,
+        paddingRight: 10
+    },
+    feedbackRowFacebookContainer: {
+        height: 48,
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    feedbackRowFacebookIcon: {
+        fontSize: 32,
+        color: '#3B5998'
+    },
+    feedbackRowFacebook: {
+        fontSize: 16,
+        paddingLeft: 5,
+        paddingRight: 5
+    },
+    feedbackRowIconContainer: {
+        height: 48,
+        width: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row'
+    },
+    feedbackRowIcon: {
+        color: '#222222',
+        paddingLeft: 10,
+        paddingRight: 10,
+        fontSize: 24
     }
 });
 
