@@ -15,7 +15,7 @@ import {
     getRowOrdering,
     themes
 } from '../styles'
-import { Icon } from '../components';
+import {Icon} from '../components';
 
 class MenuItem extends Component {
     static propTypes = {
@@ -36,7 +36,7 @@ class MenuItem extends Component {
 
     componentWillReceiveProps(props) {
         if (props.theme) {
-            let defaultProps = {...props };
+            let defaultProps = {...props};
             if (!defaultProps.direction) {
                 defaultProps.direction = 'ltr';
             }
@@ -45,9 +45,9 @@ class MenuItem extends Component {
 
 
             if (defaultProps.theme == 'dark') {
-                styleDefaults = {...sharedStyles, ...darkStyleDefaults };
+                styleDefaults = {...sharedStyles, ...darkStyleDefaults};
             } else {
-                styleDefaults = {...sharedStyles, ...lightStyleDefaults };
+                styleDefaults = {...sharedStyles, ...lightStyleDefaults};
             }
 
             this.setState({
@@ -69,11 +69,12 @@ class MenuItem extends Component {
         if (!badge) {
             badge = false;
         }
-        const fontStyle = {...styles.itemText, ...getFontFamily(language) };
+        const fontStyle = {...styles.itemText, ...getFontFamily(language)};
 
         let press = (comp, ...args) => {
             if (item.onPress) {
-                return item.onPress(...args);
+                requestAnimationFrame(() => item.onPress(...args));
+
             }
             return true;
         };
@@ -92,32 +93,37 @@ class MenuItem extends Component {
                 size={22}
                 style={styles.icon}
                 color={styles.itemText.color || '#000000'}
-                />);
+            />);
         } else if (item.image) {
             widget = (<Image
                 source={item.image}
                 style={[
                     styles.image,
                 ]}
-                />);
+            />);
         }
 
         return (
             <TouchableHighlight
-                underlayColor={getUnderlayColor(theme) }
-                onPress={() => press() }
-                onLongPress={() => longPress() }
+                underlayColor={getUnderlayColor(theme)}
+                onPress={() => press()}
+                onLongPress={() => longPress()}
                 style={{
                     flex: 1,
                     flexDirection: 'column'
                 }}
-                >
-                <View style={[styles.itemLine, { paddingHorizontal: 5 }, direction === 'rtl' ? { paddingRight: 15 } : {}]}>
+            >
+                <View style={[
+                    styles.itemLine,
+                    {paddingHorizontal: 5},
+                    direction === 'rtl' ? {paddingRight: 15} : {},
+                    item.active && styles.itemActive
+                ]}>
                     <View style={[
                         styles.item,
                         getRowOrdering(direction)
                     ]}
-                        >
+                    >
                         {widget}
                         <View style={[
                             direction == 'rtl' ? styles.labelRTL : styles.label
@@ -127,9 +133,9 @@ class MenuItem extends Component {
                             </Text>
                         </View>
                         {badge &&
-                            <View style={[sharedStyles.badge, { backgroundColor: styles.text.color, }]}>
-                                <Text style={{ color: themes.dark.textColor, fontWeight: 'bold' }}>{badge}</Text>
-                            </View>
+                        <View style={[sharedStyles.badge, {backgroundColor: styles.text.color,}]}>
+                            <Text style={{color: themes.dark.textColor, fontWeight: 'bold'}}>{badge}</Text>
+                        </View>
                         }
                     </View>
                 </View>
@@ -155,7 +161,7 @@ class MenuSection extends Component {
 
     componentWillReceiveProps(props) {
         if (props.theme) {
-            let defaultProps = {...props };
+            let defaultProps = {...props};
             if (!defaultProps.direction) {
                 defaultProps.direction = 'ltr';
             }
@@ -163,9 +169,9 @@ class MenuSection extends Component {
             let styleDefaults;
 
             if (defaultProps.theme == 'dark') {
-                styleDefaults = {...sharedStyles, ...darkStyleDefaults };
+                styleDefaults = {...sharedStyles, ...darkStyleDefaults};
             } else {
-                styleDefaults = {...sharedStyles, ...lightStyleDefaults };
+                styleDefaults = {...sharedStyles, ...lightStyleDefaults};
             }
 
             this.setState({
@@ -182,11 +188,11 @@ class MenuSection extends Component {
 
         const {styles, direction, language} = this.state;
         const {title, children, theme} = this.props;
-        const fontStyle = {...styles.text, ...getFontFamily(language) };
+        const fontStyle = {...styles.text, ...getFontFamily(language)};
 
         return (
             <View style={styles.headerWrapper}>
-                {title && <View style={[styles.header, direction === 'rtl' ? { paddingRight: 20 } : {}]}>
+                {title && <View style={[styles.header, direction === 'rtl' ? {paddingRight: 20} : {}]}>
                     <DirectionalText {...this.props} style={[fontStyle]} direction={direction}>{title}</DirectionalText>
                 </View>}
                 {children}
@@ -244,24 +250,24 @@ const lightStyleDefaults = {
         borderBottomColor: themes.light.darkerDividerColor,
         ...sharedStyles.header
     },
-itemActive: {
-    backgroundColor: '#fafafa',
+    itemActive: {
+        backgroundColor: '#fafafa',
         borderBottomColor: themes.light.dividerColor,
-            borderBottomWidth: 1
-},
-itemLine: {
-    borderBottomColor: themes.light.dividerColor,
         borderBottomWidth: 1
-},
-itemText: {
-    fontSize: 14,
-        color: themes.light.textColor,
-            marginHorizontal: 10,
     },
-text: {
-    color: themes.light.greenAccentColor,
+    itemLine: {
+        borderBottomColor: themes.light.dividerColor,
+        borderBottomWidth: 1
+    },
+    itemText: {
+        fontSize: 14,
+        color: themes.light.textColor,
+        marginHorizontal: 10,
+    },
+    text: {
+        color: themes.light.greenAccentColor,
         fontWeight: "bold"
-},
+    },
 };
 
 
@@ -270,24 +276,24 @@ const darkStyleDefaults = {
         borderBottomColor: themes.dark.darkerDividerColor,
         ...sharedStyles.header
     },
-itemActive: {
-    backgroundColor: '#202020',
+    itemActive: {
+        backgroundColor: '#202020',
         borderBottomColor: "#1c1c1c",
-            borderBottomWidth: 1
-},
-itemLine: {
-    borderBottomColor: "#1c1c1c",
         borderBottomWidth: 1
-},
-itemText: {
-    fontSize: 14,
-        color: themes.dark.textColor,
-            marginHorizontal: 10,
     },
-text: {
-    color: themes.dark.greenAccentColor,
+    itemLine: {
+        borderBottomColor: "#1c1c1c",
+        borderBottomWidth: 1
+    },
+    itemText: {
+        fontSize: 14,
+        color: themes.dark.textColor,
+        marginHorizontal: 10,
+    },
+    text: {
+        color: themes.dark.greenAccentColor,
         fontWeight: "bold",
-            fontSize: 14,
+        fontSize: 14,
     },
 };
 
