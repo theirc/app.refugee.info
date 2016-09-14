@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
-import {View, Linking, Platform, WebView} from 'react-native';
+import {View, Linking, Platform, WebView, TouchableOpacity, Text} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils'
 import styles, {themes} from '../styles';
 import {connect} from 'react-redux';
-import {MapButton} from '../components';
+import {MapButton, Icon} from '../components';
 import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
 import {getAllUrlParams} from "../utils/helpers";
+import I18n from '../constants/Messages';
 
 export class GeneralInformationDetails extends Component {
 
@@ -130,17 +131,36 @@ export class GeneralInformationDetails extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.state.source &&
-                <WebView
-                    ref={(v) => this.webView = v}
-                    onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
-                    domStorageEnabled={true}
-                    source={this.state.source}
-                />
-                }
-                <MapButton
-                    direction={this.props.direction}
-                />
+                <View style={styles.container}>
+                    {this.state.source &&
+                    <WebView
+                        ref={(v) => this.webView = v}
+                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                        source={this.state.source}
+                    />
+                    }
+                    <MapButton
+                        direction={this.props.direction}
+                    />
+                </View>
+                <View style={[
+                    {backgroundColor: themes.light.toolbarColor},
+                    styles.feedbackRow
+                ]}
+                >
+                    <TouchableOpacity style={styles.feedbackRowFacebookContainer} activeOpacity={0.5}>
+                        <Icon name="fa-facebook-official" style={styles.feedbackRowFacebookIcon}/>
+                        <Text style={styles.feedbackRowFacebook}>{I18n.t('SHARE')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}>
+                        <Icon name="fa-thumbs-up" style={styles.feedbackRowIcon} />
+                        <Text>143</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}>
+                        <Icon name="fa-thumbs-down" style={styles.feedbackRowIcon} />
+                        <Text>21</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
