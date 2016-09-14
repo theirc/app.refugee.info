@@ -64,6 +64,10 @@ export class GeneralInformationDetails extends Component {
                 url = url.substr(url.indexOf('/'));
             }
             if (this.webView) {
+                if (state.navigationType && state.navigationType === 'click') {
+                    // Image are loaded using this method. So this narrows down to prevent all clicks.
+                    this.webView.stopLoading();
+                }
 
                 // check if it's anchor link with #
                 if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
