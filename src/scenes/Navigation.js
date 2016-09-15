@@ -50,7 +50,8 @@ class Navigation extends Component {
 
     _getImportantInformation() {
         const region = this._getRegion();
-
+        const {route} = this.props;
+        const {navigator} = this.context;
         if (!region || !region.important_information) {
             return <View />;
         }
@@ -63,6 +64,7 @@ class Navigation extends Component {
                 <MenuItem
                     icon={i.icon}
                     key={index}
+                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == i.slug}
                     onPress={() => this._defaultOrFirst(i, true)}
                 >
                     {i.pageTitle}
@@ -113,6 +115,7 @@ class Navigation extends Component {
 
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, {
+                slug: page.slug,
                 section: page.content[0].section,
                 sectionTitle: page.pageTitle,
                 showTitle: showTitle
@@ -211,10 +214,17 @@ class Navigation extends Component {
             </MenuSection>
             <MenuSection>
                 <MenuItem
-                    icon="ios-mail" onPress={() => s('notifications') }
-                    badge={bannerCount}>{I18n.t('ANNOUNCEMENTS') }</MenuItem>
+                    active={route === 'notifications'}
+                    icon="ios-mail" onPress={() => s('notifications')}
+                    badge={bannerCount}>
+                    {I18n.t('ANNOUNCEMENTS')}
+                </MenuItem>
                 <MenuItem
-                    icon="ios-paper" onPress={() => s('news') }>{I18n.t('NEWS') }</MenuItem>
+                    icon="ios-paper"
+                    active={route === 'news'}
+                    onPress={() => s('news')}>
+                    {I18n.t('NEWS')}
+                </MenuItem>
             </MenuSection>
             <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
                 {importantInformationItems}
@@ -233,7 +243,8 @@ class Navigation extends Component {
                 {aboutUs &&
                 <MenuItem
                     icon="fa-question"
-                    onPress={() => this._defaultOrFirst(aboutUs, true) }
+                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
+                    onPress={() => this._defaultOrFirst(aboutUs, true)}
                 >
                     {I18n.t('ABOUT') }
                 </MenuItem>
@@ -267,17 +278,16 @@ const lightNavigationStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 40
+        marginTop: 40,
     },
     logoContainer: {
         flex: 1,
         flexDirection: 'row',
-        marginRight: 10
+        paddingHorizontal: 20
     },
     view: {
         flexDirection: 'column',
-        flex: 1,
-        paddingLeft: 20
+        flex: 1
     },
     middleBorder: {
         borderLeftColor: themes.light.darkerDividerColor,
@@ -291,8 +301,8 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginBottom: 30,
-        paddingRight: 10
+        marginBottom: 20,
+        paddingHorizontal: 20
     },
     cityText: {
         fontSize: 14,
