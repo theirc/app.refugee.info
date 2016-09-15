@@ -37,7 +37,8 @@ import styles, {
     getTextColor,
     getContainerColor,
     getDividerColor,
-    getToolbarHeight
+    getToolbarHeight,
+    getTextAlign
 } from '../styles';
 
 import {Icon} from '../components'
@@ -312,8 +313,10 @@ export class ServiceList extends Component {
                             <View style={{paddingHorizontal: 10}}>
                                 <Text
                                     style={[
+                                        getAlignItems(direction),
                                         getFontFamily(language),
                                         getTextColor(theme),
+                                        getTextAlign(direction),
                                         {fontSize: 15, paddingBottom: 2, fontWeight: '500'}
                                     ]}
                                 >
@@ -340,6 +343,7 @@ export class ServiceList extends Component {
                                     style={[
                                         getFontFamily(language),
                                         getTextColor(theme),
+                                        getTextAlign(direction),
                                         {fontSize: 11, paddingBottom: 2, fontWeight: '500'}
                                     ]}
                                 >

@@ -115,8 +115,6 @@ class MenuItem extends Component {
             >
                 <View style={[
                     styles.itemLine,
-                    {paddingHorizontal: 5},
-                    direction === 'rtl' ? {paddingRight: 15} : {},
                     item.active && styles.itemActive
                 ]}>
                     <View style={[
@@ -126,6 +124,7 @@ class MenuItem extends Component {
                     >
                         {widget}
                         <View style={[
+                            widget && {paddingHorizontal: 10},
                             direction == 'rtl' ? styles.labelRTL : styles.label
                         ]}>
                             <Text style={fontStyle}>
@@ -204,7 +203,7 @@ class MenuSection extends Component {
 const sharedStyles = {
     header: {
         borderBottomWidth: 1,
-        paddingHorizontal: 5,
+        paddingHorizontal: 15,
         paddingVertical: 12,
     },
     headerWrapper: {
@@ -214,14 +213,14 @@ const sharedStyles = {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        height: 50
+        height: 50,
+        paddingHorizontal: 15
     },
     label: {
         flex: 1
     },
     labelRTL: {
         flex: 1,
-        paddingRight: 10,
         alignItems: 'flex-end'
     },
     image: {
@@ -231,7 +230,7 @@ const sharedStyles = {
         marginLeft: 5
     },
     icon: {
-        width: 21,
+        width: 35,
         textAlign: 'center',
         fontSize: 20,
     },
@@ -262,7 +261,6 @@ const lightStyleDefaults = {
     itemText: {
         fontSize: 14,
         color: themes.light.textColor,
-        marginHorizontal: 10,
     },
     text: {
         color: themes.light.greenAccentColor,
@@ -288,7 +286,6 @@ const darkStyleDefaults = {
     itemText: {
         fontSize: 14,
         color: themes.dark.textColor,
-        marginHorizontal: 10,
     },
     text: {
         color: themes.dark.greenAccentColor,
