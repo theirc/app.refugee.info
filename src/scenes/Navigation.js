@@ -36,6 +36,8 @@ const FEEDBACK_MAP = {
     ps: 'https://docs.google.com/forms/d/1pQD6q3dE-0SsFtxmTGnn5q9GJHNeLBPoIJ_sZjBR1VQ/viewform?entry.1237329743=',
 };
 
+const LIKE_URL = 'https://www.facebook.com/refugee.info/';
+
 class Navigation extends Component {
 
     static contextTypes = {
@@ -254,6 +256,13 @@ class Navigation extends Component {
                     onPress={() => Linking.openURL(feedbackUrl) }>
                     {I18n.t('FEEDBACK') }
                 </MenuItem>
+
+                <MenuItem
+                    icon="fa-facebook-square"
+                    onPress={() => Linking.openURL(LIKE_URL) }>
+                    {I18n.t('LIKE_US') }
+                </MenuItem>
+
             </MenuSection>
             <View style={{paddingBottom: 15}}>
             </View>
