@@ -38,10 +38,6 @@ export const themes = {
     }
 };
 
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 const styles = StyleSheet.create({
 
     // reusable view header
@@ -283,14 +279,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    feedbackRowFacebookIcon: {
-        fontSize: 32,
-        color: '#3B5998'
-    },
-    feedbackRowFacebook: {
+    feedbackRowShare: {
         fontSize: 16,
-        paddingLeft: 5,
-        paddingRight: 5
+        color: themes.light.textColor,
     },
     feedbackRowIconContainer: {
         height: 48,
@@ -300,7 +291,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     feedbackRowIcon: {
-        color: '#222222',
+        color: themes.light.textColor,
         paddingLeft: 10,
         paddingRight: 10,
         fontSize: 24
