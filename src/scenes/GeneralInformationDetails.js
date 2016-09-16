@@ -10,6 +10,8 @@ import {getAllUrlParams} from "../utils/helpers";
 import I18n from '../constants/Messages';
 import Share from 'react-native-share';
 
+const SHOW_FEEDBACK_BAR = false;
+
 export class GeneralInformationDetails extends Component {
 
     static propTypes = {
@@ -139,6 +141,7 @@ export class GeneralInformationDetails extends Component {
             error => console.log(error)
         );
     }
+
     render() {
         return (
             <View style={styles.container}>
@@ -154,6 +157,7 @@ export class GeneralInformationDetails extends Component {
                         direction={this.props.direction}
                     />
                 </View>
+                {SHOW_FEEDBACK_BAR &&
                 <View style={[
                     {backgroundColor: themes.light.toolbarColor},
                     styles.feedbackRow
@@ -165,14 +169,15 @@ export class GeneralInformationDetails extends Component {
                         <Text style={styles.feedbackRowShare}>{I18n.t('SHARE')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}>
-                        <Icon name="fa-thumbs-up" style={styles.feedbackRowIcon} />
+                        <Icon name="fa-thumbs-up" style={styles.feedbackRowIcon}/>
                         <Text>143</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}>
-                        <Icon name="fa-thumbs-down" style={styles.feedbackRowIcon} />
+                        <Icon name="fa-thumbs-down" style={styles.feedbackRowIcon}/>
                         <Text>21</Text>
                     </TouchableOpacity>
                 </View>
+                }
             </View>
         );
     }
