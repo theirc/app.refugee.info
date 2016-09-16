@@ -87,17 +87,18 @@ export default class Regions extends Component {
     async getLocationByPosition(longitude, latitude, level) {
         return await this.client(longitude, latitude, level);
     }
+
     static searchImportantInformation(region, fullSlug) {
         let info = region.important_information.filter((info) => {
             return info.full_slug === fullSlug
         });
         return info[0] || null;
     }
+
     static searchGeneralInformation(region, fullSlug) {
         let info = region.content.filter((info) => {
             return info.anchor_name === fullSlug
         });
         return info[0] || null;
     }
-
 }
