@@ -20,7 +20,7 @@ class Welcome extends Component {
         showLanguage: false,
         languageSelected: false,
         themeSelected: false,
-    }
+    };
 
     componentDidMount() {
         if (!this.props.firstLoad) {
@@ -43,10 +43,9 @@ class Welcome extends Component {
                 }
 
                 this.setState({
-                    showTheme: true,
                     languageSelected: true,
                     showLanguage: false,
-                    themeSelected: false,
+                    themeSelected: true,
                 });
             }, 1000);
         } else {
@@ -72,7 +71,7 @@ class Welcome extends Component {
             languageSelected: true,
         });
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-
+        this.setTheme('light');
         await Promise.all([
             dispatch(updateDirectionIntoStorage(direction)),
             dispatch(updateLanguageIntoStorage(language)),
@@ -85,7 +84,7 @@ class Welcome extends Component {
                 showLanguage: false,
                 themeSelected: false,
             });
-        });
+        }).then(() => this.props.finished());
     }
 
     setTheme(theme) {
@@ -231,7 +230,6 @@ class Welcome extends Component {
                         resizeMode={Image.resizeMode.cover}
                         style={[localStyles.logo]}
                         />
-                    {showTheme && this.renderThemeSelection() }
                     {showLanguage && this.renderLanguageSelection() }
                 </View>
             </View>
