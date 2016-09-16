@@ -40,6 +40,7 @@ var screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const SHOW_SHARE_BUTTON = false;
 
 export class ServiceDetails extends Component {
     static smallHeader = true;
@@ -703,13 +704,14 @@ export class ServiceDetails extends Component {
                         buttonStyle={{marginBottom: 10}}
                         textStyle={{fontSize: 15}}
                     />}
+                    {SHOW_SHARE_BUTTON &&
                     <Button
                         color="white"
                         text={I18n.t('SHARE') }
                         onPress={() => this.onShareClick()}
                         buttonStyle={{marginBottom: 10}}
                         textStyle={{fontSize: 15}}
-                    />
+                    />}
                 </View>
             </ParallaxView>
         )
