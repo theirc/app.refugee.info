@@ -23,7 +23,7 @@ export class OfflineView extends Component {
             return (
                 <View style={[
                     componentStyles.offlineModeContainer,
-                    {borderBottomWidth: 2},
+                    {borderBottomWidth: 0},
                     getBottomDividerColor(theme)
 
                 ]}>

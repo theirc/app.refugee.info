@@ -96,5 +96,6 @@
   "CLOSED": "Closed",
   "CANNOT_CHANGE_LANGUAGE": "Cannot change language",
   "SHOW_MORE": "Show more",
-  "CLUSTER_POPUP_TITLE": "There are {0} services in this location. Click on the service below for more details."
+  "CLUSTER_POPUP_TITLE": "There are {0} services in this location. Click on the service below for more details.",
+  "LIKE_US": "Like us on Facebook"
 }

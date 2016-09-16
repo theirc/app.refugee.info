@@ -2,19 +2,14 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     ListView,
-    StyleSheet,
-    AsyncStorage,
-    Image,
     Text,
     Dimensions,
     Platform,
-    LayoutAnimation,
     ScrollView
 } from 'react-native';
 import MapView from 'react-native-maps';
 import styles, {
     themes,
-    getTextAlign,
     getFontFamily,
     getRowOrdering,
     getElevation,
@@ -28,13 +23,11 @@ import {
     MapPopup,
     Button,
     SearchBar,
-    SearchFilterButton,
     SelectableListItem,
     LoadingOverlay,
     Icon,
-    OfflineView
 } from '../components';
-import {Regions, Services} from '../data';
+import {Services} from '../data';
 
 var _ = require('underscore');
 var {width, height} = Dimensions.get('window');
@@ -306,13 +299,7 @@ class ServiceMap extends Component {
     }
 
     _fitMap() {
-        /*
-         setTimeout(() => {
-         if (this.mapRef && this.state.markers.length > 0) {
-         this.mapRef.fitToElements(true);
-         }
-         }, 200);
-         */
+        if (this.mapRef && this.state.markers.length > 0) {}
     }
 
     /** returns distance between two markers in meters */
@@ -442,8 +429,10 @@ class ServiceMap extends Component {
                     {markerElements}
                 </MapView>
                 {Platform.OS === 'ios' && (
-                    <View style={{position: 'absolute', top: 0, left: 0,
-                        width: width, height: 20, backgroundColor: 'rgba(249, 245, 237, 1)'}} />
+                    <View style={{
+                        position: 'absolute', top: 0, left: 0,
+                        width: width, height: 20, backgroundColor: 'rgba(249, 245, 237, 1)'
+                    }}/>
                 )}
                 {activeMarker && (
                     <ScrollView
@@ -587,7 +576,7 @@ class ServiceMap extends Component {
                             getRowOrdering(direction), {
                                 backgroundColor: theme == 'dark' ? themes.dark.toolbarColor : themes.light.backgroundColor,
                                 position: 'absolute',
-                                top: 46,
+                                top: isStatusBarTranslucent() ? 85 : 60,
                                 left: 0,
                                 width: width - 10,
                                 marginHorizontal: 5,
@@ -637,7 +626,7 @@ class ServiceMap extends Component {
                 {loading &&
                 <LoadingOverlay
                     theme={theme}
-                    height={height - ((isStatusBarTranslucent()) ? 80 : 55) }
+                    height={height}
                     width={width}
                 />}
             </View>
