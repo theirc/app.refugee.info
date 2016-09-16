@@ -8,6 +8,7 @@ import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
 import {getAllUrlParams} from "../utils/helpers";
 import I18n from '../constants/Messages';
+import Share from 'react-native-share';
 
 export class GeneralInformationDetails extends Component {
 
@@ -128,6 +129,16 @@ export class GeneralInformationDetails extends Component {
         }
     }
 
+    onSharePress() {
+        const {sectionTitle, region} = this.props;
+        console.log(region);
+        Share.open({
+            message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
+            url: `http://dev.refugee.info/${region.slug}/`,
+        }).catch(
+            error => console.log(error)
+        );
+    }
     render() {
         return (
             <View style={styles.container}>
@@ -148,9 +159,10 @@ export class GeneralInformationDetails extends Component {
                     styles.feedbackRow
                 ]}
                 >
-                    <TouchableOpacity style={styles.feedbackRowFacebookContainer} activeOpacity={0.5}>
-                        <Icon name="fa-facebook-official" style={styles.feedbackRowFacebookIcon}/>
-                        <Text style={styles.feedbackRowFacebook}>{I18n.t('SHARE')}</Text>
+                    <TouchableOpacity style={styles.feedbackRowFacebookContainer} activeOpacity={0.5}
+                                      onPress={() => this.onSharePress()}>
+                        <Icon name="fa-share" style={styles.feedbackRowIcon}/>
+                        <Text style={styles.feedbackRowShare}>{I18n.t('SHARE')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}>
                         <Icon name="fa-thumbs-up" style={styles.feedbackRowIcon} />

@@ -2,12 +2,9 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     Text,
-    AsyncStorage,
     StyleSheet,
     ListView,
     TouchableOpacity,
-    TextInput,
-    ScrollView,
     RefreshControl,
     Linking,
     Image
@@ -115,7 +112,7 @@ const localStyles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column'
     }
-})
+});
 
 const mapStateToProps = (state) => {
     return {

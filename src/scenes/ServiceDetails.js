@@ -168,12 +168,13 @@ export class ServiceDetails extends Component {
 
         requestAnimationFrame(() => {
             Share.open({
-                share_text: text,
-                share_URL: 'http://refugee.info',
-                title: service.name
-            }, (e) => {
-                console.log(e);
-            });
+                message: text,
+                url: 'http://refugee.info',
+                title: service.name,
+                subject: service.name
+            }).catch(
+                error => console.log(error)
+            );
         })
     }
 

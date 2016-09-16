@@ -1,15 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    Text,
-    AsyncStorage,
     StyleSheet,
     ListView,
-    TouchableHighlight,
-    TextInput,
-    ScrollView,
     RefreshControl,
-    Platform,
     Dimensions
 } from 'react-native';
 import I18n from '../constants/Messages';
