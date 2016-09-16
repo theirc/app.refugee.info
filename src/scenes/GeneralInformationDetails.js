@@ -39,7 +39,6 @@ export class GeneralInformationDetails extends Component {
         this._loadInitialState();
     }
 
-
     _loadInitialState() {
         const {section, sectionTitle, language, theme, showTitle, dispatch, region} = this.props;
         if (showTitle) {
@@ -58,9 +57,37 @@ export class GeneralInformationDetails extends Component {
     }
 
     _onNavigationStateChange(state) {
+        let url = state.url;
         if (!this.state.navigating) {
-            let url = state.url;
             if (url === 'about:blank' || url.indexOf('data:') == 0) {
+                if (Platform.OS === 'android') {
+                    //hacky way to get link path
+                    let suffix = '</html>';
+                    if (url.indexOf(suffix, url.length - suffix.length) !== -1) {
+                        // if it ends with html, it's not a anchor link but wrappedHtml
+                        return;
+                    }
+                    let temp = url.split('#');
+                    if (!temp || temp.length > 2) {
+                        // safecheck
+                        return;
+                    }
+                    let fullSlug = temp[temp.length - 1];
+                    if (fullSlug && !fullSlug.includes('"')) {
+                        let info = Regions.searchImportantInformation(this.props.region, fullSlug);
+                        if (info) {
+                            this.setState({navigating: true});
+                            let payload = {title: '', section: info.content[0].section};
+                            return this.context.navigator.to('info.details', null, payload)
+                        }
+                        info = Regions.searchGeneralInformation(this.props.region, fullSlug);
+                        if (info) {
+                            this.setState({navigating: true});
+                            let payload = {title: '', section: info.section};
+                            return this.context.navigator.to('info.details', null, payload)
+                        }
+                    }
+                }
                 return;
             }
             if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
@@ -78,7 +105,6 @@ export class GeneralInformationDetails extends Component {
                     let fullSlug = url.split('%23')[1];
                     let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
                     if (info) {
-                        this.setState({navigating: true});
                         let payload = {title: '', section: info.section};
                         return this.context.navigator.to('info.details', null, payload)
                     }
@@ -127,6 +153,9 @@ export class GeneralInformationDetails extends Component {
                 }
             }
         } else {
+            if (Platform.OS === 'android' && (url === 'about:blank' || url.indexOf('data:') == 0)) {
+                this.setState({navigating: false});
+            }
             this.webView.goBack();
         }
     }
