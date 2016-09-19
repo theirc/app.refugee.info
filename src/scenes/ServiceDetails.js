@@ -35,12 +35,13 @@ import styles, {
     getBottomDividerColor,
     getDividerColor
 } from '../styles';
+import {WEB_PATH} from '../constants'
 
 var screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-const SHOW_SHARE_BUTTON = false;
+const SHOW_SHARE_BUTTON = true;
 
 export class ServiceDetails extends Component {
     static smallHeader = true;
@@ -170,7 +171,7 @@ export class ServiceDetails extends Component {
         requestAnimationFrame(() => {
             Share.open({
                 message: text,
-                url: 'http://refugee.info',
+                url: WEB_PATH,
                 title: service.name,
                 subject: service.name
             }).catch(

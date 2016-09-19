@@ -18,7 +18,6 @@ import {MenuSection, MenuItem} from '../components';
 import {
     updateRegionIntoStorage,
     updateCountryIntoStorage,
-    updateLocationsIntoStorage
 } from '../actions';
 import {Icon} from '../components';
 import {
@@ -26,17 +25,9 @@ import {
     getRowOrdering,
     themes
 } from '../styles'
-import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
+import {LIKE_PATH, FEEDBACK_MAP} from '../constants'
 
-const FEEDBACK_MAP = {
-    ar: 'https://docs.google.com/forms/d/16KxtpLbQbdj7ohkpAxws65aZuWfeQa8jjgCBvcptfkk/viewform?entry.1237329743=',
-    en: 'https://docs.google.com/forms/d/1gc-hN_p5pqC3DoPXxTfCAmlIiCEd1mOIdQMWeAz2n_U/viewform?entry.1237329743=',
-    fa: 'https://docs.google.com/forms/d/1Kn2L3mEEFAGgn1YrRpaA7bHNTrKXrw8-zp0w6xfz5o0/viewform?entry.1237329743=',
-    ps: 'https://docs.google.com/forms/d/1pQD6q3dE-0SsFtxmTGnn5q9GJHNeLBPoIJ_sZjBR1VQ/viewform?entry.1237329743=',
-};
-
-const LIKE_URL = 'https://www.facebook.com/refugee.info/';
 
 class Navigation extends Component {
 
@@ -259,7 +250,7 @@ class Navigation extends Component {
 
                 <MenuItem
                     icon="fa-facebook-square"
-                    onPress={() => Linking.openURL(LIKE_URL) }>
+                    onPress={() => Linking.openURL(LIKE_PATH) }>
                     {I18n.t('LIKE_US') }
                 </MenuItem>
 

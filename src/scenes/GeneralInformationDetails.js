@@ -9,6 +9,7 @@ import {RNMail as Mailer} from 'NativeModules';
 import {getAllUrlParams} from "../utils/helpers";
 import I18n from '../constants/Messages';
 import Share from 'react-native-share';
+import {WEB_PATH} from '../constants'
 
 const SHOW_FEEDBACK_BAR = false;
 
@@ -165,7 +166,7 @@ export class GeneralInformationDetails extends Component {
         console.log(region);
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
-            url: `http://dev.refugee.info/${region.slug}/`,
+            url: `${WEB_PATH}/${region.slug}/`,
         }).catch(
             error => console.log(error)
         );

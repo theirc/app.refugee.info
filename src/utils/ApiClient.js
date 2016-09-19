@@ -1,11 +1,10 @@
-
-import {AsyncStorage} from 'react-native';
+import {API_PATH} from '../constants'
 
 const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
-    constructor(context, props = { language: 'en' }, api_root = 'http://api.refugee.info') {
+    constructor(context, props = { language: 'en' }, api_root = API_PATH) {
         if (context) {
             this.navigator = context.navigator;
         }
