@@ -101,7 +101,6 @@ export class ServiceDetails extends Component {
 
 
     async fetchData(update) {
-        const {dispatch} = this.props;
         let service = this.props.service;
         try {
             if (update) {
@@ -125,10 +124,8 @@ export class ServiceDetails extends Component {
             });
         }
         catch (e) {
-            let lastSync = await AsyncStorage.getItem('lastServicesSync');
             this.setState({
-                offline: true,
-                lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
+                offline: true
             })
         }
     }
@@ -564,8 +561,7 @@ export class ServiceDetails extends Component {
             >
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
-                    lastSync={this.state.lastSync}
+                    onRefresh={this.onRefresh.bind(this)}
                 />
 
                 <MapView

@@ -77,7 +77,6 @@ export class ServiceList extends Component {
                 loaded: false,
                 refreshing: false,
                 offline: false,
-                lastSync: null,
                 canLoadMoreContent: true,
                 pageNumber: 1,
                 filteringView: false,
@@ -569,8 +568,7 @@ export class ServiceList extends Component {
                 </View>
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
-                    lastSync={this.state.lastSync}
+                    onRefresh={this.onRefresh.bind(this)}
                 />
                 {viewContent}
                 {!filteringView && (
