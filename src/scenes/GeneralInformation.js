@@ -92,19 +92,20 @@ export class GeneralInformation extends Component {
         });
     }
 
-    onClick(title, section) {
+    onClick(title, section, slug) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            navigator.forward(null, null, {section, sectionTitle: title}, this.state);
+            navigator.forward(null, null, {section, sectionTitle: title, slug}, this.state);
         })
     }
 
     renderRow(rowData) {
+        let slug = rowData.slug || rowData.anchor_name || '';
         return (
             <ListItem
                 icon={rowData.vector_icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.section) }
-                text={rowData.title.trim() }
+                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug)}
+                text={rowData.title.trim()}
             />
         )
     }

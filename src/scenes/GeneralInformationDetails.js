@@ -11,7 +11,7 @@ import I18n from '../constants/Messages';
 import Share from 'react-native-share';
 import {WEB_PATH} from '../constants'
 
-const SHOW_FEEDBACK_BAR = false;
+const SHOW_FEEDBACK_BAR = true;
 
 export class GeneralInformationDetails extends Component {
 
@@ -78,13 +78,13 @@ export class GeneralInformationDetails extends Component {
                         let info = Regions.searchImportantInformation(this.props.region, fullSlug);
                         if (info) {
                             this.setState({navigating: true});
-                            let payload = {title: '', section: info.content[0].section};
+                            let payload = {title: '', section: info.content[0].section, slug: info.slug};
                             return this.context.navigator.to('info.details', null, payload)
                         }
                         info = Regions.searchGeneralInformation(this.props.region, fullSlug);
                         if (info) {
                             this.setState({navigating: true});
-                            let payload = {title: '', section: info.section};
+                            let payload = {title: '', section: info.section, slug: info.anchor_name};
                             return this.context.navigator.to('info.details', null, payload)
                         }
                     }
@@ -106,7 +106,7 @@ export class GeneralInformationDetails extends Component {
                     let fullSlug = url.split('%23')[1];
                     let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
                     if (info) {
-                        let payload = {title: '', section: info.section};
+                        let payload = {title: '', section: info.section, slug: info.anchor_name};
                         return this.context.navigator.to('info.details', null, payload)
                     }
                 }
@@ -133,7 +133,7 @@ export class GeneralInformationDetails extends Component {
                     }
                     let info = Regions.searchImportantInformation(this.props.region, fullSlug);
                     if (info) {
-                        let payload = {title: '', section: info.content[0].section};
+                        let payload = {title: '', section: info.content[0].section, slug: info.slug};
                         return this.context.navigator.to('info.details', null, payload)
                     }
 
@@ -162,11 +162,10 @@ export class GeneralInformationDetails extends Component {
     }
 
     onSharePress() {
-        const {sectionTitle, region} = this.props;
-        console.log(region);
+        const {sectionTitle, region, slug} = this.props;
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
-            url: `${WEB_PATH}/${region.slug}/`,
+            url: `${WEB_PATH}/${region.slug}/${slug || ''}`,
         }).catch(
             error => console.log(error)
         );
