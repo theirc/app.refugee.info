@@ -159,19 +159,14 @@ export class ServiceDetails extends Component {
 
     onShareClick() {
         const {provider, service} = this.state;
+        const {region} = this.props;
         let address = service.address || provider.address;
-        let phoneNumber = service.phone_number || provider.phone_number;
-        let text = `${service.name}
-        ${provider.name}
-
-        ${address}
-        ${phoneNumber}
-        `;
-
+        let phoneNumber = service.phone_number || provider.phone_number || '';
+        let text = `${service.name}\n${provider.name}\n${address}\n${phoneNumber}`;
         requestAnimationFrame(() => {
             Share.open({
                 message: text,
-                url: WEB_PATH,
+                url: `${WEB_PATH}/${region.slug}/services/${service.id}`,
                 title: service.name,
                 subject: service.name
             }).catch(
@@ -750,6 +745,7 @@ const mapStateToProps = (state) => {
     return {
         theme: state.theme,
         direction: state.direction,
+        region: state.region,
         language: state.language,
         toolbarTitleIcon: state.toolbarTitleIcon,
         toolbarTitleImage: state.toolbarTitleImage,

@@ -436,10 +436,6 @@ export class ServiceList extends Component {
         }
     }
 
-    componentWillUpdate() {
-        LayoutAnimation.easeInEaseOut();
-    }
-
     clearFilters() {
         let serviceTypes = this.state.serviceTypes;
         for (let i = 0; i < serviceTypes.length; i++) {
@@ -507,7 +503,7 @@ export class ServiceList extends Component {
                         icon="md-close"
                         text={I18n.t('CLEAR_FILTERS').toUpperCase() }
                         onPress={this.clearFilters.bind(this) }
-                        buttonStyle={{height: 33, marginRight: 2}}
+                        buttonStyle={{height: 44, marginRight: 2}}
                         iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
                     />
                     <Button
@@ -515,7 +511,7 @@ export class ServiceList extends Component {
                         icon="md-funnel"
                         text={I18n.t('FILTER_SERVICES').toUpperCase() }
                         onPress={this.filterByTypes.bind(this) }
-                        buttonStyle={{height: 33, marginLeft: 2}}
+                        buttonStyle={{height: 44, marginLeft: 2}}
                     />
                 </View>
                 <ListView style={{flex: 1}}
@@ -531,7 +527,10 @@ export class ServiceList extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.row}>
+                <View style={[
+                    styles.row, {paddingHorizontal: 5},
+                    {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor}]
+                }>
                     <SearchBar
                         theme={theme}
                         searchText={this.state.searchCriteria}

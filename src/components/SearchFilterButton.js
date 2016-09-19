@@ -67,12 +67,11 @@ const mapStateToProps = (state) => {
 
 const componentStyles = StyleSheet.create({
     searchFilterButtonContainer: {
-        width: 60,
+        width: 49,
+        paddingLeft: 5,
         height: 60,
-        paddingTop: 5,
-        paddingRight: 5,
-        paddingBottom: 7,
-        paddingLeft: 2
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     searchFilterButtonContainerLight: {
         backgroundColor: themes.light.dividerColor
@@ -81,8 +80,8 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.menuBackgroundColor
     },
     searchFilterButton: {
-        flex: 1,
-        height: 48,
+        height: 44,
+        width: 44,
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 2
@@ -100,7 +99,7 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.backgroundColor
     },
     searchFilterIcon: {
-        fontSize: 28
+        fontSize: 26
     },
     searchFilterIconDark: {
         color: themes.dark.textColor
