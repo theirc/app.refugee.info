@@ -62,8 +62,8 @@ div.table-responsive table td {
 }
 
 a.link-button {
-    min-height: 3em;
-    line-height: 3em;
+    min-height: 3.3em;
+    line-height: 3.3em;
     display: block;
     font-size: 100%;
     font-weight: bold;

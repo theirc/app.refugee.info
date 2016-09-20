@@ -162,10 +162,11 @@ export class GeneralInformationDetails extends Component {
     }
 
     onSharePress() {
-        const {sectionTitle, region, slug} = this.props;
+        const {sectionTitle, region, slug, shareSlug} = this.props;
+        let urlSuffix = shareSlug || `#${slug || ''}`;
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
-            url: `${WEB_PATH}/${region.slug}/${slug || ''}`,
+            url: `${WEB_PATH}/${region.slug}/${urlSuffix}`,
         }).catch(
             error => console.log(error)
         );
@@ -178,7 +179,7 @@ export class GeneralInformationDetails extends Component {
                     {this.state.source &&
                     <WebView
                         ref={(v) => this.webView = v}
-                        onNavigationStateChange={(s) => this._onNavigationStateChange(s) }
+                        onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
                         source={this.state.source}
                     />
                     }

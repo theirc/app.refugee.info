@@ -100,7 +100,7 @@ export class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
-        let slug = rowData.slug || rowData.anchor_name || '';
+        let slug = rowData.slug ? `info/${rowData.slug}` : rowData.anchor_name || `info${rowData.index}`;
         return (
             <ListItem
                 icon={rowData.vector_icon}
