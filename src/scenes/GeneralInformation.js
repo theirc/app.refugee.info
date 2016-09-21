@@ -49,7 +49,9 @@ export class GeneralInformation extends Component {
         if (region != nextProps.region) {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(
-                    nextProps.region.content.filter((info) => !info.hide_from_toc)
+                    nextProps.region.content
+                        .filter((info) => !info.hide_from_toc)
+                        .sort((a, b) => (a.important === b.important)? 0 : a.important? -1 : 1)
                 ),
             });
         }
@@ -75,9 +77,12 @@ export class GeneralInformation extends Component {
             }, 100);
             return;
         }
-
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(region.content.filter((info) => !info.hide_from_toc)),
+            dataSource: this.state.dataSource.cloneWithRows(
+                region.content
+                    .filter((info) => !info.hide_from_toc)
+                    .sort((a, b) => (a.important === b.important)? 0 : a.important? -1 : 1)
+            ),
             generalInfo: region.content,
             region: region,
             loaded: true,
@@ -92,10 +97,10 @@ export class GeneralInformation extends Component {
         });
     }
 
-    onClick(title, section, slug) {
+    onClick(title, section, slug, index) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            navigator.forward(null, null, {section, sectionTitle: title, slug}, this.state);
+            navigator.forward(null, null, {section, sectionTitle: title, slug, index}, this.state);
         })
     }
 
@@ -104,7 +109,7 @@ export class GeneralInformation extends Component {
         return (
             <ListItem
                 icon={rowData.vector_icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug)}
+                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index)}
                 text={rowData.title.trim()}
             />
         )
