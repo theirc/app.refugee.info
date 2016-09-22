@@ -4,7 +4,7 @@ const InteractionManager = require('InteractionManager');
 
 export default class ApiClient {
 
-    constructor(context, props = { language: 'en' }, api_root = API_PATH) {
+    constructor(context, props = {language: 'en'}, api_root = API_PATH) {
         if (context) {
             this.navigator = context.navigator;
         }
@@ -23,7 +23,7 @@ export default class ApiClient {
         if (languageCode) {
             headers['Accept-Language'] = languageCode;
         }
-        return fetch(`${this.apiRoot}${relativeUrl}`, { headers: headers })
+        return fetch(`${this.apiRoot}${relativeUrl}`, {headers: headers})
             .then((response) => response.json())
             .catch((error) => {
                 if (raise_exception) {
@@ -144,6 +144,27 @@ export default class ApiClient {
             subject,
             email,
             message
+        });
+    }
+
+    getRating(region, index, content_slug) {
+        let identifier = content_slug ? `&content_slug=${content_slug}` : `&index=${index}`;
+        return this.fetch(`/v1/region/get_rate/?region_slug=${region.slug}${identifier}`);
+    }
+    setRating(region, index, content_slug, rating) {
+        return this.post(`/v1/region/add_rate/?format=json`, {
+            region_slug: region.slug,
+            index: index,
+            info_slug: content_slug,
+            rate: rating
+        });
+    }
+    removeRating(region, index, content_slug, rating) {
+        return this.post(`/v1/region/remove_rate/?format=json`, {
+            region_slug: region.slug,
+            index: index,
+            info_slug: content_slug,
+            rate: rating
         });
     }
 }

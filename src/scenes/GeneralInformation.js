@@ -97,10 +97,10 @@ export class GeneralInformation extends Component {
         });
     }
 
-    onClick(title, section, slug, index) {
+    onClick(title, section, slug, index, content_slug) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            navigator.forward(null, null, {section, sectionTitle: title, slug, index}, this.state);
+            navigator.forward(null, null, {section, sectionTitle: title, slug, index, content_slug}, this.state);
         })
     }
 
@@ -109,7 +109,7 @@ export class GeneralInformation extends Component {
         return (
             <ListItem
                 icon={rowData.vector_icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index)}
+                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index, rowData.slug)}
                 text={rowData.title.trim()}
             />
         )

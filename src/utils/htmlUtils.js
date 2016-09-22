@@ -1,18 +1,17 @@
-
 const cssStyleSheet = `
 body, html {
-  font-family: Roboto, Montserrat, Arial, 'sans serif';
+  font-family: Roboto, Montserrat, Arial, 'sans-serif';
   font-size: 100%;
   margin: 5px 5px 5px 5px;
   padding-bottom: 10px;
 }
 
 body.language-en {
-    font-family: Montserrat, Arial, 'sans serif';
+    font-family: Montserrat, Arial, 'sans-serif';
     font-size: 100%;
 }
 body.language-ar {
-    font-family: Mada, Arial, 'sans serif';
+    font-family: Mada, Arial, 'sans-serif';
     font-size: 100%;
 }
 table {
@@ -20,7 +19,7 @@ table {
   width: 100%;
 }
 p, li {
-  font-size: 80%;
+  font-size: 14px;
 }
 table, td, tr {
   border: 0px white solid;
@@ -41,8 +40,9 @@ div.table-responsive table {
 }
 
 div.table-responsive table td {
-  font-size: 80% !important;
+  font-size: 14px;
   padding: 5px 10px;
+  vertical-align: middle;
 }
 
 div.table-responsive table, th, td {
@@ -84,7 +84,10 @@ span.tel {
     border-collapse: collapse;
     margin-top: 10px;
 }
-
+.table-responsive img.country-flag {
+    width: 25px;
+    margin-right: 5px;
+}
 .table-responsive table, .table-responsive th, .table-responsive td {
     border: 1px solid white;
 }
@@ -140,6 +143,9 @@ hr.branded-line
 
 .img-right {
     float: right;
+}
+p {
+    margin: 0 0 10px;
 }
 `;
 
@@ -242,28 +248,36 @@ const cssFonts = `
 
 
 `;
+function parseContent(content, platform) {
+    if (platform === 'ios') {
+        return content;
+    } else {
+        // links starting with "/" gives about:blank in Android webview
+        var regExp = new RegExp('href="/', 'g');
+        return content.replace(regExp, 'href="##')
+    }
+}
+export function wrapHtmlContent(content, language, title = null, theme = "light", platform) {
+    language = language || 'en';
 
-export function wrapHtmlContent(content, language, title = null, theme = "light") {
-  language = language || 'en';
+    let parsedContent = parseContent(content, platform);
 
-  let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
-  let titleHtml = title || false ? `<h2>${title}</h2>` : '';
-  let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-  let htmlWrap = `
-  <html>
-  <head>
-  <style>
-  ${cssFonts}
-  ${cssStyleSheet}
-  ${themeCss}
-  </style>
-  </head>
-  <body class="${direction} language-${language}">
-  ${titleHtml}
-  ${content}
-  </body>
-  </html>
-  `;
-
-  return htmlWrap;
+    let themeCss = (theme || 'light') == 'light' ? lightTheme : darkTheme;
+    let titleHtml = title || false ? `<h2>${title}</h2>` : '';
+    let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
+    return htmlWrap = `
+    <html>
+    <head>
+    <style>
+        ${cssFonts}
+        ${cssStyleSheet}
+        ${themeCss}
+    </style>
+    </head>
+    <body class="${direction} language-${language}">
+        ${titleHtml}
+        ${parsedContent}
+    </body>
+    </html>
+    `;
 }
