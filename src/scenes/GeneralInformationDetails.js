@@ -214,8 +214,11 @@ export class GeneralInformationDetails extends Component {
     }
 
     onSharePress() {
-        const {sectionTitle, region, slug, shareSlug} = this.props;
-        let urlSuffix = shareSlug || `#${slug || ''}`;
+        const {sectionTitle, region, index, slug, content_slug} = this.props;
+        let urlSuffix = slug ? `#${slug}` : `#info${index}`;
+        if (content_slug) {
+            urlSuffix = `info/${content_slug}`;
+        }
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
             url: `${WEB_PATH}/${region.slug}/${urlSuffix}`,
