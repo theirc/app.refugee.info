@@ -105,17 +105,21 @@ class Navigation extends Component {
 
     _defaultOrFirst(page, showTitle = false) {
         this.drawerCommons.closeDrawer();
-
         if (page.content && page.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, {
                 shareSlug: page.slug ? `info/${page.slug}` : `info${page.index}`,
                 slug: page.slug || `info${page.index}`,
                 section: page.content[0].section,
                 sectionTitle: page.pageTitle,
-                showTitle: showTitle
+                showTitle: showTitle,
+                index: page.content[0].index,
+                content_slug: page.slug
             });
         } else {
-            let payload = {region: page.type != 'info' ? page : null, information: page.type == 'info' ? null : page};
+            let payload = {
+                region: page.type != 'info' ? page : null,
+                information: page.type == 'info' ? null : page
+            };
             return this.context.navigator.to('info', null, payload);
         }
     }

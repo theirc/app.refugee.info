@@ -1,5 +1,5 @@
 export {default as I18n} from './Messages';
-export const API_PATH = 'http://api.refugee.info';
+export const API_PATH = 'http://api-staging.refugee.info';
 export const WEB_PATH = 'http://dev.refugee.info';
 export const LIKE_PATH = 'https://www.facebook.com/refugee.info/';
 export const FEEDBACK_MAP = {
