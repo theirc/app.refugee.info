@@ -517,6 +517,7 @@ class ServiceMap extends Component {
                             top: isStatusBarTranslucent() ? 25 : 0,
                             left: 0,
                             height: 60,
+                            paddingHorizontal: 5,
                             width: width
                         }
                     ]}

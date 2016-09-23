@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
         height: 48,
         flexDirection: 'row',
         paddingLeft: 10,
-        paddingRight: 10
+        paddingRight: 10,
     },
     feedbackRowFacebookContainer: {
         height: 48,

@@ -109,8 +109,9 @@ const mapStateToProps = (state) => {
 const componentStyles = StyleSheet.create({
     searchBarContainer: {
         flex: 1,
-        padding: 5,
-        height: 60
+        height: 60,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     searchBarContainerLight: {
         backgroundColor: themes.light.dividerColor
@@ -122,7 +123,7 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 48,
+        height: 44,
         borderRadius: 2
     },
     searchBarLight: {
@@ -132,8 +133,8 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.dark.toolbarColor
     },
     searchBarIconContainer: {
-        height: 48,
-        width: 48,
+        height: 44,
+        width: 44,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'

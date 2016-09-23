@@ -44,7 +44,6 @@ export function updateLocationsIntoStorage(locations) {
             locations.forEach((location) => {
                 tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)])
             });
-            console.log('locations updated');
         })
     }).catch((error) => {
         console.log(error);

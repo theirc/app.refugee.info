@@ -9,8 +9,7 @@ export class OfflineView extends Component {
 
     static propTypes = {
         onRefresh: PropTypes.func.isRequired,
-        offline: PropTypes.bool.isRequired,
-        lastSync: PropTypes.number
+        offline: PropTypes.bool.isRequired
     };
 
     onRefreshHandler() {
@@ -74,12 +73,6 @@ const componentStyles = StyleSheet.create({
     },
     offlineModeText: {
         textAlign: 'center'
-    },
-    OfflineModeLastSync: {
-        marginTop: 10,
-        textAlign: 'center',
-        fontSize: 12,
-        color: '#333333'
     },
     offlineModeIcon: {
         position: 'absolute',

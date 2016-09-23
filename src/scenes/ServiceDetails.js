@@ -35,12 +35,13 @@ import styles, {
     getBottomDividerColor,
     getDividerColor
 } from '../styles';
+import {WEB_PATH} from '../constants'
 
 var screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-const SHOW_SHARE_BUTTON = false;
+const SHOW_SHARE_BUTTON = true;
 
 export class ServiceDetails extends Component {
     static smallHeader = true;
@@ -100,7 +101,6 @@ export class ServiceDetails extends Component {
 
 
     async fetchData(update) {
-        const {dispatch} = this.props;
         let service = this.props.service;
         try {
             if (update) {
@@ -124,10 +124,8 @@ export class ServiceDetails extends Component {
             });
         }
         catch (e) {
-            let lastSync = await AsyncStorage.getItem('lastServicesSync');
             this.setState({
-                offline: true,
-                lastSync: Math.ceil(Math.abs(new Date() - new Date(lastSync)) / 60000)
+                offline: true
             })
         }
     }
@@ -158,19 +156,14 @@ export class ServiceDetails extends Component {
 
     onShareClick() {
         const {provider, service} = this.state;
+        const {region} = this.props;
         let address = service.address || provider.address;
-        let phoneNumber = service.phone_number || provider.phone_number;
-        let text = `${service.name}
-        ${provider.name}
-
-        ${address}
-        ${phoneNumber}
-        `;
-
+        let phoneNumber = service.phone_number || provider.phone_number || '';
+        let text = `${service.name}\n${provider.name}\n${address}\n${phoneNumber}`;
         requestAnimationFrame(() => {
             Share.open({
                 message: text,
-                url: 'http://refugee.info',
+                url: `${WEB_PATH}/${region.slug}/services/${service.id}`,
                 title: service.name,
                 subject: service.name
             }).catch(
@@ -568,8 +561,7 @@ export class ServiceDetails extends Component {
             >
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
-                    lastSync={this.state.lastSync}
+                    onRefresh={this.onRefresh.bind(this)}
                 />
 
                 <MapView
@@ -749,6 +741,7 @@ const mapStateToProps = (state) => {
     return {
         theme: state.theme,
         direction: state.direction,
+        region: state.region,
         language: state.language,
         toolbarTitleIcon: state.toolbarTitleIcon,
         toolbarTitleImage: state.toolbarTitleImage,
