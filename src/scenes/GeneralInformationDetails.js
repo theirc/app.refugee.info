@@ -75,7 +75,7 @@ export class GeneralInformationDetails extends Component {
             if (url === 'about:blank' && Platform.OS === 'ios') {
                 return;
             }
-            if (url === 'about:blank' || url.indexOf('data:') == 0) {
+            if (url.indexOf('data:') == 0) {
                 if (Platform.OS === 'android') {
                     //hacky way to get link path
                     let suffix = '</html>';
@@ -87,6 +87,17 @@ export class GeneralInformationDetails extends Component {
                     if (!temp || temp.length > 2) {
                         // check if it's info/slug link
                         let infoUrl = temp[2];
+                        if (infoUrl.split('/')[1] == 'services') {
+                            // check if it's service filter link
+                            let urlParams = getAllUrlParams(infoUrl);
+                            this.setState({navigating: true});
+                            return this.context.navigator.to('services', null, {
+                                searchCriteria: urlParams.query,
+                                serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
+                                    ? urlParams.type.map((el) => parseInt(el))
+                                    : [parseInt(urlParams.type)]
+                            });
+                        }
                         let fullSlug = infoUrl.split('/')[2];
                         if (fullSlug && !fullSlug.includes('"')) {
                             let info = Regions.searchImportantInformation(this.props.region, fullSlug);
