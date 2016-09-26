@@ -71,7 +71,7 @@ export class GeneralInformationDetails extends Component {
 
     _onNavigationStateChange(state) {
         let url = state.url;
-        if (!this.state.navigating) {
+        if (!this.state.navigating || (Platform.Version >= 16 && Platform.Version <= 18)) {
             if (url === 'about:blank' && Platform.OS === 'ios') {
                 return;
             }
