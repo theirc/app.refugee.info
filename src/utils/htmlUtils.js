@@ -3,7 +3,22 @@ import {CSS} from '../constants'
 const cssStyleSheet = `
 body, html {
     font-family: Montserrat, Arial, 'sans-serif';
-}`;
+}
+
+.rtl {
+  direction: rtl;
+}
+
+.ltr {
+  direction: ltr;
+}
+
+span.tel, p.tel, div.tel {
+  direction: ltr !important;
+  display: inline-block;
+  white-space: nowrap;
+}
+`;
 
 const cssFonts = `
 @font-face {
