@@ -1,5 +1,5 @@
 export {default as I18n} from './Messages';
-export const CSS = ''; // This gets filled out by the build process
+export const CSS = '';
 export const API_PATH = 'http://api-staging.refugee.info';
 export const WEB_PATH = 'http://dev.refugee.info';
 export const LIKE_PATH = 'https://www.facebook.com/refugee.info/';
