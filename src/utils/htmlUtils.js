@@ -1,3 +1,6 @@
+
+import {CSS} from '../constants'
+
 const cssStyleSheet = `
 body, html {
   font-family: Roboto, Montserrat, Arial, 'sans-serif';
@@ -120,9 +123,9 @@ div.banner p {
 }
 
 
-hr.branded-line 
+hr.branded-line
 {
-    border-color: #4cae4e; 
+    border-color: #4cae4e;
     width: 30%;
     border-width: 2px;
 }
@@ -272,6 +275,7 @@ export function wrapHtmlContent(content, language, title = null, theme = "light"
         ${cssFonts}
         ${cssStyleSheet}
         ${themeCss}
+        ${CSS}
     </style>
     </head>
     <body class="${direction} language-${language} general-info-item-content">
