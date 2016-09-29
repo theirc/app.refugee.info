@@ -95,7 +95,7 @@ export class GeneralInformation extends Component {
     onRefresh() {
         const {region, dispatch, locations} = this.props;
         this.setState({refreshing: true}, () => {
-            this.apiClient = new ApiClient(this.context);
+            this.apiClient = new ApiClient(this.context, this.props);
             this.apiClient.getLocation(region.id, true).then((location) => {
                 let hasChanged = JSON.stringify(region.content) != JSON.stringify(location.content);
                 if (hasChanged) {
