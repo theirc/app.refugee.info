@@ -274,7 +274,7 @@ export function wrapHtmlContent(content, language, title = null, theme = "light"
         ${themeCss}
     </style>
     </head>
-    <body class="${direction} language-${language}">
+    <body class="${direction} language-${language} general-info-item-content">
         ${titleHtml}
         ${parsedContent}
     </body>
