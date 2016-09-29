@@ -4,15 +4,16 @@ import {
     StyleSheet,
     ListView,
     RefreshControl,
-    Dimensions
+    Text
 } from 'react-native';
 import I18n from '../constants/Messages';
-import {OfflineView, ListItem, Button, LoadingOverlay} from '../components';
+import {OfflineView, ListItem, Button} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes} from '../styles';
+import styles, {themes, getFontFamily} from '../styles';
 import {Regions} from '../data';
+import ApiClient from '../utils/ApiClient';
+import {updateRegionIntoStorage, updateLocationsIntoStorage} from '../actions';
 
-var {width, height} = Dimensions.get('window');
 
 export class GeneralInformation extends Component {
 
@@ -29,7 +30,8 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            loading: false
+            loading: false,
+            dataSourceUpdated: undefined
         };
     }
 
@@ -51,7 +53,7 @@ export class GeneralInformation extends Component {
                 dataSource: this.state.dataSource.cloneWithRows(
                     nextProps.region.content
                         .filter((info) => !info.hide_from_toc)
-                        .sort((a, b) => (a.important === b.important)? 0 : a.important? -1 : 1)
+                        .sort((a, b) => (a.important === b.important) ? 0 : a.important ? -1 : 1)
                 ),
             });
         }
@@ -81,7 +83,7 @@ export class GeneralInformation extends Component {
             dataSource: this.state.dataSource.cloneWithRows(
                 region.content
                     .filter((info) => !info.hide_from_toc)
-                    .sort((a, b) => (a.important === b.important)? 0 : a.important? -1 : 1)
+                    .sort((a, b) => (a.important === b.important) ? 0 : a.important ? -1 : 1)
             ),
             generalInfo: region.content,
             region: region,
@@ -91,9 +93,40 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        this.setState({refreshing: true});
-        this._loadInitialState().then(() => {
-            this.setState({refreshing: false});
+        const {region, dispatch, locations} = this.props;
+        this.setState({refreshing: true}, () => {
+            this.apiClient = new ApiClient(this.context);
+            this.apiClient.getLocation(region.id, true).then((location) => {
+                let hasChanged = JSON.stringify(region.content) != JSON.stringify(location.content);
+                if (hasChanged) {
+                    let locationToChange = locations.filter((filtered) => filtered.id == location.id)[0];
+                    let newLocations = locations;
+                    newLocations[(locations.indexOf(locationToChange))] = location;
+                    Promise.all([
+                        dispatch(updateRegionIntoStorage(location)),
+                        dispatch(updateLocationsIntoStorage(newLocations)),
+                        dispatch({type: 'REGION_CHANGED', payload: location}),
+                        dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
+                    ]).then(() => {
+                        this.setState({
+                            refreshing: false,
+                            dataSourceUpdated: true,
+                            offline: false
+                        });
+                    })
+                } else {
+                    this.setState({
+                        refreshing: false,
+                        dataSourceUpdated: false,
+                        offline: false
+                    });
+                }
+            }).catch((e) => {
+                this.setState({
+                    offline: true,
+                    refreshing: false
+                })
+            });
         });
     }
 
@@ -115,17 +148,34 @@ export class GeneralInformation extends Component {
         )
     }
 
+    renderRefreshText(updated) {
+        const {language} = this.props;
+        if (updated === undefined) {
+
+        } else {
+            let text = ((updated) ? I18n.t('INFO_WAS_OUTDATED') : I18n.t('INFO_WAS_UP_TO_DATE')).toUpperCase();
+            return (
+                <View style={componentStyles.refreshTextContainer}>
+                    <Text style={[componentStyles.refreshText, getFontFamily(language)]}>
+                        {text}
+                    </Text>
+                </View>
+            )
+        }
+    }
+
     render() {
         const {theme, direction, language, region, country} = this.props;
         const {navigator} = this.context;
         const {loading, refreshing} = this.state;
         let s = (scene, props) => navigator.to(scene);
-
+        let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
                 <View style={[{
                     paddingHorizontal: 5, paddingVertical: 10, height: 80, flexDirection: 'row',
-                    borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor},
+                    borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor
+                },
                 ]}>
 
                     <Button
@@ -155,6 +205,7 @@ export class GeneralInformation extends Component {
                     offline={this.state.offline}
                     onRefresh={this.onRefresh.bind(this) }
                 />
+                { !this.state.offline && refreshText }
                 <ListView
                     refreshControl={
                         <RefreshControl
@@ -186,6 +237,18 @@ const componentStyles = StyleSheet.create({
     },
     searchBarContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor
+    },
+    refreshTextContainer: {
+        borderBottomColor: themes.light.lighterDividerColor,
+        borderBottomWidth: 1,
+
+    },
+    refreshText: {
+        paddingVertical: 15,
+        fontSize: 13,
+        color: themes.light.greenAccentColor,
+        backgroundColor: themes.light.backgroundColor,
+        textAlign: 'center'
     }
 
 });
@@ -196,7 +259,8 @@ const mapStateToProps = (state) => {
         region: state.region,
         country: state.country,
         theme: state.theme,
-        direction: state.direction
+        direction: state.direction,
+        locations: state.locations
     };
 };
 
