@@ -10,7 +10,5 @@ Actual data files are in stored in JSON so it can translated using transifex.
 I18n.translations = {
     en: require('./data/en.json'),
     ar: require('./data/ar.json'),
-    fr: {
-        LANGUAGE: 'La langue'
-    },
+    fa: require('./data/fa.json')
 };
