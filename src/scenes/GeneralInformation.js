@@ -52,8 +52,7 @@ export class GeneralInformation extends Component {
             this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(
                     nextProps.region.content
-                        .filter((info) => !info.hide_from_toc)
-                        .sort((a, b) => (a.important === b.important) ? 0 : a.important ? -1 : 1)
+                        .filter((info) => !info.hide_from_toc && !info.hide_from_app)
                 ),
             });
         }
@@ -82,8 +81,7 @@ export class GeneralInformation extends Component {
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(
                 region.content
-                    .filter((info) => !info.hide_from_toc)
-                    .sort((a, b) => (a.important === b.important) ? 0 : a.important ? -1 : 1)
+                    .filter((info) => !info.hide_from_toc && !info.hide_from_app)
             ),
             generalInfo: region.content,
             region: region,

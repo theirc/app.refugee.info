@@ -16,7 +16,6 @@ body, html {
 span.tel, p.tel, div.tel {
   direction: ltr !important;
   display: inline-block;
-  white-space: nowrap;
 }
 `;
 

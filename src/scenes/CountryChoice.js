@@ -36,6 +36,7 @@ export class CountryChoice extends Component {
         let locations;
         try {
             locations = await regionData.listCountries(true);
+            locations = locations.filter(x=> !x.hidden);
         } catch (e) {
             this.setState({offline: true});
             return;
