@@ -15,6 +15,7 @@
     "react-native-i18n": "0.0.8",
     "react-native-infinite-scroll-view": "^0.4.2",
     "react-native-mail": "^1.2.0",
+    "react-native-mapbox-gl": "^5.0.0",
     "react-native-maps": "^0.8.0",
     "react-native-push-notification": "^2.0.2",
     "react-native-share": "^1.0.11",
