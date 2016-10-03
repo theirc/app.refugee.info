@@ -41,12 +41,8 @@ class Welcome extends Component {
                 if (!props.firstLoad) {
                     return;
                 }
-
-                this.setState({
-                    languageSelected: true,
-                    showLanguage: false,
-                    themeSelected: true,
-                });
+                
+                this.setLanguage(language);
             }, 1000);
         } else {
             setTimeout(() => {
@@ -80,9 +76,9 @@ class Welcome extends Component {
         ]).then(() => {
             return this.setState({
                 language: language,
-                showTheme: true,
+                showTheme: false,
                 showLanguage: false,
-                themeSelected: false,
+                themeSelected: true,
             });
         }).then(() => this.props.finished());
     }

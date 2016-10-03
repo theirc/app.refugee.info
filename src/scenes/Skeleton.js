@@ -104,7 +104,7 @@ class Skeleton extends Component {
     }
 
     async checkLanguageSelected() {
-        let code = (I18n.currentLocale() || 'en').split('-')[0];
+        let code = (I18n.currentLocale() || 'en').split('-')[0].split('_')[0];
         if (!I18n.translations.hasOwnProperty(code)) {
             // This means we don't have a translation for it
             // So fallback to English
