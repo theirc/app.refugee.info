@@ -59,6 +59,10 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http" android:host="refugee.info"/>
+                <data android:scheme="https" android:host="refugee.info"/>
+                <data android:scheme="http" android:host="www.refugee.info"/>
+                <data android:scheme="https" android:host="www.refugee.info"/>
                 <data android:scheme="http" android:host="dev.refugee.info"/>
                 <data android:scheme="https" android:host="dev.refugee.info"/>
                 <data android:scheme="http" android:host="light.refugee.info"/>
