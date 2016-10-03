@@ -474,7 +474,7 @@ export class ServiceDetails extends Component {
 
     render() {
         const {service, serviceType, toolbarTitleIcon, toolbarTitleImage, location, theme, direction, language} = this.props;
-
+        const {loaded} = this.state;
         let locationName = (location) ? location.pageTitle || location.name : '';
         let providerName = (this.state.provider) ? this.state.provider.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
@@ -680,7 +680,7 @@ export class ServiceDetails extends Component {
                 </View>}
 
                 {openingHoursView}
-
+                {loaded &&
                 <View style={styles.detailsContainer}>
                     <Button
                         color="green"
@@ -705,6 +705,7 @@ export class ServiceDetails extends Component {
                         textStyle={{fontSize: 15}}
                     />}
                 </View>
+                }
             </ParallaxView>
         )
     }
