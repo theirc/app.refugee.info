@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {
     AsyncStorage,
+    Platform
 } from 'react-native';
 import I18n from '../constants/Messages';
 import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
@@ -48,16 +49,23 @@ export default class Presence extends Component {
     async recordPresence(region, language) {
         let token = await Presence.getToken();
         const location = await Presence.getLocation();
-        
+        const {navigation} = store.getState();
+
+        token = JSON.parse(token) || {};
+        token.platform = {
+            version: Platform.Version,
+            os: Platform.OS,
+        };
+        token.path = navigation;
+
         try {
             let deviceId = DeviceInfo.getUniqueID();
             if (deviceId) {
-                token = JSON.parse(token);
                 token.deviceId = deviceId;
-                token = JSON.stringify(token);
             }
         } catch (e) {
         }
+        token = JSON.stringify(token);
 
 
         let payload = {
