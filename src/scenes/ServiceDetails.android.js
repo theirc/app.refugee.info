@@ -487,7 +487,7 @@ export class ServiceDetails extends Component {
         let {loaded} = this.state;
 
         if (!loaded) {
-            return <View />;
+            return <View style={styles.map} />;
         }
 
         let lat = parseFloat(service.location.coordinates[1]),
@@ -553,7 +553,7 @@ export class ServiceDetails extends Component {
 
     render() {
         const {service, serviceType, toolbarTitleIcon, toolbarTitleImage, location, theme, direction, language} = this.props;
-        let {nativeAvailable} = this.state;
+        let {nativeAvailable, loaded} = this.state;
         let locationName = (location) ? location.pageTitle || location.name : '';
         let providerName = (this.state.provider) ? this.state.provider.name : '';
         let hasPhoneNumber = this.state.loaded && !!this.state.provider.phone_number;
@@ -743,7 +743,7 @@ export class ServiceDetails extends Component {
                     </View>}
 
                 {openingHoursView}
-
+                { loaded &&
                 <View style={styles.detailsContainer}>
                     <Button
                         color="green"
@@ -767,7 +767,7 @@ export class ServiceDetails extends Component {
                             buttonStyle={{ marginBottom: 10 }}
                             textStyle={{ fontSize: 15 }}
                             />}
-                </View>
+                </View>}
             </ParallaxView>
         )
     }
