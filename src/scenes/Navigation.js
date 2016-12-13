@@ -147,7 +147,7 @@ class Navigation extends Component {
         const aboutUs = region.important_information.find(a => a.slug === 'about-us');
 
         let importantInformationItems = this._getImportantInformation();
-        let nearbyCitiesItems = null;
+        let nearbyCitiesItems = [];
         if (locations) {
             nearbyCitiesItems = locations.map((i, index) => {
                 return <MenuItem
@@ -167,101 +167,102 @@ class Navigation extends Component {
 
         let bannerCount = region.metadata.banners.length;
 
-        return <ScrollView style={styles.view}>
-            <View style={[styles.logoContainer, getRowOrdering(direction)]}>
-                <Image source={logo} style={ styles.logo }/>
-            </View>
-            <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
-                <Icon
-                    name="md-locate"
-                    style={[
-                        {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
-                        (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
-                    ]}
-                />
-                <Text style={[
-                    getFontFamily(language),
-                    styles.cityText
-                ]}>
-                    {(region.pageTitle || region.name).toUpperCase() }
-                </Text>
-            </View>
-            <MenuSection title={I18n.t("REFUGEE_INFO") }>
-                <MenuItem
-                    icon="fa-info"
-                    active={route === 'info'}
-                    onPress={() => this._defaultOrFirst(region) }
-                >
-                    {I18n.t('GENERAL_INFO') }
-                </MenuItem>
-                <MenuItem
-                    icon="fa-list"
-                    active={route === 'services'}
-                    onPress={() => s('services') }
-                >
-                    {I18n.t('SERVICE_LIST') }
-                </MenuItem>
-                <MenuItem
-                    icon="fa-map"
-                    active={route === 'map'}
-                    onPress={() => s('map') }
-                >
-                    {I18n.t('EXPLORE_MAP') }
-                </MenuItem>
-            </MenuSection>
-            <MenuSection>
-                <MenuItem
-                    active={route === 'notifications'}
-                    icon="ios-mail" onPress={() => s('notifications')}
-                    badge={bannerCount}>
-                    {I18n.t('ANNOUNCEMENTS')}
-                </MenuItem>
-                <MenuItem
-                    icon="ios-paper"
-                    active={route === 'news'}
-                    onPress={() => s('news')}>
-                    {I18n.t('NEWS')}
-                </MenuItem>
-            </MenuSection>
-            <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
-                {importantInformationItems}
-            </MenuSection>
-            <MenuSection title={I18n.t("CHANGE_LOCATION") }>
-                {nearbyCitiesItems}
-            </MenuSection>
-            <MenuSection>
-                <MenuItem
-                    icon="fa-gear"
-                    active={route === 'settings'}
-                    onPress={() => s('settings') }
-                >
-                    {I18n.t('SETTINGS') }
-                </MenuItem>
-                {aboutUs &&
-                <MenuItem
-                    icon="fa-question"
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
-                    onPress={() => this._defaultOrFirst(aboutUs, true)}
-                >
-                    {I18n.t('ABOUT') }
-                </MenuItem>
-                }
-                <MenuItem
-                    icon="fa-comment"
-                    onPress={() => Linking.openURL(feedbackUrl) }>
-                    {I18n.t('FEEDBACK') }
-                </MenuItem>
+        return (
+            <ScrollView style={styles.view}>
+                <View style={[styles.logoContainer, getRowOrdering(direction)]}>
+                    <Image source={logo} style={ styles.logo }/>
+                </View>
+                <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
+                    <Icon
+                        name="md-locate"
+                        style={[
+                            {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
+                            (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
+                        ]}
+                    />
+                    <Text style={[
+                        getFontFamily(language),
+                        styles.cityText
+                    ]}>
+                        {(region.pageTitle || region.name).toUpperCase() }
+                    </Text>
+                </View>
+                <MenuSection title={I18n.t("REFUGEE_INFO") }>
+                    <MenuItem
+                        icon="fa-info"
+                        active={route === 'info'}
+                        onPress={() => this._defaultOrFirst(region) }
+                    >
+                        {I18n.t('GENERAL_INFO') }
+                    </MenuItem>
+                    <MenuItem
+                        icon="fa-list"
+                        active={route === 'services'}
+                        onPress={() => s('services') }
+                    >
+                        {I18n.t('SERVICE_LIST') }
+                    </MenuItem>
+                    <MenuItem
+                        icon="fa-map"
+                        active={route === 'map'}
+                        onPress={() => s('map') }
+                    >
+                        {I18n.t('EXPLORE_MAP') }
+                    </MenuItem>
+                </MenuSection>
+                <MenuSection>
+                    <MenuItem
+                        active={route === 'notifications'}
+                        icon="ios-mail" onPress={() => s('notifications')}
+                        badge={bannerCount}>
+                        {I18n.t('ANNOUNCEMENTS')}
+                    </MenuItem>
+                    <MenuItem
+                        icon="ios-paper"
+                        active={route === 'news'}
+                        onPress={() => s('news')}>
+                        {I18n.t('NEWS')}
+                    </MenuItem>
+                </MenuSection>
+                <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
+                    {importantInformationItems}
+                </MenuSection>
+                <MenuSection title={I18n.t("CHANGE_LOCATION") }>
+                    {nearbyCitiesItems}
+                </MenuSection>
+                <MenuSection>
+                    <MenuItem
+                        icon="fa-gear"
+                        active={route === 'settings'}
+                        onPress={() => s('settings') }
+                    >
+                        {I18n.t('SETTINGS') }
+                    </MenuItem>
+                    {aboutUs &&
+                    <MenuItem
+                        icon="fa-question"
+                        active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
+                        onPress={() => this._defaultOrFirst(aboutUs, true)}
+                    >
+                        {I18n.t('ABOUT') }
+                    </MenuItem>
+                    }
+                    <MenuItem
+                        icon="fa-comment"
+                        onPress={() => Linking.openURL(feedbackUrl) }>
+                        {I18n.t('FEEDBACK') }
+                    </MenuItem>
 
-                <MenuItem
-                    icon="fa-facebook-square"
-                    onPress={() => Linking.openURL(LIKE_PATH) }>
-                    {I18n.t('LIKE_US') }
-                </MenuItem>
+                    <MenuItem
+                        icon="fa-facebook-square"
+                        onPress={() => Linking.openURL(LIKE_PATH) }>
+                        {I18n.t('LIKE_US') }
+                    </MenuItem>
 
-            </MenuSection>
-            <View style={{paddingBottom: 15}}>
-            </View>
-        </ScrollView>;
+                </MenuSection>
+                <View style={{paddingBottom: 15}}>
+                </View>
+            </ScrollView>)
     }
 }
 
@@ -285,7 +286,8 @@ const lightNavigationStyles = StyleSheet.create({
         marginTop: 40,
     },
     logoContainer: {
-        flex: 1,
+        flexGrow: 1,
+        height: 70,
         flexDirection: 'row',
         paddingHorizontal: 20
     },
@@ -305,7 +307,6 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginBottom: 20,
         paddingHorizontal: 20
     },
     cityText: {

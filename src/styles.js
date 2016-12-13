@@ -65,13 +65,6 @@ const styles = StyleSheet.create({
 
     // list items
 
-    listItemContainer: {
-        flex: 1,
-        paddingTop: 5,
-        paddingBottom: 5,
-        borderBottomWidth: 1,
-        height: 50
-    },
     listItemIconContainer: {
         width: 80,
         height: 80,
@@ -162,7 +155,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse'
     },
     container: {
-        flex: 1,
+        flexGrow: 1,
         flexDirection: 'column'
     },
     alignCenter: {

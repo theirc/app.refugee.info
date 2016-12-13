@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    ScrollView,
     TouchableHighlight,
     StyleSheet,
     Text,
@@ -11,7 +10,6 @@ import {
     TextInput,
     Modal,
     Platform,
-    AsyncStorage,
     Image,
     Dimensions
 } from 'react-native';
@@ -37,7 +35,7 @@ import styles, {
 } from '../styles';
 import {WEB_PATH} from '../constants'
 
-var screen = Dimensions.get('window');
+let screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -680,7 +678,6 @@ export class ServiceDetails extends Component {
                 </View>}
 
                 {openingHoursView}
-                {loaded &&
                 <View style={styles.detailsContainer}>
                     <Button
                         color="green"
@@ -705,7 +702,6 @@ export class ServiceDetails extends Component {
                         textStyle={{fontSize: 15}}
                     />}
                 </View>
-                }
             </ParallaxView>
         )
     }

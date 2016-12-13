@@ -26,7 +26,6 @@ class MenuItem extends Component {
         direction: PropTypes.oneOf(['rtl', 'ltr']),
         onPress: PropTypes.func,
         onLongPress: PropTypes.func,
-        ...Text.propTypes
     };
 
     constructor(props) {
@@ -109,7 +108,7 @@ class MenuItem extends Component {
                 onPress={() => press()}
                 onLongPress={() => longPress()}
                 style={{
-                    flex: 1,
+                    flexGrow: 1,
                     flexDirection: 'column'
                 }}
             >
@@ -149,7 +148,6 @@ class MenuSection extends Component {
         title: PropTypes.string,
         direction: PropTypes.oneOf(['rtl', 'ltr']),
         styles: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-        ...Text.propTypes
     };
 
     constructor(props) {
@@ -210,7 +208,7 @@ const sharedStyles = {
         paddingBottom: 30
     },
     item: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'center',
         justifyContent: 'center',
         height: 50,

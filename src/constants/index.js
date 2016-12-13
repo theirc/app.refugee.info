@@ -1,9 +1,9 @@
 export {default as I18n} from './Messages';
 export const CSS = '';
-export const API_PATH = 'http://api-staging.refugee.info';
-export const WEB_PATH = 'http://dev.refugee.info';
+export const API_PATH = 'http://api-staging.refugee.info/v1';
+export const WEB_PATH = 'http://refugee.info';
 export const LIKE_PATH = 'https://www.facebook.com/refugee.info/';
-export const MAPBOX_TOKEN = '';
+export const MAPBOX_TOKEN = 'pk.eyJ1IjoicmV5cm9kcmlndWVzIiwiYSI6ImNpcWNydXlxYzAyM3ZmdG5lZTBldG1keDYifQ.qJw9kvEDi8Xyri9D7u1JZA';
 export const FEEDBACK_MAP = {
     ar: 'https://docs.google.com/forms/d/16KxtpLbQbdj7ohkpAxws65aZuWfeQa8jjgCBvcptfkk/viewform?entry.1237329743=',
     en: 'https://docs.google.com/forms/d/1gc-hN_p5pqC3DoPXxTfCAmlIiCEd1mOIdQMWeAz2n_U/viewform?entry.1237329743=',

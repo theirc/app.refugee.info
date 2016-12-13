@@ -46,7 +46,6 @@ export class CityChoice extends Component {
             this.setState({offline: true});
             return;
         }
-
         this.setState({
             cities,
             loaded: true,
@@ -96,7 +95,7 @@ export class CityChoice extends Component {
                     header={I18n.t('SELECT_LOCATION') }
                     onPress={(rowData) => {
                         this._onPress(rowData)
-                    } }
+                    }}
                     rows={this.state.cities}
                 />
             </View>
