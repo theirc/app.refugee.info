@@ -30,8 +30,6 @@ export class ListItem extends Component {
         iconSize: PropTypes.number,
         iconColor: PropTypes.string,
         fontSize: PropTypes.number,
-        image: PropTypes.number,
-        centered: PropTypes.bool
     };
 
     render() {
@@ -47,7 +45,7 @@ export class ListItem extends Component {
                 ]}
                 />) : (iconName) ? (
                     <Icon
-                        name={iconName || defaultIcon }
+                        name={iconName}
                         style={[
                             componentStyles.listItemIcon,
                             { fontSize: iconSize || 24 },
@@ -75,8 +73,10 @@ export class ListItem extends Component {
             return (
                 <TouchableHighlight
                     onPress={onPress}
-                    underlayColor={getUnderlayColor(theme) }
-                    >
+                    underlayColor={getUnderlayColor(theme)}
+                    style={[componentStyles.listItemContainer]}
+
+                >
                     <View
                         style={[
                             styles.listItemContainer,
@@ -102,7 +102,6 @@ export class ListItem extends Component {
             );
         }
         else return (
-            <View>
                 <TouchableHighlight
                     onPress={onPress}
                     underlayColor={getUnderlayColor(theme) }
@@ -142,7 +141,6 @@ export class ListItem extends Component {
                         </View>
                     </View>
                 </TouchableHighlight>
-            </View>
         )
     }
 };
@@ -157,8 +155,9 @@ const mapStateToProps = (state) => {
 
 const componentStyles = StyleSheet.create({
     listItemContainer: {
-        flex: 1,
-        height: 50
+        flexGrow: 1,
+        flexBasis: 50,
+        backgroundColor: 'blue'
     },
     listItemTextContainer: {
         flex: 1,

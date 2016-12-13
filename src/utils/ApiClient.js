@@ -50,39 +50,39 @@ export default class ApiClient {
     }
 
     getRootLocations() {
-        return this.fetch('/v1/region/?format=json&level=1');
+        return this.fetch('/region/?format=json&level=1');
     }
 
     getAllChildrenOf(parentId, raise_exception = false) {
-        return this.fetch(`/v1/region/?format=json&is_child_of=${parentId}`, raise_exception);
+        return this.fetch(`/region/?format=json&is_child_of=${parentId}`, raise_exception);
     }
 
     getLocations(parentId, raise_exception = false) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}`, raise_exception);
+        return this.fetch(`/region/?format=json&parent=${parentId}`, raise_exception);
     }
 
     getLocation(id, raise_exception = false) {
-        return this.fetch(`/v1/region/${id}/?format=json&`, raise_exception);
+        return this.fetch(`/region/${id}/?format=json&`, raise_exception);
     }
 
     getRegions(parentId) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=2`);
+        return this.fetch(`/region/?format=json&parent=${parentId}&level=2`);
     }
 
     getCities(parentId) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=3`);
+        return this.fetch(`/region/?format=json&parent=${parentId}&level=3`);
     }
 
     getLocationByPosition(longitude, latitude, level) {
-        return this.fetch(`/v1/region/?format=json&point=${latitude},${longitude}&level=${level}`);
+        return this.fetch(`/region/?format=json&point=${latitude},${longitude}&level=${level}`);
     }
 
     getServiceTypes(raise_exception = false) {
-        return this.fetch('/v1/servicetypes/?format=json', raise_exception);
+        return this.fetch('/servicetypes/?format=json', raise_exception);
     }
 
     getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raise_exception = false) {
-        let url = `/v1/services/search/?format=json&geographic_region=${locationSlug}`;
+        let url = `/services/search/?format=json&geographic_region=${locationSlug}`;
 
         if (coords.hasOwnProperty('latitude')) {
             const {latitude, longitude} = coords;
@@ -104,22 +104,22 @@ export default class ApiClient {
             return res.results;
         };
         if (latitude && longitude) {
-            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}
+            return this.fetch(`/services/search/?format=json&geographic_region=${locationSlug}&${paging}
         &closest=${latitude},${longitude}`, raise_exception).then(map);
         }
-        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then(map);
+        else return this.fetch(`/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then(map);
     }
 
     getFeedbacks(service, raise_exception = false) {
-        return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
+        return this.fetch(`/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
     }
 
     getService(id, raise_exception = false) {
-        return this.fetch(`/v1/services/search/?format=json&id=${id}`, raise_exception);
+        return this.fetch(`/services/search/?format=json&id=${id}`, raise_exception);
     }
 
     postFeedback(service, name, rating, comment) {
-        return this.post('/v1/feedback/?format=json', {
+        return this.post('/feedback/?format=json', {
             name,
             phone_number: '',
             nationality: null,
@@ -149,10 +149,10 @@ export default class ApiClient {
 
     getRating(region, index, content_slug) {
         let identifier = content_slug ? `&content_slug=${content_slug}` : `&index=${index}`;
-        return this.fetch(`/v1/region/get_rate/?region_slug=${region.slug}${identifier}`);
+        return this.fetch(`/region/get_rate/?region_slug=${region.slug}${identifier}`);
     }
     setRating(region, index, content_slug, rating) {
-        return this.post(`/v1/region/add_rate/?format=json`, {
+        return this.post(`/region/add_rate/?format=json`, {
             region_slug: region.slug,
             index: index,
             info_slug: content_slug,
@@ -160,7 +160,7 @@ export default class ApiClient {
         });
     }
     removeRating(region, index, content_slug, rating) {
-        return this.post(`/v1/region/remove_rate/?format=json`, {
+        return this.post(`/region/remove_rate/?format=json`, {
             region_slug: region.slug,
             index: index,
             info_slug: content_slug,

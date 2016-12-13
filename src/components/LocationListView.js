@@ -3,7 +3,7 @@ import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react
 import {I18n} from '../constants';
 import styles, {getUnderlayColor, getFontFamily, getRowOrdering} from '../styles';
 import {connect} from 'react-redux';
-import {ListItem} from '../components';
+import {LocationListItem} from '../components';
 
 export class LocationListView extends Component {
 
@@ -57,11 +57,10 @@ export class LocationListView extends Component {
 
     renderRow(rowData) {
         return (
-            <ListItem
+            <LocationListItem
                 onPress={() => {this.props.onPress(rowData)}}
                 image={(this.props.image) ? this.props.image(rowData.code) : null}
                 text={rowData.pageTitle || rowData.metadata.page_title || rowData.name}
-                centered={true}
             />
         )
     }

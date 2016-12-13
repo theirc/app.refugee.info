@@ -1,6 +1,5 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    ScrollView,
     TouchableHighlight,
     StyleSheet,
     Text,
@@ -11,7 +10,6 @@ import {
     TextInput,
     Modal,
     Platform,
-    AsyncStorage,
     Image,
     Dimensions
 } from 'react-native';
@@ -42,7 +40,7 @@ import {checkPlayServices} from '../utils/GooglePlayServices';
 import Mapbox, { MapView as MapboxMapView } from 'react-native-mapbox-gl';
 Mapbox.setAccessToken(MAPBOX_TOKEN);
 
-var screen = Dimensions.get('window');
+let screen = Dimensions.get('window');
 
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -148,13 +146,15 @@ export class ServiceDetails extends Component {
     }
 
     getDirections(lat, long) {
-        requestAnimationFrame(() => {
-            let location = `${lat},${long}`;
-            if (Platform.OS === 'ios') {
-                return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
-            }
-            return Linking.openURL(`geo:${location}?q=${location}`);
-        })
+        if (this.state.loaded) {
+            requestAnimationFrame(() => {
+                let location = `${lat},${long}`;
+                if (Platform.OS === 'ios') {
+                    return Linking.openURL(`http://maps.apple.com/?daddr=${lat},${long}&dirflg=w&t=m`)
+                }
+                return Linking.openURL(`geo:${location}?q=${location}`);
+            })
+        }
     }
 
     call() {
@@ -165,21 +165,23 @@ export class ServiceDetails extends Component {
     }
 
     onShareClick() {
-        const {provider, service} = this.state;
-        const {region} = this.props;
-        let address = service.address || provider.address;
-        let phoneNumber = service.phone_number || provider.phone_number || '';
-        let text = `${service.name}\n${provider.name}\n${address}\n${phoneNumber}`;
-        requestAnimationFrame(() => {
-            Share.open({
-                message: text,
-                url: `${WEB_PATH}/${region.slug}/services/${service.id}`,
-                title: service.name,
-                subject: service.name
-            }).catch(
-                error => console.log(error)
+        if (this.state.loaded) {
+            const {provider, service} = this.state;
+            const {region} = this.props;
+            let address = service.address || provider.address;
+            let phoneNumber = service.phone_number || provider.phone_number || '';
+            let text = `${service.name}\n${provider.name}\n${address}\n${phoneNumber}`;
+            requestAnimationFrame(() => {
+                Share.open({
+                    message: text,
+                    url: `${WEB_PATH}/${region.slug}/services/${service.id}`,
+                    title: service.name,
+                    subject: service.name
+                }).catch(
+                    error => console.log(error)
                 );
-        })
+            })
+        }
     }
 
     postComment() {
@@ -743,7 +745,6 @@ export class ServiceDetails extends Component {
                     </View>}
 
                 {openingHoursView}
-                { loaded &&
                 <View style={styles.detailsContainer}>
                     <Button
                         color="green"
@@ -767,7 +768,7 @@ export class ServiceDetails extends Component {
                             buttonStyle={{ marginBottom: 10 }}
                             textStyle={{ fontSize: 15 }}
                             />}
-                </View>}
+                </View>
             </ParallaxView>
         )
     }

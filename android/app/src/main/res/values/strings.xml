@@ -1,11 +1,3 @@
 <resources>
-
-
-
-
-
-
-
-
-    <string name="app_name">Refugee Info</string>
+    <string name="app_name">RefugeeInfoApp</string>
 </resources>

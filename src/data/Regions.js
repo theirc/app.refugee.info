@@ -14,11 +14,8 @@ import I18n from '../constants/Messages';
 import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
 import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
-import store from '../store';
-import {Icon} from '../components';
 
-var gju = require('geojson-utils');
+import {gju} from 'geojson-utils';
 
 export default class Regions extends Component {
     constructor(props, context = null) {
@@ -66,8 +63,8 @@ export default class Regions extends Component {
                 if (!a.centroid || !b.centroid) {
                     return 0;
                 }
-                var x = gju.pointDistance(region, a.centroid);
-                var y = gju.pointDistance(region, b.centroid);
+                let x = gju.pointDistance(region, a.centroid);
+                let y = gju.pointDistance(region, b.centroid);
 
                 return ((x < y) ? -1 : ((x > y) ? 1 : 0));
             });

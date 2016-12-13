@@ -1,5 +1,6 @@
 export {default as OfflineView} from './OfflineView';
 export {default as MapButton} from './MapButton';
+export {default as LocationListItem} from './LocationListItem';
 export {default as LocationListView} from './LocationListView';
 export {default as Toolbar} from './Toolbar';
 export {default as DirectionalText} from './DirectionalText';
