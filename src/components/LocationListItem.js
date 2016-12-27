@@ -1,74 +1,56 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    Text,
     TouchableHighlight,
     StyleSheet,
-    Image,
-    Platform
+    Image
 } from 'react-native';
-import {connect} from 'react-redux';
-import styles, {
-    getFontFamily,
-    getUnderlayColor,
-    getRowOrdering,
-    getAlignItems,
-    getTextColor,
-    getContainerColor,
-    getBottomDividerColor,
-    getDividerColor,
-    themes
-} from '../styles';
-import Icon from './Icon';
+import styles from '../styles';
+import {DirectionalText} from '../components';
 
 export class LocationListItem extends Component {
 
     static propTypes = {
         image: PropTypes.number,
         onPress: PropTypes.func,
-        text: PropTypes.string,
+        text: PropTypes.string
     };
 
     render() {
-        const {onPress, text, language, direction, image} = this.props;
+        const {onPress, text, image} = this.props;
 
         const imageElement = (image &&
         <Image
             source={image}
-            style={[
-                (direction == 'rtl')
-                    ? componentStyles.listItemImageAbsolute
-                    : componentStyles.listItemImageAbsolute
-            ]}
+            style={componentStyles.listItemImageAbsolute}
         />);
 
         const imageDivider = (image && (
             <View
                 style={[
                     componentStyles.dividerAbsolute,
-                    getDividerColor('light')
+                    styles.dividerLight
                 ]}
             />));
 
         return (
             <TouchableHighlight
                 onPress={onPress}
-                underlayColor={getUnderlayColor('light')}
-                style={[componentStyles.listItemContainer]}
+                style={componentStyles.listItemContainer}
+                underlayColor="rgba(0, 0, 0, 0.2)"
             >
-                <View style={[getRowOrdering(direction), getContainerColor('light')]}>
+                <View style={styles.containerLight}>
                     { imageElement }
                     { imageDivider }
                     <View style={[componentStyles.listItemTextContainer, styles.bottomDividerLight]}>
-                        <Text
+                        <DirectionalText
                             style={[
                                 componentStyles.listItemText,
-                                getFontFamily(language),
-                                getTextColor('light')
+                                styles.textLight
                             ]}
                         >
                             {text}
-                        </Text>
+                        </DirectionalText>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -76,26 +58,19 @@ export class LocationListItem extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        direction: state.direction,
-        language: state.language
-    };
-};
 
 const componentStyles = StyleSheet.create({
     listItemContainer: {
         flexGrow: 1,
-        flexBasis: 50,
-        height: 50
+        height: 50,
+        flexDirection: 'row'
     },
     listItemTextContainer: {
-        flex: 1,
+        flexGrow: 1,
         height: 50,
-        justifyContent: 'center',
+        flexDirection: 'row',
         alignItems: 'center',
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingHorizontal: 20,
         borderBottomWidth: 1
     },
     listItemText: {
@@ -118,4 +93,4 @@ const componentStyles = StyleSheet.create({
 
 });
 
-export default connect(mapStateToProps)(LocationListItem);
+export default LocationListItem;

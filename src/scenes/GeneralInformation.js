@@ -132,7 +132,7 @@ export class GeneralInformation extends Component {
         let slug = rowData.slug ? `info/${rowData.slug}` : rowData.anchor_name || `info${rowData.index}`;
         return (
             <ListItem
-                icon={rowData.icon || '-'}
+                icon={rowData.icon}
                 onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index, rowData.slug)}
                 text={rowData.title}
             />

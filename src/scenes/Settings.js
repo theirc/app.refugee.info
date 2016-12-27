@@ -173,7 +173,6 @@ class Settings extends Component {
                 <ListItem
                     text={I18n.t('ARABIC')}
                     onPress={this.updateSettings.bind(this, 'ar')}
-
                 />
                 <ListItem
                     text={I18n.t('FARSI')}
