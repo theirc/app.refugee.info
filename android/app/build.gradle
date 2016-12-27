@@ -75,7 +75,7 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 def enableSeparateBuildPerCPUArchitecture = false
 def enableSeparateBuildScreenDensity = false
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion 23
