@@ -30,21 +30,17 @@ export class Notifications extends Component {
     render() {
         const {language, theme, region} = this.props;
         if (!region) {
-            return <View />
+            return <View />;
         }
-        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-        let webViewStyle = {backgroundColor: backgroundColor, opacity: 1};
-        let html = region.banners.map((b) => `<div class="banner">${b.html}</div>`).join('<br />');
+        let html = region.banners.map((banner) => `<div class="banner">${banner.html}</div>`).join('<br />');
         let source = {
             html: wrapHtmlContent(html, language, '', theme)
         };
-        return <View style={styles.container}>
-            <WebView
-                ref={(v) => this.webView = v}
-                style={webViewStyle}
-                source={source}
-            />
-        </View>;
+        return (
+            <View style={styles.container}>
+                <WebView source={source} />
+            </View>
+        );
     }
 }
 

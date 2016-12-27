@@ -62,14 +62,14 @@ export class LocationListItem extends Component {
 const componentStyles = StyleSheet.create({
     listItemContainer: {
         flexGrow: 1,
-        height: 50,
-        flexDirection: 'row'
+        height: 50
     },
     listItemTextContainer: {
         flexGrow: 1,
         height: 50,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
         paddingHorizontal: 20,
         borderBottomWidth: 1
     },

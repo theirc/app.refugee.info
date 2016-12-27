@@ -8,8 +8,7 @@ import {
     View,
     ScrollView,
     StyleSheet,
-    Linking,
-    Platform
+    Linking
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -41,65 +40,40 @@ class Navigation extends Component {
         this.drawerCommons = new DrawerCommons(this);
     }
 
-    _getImportantInformation() {
-        const region = this._getRegion();
-        const {route} = this.props;
+    getImportantInformation() {
+        const {route, region} = this.props;
         const {navigator} = this.context;
-        if (!region || !region.important_information) {
+        if (!region || !region.important) {
             return <View />;
         }
-
-        let importantInformation = region.important_information;
-        importantInformation = importantInformation.filter((i) => !i.hidden);
-
-        return importantInformation.map((i, index) => {
+        return region.important.map((item, index) => {
             return (
                 <MenuItem
-                    icon={i.icon}
+                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
+                    icon={item.icon}
                     key={index}
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == i.slug}
-                    onPress={() => this._defaultOrFirst(i, true)}
+                    onPress={() => this._defaultOrFirst(item, true)}
                 >
-                    {i.pageTitle}
+                    {item.title}
                 </MenuItem>
             );
         });
     }
 
-    _getRegion() {
-        const {region} = this.props;
-
-        if (!region) {
-            return null;
-        }
-
-        if (!region.important_information) {
-            return region
-        }
-
-        return {
-            important_information: region.important_information.map((i) => {
-                if (i && i.metadata) {
-                    i.pageTitle = (i.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-                }
-                i.type = 'info';
-                return i;
-            }),
-            ...region
-        }
-    }
-
-    _sendEmail() {
-        const destination = 'mailto:info@refugee.info';
-
-        if (Platform.OS == 'android') {
-            let email = destination.split('mailto:')[1];
-            Mailer.mail({
-                recipients: [email],
-            }, (error, event) => {
+    getNearbyCities() {
+        const {locations, region} = this.props;
+        if (locations) {
+            return locations.map((i, index) => {
+                return (
+                    <MenuItem
+                        active={i.id == region.id}
+                        key={index}
+                        onPress={() => this.selectCity(i)}
+                    >
+                        {i.pageTitle || i.name}
+                    </MenuItem>
+                );
             });
-        } else {
-            Linking.openURL(destination);
         }
     }
 
@@ -110,7 +84,7 @@ class Navigation extends Component {
                 slug: page.slug || `info${page.index}`,
                 section: page.content[0].section,
                 sectionTitle: page.pageTitle,
-                showTitle: showTitle,
+                showTitle,
                 index: page.content[0].index,
                 content_slug: page.slug
             });
@@ -132,11 +106,11 @@ class Navigation extends Component {
         dispatch({type: 'REGION_CHANGED', payload: city});
         dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
 
-        return this._defaultOrFirst(city)
+        return this._defaultOrFirst(city);
     }
 
     render() {
-        const {theme, route, direction, language, locations, region} = this.props;
+        const {theme, route, direction, language, region} = this.props;
         const {navigator} = this.context;
 
         if (!this.props.region || !this.props.country) {
@@ -145,19 +119,9 @@ class Navigation extends Component {
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
         const aboutUs = region.important_information && region.important_information.find(a => a.slug === 'about-us');
 
-        let importantInformationItems = this._getImportantInformation();
-        let nearbyCitiesItems = [];
-        if (locations) {
-            nearbyCitiesItems = locations.map((i, index) => {
-                return <MenuItem
-                    active={i.id == region.id}
-                    key={index}
-                    onPress={() => this.selectCity(i)}
-                >
-                    {i.pageTitle || i.name}
-                </MenuItem>;
-            });
-        }
+        let importantInformationItems = this.getImportantInformation();
+        let nearbyCitiesItems = this.getNearbyCities();
+
         let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
         let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
 
@@ -168,7 +132,7 @@ class Navigation extends Component {
         return (
             <ScrollView style={styles.view}>
                 <View style={[styles.logoContainer, getRowOrdering(direction)]}>
-                    <Image source={logo} style={ styles.logo } />
+                    <Image source={logo} style={ styles.logo }/>
                 </View>
                 <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
                     <Icon
@@ -261,20 +225,20 @@ class Navigation extends Component {
                 </MenuSection>
                 <View style={{paddingBottom: 15}}>
                 </View>
-            </ScrollView>)
+            </ScrollView>);
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        locations: state.locations,
         route: state.navigation,
         region: state.region,
         country: state.country,
         language: state.language,
         direction: state.direction,
         theme: state.theme,
-        drawerOpen: state.drawerOpen,
-        countries: state.countries
+        drawerOpen: state.drawerOpen
     };
 };
 

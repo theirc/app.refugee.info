@@ -1,5 +1,3 @@
-import React from 'react';
-import {AsyncStorage} from 'react-native';
 import SQLite from 'react-native-sqlite-storage'
 import store from '../store';
 
@@ -29,8 +27,8 @@ function queryLocations(tx) {
 
 
 export function fetchLocationsFromStorage() {
-    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
-        db.transaction(queryLocations)
+    SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
+        db.transaction(queryLocations);
     }).catch((error) => {
         console.log(error);
     });
@@ -38,13 +36,13 @@ export function fetchLocationsFromStorage() {
 
 
 export function updateLocationsIntoStorage(locations) {
-    SQLite.openDatabase({name: "sqllite.db", location: 'default'}).then((db) => {
+    SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
         db.transaction((tx) => {
             tx.executeSql('DELETE FROM locations');
             locations.forEach((location) => {
                 tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)])
             });
-        })
+        });
     }).catch((error) => {
         console.log(error);
     });
