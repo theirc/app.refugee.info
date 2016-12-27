@@ -24,51 +24,50 @@ import Icon from './Icon';
 export class ListItem extends Component {
 
     static propTypes = {
-        onPress: PropTypes.func,
-        text: PropTypes.string,
-        icon: PropTypes.string,
-        iconSize: PropTypes.number,
-        iconColor: PropTypes.string,
         fontSize: PropTypes.number,
+        icon: PropTypes.string,
+        iconColor: PropTypes.string,
+        iconSize: PropTypes.number,
+        onPress: PropTypes.func,
+        text: PropTypes.string
     };
 
     render() {
         const {theme, onPress, text, language, direction, iconColor, fontSize, image, centered, iconSize} = this.props;
         let iconName = (this.props.icon || '').trim();
-
         const button_icon = (image) ? (
-            <Image
-                source={image}
-                style={[
-                    componentStyles.listItemImageInline,
-                    { width: iconSize || 24, height: iconSize || 24 }
-                ]}
+                <Image
+                    source={image}
+                    style={[
+                        componentStyles.listItemImageInline,
+                        {width: iconSize || 24, height: iconSize || 24}
+                    ]}
                 />) : (iconName) ? (
                     <Icon
                         name={iconName}
                         style={[
                             componentStyles.listItemIcon,
-                            { fontSize: iconSize || 24 },
-                            iconColor && { color: iconColor }
+                            {fontSize: iconSize || 24},
+                            iconColor && {color: iconColor}
                         ]}
-                        />) : null;
+                    />) : null;
         if (centered) {
             const imageElement = (image &&
-                <Image
-                    source={image}
-                    style={[
-                        (direction == 'rtl')
-                            ? componentStyles.listItemImageAbsoluteRTL
-                            : componentStyles.listItemImageAbsolute
-                    ]}
-                    />);
+            <Image
+                source={image}
+                style={[
+                    (direction == 'rtl')
+                        ? componentStyles.listItemImageAbsoluteRTL
+                        : componentStyles.listItemImageAbsolute
+                ]}
+            />);
             const imageDivider = (image && (
                 <View
                     style={[
                         componentStyles.dividerAbsolute,
                         getDividerColor(theme)
                     ]}
-                    />));
+                />));
 
             return (
                 <TouchableHighlight
@@ -83,7 +82,7 @@ export class ListItem extends Component {
                             getRowOrdering(direction),
                             getContainerColor(theme)
                         ]}
-                        >
+                    >
                         { imageElement }
                         { imageDivider }
                         <View style={componentStyles.listItemTextContainer}>
@@ -93,7 +92,7 @@ export class ListItem extends Component {
                                     getFontFamily(language),
                                     getTextColor(theme)
                                 ]}
-                                >
+                            >
                                 {text}
                             </Text>
                         </View>
@@ -102,48 +101,49 @@ export class ListItem extends Component {
             );
         }
         else return (
-                <TouchableHighlight
-                    onPress={onPress}
-                    underlayColor={getUnderlayColor(theme) }
-                    >
-                    <View
+            <TouchableHighlight
+                onPress={onPress}
+                underlayColor={getUnderlayColor(theme) }
+            >
+                <View
+                    style={[
+                        componentStyles.listItemContainer,
+                        getRowOrdering(direction),
+                        getContainerColor(theme)
+                    ]}
+                >
+                    {button_icon && (<View
                         style={[
-                            componentStyles.listItemContainer,
-                            getRowOrdering(direction),
-                            getContainerColor(theme)
+                            componentStyles.listItemIconContainer
                         ]}
-                        >
-                        {button_icon && (<View
-                            style={[
-                                componentStyles.listItemIconContainer
-                            ]}
-                            >
-                            {button_icon}
-                        </View>) }
-                        <View style={[
-                            componentStyles.dividerInline,
-                            getDividerColor(theme)
-                        ]}/>
-                        <View style={[
-                            componentStyles.listItemTextContainer,
-                            getAlignItems(direction),
-                            getBottomDividerColor(theme),
-                            { borderBottomWidth: 1 }
+                    >
+                        {button_icon}
+                    </View>) }
+                    <View style={[
+                        componentStyles.dividerInline,
+                        getDividerColor(theme)
+                    ]}/>
+                    <View style={[
+                        componentStyles.listItemTextContainer,
+                        getAlignItems(direction),
+                        getBottomDividerColor(theme),
+                        {borderBottomWidth: 1}
+                    ]}>
+                        <Text style={[
+                            componentStyles.listItemText,
+                            getTextColor(theme),
+                            getFontFamily(language),
+                            {fontSize} && {fontSize: fontSize}
                         ]}>
-                            <Text style={[
-                                componentStyles.listItemText,
-                                getTextColor(theme),
-                                getFontFamily(language),
-                                { fontSize } && { fontSize: fontSize }
-                            ]}>
-                                {text}
-                            </Text>
-                        </View>
+                            {text}
+                        </Text>
                     </View>
-                </TouchableHighlight>
+                </View>
+            </TouchableHighlight>
         )
     }
-};
+}
+;
 
 const mapStateToProps = (state) => {
     return {

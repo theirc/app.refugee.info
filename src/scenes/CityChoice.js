@@ -1,16 +1,15 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView, OfflineView} from '../components';
 import I18n from '../constants/Messages';
 import styles from '../styles';
-import store from '../store';
 import {
     updateCountryIntoStorage,
     updateRegionIntoStorage,
     updateLocationsIntoStorage
 } from '../actions';
-import {Regions} from '../data'
+import {Regions} from '../data';
 
 export class CityChoice extends Component {
 
@@ -24,28 +23,30 @@ export class CityChoice extends Component {
 
     constructor(props) {
         super(props);
-        this.state = Object.assign({}, store.getState(), {
+        this.regionData = new Regions(props);
+        this.state = {
             cities: [],
             loaded: false,
             offline: false
-        });
+        };
     }
 
     async componentDidMount() {
-        const regionData = new Regions(this.props);
-        let cities;
-        try {
-            cities = (await regionData.listChildren(this.props.country, true)).filter((c) => c.level != 2);
 
-            cities.forEach((c) => {
-                if (c && c.metadata) {
-                    c.pageTitle = (c.metadata.page_title || '').replace('\u060c', ',').split(',')[0]
-                }
-            });
+        let cities = [];
+        try {
+            cities = await this.regionData.listChildren(this.props.country, true);
         } catch (e) {
             this.setState({offline: true});
-            return;
         }
+        cities.forEach((city) => {
+            if (city && city.metadata) {
+                city.pageTitle = (city.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
+            }
+            city.onPress = this.onPress.bind(this, city);
+            city.title = city.pageTitle || (city.metadata && city.metadata.page_title) || city.name;
+            city.image = null;
+        });
         this.setState({
             cities,
             loaded: true,
@@ -53,49 +54,42 @@ export class CityChoice extends Component {
         });
     }
 
-    async _onPress(city) {
-        const {dispatch} = this.props;
-
-        city.detected = false;
-        city.coords = {};
+    async onPress(city) {
+        const {dispatch, country} = this.props;
+        let regionDetails = await this.regionData.getRegionDetails(city.slug);
+        this.setState({region: regionDetails});
 
         requestAnimationFrame(() => {
             Promise.all([
-                dispatch(updateCountryIntoStorage(city.country)),
-                dispatch(updateRegionIntoStorage(city)),
+                dispatch(updateCountryIntoStorage(country)),
+                dispatch(updateRegionIntoStorage(regionDetails)),
                 dispatch(updateLocationsIntoStorage(this.state.cities)),
-                dispatch({type: 'REGION_CHANGED', payload: city}),
-                dispatch({type: 'COUNTRY_CHANGED', payload: city.country}),
+                dispatch({type: 'REGION_CHANGED', payload: regionDetails}),
+                dispatch({type: 'COUNTRY_CHANGED', payload: country}),
                 dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
             ]);
-            if (city.content && city.content.length == 1) {
-                return this.context.navigator.to('infoDetails', null, {
-                    section: city.content[0].section,
-                    sectionTitle: city.pageTitle
-                });
-            } else {
-                return this.context.navigator.to('info', null, null, store.getState());
-            }
-        })
+            // if (city.content && city.content.length == 1) {
+            //     return this.context.navigator.to('infoDetails', null, {
+            //         section: city.content[0].section,
+            //         sectionTitle: city.pageTitle
+            //     });
+            return this.context.navigator.to('info');
+        });
     }
 
     render() {
         if (this.state.offline) {
             return (
                 <OfflineView
-                    onRefresh={this.componentDidMount.bind(this)}
                     offline={this.state.offline}
+                    onRefresh={this.componentDidMount.bind(this)}
                 />
-            )
+            );
         }
         return (
             <View style={styles.container}>
                 <LocationListView
-                    loaded={this.state.loaded}
-                    header={I18n.t('SELECT_LOCATION') }
-                    onPress={(rowData) => {
-                        this._onPress(rowData)
-                    }}
+                    header={I18n.t('SELECT_LOCATION')}
                     rows={this.state.cities}
                 />
             </View>

@@ -13,7 +13,7 @@
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
 
-    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="22" />
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="25" />
 
     <application
             android:name=".MainApplication"

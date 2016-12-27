@@ -1,16 +1,11 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, View, StyleSheet, Image, Alert} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView, OfflineView} from '../components';
 import I18n from '../constants/Messages';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
-import store from '../store';
-import {updateRegionIntoStorage} from '../actions/region';
-import {updateCountryIntoStorage} from '../actions/country';
-
-import {Regions} from '../data'
-
+import {Regions} from '../data';
 
 export class CountryChoice extends Component {
 
@@ -20,132 +15,38 @@ export class CountryChoice extends Component {
 
     constructor(props) {
         super(props);
-
-        this.state = Object.assign({}, store.getState(), {
-            locations: [],
+        this.state = {
+            countries: [],
             loaded: false,
             offline: false
-        });
+        };
     }
 
     async componentDidMount() {
-        const {dispatch} = this.props;
-
+        const {navigator} = this.context;
         const regionData = new Regions(this.props);
-        this.regionData = regionData;
-        let locations;
+        let countries = [];
         try {
-            locations = await regionData.listCountries(true);
-            locations = locations.filter(x=> !x.hidden);
+            countries = await regionData.listCountries();
+            countries = countries.filter(x => !x.hidden);
         } catch (e) {
             this.setState({offline: true});
-            return;
         }
-
-        locations.forEach((c) => {
-            if (c && c.metadata) {
-                c.pageTitle = (c.metadata.page_title || '')
-                    .replace('\u060c', ',').split(',')[0];
+        countries.forEach((country) => {
+            if (country && country.metadata) {
+                country.pageTitle = (country.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
             }
+            country.onPress = () => {
+                requestAnimationFrame(() => {navigator.forward(null, null, {country})});
+            };
+            country.title = country.pageTitle || (country.metadata && country.metadata.page_title) || country.name;
+            country.image = getCountryFlag(country.code);
         });
 
         this.setState({
-            locations,
+            countries,
             loaded: true,
-            language: this.props.language,
             offline: false
-        });
-    }
-
-    async _getLocation(position, level) {
-        const location = await this.regionData.getLocationByPosition(position.coords.longitude, position.coords.latitude, level);
-        if (location.length > 0) {
-            const detectedLocation = location[0];
-            detectedLocation.detected = true;
-            detectedLocation.coords = position.coords;
-            return detectedLocation;
-        }
-    }
-
-    async _getCountryId(location) {
-        const parent = await this.regionData.getLocation(location.parent);
-        if (parent.parent) {
-            return await this.regionData.getLocation(parent.parent);
-        } else {
-            return parent;
-        }
-
-    }
-
-    async detectLocation() {
-        this.setState({
-            buttonDisabled: true
-        });
-        navigator.geolocation.getCurrentPosition(
-            async(position) => {
-                const {dispatch} = this.props;
-                let location = await this._getLocation(position, 3);
-                if (location) {
-                    location.country = await this._getCountryId(location);
-                    dispatch(updateCountryIntoStorage(location.country));
-                    dispatch(updateRegionIntoStorage(location));
-
-                    dispatch({type: 'REGION_CHANGED', payload: location});
-                    dispatch({type: 'COUNTRY_CHANGED', payload: location.country});
-                    Alert.alert(
-                        I18n.t('LOCATION_TITLE_SUCCESS'),
-                        `${I18n.t('LOCATION_SET_TO')} ${location.name}, ${location.country.name}.`,
-                        [
-                            {text: I18n.t('OK')}
-                        ]
-                    );
-                    if (location.content && location.content.length == 1) {
-                        this.context.navigator.to('infoDetails', null,
-                            {section: location.content[0].section, sectionTitle: location.pageTitle})
-                    } else {
-
-                        this.context.navigator.to('info');
-                    }
-                } else {
-                    location = await this._getLocation(position, 1);
-                    if (location) {
-                        Alert.alert(
-                            I18n.t('LOCATION_TITLE_SUCCESS'),
-                            `${I18n.t('LOCATION_SET_TO')} ${location.name}. ${I18n.t('LOCATION_PICK_CITY')}`,
-                            [
-                                {text: I18n.t('OK')}
-                            ]
-                        );
-                        this.context.navigator.forward(null, '', {countryId: location.id});
-                    } else {
-                        Alert.alert(
-                            I18n.t('LOCATION_TITLE_FAILED'),
-                            `${I18n.t('LOCATION_SET_FAILED')}`,
-                            [
-                                {text: I18n.t('OK')}
-                            ]
-                        );
-                        this._loadInitialState();
-                    }
-                }
-            },
-            (error) => {
-                Alert.alert(
-                    I18n.t('LOCATION_TITLE_FAILED'),
-                    `${I18n.t('LOCATION_SET_FAILED')}`,
-                    [
-                        {text: I18n.t('OK')}
-                    ]
-                );
-                this._loadInitialState();
-            }, {enableHighAccuracy: false, timeout: 5000, maximumAge: 1000}
-        );
-    }
-
-    onPress(rowData) {
-        const {navigator} = this.context;
-        requestAnimationFrame(() => {
-            navigator.forward(null, null, {countryId: rowData.id, country: rowData})
         });
     }
 
@@ -153,18 +54,16 @@ export class CountryChoice extends Component {
         if (this.state.offline) {
             return (
                 <OfflineView
-                    onRefresh={this.componentDidMount.bind(this)}
                     offline={this.state.offline}
+                    onRefresh={this.componentDidMount.bind(this)}
                 />
-            )
+            );
         }
         return (
             <View style={styles.container}>
                 <LocationListView
-                    header={I18n.t('SELECT_COUNTRY') }
-                    image={(countryISO) => getCountryFlag(countryISO) }
-                    onPress={(rowData) => { this.onPress(rowData); } }
-                    rows={this.state.locations}
+                    header={I18n.t('SELECT_COUNTRY')}
+                    rows={this.state.countries}
                 />
             </View>
         );
@@ -176,7 +75,7 @@ const mapStateToProps = (state) => {
     return {
         language: state.language,
         direction: state.direction,
-        theme: state.theme,
+        theme: state.theme
     };
 };
 

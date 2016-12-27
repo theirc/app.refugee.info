@@ -28,6 +28,11 @@ class MenuItem extends Component {
         onLongPress: PropTypes.func,
     };
 
+    static defaultProps = {
+        direction: 'ltr',
+        theme: 'light'
+    };
+
     constructor(props) {
         super(props);
         this.state = {};
@@ -35,19 +40,8 @@ class MenuItem extends Component {
 
     componentWillReceiveProps(props) {
         if (props.theme) {
-            let defaultProps = {...props};
-            if (!defaultProps.direction) {
-                defaultProps.direction = 'ltr';
-            }
-
             let styleDefaults;
-
-
-            if (defaultProps.theme == 'dark') {
-                styleDefaults = {...sharedStyles, ...darkStyleDefaults};
-            } else {
-                styleDefaults = {...sharedStyles, ...lightStyleDefaults};
-            }
+            styleDefaults = {...sharedStyles, ...lightStyleDefaults};
 
             this.setState({
                 styles: styleDefaults,

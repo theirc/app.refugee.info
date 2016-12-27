@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import {View, ListView, StyleSheet, Text, TouchableHighlight, Image} from 'react-native';
+import {View, ListView, Text} from 'react-native';
 import {I18n} from '../constants';
-import styles, {getUnderlayColor, getFontFamily, getRowOrdering} from '../styles';
+import styles from '../styles';
 import {connect} from 'react-redux';
 import {LocationListItem} from '../components';
 
@@ -12,9 +12,9 @@ export class LocationListView extends Component {
     };
 
     static propTypes = {
+        direction: PropTypes.string,
         header: PropTypes.string.isRequired,
-        image: PropTypes.func,
-        onPress: PropTypes.func.isRequired,
+        loaded: PropTypes.bool,
         rows: PropTypes.arrayOf(React.PropTypes.shape({
             id: PropTypes.number,
             name: PropTypes.string.isRequired
@@ -24,31 +24,15 @@ export class LocationListView extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            selected: null
-        };
         this.dataSource = new ListView.DataSource({
             rowHasChanged: (row1, row2) => row1.id !== row2.id
         });
     }
 
-    renderHeader(custom_header_text=null) {
-        let {direction, theme} = this.props;
-        if (!direction) {
-            direction = 'ltr';
-        }
+    renderHeader(custom_header_text = null) {
         return (
-            <View style={[
-                    styles.viewHeaderContainer,
-                    theme=='dark' ? styles.viewHeaderContainerDark : styles.viewHeaderContainerLight
-                ]}
-            >
-                <Text
-                    style={[
-                        styles.viewHeaderText,
-                        theme=='dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
-                    ]}
-                >
+            <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
+                <Text style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
                     {custom_header_text ? custom_header_text.toUpperCase() : this.props.header.toUpperCase()}
                 </Text>
             </View>
@@ -58,31 +42,31 @@ export class LocationListView extends Component {
     renderRow(rowData) {
         return (
             <LocationListItem
-                onPress={() => {this.props.onPress(rowData)}}
-                image={(this.props.image) ? this.props.image(rowData.code) : null}
-                text={rowData.pageTitle || rowData.metadata.page_title || rowData.name}
+                image={rowData.image}
+                onPress={rowData.onPress}
+                text={rowData.title}
             />
-        )
+        );
     }
 
     render() {
-        let custom_header_text;
+        let customHeaderText;
         if (this.props.rows.length === 0 && this.props.loaded) {
-            custom_header_text = I18n.t('NO_LOCATIONS_FOUND')
+            customHeaderText = I18n.t('NO_LOCATIONS_FOUND');
         }
         else if (!this.props.rows.length && !this.props.loaded) {
-            custom_header_text = I18n.t('LOADING_LOCATIONS');
+            customHeaderText = I18n.t('LOADING_LOCATIONS');
         }
-            return (
-                <View style={styles.container}>
-                    <ListView
-                        dataSource={this.dataSource.cloneWithRows(this.props.rows)}
-                        enableEmptySections={true}
-                        renderHeader={() => this.renderHeader(custom_header_text)}
-                        renderRow={(rowData) => !custom_header_text ? this.renderRow(rowData) : null}
-                    />
-                </View>
-            );
+        return (
+            <View style={styles.container}>
+                <ListView
+                    dataSource={this.dataSource.cloneWithRows(this.props.rows)}
+                    enableEmptySections
+                    renderHeader={() => this.renderHeader(customHeaderText)}
+                    renderRow={(rowData) => this.renderRow(rowData)}
+                />
+            </View>
+        );
     }
 }
 

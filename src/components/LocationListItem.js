@@ -24,20 +24,20 @@ import Icon from './Icon';
 export class LocationListItem extends Component {
 
     static propTypes = {
+        image: PropTypes.number,
         onPress: PropTypes.func,
         text: PropTypes.string,
-        image: PropTypes.number,
     };
 
     render() {
-        const {theme, onPress, text, language, direction, image} = this.props;
+        const {onPress, text, language, direction, image} = this.props;
 
         const imageElement = (image &&
         <Image
             source={image}
             style={[
                 (direction == 'rtl')
-                    ? componentStyles.listItemImageAbsoluteRTL
+                    ? componentStyles.listItemImageAbsolute
                     : componentStyles.listItemImageAbsolute
             ]}
         />);
@@ -46,17 +46,17 @@ export class LocationListItem extends Component {
             <View
                 style={[
                     componentStyles.dividerAbsolute,
-                    getDividerColor(theme)
+                    getDividerColor('light')
                 ]}
             />));
 
         return (
             <TouchableHighlight
                 onPress={onPress}
-                underlayColor={getUnderlayColor(theme)}
+                underlayColor={getUnderlayColor('light')}
                 style={[componentStyles.listItemContainer]}
             >
-                <View style={[getRowOrdering(direction), getContainerColor(theme)]}>
+                <View style={[getRowOrdering(direction), getContainerColor('light')]}>
                     { imageElement }
                     { imageDivider }
                     <View style={[componentStyles.listItemTextContainer, styles.bottomDividerLight]}>
@@ -64,7 +64,7 @@ export class LocationListItem extends Component {
                             style={[
                                 componentStyles.listItemText,
                                 getFontFamily(language),
-                                getTextColor(theme)
+                                getTextColor('light')
                             ]}
                         >
                             {text}
@@ -78,7 +78,6 @@ export class LocationListItem extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme,
         direction: state.direction,
         language: state.language
     };
@@ -88,7 +87,7 @@ const componentStyles = StyleSheet.create({
     listItemContainer: {
         flexGrow: 1,
         flexBasis: 50,
-        height: 50,
+        height: 50
     },
     listItemTextContainer: {
         flex: 1,
@@ -105,13 +104,6 @@ const componentStyles = StyleSheet.create({
     listItemImageAbsolute: {
         position: 'absolute',
         left: 15,
-        top: 9,
-        width: 32,
-        height: 32
-    },
-    listItemImageAbsoluteRTL: {
-        position: 'absolute',
-        right: 15,
         top: 9,
         width: 32,
         height: 32

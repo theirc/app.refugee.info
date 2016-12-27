@@ -30,63 +30,56 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            loading: false,
-            dataSourceUpdated: undefined
+            loading: false
         };
     }
 
     componentDidMount() {
         const {region, dispatch} = this.props;
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle || region.name});
-        this.context.navigator.currentRoute.title = region.pageTitle;
+        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
+        this.context.navigator.currentRoute.title = region.name;
         this.regionData = new Regions(this.props);
-        this._loadInitialState();
+        this.loadInitialState();
     }
 
-    componentWillReceiveProps(nextProps, nextState) {
-        let {region, information} = this.props;
-        if (information) {
-            region = information;
-        }
-        if (region != nextProps.region) {
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(
-                    nextProps.region.content
-                        .filter((info) => !info.hide_from_toc && !info.hide_from_app)
-                ),
-            });
-        }
-    }
+    // componentWillReceiveProps(nextProps, nextState) {
+    //     let {region, information} = this.props;
+    //     if (information) {
+    //         region = information;
+    //     }
+    //     if (region != nextProps.region) {
+    //         this.setState({
+    //             dataSource: this.state.dataSource.cloneWithRows(
+    //                 nextProps.region.content
+    //                     .filter((info) => !info.hide_from_toc && !info.hide_from_app)
+    //             ),
+    //         });
+    //     }
+    // }
 
-    async _loadInitialState() {
-        let {region, information} = this.props;
+    async loadInitialState() {
+        const {region} = this.props;
         const {navigator} = this.context;
-
-        if (information) {
-            region = information;
-        }
-
         if (!region) {
             navigator.to('countryChoice');
             return;
         }
 
-        if (region.content && region.content.length === 1) {
-            let c = region.content[0];
-            setTimeout(() => {
-                navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
-            }, 100);
-            return;
-        }
+        // if (region.content && region.content.length === 1) {
+        //     let c = region.content[0];
+        //     setTimeout(() => {
+        //         navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
+        //     }, 100);
+        //     return;
+        // }
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(
                 region.content
-                    .filter((info) => !info.hide_from_toc && !info.hide_from_app)
             ),
             generalInfo: region.content,
-            region: region,
+            region,
             loaded: true,
-            offline: false,
+            offline: false
         });
     }
 
@@ -132,16 +125,16 @@ export class GeneralInformation extends Component {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
             navigator.forward(null, null, {section, sectionTitle: title, slug, index, content_slug}, this.state);
-        })
+        });
     }
 
     renderRow(rowData) {
         let slug = rowData.slug ? `info/${rowData.slug}` : rowData.anchor_name || `info${rowData.index}`;
         return (
             <ListItem
-                icon={rowData.vector_icon}
+                icon={rowData.icon || '-'}
                 onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index, rowData.slug)}
-                text={rowData.title.trim()}
+                text={rowData.title}
             />
         )
     }
@@ -173,8 +166,8 @@ export class GeneralInformation extends Component {
                 <View style={[{
                     paddingHorizontal: 5, paddingVertical: 10, height: 80, flexDirection: 'row',
                     borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor
-                },
-                ]}>
+                }]}
+                >
 
                     <Button
                         color="green"
@@ -205,17 +198,17 @@ export class GeneralInformation extends Component {
                 />
                 { !this.state.offline && refreshText }
                 <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this) }
+                            onRefresh={this.onRefresh.bind(this)}
                         />
                     }
-                    dataSource={this.state.dataSource}
-                    enableEmptySections={true}
-                    renderRow={(rowData) => this.renderRow(rowData) }
-                    keyboardShouldPersistTaps={true}
-                    keyboardDismissMode="on-drag"
+                    renderRow={(rowData) => this.renderRow(rowData)}
                 />
             </View>
 
@@ -258,7 +251,7 @@ const mapStateToProps = (state) => {
         country: state.country,
         theme: state.theme,
         direction: state.direction,
-        locations: state.locations
+        countries: state.countries
     };
 };
 

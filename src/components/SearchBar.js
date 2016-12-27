@@ -77,8 +77,11 @@ export class SearchBar extends Component {
                         />
                     </TouchableOpacity>}
                     {buttonOnPressAction && drawerButton &&
-                    <View style={{width: 2, height: 32, marginVertical: 8, marginHorizontal: 4,
-                        backgroundColor: themes.light.dividerColor}} />}
+                    <View style={{
+                        width: 2, height: 32, marginVertical: 8, marginHorizontal: 4,
+                        backgroundColor: themes.light.dividerColor
+                    }}
+                    />}
                     {drawerButton &&
                     <TouchableOpacity
                         onPress={() => this.context.drawer.open()}

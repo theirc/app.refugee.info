@@ -136,15 +136,14 @@ class Navigation extends Component {
     }
 
     render() {
-        const {theme, route, country, direction, language, locations} = this.props;
+        const {theme, route, direction, language, locations, region} = this.props;
         const {navigator} = this.context;
-        const region = this._getRegion();
 
         if (!this.props.region || !this.props.country) {
             return <Text>Choose location first</Text>;
         }
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
-        const aboutUs = region.important_information.find(a => a.slug === 'about-us');
+        const aboutUs = region.important_information && region.important_information.find(a => a.slug === 'about-us');
 
         let importantInformationItems = this._getImportantInformation();
         let nearbyCitiesItems = [];
@@ -164,13 +163,12 @@ class Navigation extends Component {
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
-
-        let bannerCount = region.metadata.banners.length;
-
+        let bannerCount = region.banners && region.banners.length;
+        let regionName = region.name ? region.name.toUpperCase() : '';
         return (
             <ScrollView style={styles.view}>
                 <View style={[styles.logoContainer, getRowOrdering(direction)]}>
-                    <Image source={logo} style={ styles.logo }/>
+                    <Image source={logo} style={ styles.logo } />
                 </View>
                 <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
                     <Icon
@@ -183,8 +181,9 @@ class Navigation extends Component {
                     <Text style={[
                         getFontFamily(language),
                         styles.cityText
-                    ]}>
-                        {(region.pageTitle || region.name).toUpperCase() }
+                    ]}
+                    >
+                        {regionName}
                     </Text>
                 </View>
                 <MenuSection title={I18n.t("REFUGEE_INFO") }>
@@ -275,7 +274,7 @@ const mapStateToProps = (state) => {
         direction: state.direction,
         theme: state.theme,
         drawerOpen: state.drawerOpen,
-        locations: state.locations
+        countries: state.countries
     };
 };
 

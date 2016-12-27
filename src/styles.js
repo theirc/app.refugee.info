@@ -1,5 +1,3 @@
-'use strict';
-
 import {Platform, StyleSheet, Dimensions} from 'react-native';
 
 

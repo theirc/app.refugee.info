@@ -12,7 +12,7 @@ export default class DrawerCommons {
     }
 
     changeScene(path, name, props = {}) {
-        const {drawer, navigator} = this.component.context;
+        const {navigator} = this.component.context;
         const {dispatch} = this.component.props;
         InteractionManager.runAfterInteractions(() => {
             navigator.to(path, name, props);

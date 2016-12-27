@@ -1,4 +1,4 @@
-import {API_PATH} from '../constants'
+import {API_PATH} from '../constants';
 
 const InteractionManager = require('InteractionManager');
 
@@ -12,10 +12,10 @@ export default class ApiClient {
         this.language = props.language || 'en';
     }
 
-    async fetch(relativeUrl, raise_exception = false) {
+    async fetch(relativeUrl, raiseException = false) {
         await InteractionManager.runAfterInteractions();
-        var languageCode = this.language;
-        var headers = {
+        const languageCode = this.language;
+        const headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
@@ -23,11 +23,11 @@ export default class ApiClient {
         if (languageCode) {
             headers['Accept-Language'] = languageCode;
         }
-        return fetch(`${this.apiRoot}${relativeUrl}`, {headers: headers})
+        return fetch(`${this.apiRoot}${relativeUrl}`, {headers})
             .then((response) => response.json())
-            .catch((error) => {
-                if (raise_exception) {
-                    throw 'offline'
+            .catch(() => {
+                if (raiseException) {
+                    throw 'offline';
                 }
                 else {
                     this.navigator.to('networkFailure');
@@ -44,125 +44,68 @@ export default class ApiClient {
             },
             body: JSON.stringify(data)
         }).then((response) => response)
-            .catch((error) => {
+            .catch(() => {
                 this.navigator.to('networkFailure');
             });
     }
 
-    getRootLocations() {
-        return this.fetch('/region/?format=json&level=1');
+    getCountries() {
+        return this.fetch('region/?level=1&simple');
     }
 
-    getAllChildrenOf(parentId, raise_exception = false) {
-        return this.fetch(`/region/?format=json&is_child_of=${parentId}`, raise_exception);
+    getAllChildrenOf(parentId, raiseException = false) {
+        return this.fetch(`region/?is_child_of=${parentId}&simple`, raiseException);
     }
 
-    getLocations(parentId, raise_exception = false) {
-        return this.fetch(`/region/?format=json&parent=${parentId}`, raise_exception);
-    }
+    getLocation(slug, raiseException = false) {
 
-    getLocation(id, raise_exception = false) {
-        return this.fetch(`/region/${id}/?format=json&`, raise_exception);
-    }
-
-    getRegions(parentId) {
-        return this.fetch(`/region/?format=json&parent=${parentId}&level=2`);
-    }
-
-    getCities(parentId) {
-        return this.fetch(`/region/?format=json&parent=${parentId}&level=3`);
-    }
-
-    getLocationByPosition(longitude, latitude, level) {
-        return this.fetch(`/region/?format=json&point=${latitude},${longitude}&level=${level}`);
+        return this.fetch(`region/${slug}/`, raiseException);
     }
 
     getServiceTypes(raise_exception = false) {
-        return this.fetch('/servicetypes/?format=json', raise_exception);
+        return this.fetch('servicetypes/?format=json', raise_exception);
     }
 
-    getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raise_exception = false) {
-        let url = `/services/search/?format=json&geographic_region=${locationSlug}`;
+    getServicePage(locationSlug, coords = {}, searchCriteria = '', page = 1, pageSize = 10, types, raiseException = false) {
+        let url = `services/search/?format=json&geographic_region=${locationSlug}`;
 
         if (coords.hasOwnProperty('latitude')) {
             const {latitude, longitude} = coords;
             url += `&closest=${latitude},${longitude}`;
         }
-        if (!!searchCriteria) {
+        if (searchCriteria) {
             url += `&name=${searchCriteria}`;
         }
-        if (!!types) {
+        if (types) {
             url += `&type_numbers=${types}`;
         }
         url += `&page=${page}&page_size=${pageSize}`;
-        return this.fetch(url, raise_exception);
-    }
-
-    getServices(locationSlug, latitude, longitude, raise_exception = false, page = 1, pageSize = 10) {
-        let paging = `page=${page}&page_size=${pageSize}`;
-        let map = (res) => {
-            return res.results;
-        };
-        if (latitude && longitude) {
-            return this.fetch(`/services/search/?format=json&geographic_region=${locationSlug}&${paging}
-        &closest=${latitude},${longitude}`, raise_exception).then(map);
-        }
-        else return this.fetch(`/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then(map);
-    }
-
-    getFeedbacks(service, raise_exception = false) {
-        return this.fetch(`/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
+        return this.fetch(url, raiseException);
     }
 
     getService(id, raise_exception = false) {
-        return this.fetch(`/services/search/?format=json&id=${id}`, raise_exception);
+        return this.fetch(`services/search/?format=json&id=${id}`, raise_exception);
     }
 
-    postFeedback(service, name, rating, comment) {
-        return this.post('/feedback/?format=json', {
-            name,
-            phone_number: '',
-            nationality: null,
-            area_of_residence: null,
-            service: service.url,
-            delivered: null,
-            quality: rating,
-            non_delivery_explained: null,
-            wait_time: null,
-            wait_time_satisfaction: null,
-            difficulty_contacting: 'no',
-            other_difficulties: '',
-            staff_satisfaction: null,
-            extra_comments: comment,
-            anonymous: false
-        });
-    }
-
-    sendEmail(name, subject, email, message) {
-        return this.post('/send_email/', {
-            name,
-            subject,
-            email,
-            message
-        });
-    }
 
     getRating(region, index, content_slug) {
         let identifier = content_slug ? `&content_slug=${content_slug}` : `&index=${index}`;
-        return this.fetch(`/region/get_rate/?region_slug=${region.slug}${identifier}`);
+        return this.fetch(`region/get_rate/?region_slug=${region.slug}${identifier}`);
     }
+
     setRating(region, index, content_slug, rating) {
-        return this.post(`/region/add_rate/?format=json`, {
+        return this.post('region/add_rate/?format=json', {
             region_slug: region.slug,
-            index: index,
+            index,
             info_slug: content_slug,
             rate: rating
         });
     }
+
     removeRating(region, index, content_slug, rating) {
-        return this.post(`/region/remove_rate/?format=json`, {
+        return this.post('region/remove_rate/?format=json', {
             region_slug: region.slug,
-            index: index,
+            index,
             info_slug: content_slug,
             rate: rating
         });

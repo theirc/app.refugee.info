@@ -1,8 +1,3 @@
-export function capitalize(string) {
-    return string[0].toLocaleUpperCase() + string.slice(1);
-}
-
-
 let countryFlags = {
     'af': require('../assets/flags/af.png'),
     'al': require('../assets/flags/al.png'),
@@ -238,30 +233,30 @@ export function getCountryFlag(countryISO) {
 export function getAllUrlParams(url) {
 
     // get query string from url (optional) or window
-    var queryString = url ? url.split('?')[1] : '';
+    let queryString = url ? url.split('?')[1] : '';
 
     // we'll store the parameters here
-    var obj = {};
+    let obj = {};
 
     // if query string exists
     if (queryString) {
 
         // split our query string into its component parts
-        var arr = queryString.split('&');
+        let arr = queryString.split('&');
 
-        for (var i=0; i<arr.length; i++) {
+        for (let i=0; i<arr.length; i++) {
             // separate the keys and the values
-            var a = arr[i].split('=');
+            let a = arr[i].split('=');
 
             // in case params look like: list[]=thing1&list[]=thing2
-            var paramNum = undefined;
-            var paramName = a[0].replace(/\[\d*\]/, function(v) {
+            let paramNum = undefined;
+            let paramName = a[0].replace(/\[\d*\]/, function(v) {
                 paramNum = v.slice(1,-1);
                 return '';
             });
 
             // set parameter value (use 'true' if empty)
-            var paramValue = typeof(a[1])==='undefined' ? true : a[1];
+            let paramValue = typeof(a[1])==='undefined' ? true : a[1];
 
             // (optional) keep case consistent
             paramName = paramName.toLowerCase();
