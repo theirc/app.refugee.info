@@ -68,11 +68,12 @@ export class CityChoice extends Component {
                 dispatch({type: 'COUNTRY_CHANGED', payload: country}),
                 dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
             ]);
-            // if (city.content && city.content.length == 1) {
-            //     return this.context.navigator.to('infoDetails', null, {
-            //         section: city.content[0].section,
-            //         sectionTitle: city.pageTitle
-            //     });
+            if (city.content && city.content.length == 1) {
+                return this.context.navigator.to('infoDetails', null, {
+                    section: city.content[0].html,
+                    sectionTitle: city.title
+                });
+            }
             return this.context.navigator.to('info');
         });
     }

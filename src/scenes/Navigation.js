@@ -39,21 +39,21 @@ class Navigation extends Component {
         this.drawerCommons = new DrawerCommons(this);
     }
 
-    _defaultOrFirst(page, showTitle = false) {
+    _defaultOrFirst(section, showTitle = false) {
         this.drawerCommons.closeDrawer();
-        if (page.content && page.content.length == 1) {
+        if (section.html && section.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, {
-                slug: page.slug || `info${page.index}`,
-                section: page.content[0].section,
-                sectionTitle: page.pageTitle,
+                slug: section.slug || `info${section.index}`,
+                section: section.content[0].section,
+                sectionTitle: section.pageTitle,
                 showTitle,
-                index: page.content[0].index,
-                content_slug: page.slug
+                index: section.content[0].index,
+                content_slug: section.slug
             });
         } else {
             let payload = {
-                region: page.type != 'info' ? page : null,
-                information: page.type == 'info' ? null : page
+                region: section.type != 'info' ? section : null,
+                information: section.type == 'info' ? null : section
             };
             return this.context.navigator.to('info', null, payload);
         }
@@ -71,6 +71,17 @@ class Navigation extends Component {
         return this._defaultOrFirst(city);
     }
 
+    navigateToImportantInformation(item) {
+        this.drawerCommons.closeDrawer();
+        return this.context.navigator.to('infoDetails', null, {
+            sectionTitle: item.title,
+            section: item.html,
+            slug: item.slug || `info${item.index}`,
+            content_slug: item.slug,
+            showTitle: true
+        });
+    }
+
     getImportantInformation() {
         const {route, region} = this.props;
         const {navigator} = this.context;
@@ -83,7 +94,7 @@ class Navigation extends Component {
                     active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
                     icon={item.icon}
                     key={index}
-                    onPress={() => this._defaultOrFirst(item, true)}
+                    onPress={() => this.navigateToImportantInformation(item)}
                 >
                     {item.title}
                 </MenuItem>

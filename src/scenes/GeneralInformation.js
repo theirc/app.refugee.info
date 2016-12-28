@@ -76,7 +76,6 @@ export class GeneralInformation extends Component {
             dataSource: this.state.dataSource.cloneWithRows(
                 region.content
             ),
-            generalInfo: region.content,
             region,
             loaded: true,
             offline: false
@@ -97,14 +96,14 @@ export class GeneralInformation extends Component {
                         dispatch(updateRegionIntoStorage(location)),
                         dispatch(updateLocationsIntoStorage(newLocations)),
                         dispatch({type: 'REGION_CHANGED', payload: location}),
-                        dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
+                        dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations})
                     ]).then(() => {
                         this.setState({
                             refreshing: false,
                             dataSourceUpdated: true,
                             offline: false
                         });
-                    })
+                    });
                 } else {
                     this.setState({
                         refreshing: false,
@@ -112,19 +111,25 @@ export class GeneralInformation extends Component {
                         offline: false
                     });
                 }
-            }).catch((e) => {
+            }).catch(() => {
                 this.setState({
                     offline: true,
                     refreshing: false
-                })
+                });
             });
         });
     }
 
-    onClick(title, section, slug, index, content_slug) {
+    onClick(title, section, slug, index, contentSlug) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            navigator.forward(null, null, {section, sectionTitle: title, slug, index, content_slug}, this.state);
+            navigator.forward(null, null, {
+                section,
+                sectionTitle: title,
+                slug,
+                index,
+                contentSlug
+            }, this.state);
         });
     }
 
@@ -133,7 +138,7 @@ export class GeneralInformation extends Component {
         return (
             <ListItem
                 icon={rowData.icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index, rowData.slug)}
+                onPress={this.onClick.bind(this, rowData.title, rowData.html, slug, rowData.index, rowData.slug)}
                 text={rowData.title}
             />
         )
@@ -168,7 +173,6 @@ export class GeneralInformation extends Component {
                     borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor
                 }]}
                 >
-
                     <Button
                         color="green"
                         icon="fa-list"
