@@ -16,16 +16,15 @@ import DrawerCommons from '../utils/DrawerCommons';
 import {MenuSection, MenuItem} from '../components';
 import {
     updateRegionIntoStorage,
-    updateCountryIntoStorage,
+    updateCountryIntoStorage
 } from '../actions';
 import {Icon} from '../components';
 import {
     getFontFamily,
     getRowOrdering,
     themes
-} from '../styles'
-import {RNMail as Mailer} from 'NativeModules';
-import {LIKE_PATH, FEEDBACK_MAP} from '../constants'
+} from '../styles';
+import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 
 
 class Navigation extends Component {
@@ -38,43 +37,6 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
-    }
-
-    getImportantInformation() {
-        const {route, region} = this.props;
-        const {navigator} = this.context;
-        if (!region || !region.important) {
-            return <View />;
-        }
-        return region.important.map((item, index) => {
-            return (
-                <MenuItem
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
-                    icon={item.icon}
-                    key={index}
-                    onPress={() => this._defaultOrFirst(item, true)}
-                >
-                    {item.title}
-                </MenuItem>
-            );
-        });
-    }
-
-    getNearbyCities() {
-        const {locations, region} = this.props;
-        if (locations) {
-            return locations.map((i, index) => {
-                return (
-                    <MenuItem
-                        active={i.id == region.id}
-                        key={index}
-                        onPress={() => this.selectCity(i)}
-                    >
-                        {i.pageTitle || i.name}
-                    </MenuItem>
-                );
-            });
-        }
     }
 
     _defaultOrFirst(page, showTitle = false) {
@@ -109,31 +71,98 @@ class Navigation extends Component {
         return this._defaultOrFirst(city);
     }
 
+    getImportantInformation() {
+        const {route, region} = this.props;
+        const {navigator} = this.context;
+        if (!region || !region.important) {
+            return;
+        }
+        return region.important.map((item, index) => {
+            return (
+                <MenuItem
+                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
+                    icon={item.icon}
+                    key={index}
+                    onPress={() => this._defaultOrFirst(item, true)}
+                >
+                    {item.title}
+                </MenuItem>
+            );
+        });
+    }
+
+    getImportantInformationSection() {
+        let importantInformationItems = this.getImportantInformation();
+        if (importantInformationItems) {
+            return (
+                <MenuSection title={I18n.t('IMPORTANT_INFORMATION')}>
+                    {importantInformationItems}
+                </MenuSection>
+            );
+        }
+
+    }
+
+    getNearbyCities() {
+        const {locations, region} = this.props;
+        if (locations) {
+            return locations.map((i, index) => {
+                return (
+                    <MenuItem
+                        active={i.id == region.id}
+                        key={index}
+                        onPress={() => this.selectCity(i)}
+                    >
+                        {i.pageTitle || i.name}
+                    </MenuItem>
+                );
+            });
+        }
+    }
+
+    getNearbyCitiesSection() {
+        let nearbyCitiesItems = this.getNearbyCities();
+        if (nearbyCitiesItems) {
+            return (
+                <MenuSection title={I18n.t('CHANGE_LOCATION')}>
+                    {nearbyCitiesItems}
+                </MenuSection>
+            );
+        }
+    }
+
     render() {
-        const {theme, route, direction, language, region} = this.props;
+        const {route, direction, language, region} = this.props;
         const {navigator} = this.context;
 
-        if (!this.props.region || !this.props.country) {
-            return <Text>Choose location first</Text>;
+        if (!this.props.region) {
+            return;
         }
+
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
         const aboutUs = region.important_information && region.important_information.find(a => a.slug === 'about-us');
 
-        let importantInformationItems = this.getImportantInformation();
-        let nearbyCitiesItems = this.getNearbyCities();
+        let importantInformationSection = this.getImportantInformationSection();
+        let nearbyCitiesSection = this.getNearbyCitiesSection();
 
-        let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
-        let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
+        let logo = themes.light.drawerLogo;
+        let styles = lightNavigationStyles;
+
+        let bannerCount = region.banners && region.banners.length;
+        let regionName = region.name ? region.name.toUpperCase() : '';
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
-        let bannerCount = region.banners && region.banners.length;
-        let regionName = region.name ? region.name.toUpperCase() : '';
+
         return (
             <ScrollView style={styles.view}>
                 <View style={[styles.logoContainer, getRowOrdering(direction)]}>
-                    <Image source={logo} style={ styles.logo }/>
+                    <Image
+                        source={logo}
+                        style={styles.logo}
+                    />
                 </View>
+
                 <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
                     <Icon
                         name="md-locate"
@@ -150,54 +179,57 @@ class Navigation extends Component {
                         {regionName}
                     </Text>
                 </View>
-                <MenuSection title={I18n.t("REFUGEE_INFO") }>
+
+                <MenuSection title={I18n.t('REFUGEE_INFO')}>
                     <MenuItem
-                        icon="fa-info"
                         active={route === 'info'}
-                        onPress={() => this._defaultOrFirst(region) }
+                        icon="fa-info"
+                        onPress={() => this._defaultOrFirst(region)}
                     >
                         {I18n.t('GENERAL_INFO') }
                     </MenuItem>
                     <MenuItem
-                        icon="fa-list"
                         active={route === 'services'}
-                        onPress={() => s('services') }
+                        icon="fa-list"
+                        onPress={() => s('services')}
                     >
                         {I18n.t('SERVICE_LIST') }
                     </MenuItem>
                     <MenuItem
-                        icon="fa-map"
                         active={route === 'map'}
-                        onPress={() => s('map') }
+                        icon="fa-map"
+                        onPress={() => s('map')}
                     >
                         {I18n.t('EXPLORE_MAP') }
                     </MenuItem>
                 </MenuSection>
+
                 <MenuSection>
                     <MenuItem
                         active={route === 'notifications'}
-                        icon="ios-mail" onPress={() => s('notifications')}
-                        badge={bannerCount}>
+                        badge={bannerCount}
+                        icon="ios-mail"
+                        onPress={() => s('notifications')}
+                    >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
                     <MenuItem
-                        icon="ios-paper"
                         active={route === 'news'}
-                        onPress={() => s('news')}>
+                        icon="ios-paper"
+                        onPress={() => s('news')}
+                    >
                         {I18n.t('NEWS')}
                     </MenuItem>
                 </MenuSection>
-                <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
-                    {importantInformationItems}
-                </MenuSection>
-                <MenuSection title={I18n.t("CHANGE_LOCATION") }>
-                    {nearbyCitiesItems}
-                </MenuSection>
+
+                {importantInformationSection}
+                {nearbyCitiesSection}
+
                 <MenuSection>
                     <MenuItem
                         icon="fa-gear"
                         active={route === 'settings'}
-                        onPress={() => s('settings') }
+                        onPress={() => s('settings')}
                     >
                         {I18n.t('SETTINGS') }
                     </MenuItem>
@@ -212,19 +244,19 @@ class Navigation extends Component {
                     }
                     <MenuItem
                         icon="fa-comment"
-                        onPress={() => Linking.openURL(feedbackUrl) }>
+                        onPress={() => Linking.openURL(feedbackUrl)}
+                    >
                         {I18n.t('FEEDBACK') }
                     </MenuItem>
 
                     <MenuItem
                         icon="fa-facebook-square"
-                        onPress={() => Linking.openURL(LIKE_PATH) }>
+                        onPress={() => Linking.openURL(LIKE_PATH)}
+                    >
                         {I18n.t('LIKE_US') }
                     </MenuItem>
 
                 </MenuSection>
-                <View style={{paddingBottom: 15}}>
-                </View>
             </ScrollView>);
     }
 }
@@ -234,10 +266,7 @@ const mapStateToProps = (state) => {
         locations: state.locations,
         route: state.navigation,
         region: state.region,
-        country: state.country,
         language: state.language,
-        direction: state.direction,
-        theme: state.theme,
         drawerOpen: state.drawerOpen
     };
 };
@@ -246,7 +275,7 @@ const lightNavigationStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 40,
+        marginTop: 40
     },
     logoContainer: {
         flexGrow: 1,
@@ -256,7 +285,8 @@ const lightNavigationStyles = StyleSheet.create({
     },
     view: {
         flexDirection: 'column',
-        flex: 1
+        flex: 1,
+        paddingBottom: 15
     },
     middleBorder: {
         borderLeftColor: themes.light.darkerDividerColor,
@@ -270,51 +300,14 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
+        marginTop: 40,
+        marginBottom: 10,
         paddingHorizontal: 20
     },
     cityText: {
         fontSize: 14,
         fontWeight: 'bold',
         color: themes.light.textColor
-    }
-});
-
-const darkNavigationStyles = StyleSheet.create({
-    logo: {
-        width: 150,
-        resizeMode: 'contain',
-        marginTop: 40
-    },
-    logoContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        marginRight: 10,
-        marginTop: 0
-    },
-    view: {
-        flexDirection: 'column',
-        flex: 1,
-        paddingLeft: 20
-    },
-    middleBorder: {
-        borderLeftColor: themes.dark.darkerDividerColor,
-        borderLeftWidth: 1
-    },
-    outermostBorder: {
-        borderLeftColor: themes.dark.dividerColor,
-        borderLeftWidth: 1
-    },
-    titleWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 30,
-        marginBottom: 30,
-        paddingRight: 10
-    },
-    cityText: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: themes.dark.textColor
     }
 });
 
