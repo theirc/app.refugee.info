@@ -24,23 +24,25 @@ export class ListItem extends Component {
         super(props);
     }
 
-    render() {
-        const {onPress, text, iconColor, fontSize, iconSize} = this.props;
-        let iconName = (this.props.icon || '').trim();
+    getIcon(icon, color, size) {
+        if (!icon) {
+            return;
+        }
+        return (
+            <View style={componentStyles.listItemIconContainer}>
+                <Icon
+                    name={icon}
+                    style={[
+                        componentStyles.listItemIcon,
+                        {fontSize: size || 24},
+                        color && {color}]}
+                />
+            </View>);
+    }
 
-        const iconElement = (iconName &&
-        <View
-            style={componentStyles.listItemIconContainer}
-        >
-            <Icon
-                name={iconName}
-                style={[
-                    componentStyles.listItemIcon,
-                    {fontSize: iconSize || 24},
-                    iconColor && {color: iconColor}
-                ]}
-            />
-        </View>);
+    render() {
+        const {onPress, text, icon, iconColor, fontSize, iconSize} = this.props;
+        const iconElement = this.getIcon(icon, iconColor, iconSize);
 
         return (
             <TouchableHighlight
@@ -56,20 +58,17 @@ export class ListItem extends Component {
                     {iconElement}
                     <View style={[
                         componentStyles.dividerInline,
-                        styles.dividerLight
-                    ]}
+                        styles.dividerLight]}
                     />
                     <View style={[
                         componentStyles.listItemTextContainer,
                         styles.bottomDividerLight,
-                        {borderBottomWidth: 1}
-                    ]}
+                        {borderBottomWidth: 1}]}
                     >
                         <DirectionalText style={[
                             componentStyles.listItemText,
                             styles.textLight,
-                            {fontSize} && {fontSize}
-                        ]}
+                            {fontSize} && {fontSize}]}
                         >
                             {text}
                         </DirectionalText>

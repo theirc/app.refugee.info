@@ -1,12 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {
-    AsyncStorage,
-    Image,
-    StyleSheet,
     View,
     Text,
     ScrollView,
-    TouchableHighlight,
     Dimensions,
     Alert
 } from 'react-native';
@@ -15,7 +11,6 @@ import I18n from '../constants/Messages';
 import styles, {
     themes,
     getFontFamily,
-    getUnderlayColor,
     getRowOrdering,
     getBottomDividerColor,
     getToolbarHeight
@@ -30,14 +25,13 @@ import {
     updateDirectionIntoStorage,
     updateLanguageIntoStorage,
     updateLocationsIntoStorage,
-    updateRegionIntoStorage,
-    updateThemeIntoStorage
-} from '../actions'
+    updateRegionIntoStorage
+} from '../actions';
 
 import ApiClient from '../utils/ApiClient';
 import {Regions} from '../data';
 
-var {width, height} = Dimensions.get('window');
+let {width, height} = Dimensions.get('window');
 
 class Settings extends Component {
 
@@ -52,25 +46,15 @@ class Settings extends Component {
         };
     }
 
-    setTheme(theme) {
-        requestAnimationFrame(() => {
-            const {dispatch} = this.props;
-            Promise.all([
-                dispatch(updateThemeIntoStorage(theme)),
-                dispatch({type: "THEME_CHANGED", payload: theme})
-            ]);
-        });
-    }
 
     updateSettings(language) {
         this.setState({
             loading: true
         });
-        const {navigator} = this.context;
         const {dispatch, region, country} = this.props;
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
 
-        this.apiClient = new ApiClient(this.context, {language: language});
+        this.apiClient = new ApiClient(this.context, {language});
 
         let newRegion = null;
         let newCountry = null;
@@ -78,11 +62,11 @@ class Settings extends Component {
 
         Promise.all([
             this.apiClient.getLocation(region.id, true),
-            this.apiClient.getLocation(country.id, true),
+            this.apiClient.getLocation(country.id, true)
         ]).then((values) => {
             newRegion = values[0];
             newCountry = values[1];
-            const regionData = new Regions({language: language});
+            const regionData = new Regions({language});
             regionData.listChildren(newCountry, true, newRegion).then((value) => {
                 newLocations = value.filter((c) => c.level != 2);
                 newLocations.forEach((location) => {
@@ -96,19 +80,19 @@ class Settings extends Component {
                     dispatch(updateCountryIntoStorage(newCountry)),
                     dispatch(updateRegionIntoStorage(newRegion)),
                     dispatch(updateLocationsIntoStorage(newLocations)),
-                    dispatch({type: "LANGUAGE_CHANGED", payload: language}),
-                    dispatch({type: "DIRECTION_CHANGED", payload: direction}),
-                    dispatch({type: "REGION_CHANGED", payload: newRegion}),
+                    dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
+                    dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
+                    dispatch({type: 'REGION_CHANGED', payload: newRegion}),
                     dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
                     dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
                     dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
                 ]).then(() => {
                     this.setState({loading: false});
-                })
-            })
-        }).catch((e) => {
+                });
+            });
+        }).catch(() => {
             this.setState({
-                loading: false,
+                loading: false
             });
             Alert.alert(
                 I18n.t('CANNOT_CHANGE_LANGUAGE'),
@@ -117,7 +101,7 @@ class Settings extends Component {
                     {text: I18n.t('OK')}
                 ]
             );
-        })
+        });
     }
 
     goToCountryChoice() {
@@ -131,22 +115,24 @@ class Settings extends Component {
         return (
             <ScrollView style={styles.container}>
                 <ListItem
-                    text={I18n.t('CHANGE_COUNTRY')}
-                    icon="ios-flag"
-                    iconColor={theme == 'dark' ? themes.dark.textColor : themes.light.textColor}
                     fontSize={13}
+                    icon="ios-flag"
+                    iconColor={themes.light.textColor}
                     onPress={this.goToCountryChoice.bind(this)}
+                    text={I18n.t('CHANGE_COUNTRY')}
                 />
 
                 <View style={[
                     getRowOrdering(direction),
                     {marginTop: 30, borderBottomWidth: 1},
                     getBottomDividerColor(theme)
-                ]}>
+                ]}
+                >
                     <View style={[
                         styles.alignCenter,
                         {height: 50, width: 50, marginRight: 10}
-                    ]}>
+                    ]}
+                    >
                         <Icon
                             name="ios-chatboxes"
                             style={[
@@ -160,7 +146,8 @@ class Settings extends Component {
                             styles.textAccentGreen,
                             getFontFamily(language),
                             {fontSize: 13}
-                        ]}>
+                        ]}
+                        >
                             {I18n.t('CHANGE_LANGUAGE').toUpperCase()}
                         </Text>
                     </View>
@@ -179,7 +166,12 @@ class Settings extends Component {
                     onPress={this.updateSettings.bind(this, 'fa')}
                 />
 
-                {loading && <LoadingOverlay theme={theme} height={height - getToolbarHeight()} width={width}/>}
+                {loading &&
+                <LoadingOverlay
+                    theme={theme}
+                    height={height - getToolbarHeight()}
+                    width={width}
+                />}
             </ScrollView>
         );
     }
