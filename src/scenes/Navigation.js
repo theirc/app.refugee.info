@@ -147,7 +147,7 @@ class Navigation extends Component {
         const {navigator} = this.context;
 
         if (!this.props.region) {
-            return;
+            return <View />;
         }
 
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
