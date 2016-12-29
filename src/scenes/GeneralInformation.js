@@ -3,17 +3,15 @@ import {
     View,
     StyleSheet,
     ListView,
-    RefreshControl,
-    Text
+    RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
-import {OfflineView, ListItem, Button} from '../components';
+import {OfflineView, ListItem, Button, DirectionalText} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily} from '../styles';
+import styles, {themes} from '../styles';
 import {Regions} from '../data';
 import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage, updateLocationsIntoStorage} from '../actions';
-
 
 export class GeneralInformation extends Component {
 
@@ -23,6 +21,7 @@ export class GeneralInformation extends Component {
 
     constructor(props) {
         super(props);
+        this.onRefresh = this.onRefresh.bind(this);
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
@@ -61,17 +60,16 @@ export class GeneralInformation extends Component {
         const {region} = this.props;
         const {navigator} = this.context;
         if (!region) {
-            navigator.to('countryChoice');
-            return;
+            return navigator.to('countryChoice');
         }
 
-        // if (region.content && region.content.length === 1) {
-        //     let c = region.content[0];
-        //     setTimeout(() => {
-        //         navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
-        //     }, 100);
-        //     return;
-        // }
+        if (region.content && region.content.length === 1) {
+            const content = region.content[0];
+            return navigator.to('infoDetails', null, {section: content.html, sectionTitle: content.title});
+        }
+        region.content.forEach((section) => {
+            section.onPress = this.onPress.bind(this, section.title, section.html, section.slug, section.index, section.slug);
+        });
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(
                 region.content
@@ -120,7 +118,7 @@ export class GeneralInformation extends Component {
         });
     }
 
-    onClick(title, section, slug, index, contentSlug) {
+    onPress(title, section, slug, index, contentSlug) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
             navigator.forward(null, null, {
@@ -134,37 +132,32 @@ export class GeneralInformation extends Component {
     }
 
     renderRow(rowData) {
-        let slug = rowData.slug ? `info/${rowData.slug}` : rowData.anchor_name || `info${rowData.index}`;
         return (
             <ListItem
                 icon={rowData.icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.html, slug, rowData.index, rowData.slug)}
+                onPress={rowData.onPress}
                 text={rowData.title}
             />
-        )
+        );
     }
 
     renderRefreshText(updated) {
-        const {language} = this.props;
-        if (updated === undefined) {
-
-        } else {
+        if (updated != undefined) {
             let text = ((updated) ? I18n.t('INFO_WAS_OUTDATED') : I18n.t('INFO_WAS_UP_TO_DATE')).toUpperCase();
             return (
                 <View style={componentStyles.refreshTextContainer}>
-                    <Text style={[componentStyles.refreshText, getFontFamily(language)]}>
+                    <DirectionalText style={componentStyles.refreshText}>
                         {text}
-                    </Text>
+                    </DirectionalText>
                 </View>
-            )
+            );
         }
     }
 
     render() {
-        const {theme, direction, language, region, country} = this.props;
+        const {country} = this.props;
         const {navigator} = this.context;
-        const {loading, refreshing} = this.state;
-        let s = (scene, props) => navigator.to(scene);
+        let s = (scene) => navigator.to(scene);
         let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
@@ -176,29 +169,29 @@ export class GeneralInformation extends Component {
                     <Button
                         color="green"
                         icon="fa-list"
-                        text={I18n.t('SERVICE_LIST').toUpperCase()}
                         onPress={() => requestAnimationFrame(() => s('services'))}
-                        transparent={true}
+                        text={I18n.t('SERVICE_LIST').toUpperCase()}
+                        transparent
                     />
                     <Button
                         color="green"
                         icon="md-locate"
+                        onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country}))}
                         text={I18n.t('CHANGE_LOCATION').toUpperCase()}
-                        onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country: country}))}
-                        transparent={true}
+                        transparent
                     />
                     <Button
                         color="green"
                         icon="fa-map"
-                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
-                        onPress={() => requestAnimationFrame(() => s('map'))}
                         iconStyle={{fontSize: 18}}
-                        transparent={true}
+                        onPress={() => requestAnimationFrame(() => s('map'))}
+                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                        transparent
                     />
                 </View>
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
+                    onRefresh={this.onRefresh}
                 />
                 { !this.state.offline && refreshText }
                 <ListView
@@ -208,8 +201,8 @@ export class GeneralInformation extends Component {
                     keyboardShouldPersistTaps
                     refreshControl={
                         <RefreshControl
+                            onRefresh={this.onRefresh}
                             refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this)}
                         />
                     }
                     renderRow={(rowData) => this.renderRow(rowData)}
@@ -235,8 +228,7 @@ const componentStyles = StyleSheet.create({
     },
     refreshTextContainer: {
         borderBottomColor: themes.light.lighterDividerColor,
-        borderBottomWidth: 1,
-
+        borderBottomWidth: 1
     },
     refreshText: {
         paddingVertical: 15,
@@ -252,10 +244,7 @@ const mapStateToProps = (state) => {
     return {
         language: state.language,
         region: state.region,
-        country: state.country,
-        theme: state.theme,
-        direction: state.direction,
-        countries: state.countries
+        country: state.country
     };
 };
 
