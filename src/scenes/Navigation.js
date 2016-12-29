@@ -286,11 +286,11 @@ const lightNavigationStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 40
+        marginTop: 20
     },
     logoContainer: {
         flexGrow: 1,
-        height: 70,
+        height: 100,
         flexDirection: 'row',
         paddingHorizontal: 20
     },
@@ -311,7 +311,6 @@ const lightNavigationStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginTop: 40,
         marginBottom: 10,
         paddingHorizontal: 20
     },

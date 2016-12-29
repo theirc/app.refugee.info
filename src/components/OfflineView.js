@@ -34,11 +34,11 @@ export class OfflineView extends Component {
                     </View>
                     <View style={componentStyles.offlineModeButtonContainer}>
                         <Button
-                            text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
-                            onPress={() => this.onRefreshHandler()}
                             buttonStyle={{height: 35, marginTop: 15, marginBottom: 5}}
-                            textStyle={{fontSize: 14}}
                             color="green"
+                            onPress={() => this.onRefreshHandler()}
+                            text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
+                            textStyle={{fontSize: 14}}
                             transparent
                         />
                     </View>

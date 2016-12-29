@@ -174,6 +174,7 @@ export class GeneralInformation extends Component {
                         transparent
                     />
                     <Button
+                        buttonStyle={{flex: 1.66}}
                         color="green"
                         icon="md-locate"
                         onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country}))}
