@@ -2,7 +2,6 @@ import React, {Component, PropTypes} from 'react';
 import {View, ListView, Text} from 'react-native';
 import {I18n} from '../constants';
 import styles from '../styles';
-import {connect} from 'react-redux';
 import {LocationListItem} from '../components';
 
 export class LocationListView extends Component {
@@ -12,14 +11,12 @@ export class LocationListView extends Component {
     };
 
     static propTypes = {
-        direction: PropTypes.string,
         header: PropTypes.string.isRequired,
         loaded: PropTypes.bool,
         rows: PropTypes.arrayOf(React.PropTypes.shape({
             id: PropTypes.number,
             name: PropTypes.string.isRequired
-        })),
-        theme: PropTypes.oneOf(['light', 'dark'])
+        }))
     };
 
     constructor(props) {
@@ -50,11 +47,12 @@ export class LocationListView extends Component {
     }
 
     render() {
+        const {loaded} = this.props;
         let customHeaderText;
-        if (this.props.rows.length === 0 && this.props.loaded) {
+        if (this.props.rows.length === 0 && loaded) {
             customHeaderText = I18n.t('NO_LOCATIONS_FOUND');
         }
-        else if (!this.props.rows.length && !this.props.loaded) {
+        else if (!this.props.rows.length && !loaded) {
             customHeaderText = I18n.t('LOADING_LOCATIONS');
         }
         return (
@@ -70,14 +68,4 @@ export class LocationListView extends Component {
     }
 }
 
-
-const mapStateToProps = (state) => {
-    return {
-        primary: state.theme.primary,
-        direction: state.direction,
-        language: state.language,
-        theme: state.theme
-    };
-};
-
-export default connect(mapStateToProps)(LocationListView);
+export default LocationListView;

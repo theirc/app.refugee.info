@@ -15,8 +15,7 @@ import I18n from '../constants/Messages';
 import DrawerCommons from '../utils/DrawerCommons';
 import {MenuSection, MenuItem} from '../components';
 import {
-    updateRegionIntoStorage,
-    updateCountryIntoStorage
+    updateRegionIntoStorage
 } from '../actions';
 import {Icon} from '../components';
 import {
@@ -25,6 +24,7 @@ import {
     themes
 } from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
+import {Regions} from '../data';
 
 
 class Navigation extends Component {
@@ -37,6 +37,7 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
+        this.regionData = new Regions(props);
     }
 
     _defaultOrFirst(section, showTitle = false) {
@@ -52,23 +53,24 @@ class Navigation extends Component {
             });
         } else {
             let payload = {
-                region: section.type != 'info' ? section : null,
-                information: section.type == 'info' ? null : section
+                region: section.type != 'info' ? section : null
             };
             return this.context.navigator.to('info', null, payload);
         }
     }
 
     async selectCity(city) {
-        const {dispatch, country} = this.props;
-        city.country = country;
+        const {dispatch} = this.props;
+        let regionDetails = await this.regionData.getRegionDetails(city.slug);
+        this.setState({region: regionDetails});
 
-        dispatch(updateRegionIntoStorage(city));
-        dispatch(updateCountryIntoStorage(city.country));
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
-
-        return this._defaultOrFirst(city);
+        requestAnimationFrame(() => {
+            Promise.all([
+                dispatch(updateRegionIntoStorage(regionDetails)),
+                dispatch({type: 'REGION_CHANGED', payload: regionDetails})
+            ]);
+            return this._defaultOrFirst(city);
+        });
     }
 
     navigateToImportantInformation(item) {

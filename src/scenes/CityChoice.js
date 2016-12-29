@@ -23,6 +23,8 @@ export class CityChoice extends Component {
 
     constructor(props) {
         super(props);
+        this.loadInitialState = this.loadInitialState.bind(this);
+
         this.regionData = new Regions(props);
         this.state = {
             cities: [],
@@ -32,7 +34,10 @@ export class CityChoice extends Component {
     }
 
     async componentDidMount() {
+        this.loadInitialState();
+    }
 
+    async loadInitialState() {
         let cities = [];
         try {
             cities = await this.regionData.listChildren(this.props.country, true);
@@ -83,7 +88,7 @@ export class CityChoice extends Component {
             return (
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.componentDidMount.bind(this)}
+                    onRefresh={this.loadInitialState}
                 />
             );
         }

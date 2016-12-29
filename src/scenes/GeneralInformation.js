@@ -41,21 +41,6 @@ export class GeneralInformation extends Component {
         this.loadInitialState();
     }
 
-    // componentWillReceiveProps(nextProps, nextState) {
-    //     let {region, information} = this.props;
-    //     if (information) {
-    //         region = information;
-    //     }
-    //     if (region != nextProps.region) {
-    //         this.setState({
-    //             dataSource: this.state.dataSource.cloneWithRows(
-    //                 nextProps.region.content
-    //                     .filter((info) => !info.hide_from_toc && !info.hide_from_app)
-    //             ),
-    //         });
-    //     }
-    // }
-
     async loadInitialState() {
         const {region} = this.props;
         const {navigator} = this.context;

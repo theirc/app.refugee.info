@@ -40,16 +40,17 @@ export class Button extends Component {
         else return componentStyles.buttonTextWhite;
     }
 
-    render() {
-        const {text, color, onPress, icon, textStyle, buttonStyle, iconStyle, transparent} = this.props;
-
-        let iconImage = icon &&
+    getIcon() {
+        const {transparent, icon, iconStyle, color} = this.props;
+        if (!icon) {
+            return null;
+        }
+        return (
             <View style={[
                 {paddingLeft: 10},
                 transparent && {paddingLeft: 0, paddingRight: 0},
                 styles.alignCenter,
-                {height: 24}
-            ]}
+                {height: 24}]}
             >
                 <Icon
                     name={icon}
@@ -59,34 +60,32 @@ export class Button extends Component {
                         iconStyle
                     ]}
                 />
-            </View>;
+            </View>
+        );
+    }
+
+    render() {
+        const {text, color, onPress, textStyle, buttonStyle, transparent} = this.props;
+        const iconImage = this.getIcon();
+
         if (transparent) {
             return (
-                <View
-                    style={[
-                        {flex: 1},
-                        buttonStyle
-                    ]}
-                >
+                <View style={[{flex: 1}, buttonStyle]}>
                     <TouchableOpacity
                         activeOpacity={0.5}
                         onPress={onPress}
                         style={[{flexGrow: 1, marginLeft: 5, marginRight: 5}]}
                     >
                         {iconImage}
-                        <View style={[
-                            {alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flex: 1}
-                        ]}
-                        >
-                        <DirectionalText style={[
-                            componentStyles.buttonText,
-                            {color: themes.light.greenAccentColor},
-                            textStyle]}
-                        >
-                            {text}
-                        </DirectionalText>
+                        <View style={componentStyles.buttonTextContainer}>
+                            <DirectionalText style={[
+                                componentStyles.buttonText,
+                                {color: themes.light.greenAccentColor},
+                                textStyle]}
+                            >
+                                {text}
+                            </DirectionalText>
                         </View>
-
                     </TouchableOpacity>
                 </View>
             );
@@ -107,7 +106,7 @@ export class Button extends Component {
                     underlayColor={this.getButtonUnderlayColor(color)}
                 >
                     <View style={[
-                        componentStyles.buttonInner,
+                        componentStyles.buttonTextContainer,
                         styles.row
                     ]}
                     >
@@ -128,14 +127,9 @@ export class Button extends Component {
 
 const componentStyles = StyleSheet.create({
     button: {
-        flex: 1,
+        flexGrow: 1,
         height: 45,
         borderRadius: 2
-    },
-    buttonInner: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between'
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
@@ -149,9 +143,12 @@ const componentStyles = StyleSheet.create({
     buttonYellow: {
         backgroundColor: themes.light.yellowAccentColor
     },
-
+    buttonTextContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexGrow: 1
+    },
     buttonText: {
-        flexGrow: 1,
         fontSize: 13,
         textAlign: 'center'
     },
