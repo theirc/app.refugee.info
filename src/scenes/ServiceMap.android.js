@@ -31,7 +31,7 @@ import {Services} from '../data';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 
-import Mapbox, { MapView as MapboxMapView } from 'react-native-mapbox-gl';
+import Mapbox, {MapView as MapboxMapView} from 'react-native-mapbox-gl';
 Mapbox.setAccessToken(MAPBOX_TOKEN);
 
 
@@ -41,8 +41,6 @@ var {width, height} = Dimensions.get('window');
 const RADIUS_MULTIPLIER = 1.2;
 const MAX_SERVICES = 50;
 const R = 6371e3; // earth R in metres
-
-let activeMarkerScrollViewRef;
 
 class ServiceMap extends Component {
     static noHeader = true;
@@ -74,32 +72,28 @@ class ServiceMap extends Component {
 
     constructor(props) {
         super(props);
-        if (props.hasOwnProperty('savedState') && props.savedState) {
-            this.state = props.savedState;
-        } else {
-            this.state = {
-                dataSource: new ListView.DataSource({
-                    rowHasChanged: (row1, row2) => row1.id !== row2.id
-                }),
-                annotations: [],
-                markers: [],
-                filteringView: false,
-                searchCriteria: '',
-                initialEnvelope: null,
-                loading: false,
-                offline: false,
-                refreshing: false,
-                activeMarker: null,
-                nativeAvailable: false,
-            };
-        }
+        this.state = {
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1.id !== row2.id
+            }),
+            annotations: [],
+            markers: [],
+            filteringView: false,
+            searchCriteria: '',
+            initialEnvelope: null,
+            loading: false,
+            offline: false,
+            refreshing: false,
+            activeMarker: null,
+            nativeAvailable: false,
+        };
         this.serviceCommons = new ServiceCommons();
     }
 
     componentDidMount() {
         checkPlayServices().then((available) => {
             let nativeAvailable = (Platform.OS === 'ios' || available);
-            this.setState({ nativeAvailable })
+            this.setState({nativeAvailable})
 
 
             const {region, searchCriteria, serviceTypes} = this.props;
@@ -122,7 +116,7 @@ class ServiceMap extends Component {
         if (Platform.OS === 'ios') {
             this.clearActiveMarker();
         }
-        this.setState({ regionArea });
+        this.setState({regionArea});
     }
 
     onMarkerPress(marker) {
@@ -136,7 +130,7 @@ class ServiceMap extends Component {
         });
         if (this.activeMarkerScrollViewRef && Platform.OS === 'android') {
             // hacky way to make sure that ScrollView content renders when switching active marker on Android
-            this.activeMarkerScrollViewRef.scrollTo({ x: 0, y: 0, animated: false })
+            this.activeMarkerScrollViewRef.scrollTo({x: 0, y: 0, animated: false})
         }
     }
 
@@ -240,7 +234,7 @@ class ServiceMap extends Component {
                 onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
                 icon={type.vector_icon || null}
-                />
+            />
         );
     }
 
@@ -268,7 +262,7 @@ class ServiceMap extends Component {
     }
 
     clearFilters() {
-        this.setState({ markers: [] });
+        this.setState({markers: []});
         const {serviceTypes, regionArea} = this.state;
         for (let i = 0; i < serviceTypes.length; i++) {
             serviceTypes[i].active = false;
@@ -302,15 +296,16 @@ class ServiceMap extends Component {
     }
 
     onRefresh() {
-        this.setState({ refreshing: true });
+        this.setState({refreshing: true});
         this.fetchData().then(() => {
             this.redrawMarkers(this.state.regionArea);
-            this.setState({ refreshing: false });
+            this.setState({refreshing: false});
         });
     }
 
     _fitMap() {
-        if (this.mapRef && this.state.markers.length > 0) { }
+        if (this.mapRef && this.state.markers.length > 0) {
+        }
     }
 
     /** returns distance between two markers in meters */
@@ -384,7 +379,7 @@ class ServiceMap extends Component {
                 }}
                 key={i}
                 onPress={() => this.onMarkerPress(marker) }
-                >
+            >
                 <View
                     style={{
                         flex: 1,
@@ -400,7 +395,7 @@ class ServiceMap extends Component {
                         borderRadius: 10,
                         borderWidth: 1
                     }}
-                    >
+                >
                     {(marker.neighbourCount) ?
                         <Text
                             style={{
@@ -408,7 +403,7 @@ class ServiceMap extends Component {
                                 color: themes.dark.textColor,
                                 textAlign: 'center',
                             }}
-                            >
+                        >
                             {marker.neighbourCount + 1}
                         </Text> : marker.serviceType && (
                             <Icon
@@ -418,12 +413,12 @@ class ServiceMap extends Component {
                                     color: themes.dark.textColor,
                                     textAlign: 'center',
                                 }}
-                                />
+                            />
                         ) }
                 </View>
             </MapView.Marker>
         ));
-        this.setState({ markerElements })
+        this.setState({markerElements})
     }
 
     redrawMapboxMarkers(region) {
@@ -469,7 +464,7 @@ class ServiceMap extends Component {
             }
         )).filter((x) => x);
 
-        this.setState({ annotations });
+        this.setState({annotations});
     }
 
     getMapView(nativeAvailable) {
@@ -495,7 +490,7 @@ class ServiceMap extends Component {
                 onRegionChangeComplete={(region) => this.redrawMarkers(region) }
                 onRegionChange={(region) => this.onRegionChange(region) }
                 onPress={() => Platform.OS != 'ios' && this.clearActiveMarker() }
-                >
+            >
                 {markerElements}
             </MapView>);
 
@@ -550,7 +545,7 @@ class ServiceMap extends Component {
                 ref={map => {
                     this._mapBox = map;
                 } }
-                />);
+            />);
         }
 
     }
@@ -573,12 +568,12 @@ class ServiceMap extends Component {
                     <ScrollView
                         ref={(ref) => this.activeMarkerScrollViewRef = ref}
                         style={[
-                            { borderColor: themes[theme].darkerDividerColor },
+                            {borderColor: themes[theme].darkerDividerColor},
                             getContainerColor(theme),
-                            { position: 'absolute', left: 0, bottom: 0, width: width, borderTopWidth: 2 },
-                            { height: (height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55)) / 2.5 }
+                            {position: 'absolute', left: 0, bottom: 0, width: width, borderTopWidth: 2},
+                            {height: (height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55)) / 2.5}
                         ]}
-                        >
+                    >
                         <MapPopup marker={activeMarker}/>
                     </ScrollView>
                 ) }
@@ -595,45 +590,45 @@ class ServiceMap extends Component {
                                 height: height
                             }
                         ]}
-                        >
+                    >
                         <View
                             style={[
                                 styles.viewHeaderContainer,
-                                { backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor },
-                                { paddingTop: 10 }
+                                {backgroundColor: (theme == 'dark') ? themes.dark.menuBackgroundColor : themes.light.dividerColor},
+                                {paddingTop: 10}
                             ]}
-                            >
+                        >
                             <Text
                                 style={[
                                     styles.viewHeaderText,
                                     getFontFamily(language),
                                     theme == 'dark' ? styles.viewHeaderTextDark : styles.viewHeaderTextLight
                                 ]}
-                                >
+                            >
                                 {I18n.t('FILTER_BY_CATEGORY').toUpperCase() }
                             </Text>
                         </View>
                         <View
                             style={[
                                 styles.searchBarContainer,
-                                { backgroundColor: theme == 'dark' ? styles.menuBackgroundColor : styles.dividerColor },
+                                {backgroundColor: theme == 'dark' ? styles.menuBackgroundColor : styles.dividerColor},
                             ]}
-                            >
+                        >
                             <Button
                                 color="green"
                                 icon="md-close"
                                 text={I18n.t('CLEAR_FILTERS').toUpperCase() }
                                 onPress={this.clearFilters.bind(this) }
-                                buttonStyle={{ height: 44, marginRight: 2 }}
-                                iconStyle={Platform.OS === 'ios' ? { top: 2 } : {}}
-                                />
+                                buttonStyle={{height: 44, marginRight: 2}}
+                                iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
+                            />
                             <Button
                                 color="green"
                                 icon="md-funnel"
                                 text={I18n.t('FILTER_SERVICES').toUpperCase() }
                                 onPress={this.filterByTypes.bind(this) }
-                                buttonStyle={{ height: 44, marginLeft: 2 }}
-                                />
+                                buttonStyle={{height: 44, marginLeft: 2}}
+                            />
                         </View>
                         <ListView
                             dataSource={this.state.serviceTypeDataSource}
@@ -641,8 +636,8 @@ class ServiceMap extends Component {
                             keyboardShouldPersistTaps={true}
                             keyboardDismissMode="on-drag"
                             direction={this.props.direction}
-                            style={{ flex: 1 }}
-                            />
+                            style={{flex: 1}}
+                        />
                     </View>
                 ) }
                 <View
@@ -656,7 +651,7 @@ class ServiceMap extends Component {
                             width: width
                         }
                     ]}
-                    >
+                >
                     <SearchBar
                         theme={theme}
                         floating={!filteringView}
@@ -664,7 +659,7 @@ class ServiceMap extends Component {
                         searchFunction={(text) => this.filterByText(text) }
                         buttonOnPressAction={() => this.searchFilterButtonAction() }
                         drawerButton={true}
-                        />
+                    />
                 </View>
                 {(markers.length == MAX_SERVICES && !filteringView) && (
                     <View
@@ -692,13 +687,13 @@ class ServiceMap extends Component {
                                     fontSize: 24
                                 }}
                                 name="md-warning"
-                                />
+                            />
                         </View>
                         <Text style={[
                             styles.flex,
-                            { color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor },
+                            {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                             getFontFamily(language),
-                            { textAlign: 'center' }
+                            {textAlign: 'center'}
                         ]}>
                             {I18n.t('TOO_MANY_RESULTS') }
                         </Text>
@@ -730,14 +725,14 @@ class ServiceMap extends Component {
                                     fontSize: 32
                                 }}
                                 name="md-warning"
-                                />
+                            />
                         </View>
                         <View style={styles.container}>
                             <Text style={[
                                 styles.flex,
-                                { color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor },
+                                {color: theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor},
                                 getFontFamily(language),
-                                { textAlign: 'center' }
+                                {textAlign: 'center'}
                             ]}>
                                 {I18n.t('OFFLINE_MODE') }
                             </Text>
@@ -753,17 +748,17 @@ class ServiceMap extends Component {
                                         marginBottom: 5,
                                         alignSelf: 'center'
                                     }}
-                                    />
+                                />
                             </View>
                         </View>
                     </View>
                 ) }
                 {loading &&
-                    <LoadingOverlay
-                        theme={theme}
-                        height={height}
-                        width={width}
-                        />}
+                <LoadingOverlay
+                    theme={theme}
+                    height={height}
+                    width={width}
+                />}
             </View>
         );
 

@@ -6,7 +6,7 @@ import {
     TouchableOpacity,
     Platform
 } from 'react-native';
-import {DirectionalText} from '../components';
+import {DirectionalText, Icon} from '../components';
 import {connect} from 'react-redux';
 import styles, {
     getToolbarHeight,
@@ -14,7 +14,6 @@ import styles, {
     themes
 } from '../styles';
 
-import Icon from './Icon';
 
 export class Toolbar extends Component {
 

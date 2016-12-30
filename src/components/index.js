@@ -17,3 +17,4 @@ export {default as SelectableListItem} from './SelectableListItem';
 export {default as LoadingOverlay} from './LoadingOverlay';
 export {default as Icon} from './Icon';
 export {default as ParallaxView} from './ParallaxView';
+export {default as ServiceListItem} from './ServiceListItem';

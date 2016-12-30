@@ -54,7 +54,7 @@ export class ServiceDetails extends Component {
 
     static propTypes = {
         location: PropTypes.shape({
-            id: PropTypes.number.isRequired,
+            id: PropTypes.number,
             name: PropTypes.string.isRequired
         }),
         service: PropTypes.shape({

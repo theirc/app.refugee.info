@@ -94,7 +94,7 @@ const componentStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     searchBarContainerLight: {
-        backgroundColor: themes.light.dividerColor
+        backgroundColor: themes.light.lighterDividerColor
     },
     searchBarContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor

@@ -24,7 +24,9 @@ export default class Icon extends Component {
                 }
             }
         }
-
+        if (!props.name) {
+            return null;
+        }
         return (<IconComponent {...props} />);
     }
 }

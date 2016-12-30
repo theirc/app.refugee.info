@@ -68,9 +68,6 @@ class ServiceMap extends Component {
 
     constructor(props) {
         super(props);
-        if (props.hasOwnProperty('savedState') && props.savedState) {
-            this.state = props.savedState;
-        } else {
             this.state = {
                 dataSource: new ListView.DataSource({
                     rowHasChanged: (row1, row2) => row1.id !== row2.id
@@ -84,7 +81,6 @@ class ServiceMap extends Component {
                 refreshing: false,
                 activeMarker: null
             };
-        }
         this.serviceCommons = new ServiceCommons();
     }
 

@@ -53,7 +53,7 @@ const componentStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     searchFilterButtonContainerLight: {
-        backgroundColor: themes.light.dividerColor
+        backgroundColor: themes.light.lighterDividerColor
     },
     searchFilterButtonContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor

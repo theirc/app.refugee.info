@@ -58,8 +58,8 @@ export class ListItem extends Component {
                     />
                     <View style={[
                         componentStyles.listItemTextContainer,
-                        styles.bottomDividerLight,
-                        {borderBottomWidth: 1}]}
+                        styles.bottomDividerLight
+                    ]}
                     >
                         <DirectionalText style={[
                             componentStyles.listItemText,
@@ -82,10 +82,10 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'row'
     },
     listItemTextContainer: {
-        flexGrow: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 20
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+        borderBottomWidth: 1
     },
     listItemText: {
         fontSize: 15

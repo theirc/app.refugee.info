@@ -146,11 +146,7 @@ export class GeneralInformation extends Component {
         let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
-                <View style={[{
-                    paddingHorizontal: 5, paddingVertical: 10, height: 80, flexDirection: 'row',
-                    borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor
-                }]}
-                >
+                <View style={componentStyles.buttonsContainer}>
                     <Button
                         color="green"
                         icon="fa-list"
@@ -222,6 +218,15 @@ const componentStyles = StyleSheet.create({
         color: themes.light.greenAccentColor,
         backgroundColor: themes.light.backgroundColor,
         textAlign: 'center'
+    },
+    buttonsContainer: {
+        paddingHorizontal: 5,
+        paddingVertical: 10,
+        height: 70,
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: themes.light.lighterDividerColor,
+        backgroundColor: themes.light.lighterDividerColor
     }
 
 });

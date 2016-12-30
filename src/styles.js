@@ -14,7 +14,7 @@ export const themes = {
         darkBackgroundColor: '#000000',
         dividerColor: '#E2E2E2',
         darkerDividerColor: '#BABABA',
-        lighterDividerColor: '#F2F2F2',
+        lighterDividerColor: '#EFEFEF',
         toolbarColor: '#FDF9F9',
         greenAccentColor: '#00BA50',
         yellowAccentColor: '#FFDF0C',
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
 
     searchBarContainerLight: {
-        backgroundColor: themes.light.dividerColor
+        backgroundColor: themes.light.lighterDividerColor
     },
     searchBarContainerDark: {
         backgroundColor: themes.dark.menuBackgroundColor
@@ -425,7 +425,7 @@ export function getElevation(level = 3) {
     else return {
             // Android KitKat and JellyBean polyfill
             borderBottomColor: 'rgba(0,0,0,0.3)',
-            borderBottomWidth: 0.5
+            borderBottomWidth: 1
         }
 }
 export function isStatusBarTranslucent() {
