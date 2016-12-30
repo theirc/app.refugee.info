@@ -204,7 +204,7 @@ export class ServiceDetails extends Component {
                         {row.name}
                     </Text>
                 </View>
-                <Divider theme={theme} margin={2}/>
+                <Divider margin={2}/>
                 <Text style={[
                     getTextAlign(direction),
                     getFontFamily(language),
@@ -264,7 +264,7 @@ export class ServiceDetails extends Component {
                             >
                                 {rateStars}
                             </View>
-                            <Divider theme={theme} margin={4}/>
+                            <Divider margin={4}/>
                             <TextInput
                                 onChangeText={
                                     (text) => this.setState({name: text})
@@ -298,7 +298,7 @@ export class ServiceDetails extends Component {
                                 ]}
                                 underlineColorAndroid='transparent'
                             />
-                            <Divider theme={theme} margin={4}/>
+                            <Divider margin={4}/>
                             <View style={[styles.modalButtonContainer, getRowOrdering(direction)]}>
                                 <TouchableHighlight
                                     onPress={() => {
@@ -343,7 +343,7 @@ export class ServiceDetails extends Component {
                     ]}>
                         {I18n.t('RATE_THIS_SERVICE') }
                     </Text>
-                    <Divider theme={theme}/>
+                    <Divider />
                     <View style={[styles.starContainer, getRowOrdering(direction)]}>
                         {rateStars}
                     </View>
@@ -489,7 +489,7 @@ export class ServiceDetails extends Component {
         let titleIcon = null;
         if (iconName) {
             titleIcon = (<View
-                style={[componentStyles.titleIcon, {
+                style={[componentStyles.titleIconContainer, {
                     padding: 2,
                     backgroundColor: themes.light.greenAccentColor,
                     alignItems: 'center',
@@ -514,13 +514,13 @@ export class ServiceDetails extends Component {
         } else if (toolbarTitleImage) {
             titleIcon = (<Image
                 source={{uri: toolbarTitleImage}}
-                style={componentStyles.titleIcon}
+                style={componentStyles.titleIconContainer}
             />);
         }
 
         const defaultServiceImage = {
             dark: require('../assets/service-placeholder-dark.png'),
-            light: require('../assets/service-placeholder-light.png'),
+            light: require('../assets/service-placeholder-light.png')
         };
 
         const backgroundImage = service.image ? {uri: service.image} : defaultServiceImage[theme || 'light'];
@@ -618,7 +618,7 @@ export class ServiceDetails extends Component {
                             {service.provider.name}
                         </Text>
                     </View>
-                    <Divider theme={theme}/>
+                    <Divider />
                 </View>
 
                 {!!service.description && <View style={[styles.detailsContainer]}>
@@ -707,7 +707,7 @@ export class ServiceDetails extends Component {
     }
 }
 const componentStyles = StyleSheet.create({
-    titleIcon: {
+    titleIconContainer: {
         width: 26,
         height: 26,
         marginLeft: 5,

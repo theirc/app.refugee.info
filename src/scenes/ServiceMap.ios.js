@@ -224,10 +224,8 @@ class ServiceMap extends Component {
         return (
             <SelectableListItem
                 text={type.name}
-                fontSize={13}
                 onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
-                image={type.icon_url ? {uri: type.icon_url} : null}
                 icon={type.vector_icon || null}
             />
         );
@@ -528,7 +526,6 @@ class ServiceMap extends Component {
                         initialSearchText={this.props.searchCriteria}
                         searchFunction={(text) => this.filterByText(text)}
                         buttonOnPressAction={() => this.searchFilterButtonAction()}
-                        buttonActive={filteringView}
                         drawerButton={true}
                     />
                 </View>

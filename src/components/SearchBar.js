@@ -1,20 +1,18 @@
 import React, {Component, PropTypes} from 'react';
-import {View, TouchableOpacity, TextInput, StyleSheet, Platform} from 'react-native';
+import {View, TouchableOpacity, TextInput, StyleSheet} from 'react-native';
 import {Icon} from '../components';
 import I18n from '../constants/Messages';
-import {connect} from 'react-redux';
-import {getFontFamily, getElevation, themes} from '../styles';
+import {getElevation, themes} from '../styles';
 
 export class SearchBar extends Component {
 
     static propTypes = {
-        theme: PropTypes.oneOf(['light', 'dark']),
-        searchFunction: PropTypes.func,
+        buttonActive: PropTypes.bool,
+        buttonOnPressAction: PropTypes.func,
+        drawerButton: PropTypes.bool,
         floating: PropTypes.bool,
         initialSearchText: PropTypes.string,
-        drawerButton: PropTypes.bool,
-        buttonOnPressAction: PropTypes.func,
-        buttonActive: PropTypes.bool
+        searchFunction: PropTypes.func
     };
 
     static contextTypes = {
@@ -22,92 +20,71 @@ export class SearchBar extends Component {
     };
 
     render() {
-        const {theme, searchFunction, language, floating, buttonOnPressAction, buttonActive, drawerButton} = this.props;
+        const {searchFunction, floating, buttonOnPressAction, drawerButton} = this.props;
         return (
             <View style={[
                 componentStyles.searchBarContainer,
-                floating
-                    ? {}
-                    : theme == 'dark' ? componentStyles.searchBarContainerDark : componentStyles.searchBarContainerLight
+                !floating && componentStyles.searchBarContainerLight
             ]}
             >
                 <View
                     style={[
                         getElevation(),
                         componentStyles.searchBar,
-                        theme == 'dark' ? componentStyles.searchBarDark : componentStyles.searchBarLight
+                        componentStyles.searchBarLight
                     ]}
                 >
                     <View style={componentStyles.searchBarIconContainer}>
                         <Icon
                             name="ios-search"
-                            style={[
-                                componentStyles.searchBarIcon,
-                                theme == 'dark' ? componentStyles.searchBarIconDark : componentStyles.searchBarIconLight
-                            ]}
+                            style={[componentStyles.searchBarIcon, componentStyles.searchBarIconLight]}
                         />
                     </View>
                     <TextInput
-                        style={[
-                            componentStyles.searchBarInput,
-                            getFontFamily(language),
-                            theme == 'dark' ? componentStyles.searchBarIconDark : componentStyles.searchBarIconLight
-                        ]}
-                        placeholder={I18n.t('SEARCH')}
-                        returnKeyType={'search'}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        onEndEditing={searchFunction}
-                        placeholderTextColor={
-                            theme == 'dark' ? themes.dark.lighterDividerColor : themes.light.darkerDividerColor
-                        }
-                        underlineColorAndroid='transparent'
-                        defaultValue={this.props.initialSearchText}
                         clearButtonMode="always"
+                        defaultValue={this.props.initialSearchText}
+                        onEndEditing={searchFunction}
+                        placeholder={I18n.t('SEARCH')}
+                        placeholderTextColor={themes.light.darkerDividerColor}
+                        returnKeyType={'search'}
+                        style={[componentStyles.searchBarInput, componentStyles.searchBarIconLight]}
+                        underlineColorAndroid="transparent"
                     />
+
                     {buttonOnPressAction &&
                     <TouchableOpacity
-                        onPress={buttonOnPressAction}
                         activeOpacity={0.6}
+                        onPress={buttonOnPressAction}
                         style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
                     >
                         <Icon
+                            name={'md-funnel'}
                             style={{fontSize: 24}}
-                            name={"md-funnel"}
                         />
                     </TouchableOpacity>}
+
                     {buttonOnPressAction && drawerButton &&
-                    <View style={{
-                        width: 2, height: 32, marginVertical: 8, marginHorizontal: 4,
-                        backgroundColor: themes.light.dividerColor
-                    }}
-                    />}
+                    <View style={componentStyles.divider}/>}
+
                     {drawerButton &&
                     <TouchableOpacity
+                        activeOpacity={0.6}
                         onPress={() => this.context.drawer.open()}
                         style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
-                        activeOpacity={0.6}
                     >
                         <Icon
                             style={{fontSize: 24}}
-                            name={"ios-menu"}
+                            name={'ios-menu'}
                         />
                     </TouchableOpacity>}
                 </View>
             </View>
-        )
+        );
     }
 }
-;
 
-const mapStateToProps = (state) => {
-    return {
-        primary: state.theme.primary,
-        region: state.region,
-        direction: state.direction,
-        language: state.language
-    };
-};
 
 const componentStyles = StyleSheet.create({
     searchBarContainer: {
@@ -154,7 +131,14 @@ const componentStyles = StyleSheet.create({
     searchBarInput: {
         flex: 1,
         fontSize: 14
+    },
+    divider: {
+        width: 2,
+        height: 32,
+        marginVertical: 8,
+        marginHorizontal: 4,
+        backgroundColor: themes.light.dividerColor
     }
 });
 
-export default connect(mapStateToProps)(SearchBar);
+export default SearchBar;

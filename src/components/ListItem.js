@@ -20,11 +20,7 @@ export class ListItem extends Component {
         text: PropTypes.string
     };
 
-    constructor(props) {
-        super(props);
-    }
-
-    getIcon(icon, color, size) {
+    renderIcon(icon, color, size) {
         if (!icon) {
             return;
         }
@@ -42,7 +38,7 @@ export class ListItem extends Component {
 
     render() {
         const {onPress, text, icon, iconColor, fontSize, iconSize} = this.props;
-        const iconElement = this.getIcon(icon, iconColor, iconSize);
+        const iconElement = this.renderIcon(icon, iconColor, iconSize);
 
         return (
             <TouchableHighlight

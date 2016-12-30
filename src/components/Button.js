@@ -40,7 +40,7 @@ export class Button extends Component {
         else return componentStyles.buttonTextWhite;
     }
 
-    getIcon() {
+    renderIcon() {
         const {transparent, icon, iconStyle, color} = this.props;
         if (!icon) {
             return null;
@@ -66,7 +66,7 @@ export class Button extends Component {
 
     render() {
         const {text, color, onPress, textStyle, buttonStyle, transparent} = this.props;
-        const iconImage = this.getIcon();
+        const iconImage = this.renderIcon();
 
         if (transparent) {
             return (

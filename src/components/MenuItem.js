@@ -6,7 +6,7 @@ import {
     TouchableHighlight
 } from 'react-native';
 import DirectionalText from './DirectionalText';
-import styles, {
+import {
     themes
 } from '../styles';
 import {Icon} from '../components';
@@ -22,7 +22,7 @@ class MenuItem extends Component {
         onPress: PropTypes.func
     };
 
-    getWidget() {
+    renderWidget() {
         const item = this.props;
         if (item.icon) {
             return (
@@ -41,7 +41,7 @@ class MenuItem extends Component {
         }
     }
 
-    getBadge() {
+    renderBadge() {
         const {badge} = this.props;
         if (badge) {
             return (
@@ -64,8 +64,8 @@ class MenuItem extends Component {
             return true;
         };
 
-        let widget = this.getWidget();
-        let badge = this.getBadge();
+        let widget = this.renderWidget();
+        let badge = this.renderBadge();
 
         return (
             <TouchableHighlight

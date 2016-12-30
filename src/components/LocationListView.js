@@ -26,11 +26,11 @@ export class LocationListView extends Component {
         });
     }
 
-    renderHeader(custom_header_text = null) {
+    renderHeader(customHeaderText = null) {
         return (
             <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
                 <Text style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
-                    {custom_header_text ? custom_header_text.toUpperCase() : this.props.header.toUpperCase()}
+                    {customHeaderText ? customHeaderText.toUpperCase() : this.props.header.toUpperCase()}
                 </Text>
             </View>
         );

@@ -49,7 +49,7 @@
     "react/jsx-no-bind": [1, {"allowArrowFunctions": true}],
     "react/jsx-no-duplicate-props": 1,
     "react/jsx-no-undef": 1,
-    "react/jsx-space-before-closing": 1,
+    "react/jsx-space-before-closing": 0,
     "react/jsx-sort-props": 1,
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,

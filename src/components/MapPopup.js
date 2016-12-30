@@ -1,24 +1,18 @@
 import React, {Component, PropTypes} from 'react';
-import {Text, View, Image, Dimensions, StyleSheet, ScrollView, TouchableHighlight} from 'react-native';
+import {View, StyleSheet, TouchableHighlight} from 'react-native';
 import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
 import styles, {
-    getFontFamily,
-    getRowOrdering,
-    getTextColor,
-    getContainerColor,
-    getAlignItems,
-    getTextAlign,
-    getUnderlayColor,
     themes
 } from '../styles';
-import {Icon} from '../components';
+import {Icon, DirectionalText} from '../components';
 import I18n from '../constants/Messages';
 
 export class MapPopup extends Component {
 
     static propTypes = {
-        marker: PropTypes.object
+        marker: PropTypes.object,
+        region: PropTypes.object
     };
 
     static contextTypes = {
@@ -38,76 +32,50 @@ export class MapPopup extends Component {
     }
 
     renderWidget(marker) {
-        const {theme} = this.props;
         return (
             <View
-                style={{
-                    flex: 1,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    width: 36,
-                    height: 36,
-                    backgroundColor: themes.light.greenAccentColor,
-                    borderColor: themes[theme].backgroundColor,
-                    borderRadius: 10,
-                    borderWidth: 1
-                }}
+                style={componentStyles.mapWidgetContainer}
             >
                 {marker.serviceType && (
                     <Icon
                         name={(marker.serviceType.vector_icon || '').trim()}
-                        style={{
-                            fontSize: 22,
-                            width: 24,
-                            height: 24,
-                            color: themes.dark.textColor,
-                            textAlign: 'center'
-                        }}
+                        style={componentStyles.mapWidgetIcon}
                     />
                 )}
             </View>
-        )
+        );
     }
 
     getClusterView(cluster) {
-        const {direction, theme, language} = this.props;
         let clusteredServices = cluster.neighbours.map((marker, i) =>
             <TouchableHighlight
-                underlayColor={getUnderlayColor(theme)}
-                onPress={(() => this.navigateToService(marker))}
                 key={i}
+                onPress={(() => this.navigateToService(marker))}
+                underlayColor="rgba(0, 0, 0, 0.2)"
             >
                 <View style={[
-                    getRowOrdering(direction),
+                    styles.row,
                     {paddingLeft: 10, paddingRight: 10}
-                ]}>
+                ]}
+                >
                     <View style={[
                         {justifyContent: 'center', height: 50},
-                        styles.iconContainer,
-                        direction == 'rtl' ? {marginLeft: 10, marginRight: 0} : {}
-                    ]}>
+                        styles.iconContainer
+                    ]}
+                    >
                         {this.renderWidget(marker)}
                     </View>
                     <View style={[
                         styles.container,
-                        getAlignItems(direction),
                         {justifyContent: 'center'}
-                    ]}>
-                        <Text style={[
-                            componentStyles.mapPopupTitle,
-                            getTextColor(theme),
-                            getFontFamily(language)
-                        ]}>
+                    ]}
+                    >
+                        <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                             {marker.title}
-                        </Text>
-                        <Text style={[
-                            componentStyles.mapPopupProvider,
-                            getTextColor(theme),
-                            getFontFamily(language)
-                        ]}>
+                        </DirectionalText>
+                        <DirectionalText style={[componentStyles.mapPopupProvider, styles.textLight]}>
                             {marker.service.provider.name}
-                        </Text>
+                        </DirectionalText>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -115,127 +83,87 @@ export class MapPopup extends Component {
 
         return (
             <View>
-                <Text style={[
-                    getTextAlign(direction),
-                    getFontFamily(language),
-                    getTextColor(theme),
-                    {flex: 1, fontSize: 14, margin: 10},
+                <DirectionalText style={[
+                    styles.textLight,
+                    {flex: 1, fontSize: 14, margin: 10}
                 ]}
                 >
                     {I18n.t('CLUSTER_POPUP_TITLE').replace('{0}', cluster.neighbourCount + 1)}
-                </Text>
+                </DirectionalText>
                 <TouchableHighlight
-                    underlayColor={getUnderlayColor(theme)}
                     onPress={(() => this.navigateToService(cluster))}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
                 >
                     <View style={[
-                        getRowOrdering(direction),
+                        styles.row,
                         {paddingLeft: 10, paddingRight: 10}]}
                     >
                         <View style={[
                             styles.iconContainer,
                             {justifyContent: 'center', height: 50},
-                            direction == 'rtl' ? {marginLeft: 10, marginRight: 0} : {}
-                        ]}>
+                        ]}
+                        >
                             {this.renderWidget(cluster)}
                         </View>
                         <View style={[
                             styles.container,
-                            getAlignItems(direction),
                             {justifyContent: 'center'}
-                        ]}>
-                            <Text style={[
-                                componentStyles.mapPopupTitle,
-                                getTextColor(theme),
-                                getFontFamily(language)
-                            ]}>
+                        ]}
+                        >
+                            <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                                 {cluster.title}
-                            </Text>
-                            <Text style={[
-                                componentStyles.mapPopupProvider,
-                                getTextColor(theme),
-                                getFontFamily(language)
-                            ]}>
+                            </DirectionalText>
+                            <DirectionalText style={[componentStyles.mapPopupProvider, styles.textLight]}>
                                 {cluster.service.provider.name}
-                            </Text>
+                            </DirectionalText>
                         </View>
                     </View>
                 </TouchableHighlight>
                 {clusteredServices}
             </View>
-        )
+        );
     }
 
     render() {
-        const {direction, marker, theme, language} = this.props;
+        const {marker} = this.props;
         if (marker.neighbourCount) {
             let clusterRows = this.getClusterView(marker);
             return (
-                <View style={[
-                    styles.container,
-                    getContainerColor(theme)
-                ]}>
+                <View style={[styles.container, styles.containerLight]}>
                     {clusterRows}
                 </View>
             );
         }
         return (
-            <View
-                style={[
-                    getContainerColor(theme),
-                ]}
-            >
+            <View style={[styles.containerLight]}>
                 <TouchableHighlight
-                    underlayColor={getUnderlayColor(theme)}
                     onPress={(() => this.navigateToService(marker))}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
                 >
-                    <View style={[
-                        getRowOrdering(direction),
-                        {padding: 10}
-                    ]}>
-                        <View style={[
-                            styles.iconContainer,
-                            {justifyContent: 'center', height: 48},
-                            direction == 'rtl' ? {marginLeft: 10, marginRight: 0} : {}
-                        ]}>
+                    <View style={[styles.row, {padding: 10}]}>
+                        <View style={[styles.iconContainer, {justifyContent: 'center', height: 48},]}>
                             {this.renderWidget(marker)}
                         </View>
-                        <View style={[
-                            styles.container,
-                            {justifyContent: 'center'},
-                            getAlignItems(direction)
-                        ]}>
-                            <Text style={[
-                                componentStyles.mapPopupTitle,
-                                getTextColor(theme),
-                                getFontFamily(language)
-                            ]}>
+                        <View style={[styles.container, {justifyContent: 'center'}]}>
+                            <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                                 {marker.title}
-                            </Text>
-                            <Text style={[
-                                componentStyles.mapPopupProvider,
-                                getTextColor(theme),
-                                getFontFamily(language)
-                            ]}>
+                            </DirectionalText>
+                            <DirectionalText style={[componentStyles.mapPopupProvider, styles.textLight]}>
                                 {marker.service.provider.name}
-                            </Text>
+                            </DirectionalText>
                         </View>
                     </View>
                 </TouchableHighlight>
                 <View style={{paddingLeft: 10, paddingRight: 10}}>
-                    <Text style={[
-                        componentStyles.mapPopupDescription,
-                        getTextColor(theme),
-                        getFontFamily(language),
-                        getTextAlign(direction),
-                    ]}>
+                    <DirectionalText style={[componentStyles.mapPopupDescription, styles.textLight]}>
                         {marker.description}
-                    </Text>
+                    </DirectionalText>
                 </View>
             </View>
-        )
+        );
     }
-};
+}
+
 
 const componentStyles = StyleSheet.create({
     mapPopupTitle: {
@@ -243,19 +171,36 @@ const componentStyles = StyleSheet.create({
         fontWeight: 'bold'
     },
     mapPopupProvider: {
-        fontSize: 12,
+        fontSize: 12
     },
     mapPopupDescription: {
         marginTop: 5,
         fontSize: 11
+    },
+    mapWidgetContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 36,
+        height: 36,
+        backgroundColor: themes.light.greenAccentColor,
+        borderColor: themes.light.backgroundColor,
+        borderRadius: 10,
+        borderWidth: 1
+    },
+    mapWidgetIcon: {
+        fontSize: 22,
+        width: 24,
+        height: 24,
+        color: themes.dark.textColor,
+        textAlign: 'center'
     }
 });
 
 const mapStateToProps = (state) => {
     return {
-        direction: state.direction,
         language: state.language,
-        theme: state.theme,
         region: state.region
     };
 };

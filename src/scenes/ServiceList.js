@@ -371,10 +371,8 @@ export class ServiceList extends Component {
         return (
             <SelectableListItem
                 text={type.name}
-                fontSize={13}
                 onPress={this.toggleServiceType.bind(this, type) }
                 selected={type.active}
-                image={type.icon_url ? {uri: type.icon_url} : null}
                 icon={type.vector_icon || null}
             />
         );
