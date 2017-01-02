@@ -11,7 +11,7 @@ import {connect} from 'react-redux';
 import styles, {themes} from '../styles';
 import {Regions} from '../data';
 import ApiClient from '../utils/ApiClient';
-import {updateRegionIntoStorage, updateLocationsIntoStorage} from '../actions';
+import {updateRegionIntoStorage} from '../actions/region';
 
 export class GeneralInformation extends Component {
 
@@ -66,20 +66,15 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        const {region, dispatch, locations} = this.props;
+        const {region, dispatch} = this.props;
         this.setState({refreshing: true}, () => {
             this.apiClient = new ApiClient(this.context, this.props);
-            this.apiClient.getLocation(region.id, true).then((location) => {
-                let hasChanged = JSON.stringify(region.content) != JSON.stringify(location.content);
+            this.apiClient.getLocation(region.slug, true).then((location) => {
+                let hasChanged = region.updated_at != location.updated_at;
                 if (hasChanged) {
-                    let locationToChange = locations.filter((filtered) => filtered.id == location.id)[0];
-                    let newLocations = locations;
-                    newLocations[(locations.indexOf(locationToChange))] = location;
                     Promise.all([
                         dispatch(updateRegionIntoStorage(location)),
-                        dispatch(updateLocationsIntoStorage(newLocations)),
-                        dispatch({type: 'REGION_CHANGED', payload: location}),
-                        dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations})
+                        dispatch({type: 'REGION_CHANGED', payload: location})
                     ]).then(() => {
                         this.setState({
                             refreshing: false,
@@ -94,6 +89,9 @@ export class GeneralInformation extends Component {
                         offline: false
                     });
                 }
+                setTimeout(() => {
+                    this.setState({dataSourceUpdated: undefined});
+                }, 2500);
             }).catch(() => {
                 this.setState({
                     offline: true,
@@ -213,10 +211,10 @@ const componentStyles = StyleSheet.create({
         borderBottomWidth: 1
     },
     refreshText: {
-        paddingVertical: 15,
+        paddingVertical: 10,
         fontSize: 13,
         color: themes.light.greenAccentColor,
-        backgroundColor: themes.light.backgroundColor,
+        backgroundColor: themes.light.lighterDividerColor,
         textAlign: 'center'
     },
     buttonsContainer: {

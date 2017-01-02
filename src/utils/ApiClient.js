@@ -49,8 +49,8 @@ export default class ApiClient {
             });
     }
 
-    getCountries() {
-        return this.fetch('region/?level=1&simple');
+    getCountries(raiseException = false) {
+        return this.fetch('region/?level=1&simple', raiseException);
     }
 
     getAllChildrenOf(parentId, raiseException = false) {
