@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     },
     viewHeaderText: {
         fontSize: 13,
-        fontFamily: 'Montserrat',
         textAlign: 'center'
     },
     viewHeaderTextLight: {
@@ -263,6 +262,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingLeft: 10,
         paddingRight: 10,
+        backgroundColor: themes.light.toolbarColor
     },
     feedbackRowFacebookContainer: {
         height: 48,

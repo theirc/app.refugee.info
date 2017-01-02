@@ -88,7 +88,7 @@ export class ServiceDetails extends Component {
         if (!this.state.loaded) {
             checkPlayServices().then((available) => {
                 let nativeAvailable = (Platform.OS === 'ios' || available);
-                this.setState({nativeAvailable})
+                this.setState({nativeAvailable});
 
                 this.fetchData().done();
             });

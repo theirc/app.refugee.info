@@ -1,24 +1,30 @@
-import React, {Component} from 'react';
-import {View, Linking, Platform, WebView, TouchableOpacity, Text, AsyncStorage} from 'react-native';
-import {wrapHtmlContent} from '../utils/htmlUtils'
-import styles, {themes} from '../styles';
+import React, {Component, PropTypes} from 'react';
+import {View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage} from 'react-native';
+import {wrapHtmlContent} from '../utils/htmlUtils';
+import styles from '../styles';
 import {connect} from 'react-redux';
-import {MapButton, Icon} from '../components';
+import {MapButton, Icon, DirectionalText} from '../components';
 import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
-import {getAllUrlParams} from "../utils/helpers";
+import {getAllUrlParams} from '../utils/helpers';
 import I18n from '../constants/Messages';
 import Share from 'react-native-share';
-import {WEB_PATH} from '../constants'
-import ApiClient from "../utils/ApiClient";
+import {WEB_PATH} from '../constants';
+import ApiClient from '../utils/ApiClient';
 
-const SHOW_FEEDBACK_BAR = true;
 
 export class GeneralInformationDetails extends Component {
 
     static propTypes = {
-        title: React.PropTypes.string.isRequired,
-        section: React.PropTypes.string.isRequired
+        content_slug: PropTypes.string,
+        dispatch: PropTypes.func,
+        index: PropTypes.number,
+        language: PropTypes.string,
+        region: PropTypes.object,
+        section: PropTypes.string.isRequired,
+        sectionTitle: PropTypes.string,
+        showTitle: PropTypes.bool,
+        title: PropTypes.string.isRequired
     };
 
     static contextTypes = {
@@ -42,7 +48,7 @@ export class GeneralInformationDetails extends Component {
     }
 
     _loadInitialState() {
-        const {section, sectionTitle, language, theme, showTitle, dispatch, region, index, content_slug} = this.props;
+        const {dispatch, section, sectionTitle, language, showTitle, region, index, content_slug} = this.props;
         if (showTitle) {
             dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle});
         } else {
@@ -53,7 +59,7 @@ export class GeneralInformationDetails extends Component {
                 section,
                 language,
                 (!showTitle && !(region.content.length == 1)) ? sectionTitle : null,
-                theme,
+                'light',
                 Platform.OS
             )
         };
@@ -64,9 +70,7 @@ export class GeneralInformationDetails extends Component {
             });
         });
 
-        this.setState({
-            source: source
-        });
+        this.setState({source});
     }
 
     _onNavigationStateChange(state) {
@@ -190,8 +194,7 @@ export class GeneralInformationDetails extends Component {
                         if (info) {
                             let payload = {
                                 title: '',
-                                section:
-                                info.content[0].section,
+                                section: info.content[0].section,
                                 slug: info.slug,
                                 index: info.index,
                                 content_slug: info.slug
@@ -262,53 +265,79 @@ export class GeneralInformationDetails extends Component {
                             thumbsUp: response.thumbs_up,
                             thumbsDown: response.thumbs_down
                         });
-                    })
+                    });
                 });
-                AsyncStorage.setItem(`rating_${region.slug}_${content_slug ? content_slug : index}`, rating)
+                AsyncStorage.setItem(`rating_${region.slug}_${content_slug ? content_slug : index}`, rating);
             }
         });
 
     }
 
-    render() {
+    renderFeedbackBar() {
         const {thumbsUp, thumbsDown} = this.state;
+
+        return (
+            <View style={styles.feedbackRow}>
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => this.onSharePress()}
+                    style={styles.feedbackRowFacebookContainer}
+                >
+                    <Icon
+                        name="fa-share"
+                        style={styles.feedbackRowIcon}
+                    />
+                    <DirectionalText style={styles.feedbackRowShare}>
+                        {I18n.t('SHARE')}
+                    </DirectionalText>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => this.rate('up')}
+                    style={styles.feedbackRowIconContainer}
+                >
+                    <Icon
+                        name="fa-thumbs-up"
+                        style={styles.feedbackRowIcon}
+                    />
+                    <DirectionalText style={{width: 30}}>
+                        {thumbsUp}
+                    </DirectionalText>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => this.rate('down')}
+                    style={styles.feedbackRowIconContainer}
+                >
+                    <Icon
+                        name="fa-thumbs-down"
+                        style={styles.feedbackRowIcon}
+                    />
+                    <DirectionalText style={{width: 30}}>
+                        {thumbsDown}
+                    </DirectionalText>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    render() {
+        const feedbackBar = this.renderFeedbackBar();
+
         return (
             <View style={styles.container}>
                 <View style={styles.container}>
                     {this.state.source &&
                     <WebView
-                        ref={(v) => this.webView = v}
                         onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
+                        ref={(v) => this.webView = v}
                         source={this.state.source}
-                    />
-                    }
-                    <MapButton
-                        direction={this.props.direction}
-                    />
+                    />}
+                    <MapButton />
                 </View>
-                {SHOW_FEEDBACK_BAR &&
-                <View style={[
-                    {backgroundColor: themes.light.toolbarColor},
-                    styles.feedbackRow
-                ]}
-                >
-                    <TouchableOpacity style={styles.feedbackRowFacebookContainer} activeOpacity={0.5}
-                                      onPress={() => this.onSharePress()}>
-                        <Icon name="fa-share" style={styles.feedbackRowIcon}/>
-                        <Text style={styles.feedbackRowShare}>{I18n.t('SHARE')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}
-                                      onPress={() => this.rate('up')}>
-                        <Icon name="fa-thumbs-up" style={styles.feedbackRowIcon}/>
-                        <Text style={{width: 30}}>{thumbsUp}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.feedbackRowIconContainer} activeOpacity={0.5}
-                                      onPress={() => this.rate('down')}>
-                        <Icon name="fa-thumbs-down" style={styles.feedbackRowIcon}/>
-                        <Text style={{width: 30}}>{thumbsDown}</Text>
-                    </TouchableOpacity>
-                </View>
-                }
+                {feedbackBar}
             </View>
         );
     }
@@ -317,10 +346,7 @@ export class GeneralInformationDetails extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         language: state.language,
-        theme: state.theme,
-        direction: state.direction,
         region: state.region
     };
 };

@@ -15,6 +15,9 @@ export class CountryChoice extends Component {
 
     constructor(props) {
         super(props);
+        this.loadInitialState = this.loadInitialState.bind(this);
+        this.regionData = new Regions(props);
+
         this.state = {
             countries: [],
             loaded: false,
@@ -23,23 +26,23 @@ export class CountryChoice extends Component {
     }
 
     async componentDidMount() {
+        this.loadInitialState();
+    }
+
+    async loadInitialState() {
         const {navigator} = this.context;
-        const regionData = new Regions(this.props);
         let countries = [];
         try {
-            countries = await regionData.listCountries();
+            countries = await this.regionData.listCountries(true);
             countries = countries.filter(x => !x.hidden);
         } catch (e) {
-            this.setState({offline: true});
+            return this.setState({offline: true});
         }
         countries.forEach((country) => {
-            if (country && country.metadata) {
-                country.pageTitle = (country.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-            }
             country.onPress = () => {
                 requestAnimationFrame(() => {navigator.forward(null, null, {country})});
             };
-            country.title = country.pageTitle || (country.metadata && country.metadata.page_title) || country.name;
+            country.title = country.name;
             country.image = getCountryFlag(country.code);
         });
 
@@ -55,7 +58,7 @@ export class CountryChoice extends Component {
             return (
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.componentDidMount.bind(this)}
+                    onRefresh={this.loadInitialState}
                 />
             );
         }
@@ -73,9 +76,7 @@ export class CountryChoice extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        language: state.language,
-        direction: state.direction,
-        theme: state.theme
+        language: state.language
     };
 };
 

@@ -91,7 +91,7 @@ export class GeneralInformation extends Component {
                 }
                 setTimeout(() => {
                     this.setState({dataSourceUpdated: undefined});
-                }, 2500);
+                }, 3000);
             }).catch(() => {
                 this.setState({
                     offline: true,
@@ -188,7 +188,6 @@ export class GeneralInformation extends Component {
                     renderRow={(rowData) => this.renderRow(rowData)}
                 />
             </View>
-
         );
     }
 }

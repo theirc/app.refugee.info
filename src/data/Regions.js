@@ -37,13 +37,13 @@ export default class Regions {
         return children;
     }
 
-    async listCountries() {
-        return await this.client.getCountries();
+    async listCountries(raiseException) {
+        return await this.client.getCountries(raiseException);
     }
 
-    async listChildren(country, region = null, point = null) {
+    async listChildren(country, region = null, point = null, raiseException) {
         let countryId = country.id;
-        let children = await this.client.getAllChildrenOf(countryId);
+        let children = await this.client.getAllChildrenOf(countryId, raiseException);
         (children || []).forEach((m) => {
             m.country = country;
             m.countryId = countryId;

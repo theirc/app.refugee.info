@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    Text,
     ListView,
     RefreshControl,
     Platform,
@@ -9,7 +8,7 @@ import {
 } from 'react-native';
 import I18n from '../constants/Messages';
 import ServiceCommons from '../utils/ServiceCommons';
-import {MapButton, ServiceListItem} from '../components';
+import {MapButton, ServiceListItem, DirectionalText} from '../components';
 import {
     OfflineView,
     SearchBar,
@@ -64,6 +63,9 @@ export class ServiceList extends Component {
         };
 
         this.serviceCommons = new ServiceCommons();
+        this.filterByTypes = this.filterByTypes.bind(this);
+        this.clearFilters = this.clearFilters.bind(this);
+        this.onRefresh = this.onRefresh.bind(this);
     }
 
     componentWillMount() {
@@ -135,7 +137,7 @@ export class ServiceList extends Component {
                 timeout: 5000,
                 maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000
             };
-            let {latitude, longitude} = {latitude: 0, longitude: 0};
+            let {latitude, longitude} = {};
             this.getPosition(options)
                 .then((position) => {
                     // when position was determined
@@ -343,16 +345,16 @@ export class ServiceList extends Component {
                         buttonStyle={{height: 44, marginRight: 2}}
                         color="green"
                         icon="md-close"
-                        onPress={this.clearFilters.bind(this)}
-                        text={I18n.t('CLEAR_FILTERS').toUpperCase()}
                         iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
+                        onPress={this.clearFilters}
+                        text={I18n.t('CLEAR_FILTERS').toUpperCase()}
                     />
                     <Button
                         buttonStyle={{height: 44, marginLeft: 2}}
                         color="green"
                         icon="md-funnel"
+                        onPress={this.filterByTypes}
                         text={I18n.t('FILTER_SERVICES').toUpperCase()}
-                        onPress={this.filterByTypes.bind(this)}
                     />
                 </View>
                 <ListView
@@ -360,11 +362,11 @@ export class ServiceList extends Component {
                     enableEmptySections
                     keyboardDismissMode="on-drag"
                     keyboardShouldPersistTaps
-                    style={{flex: 1}}
                     renderRow={(type) => this.renderServiceTypeRow(type)}
+                    style={{flex: 1}}
                 />
             </View>
-        )
+        );
     }
 
     renderServiceList() {
@@ -375,19 +377,17 @@ export class ServiceList extends Component {
                 enableEmptySections
                 keyboardDismissMode="on-drag"
                 keyboardShouldPersistTaps
-                onLoadMoreAsync={() => {
-                    this._loadMoreContentAsync();
-                }}
+                onLoadMoreAsync={() => {this._loadMoreContentAsync()}}
                 refreshControl={
                     <RefreshControl
+                        onRefresh={this.onRefresh}
                         refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh.bind(this)}
                     />
                 }
                 renderRow={(service) => this.renderRow(service)}
                 renderScrollComponent={props => <InfiniteScrollView {...props} />}
             />
-        )
+        );
     }
 
     render() {
@@ -417,7 +417,7 @@ export class ServiceList extends Component {
                         {paddingTop: 10}
                     ]}
                 >
-                    <Text
+                    <DirectionalText
                         style={[
                             styles.viewHeaderText,
                             styles.viewHeaderTextLight
@@ -431,21 +431,23 @@ export class ServiceList extends Component {
                                     ? I18n.t('NEAREST_SERVICES').toUpperCase()
                                     : I18n.t('NO_SERVICES_FOUND').toUpperCase()
                         }
-                    </Text>
+                    </DirectionalText>
                 </View>
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this)}
+                    onRefresh={this.onRefresh}
                 />
                 {viewContent}
                 {!filteringView && (
                     <MapButton
-                        direction={this.props.direction}
                         searchCriteria={this.state.searchCriteria}
                         serviceTypes={this.state.serviceTypes}
                     />) }
                 {(loading && !refreshing) &&
-                <LoadingOverlay height={height - getToolbarHeight() } width={width}/>}
+                <LoadingOverlay
+                    height={height - getToolbarHeight()}
+                    width={width}
+                />}
             </View>
         );
     }

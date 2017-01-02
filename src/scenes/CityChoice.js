@@ -40,16 +40,13 @@ export class CityChoice extends Component {
     async loadInitialState() {
         let cities = [];
         try {
-            cities = await this.regionData.listChildren(this.props.country, true);
+            cities = await this.regionData.listChildren(this.props.country, true, null, true);
         } catch (e) {
-            this.setState({offline: true});
+            return this.setState({offline: true});
         }
         cities.forEach((city) => {
-            if (city && city.metadata) {
-                city.pageTitle = (city.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-            }
             city.onPress = this.onPress.bind(this, city);
-            city.title = city.pageTitle || (city.metadata && city.metadata.page_title) || city.name;
+            city.title = city.name;
             city.image = null;
         });
         this.setState({
@@ -105,9 +102,7 @@ export class CityChoice extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        language: state.language,
-        direction: state.direction,
-        theme: state.theme
+        language: state.language
     };
 };
 

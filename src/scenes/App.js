@@ -1,22 +1,19 @@
 import {
-    AppRegistry,
-    Text,
     View,
     Navigator,
     StatusBar,
-    TouchableOpacity,
     Platform,
-    BackAndroid
+    BackAndroid,
 } from 'react-native';
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import Navigation from './Navigation';
 import Navigate from '../utils/Navigate';
 import {Toolbar} from '../components';
-import Drawer from 'react-native-drawer'
+import Drawer from 'react-native-drawer';
 import store from '../store';
 import {connect} from 'react-redux';
 
-import styles, {themes} from '../styles'
+import styles, {themes} from '../styles';
 
 export class App extends Component {
 
@@ -36,44 +33,15 @@ export class App extends Component {
         BackAndroid.addEventListener('hardwareBackPress', this._hardwareBackPress);
     }
 
-
-    componentWillReceiveProps(props) {
-        /*
-         HERE BE DRAGONS
-         The only way to update the backgroundColor of the drawer and the main panel
-         was to use its internal api, which may change without notice.
-         */
-        const {theme} = props;
-
-        let backgroundColor = theme == 'light' ? themes.light.backgroundColor : themes.dark.backgroundColor;
-        let drawerBackgroundColor = theme == 'light' ? themes.light.menuBackgroundColor : themes.dark.toolbarColor;
-        let drawerBorderColor = theme == 'light' ? themes.light.dividerColor : themes.dark.backgroundColor;
-
-        if (this.drawer) {
-            this.drawer.drawer.setNativeProps({
-                style: {
-                    backgroundColor: drawerBackgroundColor,
-                    borderLeftColor: drawerBorderColor
-                }
-            });
-            this.drawer.main.setNativeProps({
-                style: {
-                    backgroundColor: backgroundColor
-                }
-            });
-        }
-    }
-
     getChildContext = () => {
         return {
             drawer: this.state.drawer,
             navigator: this.state.navigator
         };
     };
-
     toggleDrawer = () => {
         if (!this.state.drawerOpen) {
-            this.drawer.open()
+            this.drawer.open();
         } else {
             this.drawer.close();
         }
@@ -84,7 +52,7 @@ export class App extends Component {
             this.drawer.close();
             return true;
         } else {
-            return this.state.navigator._hardwareBackPress()
+            return this.state.navigator._hardwareBackPress();
         }
     };
 
@@ -94,120 +62,127 @@ export class App extends Component {
         });
     };
 
-    render() {
-        let {drawer, navigator} = this.state;
-        const {direction, theme, country, dispatch} = this.props;
-
-        let drawerStyles = {
-            main: {
-                backgroundColor: themes.light.backgroundColor
-            },
-            drawer: {
-                borderLeftWidth: 1,
-                borderLeftColor: themes.light.dividerColor,
-                backgroundColor: themes.light.backgroundColor,
-                shadowOpacity: 0.8,
-                shadowRadius: 3
-            }
-        };
-        let statusBar = (Platform.OS === 'ios')
-            ?   <StatusBar
-                    barStyle={theme == 'light' ? "default" : 'light-content'}
+    renderStatusBar() {
+        if (Platform.OS === 'ios') {
+            return (
+                <StatusBar
+                    barStyle="default"
                 />
-            :   <StatusBar
-                    translucent={true}
-                    backgroundColor={theme == 'light' ? 'rgba(0,0,0,0.3)' : 'transparent'}
-                />;
+            );
+        } else {
+            return (
+                <StatusBar
+                    backgroundColor="rgba(0,0,0,0.3)"
+                    translucent
+                />
+            );
+        }
+    }
+
+    render() {
+        const {navigator} = this.state;
+        const {dispatch} = this.props;
+
+        const statusBar = this.renderStatusBar();
         return (
             <Drawer
-                ref={(drawer) => {
-                    this.drawer = drawer;
-                } }
-                type="displace"
-                acceptTap={true}
-                content={
-                    <Navigation  />
-                }
-                tapToClose={true}
-                styles={drawerStyles}
-                onOpen={() => {
-                    this.setState({ drawerOpen: true });
-                    dispatch({ type: "DRAWER_CHANGED", payload: true });
-                } }
-                onClose={() => {
-                    this.setState({ drawerOpen: false });
-                    dispatch({ type: "DRAWER_CHANGED", payload: false });
-                } }
-                captureGestures={true}
-                tweenDuration={100}
-                panThreshold={0.08}
-                openDrawerOffset={0.2}
+                acceptTap
+                captureGestures
                 closedDrawerOffset={() => 0}
+                content={
+                    <Navigation />
+                }
+                onClose={() => {
+                    this.setState({drawerOpen: false});
+                    dispatch({type: 'DRAWER_CHANGED', payload: false});
+                }}
+                onOpen={() => {
+                    this.setState({drawerOpen: true});
+                    dispatch({type: 'DRAWER_CHANGED', payload: true});
+                }}
+                openDrawerOffset={0.2}
                 panOpenMask={0.02}
-                side={'right'}
+                panThreshold={0.08}
+                ref={(drawer) => {this.drawer = drawer}}
+                side="right"
+                styles={drawerStyles}
+                tapToClose
+                tweenDuration={100}
+                type="displace"
             >
                 {statusBar}
                 <Navigator
                     configureScene={() => {
-                            let sceneConfig = null;
-                            if(Platform.OS == 'ios') {
-                                sceneConfig = direction != 'rtl' ? {...Navigator.SceneConfigs.FloatFromLeft }  : {...Navigator.SceneConfigs.FloatFromRight } ;
-                                sceneConfig.gestures = {...sceneConfig.gestures};
-                                sceneConfig.gestures.pop ={...sceneConfig.gestures.pop};
+                        let sceneConfig = null;
+                        if (Platform.OS == 'ios') {
+                            sceneConfig = {...Navigator.SceneConfigs.FloatFromRight};
+                            sceneConfig.gestures = {...sceneConfig.gestures};
+                            sceneConfig.gestures.pop = {...sceneConfig.gestures.pop};
 
-                                if(!navigator || !navigator.isChild ) {
-                                    sceneConfig.gestures.pop = null;
-                                }
-                            } else {
-                                sceneConfig = Navigator.SceneConfigs.FadeAndroid;
+                            if (!navigator || !navigator.isChild) {
+                                sceneConfig.gestures.pop = null;
                             }
-
-                            return sceneConfig;
-                        } }
-                    initialRoute={Navigate.getInitialRoute() }
-                    navigationBar={
-                            <Toolbar
-                                theme={theme}
-                                drawerOpen={this.state.drawerOpen}
-                                onMenuIconPress={this.toggleDrawer}
-                            />
+                        } else {
+                            sceneConfig = Navigator.SceneConfigs.FadeAndroid;
                         }
-                    ref={(navigator) => { !this.state.navigator ? this.setNavigator(navigator) : null; } }
-                    onDidFocus={() => {
-                        }}
+                        return sceneConfig;
+                    }}
+                    initialRoute={Navigate.getInitialRoute()}
+                    navigationBar={
+                        <Toolbar
+                            onMenuIconPress={this.toggleDrawer}
+                            drawerOpen={this.state.drawerOpen}
+                        />
+                    }
+                    ref={(navigator) => {
+                        !this.state.navigator ? this.setNavigator(navigator) : null;
+                    }}
                     renderScene={(route) => {
-                            if (this.state.navigator && route.component) {
-                                if(navigator) {
-                                    navigator.updateIsChild();
-                                }
-
-                                let instance =
-                                    <route.component
-                                        path={route.path}
-                                        title={route.title}
-                                        {...route.props}
-                                        />;
-                                return (
-                                    <View
-                                        pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
-                                        showsVerticalScrollIndicator={true}
-                                        style={[styles.scene,
-                                            theme=='dark' && {backgroundColor: themes.dark.backgroundColor},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) &&
-                                            {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55},
-                                            (navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader) && {paddingTop: 0}
-                                        ]}
-                                        >
-                                        {instance}
-                                    </View>
-                                );
+                        if (this.state.navigator && route.component) {
+                            if (navigator) {
+                                navigator.updateIsChild();
                             }
-                        } }
+                            let instance = (
+                                <route.component
+                                    path={route.path}
+                                    title={route.title}
+                                    {...route.props}
+                                />);
+
+                            return (
+                                <View
+                                    pointerEvents={this.state.drawerOpen ? 'none' : 'auto'}
+                                    showsVerticalScrollIndicator
+                                    style={[
+                                        styles.scene,
+                                        (navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader) &&
+                                        {paddingTop: (Platform.Version >= 21 || Platform.OS == 'ios') ? 80 : 55},
+                                        (navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader) && {paddingTop: 0}
+                                    ]}
+                                >
+                                    {instance}
+                                </View>
+                            );
+                        }
+                    }}
                 />
             </Drawer>
-        )
+        );
     }
 }
+
+const drawerStyles = {
+    main: {
+        backgroundColor: themes.light.backgroundColor
+    },
+    drawer: {
+        borderLeftWidth: 1,
+        borderLeftColor: themes.light.dividerColor,
+        backgroundColor: themes.light.backgroundColor,
+        shadowOpacity: 0.8,
+        shadowRadius: 3
+    }
+};
 
 const mapStateToProps = (state) => {
     return {

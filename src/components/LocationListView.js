@@ -1,8 +1,8 @@
 import React, {Component, PropTypes} from 'react';
-import {View, ListView, Text} from 'react-native';
+import {View, ListView} from 'react-native';
 import {I18n} from '../constants';
 import styles from '../styles';
-import {LocationListItem} from '../components';
+import {LocationListItem, DirectionalText} from '../components';
 
 export class LocationListView extends Component {
 
@@ -29,9 +29,9 @@ export class LocationListView extends Component {
     renderHeader(customHeaderText = null) {
         return (
             <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
-                <Text style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
+                <DirectionalText style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
                     {customHeaderText ? customHeaderText.toUpperCase() : this.props.header.toUpperCase()}
-                </Text>
+                </DirectionalText>
             </View>
         );
     }
