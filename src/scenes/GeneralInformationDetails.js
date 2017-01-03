@@ -16,15 +16,10 @@ import ApiClient from '../utils/ApiClient';
 export class GeneralInformationDetails extends Component {
 
     static propTypes = {
-        content_slug: PropTypes.string,
         dispatch: PropTypes.func,
-        index: PropTypes.number,
         language: PropTypes.string,
         region: PropTypes.object,
-        section: PropTypes.string.isRequired,
-        sectionTitle: PropTypes.string,
-        showTitle: PropTypes.bool,
-        title: PropTypes.string.isRequired
+        section: PropTypes.object.isRequired
     };
 
     static contextTypes = {
@@ -48,29 +43,27 @@ export class GeneralInformationDetails extends Component {
     }
 
     _loadInitialState() {
-        const {dispatch, section, sectionTitle, language, showTitle, region, index, content_slug} = this.props;
-        if (showTitle) {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: sectionTitle});
+        const {dispatch, section, language, region} = this.props;
+        if (section.important) {
+            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: section.title});
         } else {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle});
+            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
         }
         let source = {
             html: wrapHtmlContent(
-                section,
+                section.html,
                 language,
-                (!showTitle && !(region.content.length == 1)) ? sectionTitle : null,
+                section.title,
                 'light',
                 Platform.OS
             )
         };
-        this.client.getRating(region, index, content_slug).then((res) => {
-            this.setState({
-                thumbsUp: res.thumbs_up,
-                thumbsDown: res.thumbs_down
-            });
-        });
 
-        this.setState({source});
+        this.setState({
+            source,
+            thumbsUp: section.thumbs_up,
+            thumbsDown: section.thumbs_down
+        });
     }
 
     _onNavigationStateChange(state) {
@@ -114,7 +107,7 @@ export class GeneralInformationDetails extends Component {
                                     index: info.index,
                                     content_slug: info.slug
                                 };
-                                return this.context.navigator.to('info.details', null, payload)
+                                return this.context.navigator.to('info.details', null, payload);
                             }
                         }
                         return;
@@ -131,7 +124,7 @@ export class GeneralInformationDetails extends Component {
                                 index: info.index,
                                 content_slug: info.slug
                             };
-                            return this.context.navigator.to('info.details', null, payload)
+                            return this.context.navigator.to('info.details', null, payload);
                         }
                         info = Regions.searchGeneralInformation(this.props.region, fullSlug);
                         if (info) {
@@ -142,7 +135,7 @@ export class GeneralInformationDetails extends Component {
                                 slug: info.anchor_name,
                                 index: info.index
                             };
-                            return this.context.navigator.to('info.details', null, payload)
+                            return this.context.navigator.to('info.details', null, payload);
                         }
                     }
                 }
@@ -168,7 +161,7 @@ export class GeneralInformationDetails extends Component {
                             slug: info.anchor_name,
                             index: info.index
                         };
-                        return this.context.navigator.to('info.details', null, payload)
+                        return this.context.navigator.to('info.details', null, payload);
                     }
                 }
 
@@ -199,7 +192,7 @@ export class GeneralInformationDetails extends Component {
                                 index: info.index,
                                 content_slug: info.slug
                             };
-                            return this.context.navigator.to('info.details', null, payload)
+                            return this.context.navigator.to('info.details', null, payload);
                         }
                     });
 
@@ -211,7 +204,7 @@ export class GeneralInformationDetails extends Component {
                         let email = state.url.split('mailto:')[1];
                         Mailer.mail({
                             recipients: [email],
-                        }, (error, event) => {
+                        }, () => {
                         });
                     } else {
                         this.setState({navigating: true});
@@ -228,46 +221,36 @@ export class GeneralInformationDetails extends Component {
     }
 
     onSharePress() {
-        const {sectionTitle, region, index, slug, content_slug} = this.props;
-        let urlSuffix = slug ? `#${slug}` : `#info${index}`;
-        if (content_slug) {
-            urlSuffix = `info/${content_slug}`;
-        }
+        const {section, region} = this.props;
         Share.open({
-            message: `${I18n.t('REFUGEE_INFO')} ${sectionTitle || ''}`,
-            url: `${WEB_PATH}/${region.slug}/${urlSuffix}`,
-        }).catch(
-            error => console.log(error)
-        );
+            message: `${I18n.t('REFUGEE_INFO')} ${section.title || ''}`,
+            url: `${WEB_PATH}/${region.slug}/${section.slug}`
+        });
     }
 
     rate(rating) {
-        const {region, index, content_slug} = this.props;
-        const ratingId = `rating_${region.slug}_${content_slug ? content_slug : index}`;
-        AsyncStorage.getItem(ratingId, (error, result) => {
+        const {section} = this.props;
+
+        const ratingStored = `rating-${section.slug}`;
+        AsyncStorage.getItem(ratingStored, (error, result) => {
             if (!result) {
-                this.client.setRating(region, index, content_slug, rating).then((res) => {
+                this.client.setRating(section.slug, rating).then((res) => {
                     let response = JSON.parse(res._bodyText);
                     this.setState({
                         thumbsUp: response.thumbs_up,
                         thumbsDown: response.thumbs_down
                     });
+                    AsyncStorage.setItem(ratingStored, JSON.stringify(response.rating_id));
                 });
-                AsyncStorage.setItem(`rating_${region.slug}_${content_slug ? content_slug : index}`, rating)
-            }
-            if (result && (result != rating)) {
-                // if user voted already and changed his mind voting again
-                this.client.setRating(region, index, content_slug, rating).then((res) => {
-                    let remove_rating = rating == 'up' ? 'down' : 'up';
-                    this.client.removeRating(region, index, content_slug, remove_rating).then((res) => {
-                        let response = JSON.parse(res._bodyText);
-                        this.setState({
-                            thumbsUp: response.thumbs_up,
-                            thumbsDown: response.thumbs_down
-                        });
+            } else {
+                this.client.setRating(section.slug, rating, 'other', result).then((res) => {
+                    let response = JSON.parse(res._bodyText);
+                    this.setState({
+                        thumbsUp: response.thumbs_up,
+                        thumbsDown: response.thumbs_down
                     });
+                    AsyncStorage.setItem(ratingStored, JSON.stringify(response.rating_id));
                 });
-                AsyncStorage.setItem(`rating_${region.slug}_${content_slug ? content_slug : index}`, rating);
             }
         });
 
@@ -275,7 +258,6 @@ export class GeneralInformationDetails extends Component {
 
     renderFeedbackBar() {
         const {thumbsUp, thumbsDown} = this.state;
-
         return (
             <View style={styles.feedbackRow}>
                 <TouchableOpacity
@@ -294,7 +276,7 @@ export class GeneralInformationDetails extends Component {
 
                 <TouchableOpacity
                     activeOpacity={0.5}
-                    onPress={() => this.rate('up')}
+                    onPress={() => this.rate(1)}
                     style={styles.feedbackRowIconContainer}
                 >
                     <Icon
@@ -308,7 +290,7 @@ export class GeneralInformationDetails extends Component {
 
                 <TouchableOpacity
                     activeOpacity={0.5}
-                    onPress={() => this.rate('down')}
+                    onPress={() => this.rate(-1)}
                     style={styles.feedbackRowIconContainer}
                 >
                     <Icon

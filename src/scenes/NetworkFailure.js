@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import styles, {getFontFamily, getTextColor} from '../styles';
-import {Button} from '../components';
+import {Button, DirectionalText} from '../components';
 
 class NetworkFailure extends Component {
 
@@ -27,7 +27,7 @@ class NetworkFailure extends Component {
         const {theme, language} = this.props;
         return (
             <View style={[styles.alignCenter, styles.flex]}>
-                <Text 
+                <DirectionalText
                     style={[
                         {marginBottom: 5},
                         getTextColor(theme),
@@ -35,7 +35,7 @@ class NetworkFailure extends Component {
                     ]}
                 >
                     {I18n.t('NETWORK_FAILURE')}
-                </Text>
+                </DirectionalText>
                 <Button
                     color="green"
                     text={I18n.t('RETRY')}

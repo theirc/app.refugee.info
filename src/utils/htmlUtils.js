@@ -51,7 +51,7 @@ export function wrapHtmlContent(content, language, title = null, theme = "light"
 
     let titleHtml = title || false ? `<h2>${title}</h2>` : '';
     let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-    return htmlWrap = `
+    return `
     <html>
     <head>
     <style>

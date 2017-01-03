@@ -73,15 +73,9 @@ class Navigation extends Component {
         });
     }
 
-    navigateToImportantInformation(item) {
+    navigateToImportantInformation(section) {
         this.drawerCommons.closeDrawer();
-        return this.context.navigator.to('infoDetails', null, {
-            sectionTitle: item.title,
-            section: item.html,
-            slug: item.slug || `info${item.index}`,
-            content_slug: item.slug,
-            showTitle: true
-        });
+        return this.context.navigator.to('infoDetails', null, {section});
     }
 
     getImportantInformation() {

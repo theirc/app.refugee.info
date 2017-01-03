@@ -87,27 +87,12 @@ export default class ApiClient {
         return this.fetch(`services/search/?format=json&id=${id}`, raise_exception);
     }
 
-
-    getRating(region, index, content_slug) {
-        let identifier = content_slug ? `&content_slug=${content_slug}` : `&index=${index}`;
-        return this.fetch(`region/get_rate/?region_slug=${region.slug}${identifier}`);
+    setRating(pageSlug, rating, reason, rating_id) {
+        return this.post(`page/${pageSlug}/rate/`, {rating, reason, rating_id});
     }
 
-    setRating(region, index, content_slug, rating) {
-        return this.post('region/add_rate/?format=json', {
-            region_slug: region.slug,
-            index,
-            info_slug: content_slug,
-            rate: rating
-        });
+    getRating(pageSlug) {
+        return this.get(`page/${pageSlug}?rating`, {rating, reason, rating_id});
     }
 
-    removeRating(region, index, content_slug, rating) {
-        return this.post('region/remove_rate/?format=json', {
-            region_slug: region.slug,
-            index,
-            info_slug: content_slug,
-            rate: rating
-        });
-    }
 }

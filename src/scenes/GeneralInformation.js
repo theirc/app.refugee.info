@@ -52,8 +52,9 @@ export class GeneralInformation extends Component {
             const content = region.content[0];
             return navigator.to('infoDetails', null, {section: content.html, sectionTitle: content.title});
         }
+        region.content = region.content.filter((content) => {return !content.pop_up});
         region.content.forEach((section) => {
-            section.onPress = this.onPress.bind(this, section.title, section.html, section.slug, section.index, section.slug);
+            section.onPress = this.onPress.bind(this, section);
         });
         this.setState({
             dataSource: this.state.dataSource.cloneWithRows(
@@ -101,16 +102,10 @@ export class GeneralInformation extends Component {
         });
     }
 
-    onPress(title, section, slug, index, contentSlug) {
+    onPress(section) {
         requestAnimationFrame(() => {
             const {navigator} = this.context;
-            navigator.forward(null, null, {
-                section,
-                sectionTitle: title,
-                slug,
-                index,
-                contentSlug
-            }, this.state);
+            navigator.forward(null, null, {section}, this.state);
         });
     }
 
