@@ -250,7 +250,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     sectionContent: {
-        fontSize: 13
+        fontSize: 13,
+        color: themes.light.textColor
     },
     contactBorder: {
         marginTop: 5,

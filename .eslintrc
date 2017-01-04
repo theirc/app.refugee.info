@@ -30,6 +30,7 @@
     "constructor-super": 2,
     "no-constant-condition": 2,
     "no-class-assign": 2,
+    "no-console": 1,
     "no-const-assign": 2,
     "no-dupe-class-members": 2,
     "no-var": 1,
