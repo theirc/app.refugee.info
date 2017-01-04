@@ -203,7 +203,7 @@ export class GeneralInformationDetails extends Component {
                     } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
                         let email = state.url.split('mailto:')[1];
                         Mailer.mail({
-                            recipients: [email],
+                            recipients: [email]
                         }, () => {
                         });
                     } else {

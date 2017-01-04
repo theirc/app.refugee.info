@@ -54,7 +54,8 @@ export class Contact extends Component {
         return (
             <ScrollView style={styles.detailsContainer}>
                 <DirectionalText
-                    style={[styles.sectionContent, styles.textLight]}>
+                    style={[styles.sectionContent, styles.textLight]}
+                >
                     {I18n.t('NAME')}
                 </DirectionalText>
                 <View style={[styles.contactBorder, styles.borderLight]}>

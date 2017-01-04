@@ -12,7 +12,7 @@ import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import Welcome from './Welcome';
 import App from './App';
-import {Presence} from '../data'
+import {Presence} from '../data';
 import {
     fetchCountryFromStorage,
     fetchDirectionFromStorage,
@@ -22,7 +22,7 @@ import {
     fetchThemeFromStorage
 } from '../actions';
 
-var PushNotification = require('react-native-push-notification');
+let PushNotification = require('react-native-push-notification');
 
 /**
  This class is the skeleton of the app.
@@ -37,7 +37,7 @@ class Skeleton extends Component {
 
         this.state = {
             firstLoad: true,
-            storageLoaded: false,
+            storageLoaded: false
         };
         this.presenceData = new Presence(props, props.context);
     }
@@ -65,19 +65,19 @@ class Skeleton extends Component {
     askForPermissions() {
         PushNotification.configure({
             // (optional) Called when Token is generated (iOS and Android)
-            onRegister: function (token) {
+            onRegister (token) {
                 Presence.registerToken(token);
                 monitor();
             },
 
             // (required) Called when a remote or local notification is opened or received
-            onNotification: function (notification) {
+            onNotification (notification) {
             },
 
             senderID: '5963561492',
 
             popInitialNotification: true,
-            requestPermissions: true,
+            requestPermissions: true
         });
 
         const monitor = () => {
@@ -151,7 +151,7 @@ class Skeleton extends Component {
                             AsyncStorage.setItem('firstLoad', 'false');
                             this.setState({ firstLoad: false });
                         });
-                    } }
+                    }}
                 />
             );
         } else {

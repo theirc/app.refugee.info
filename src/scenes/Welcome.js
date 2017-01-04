@@ -1,25 +1,22 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableHighlight} from 'react-native';
+import {Image, StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableHighlight} from 'react-native';
 import {connect} from 'react-redux';
 import styles, {themes, getFontFamily, getUnderlayColor} from '../styles';
-import I18n from '../constants/Messages'
+import I18n from '../constants/Messages';
 
-import {updateLanguageIntoStorage} from '../actions/language'
-import {updateDirectionIntoStorage} from '../actions/direction'
-import {updateRegionIntoStorage} from '../actions/region'
-import {updateCountryIntoStorage} from '../actions/country'
-import {updateThemeIntoStorage} from '../actions/theme'
+import {updateLanguageIntoStorage} from '../actions/language';
+import {updateDirectionIntoStorage} from '../actions/direction';
+
 
 class Welcome extends Component {
     static propTypes = {
-        firstLoad: React.PropTypes.bool,
-        finished: React.PropTypes.func
+        dispatch: PropTypes.func,
+        finished: PropTypes.func,
+        firstLoad: PropTypes.bool
     };
     state = {
-        showTheme: false,
         showLanguage: false,
-        languageSelected: false,
-        themeSelected: false,
+        languageSelected: false
     };
 
     componentDidMount() {
@@ -51,10 +48,8 @@ class Welcome extends Component {
                 }
 
                 this.setState({
-                    showTheme: false,
                     languageSelected: false,
-                    showLanguage: true,
-                    themeSelected: true,
+                    showLanguage: true
                 });
             }, 1000);
         }
@@ -64,21 +59,21 @@ class Welcome extends Component {
         const {dispatch} = this.props;
 
         await this.setState({
-            languageSelected: true,
+            languageSelected: true
         });
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
         this.setTheme('light');
         await Promise.all([
             dispatch(updateDirectionIntoStorage(direction)),
             dispatch(updateLanguageIntoStorage(language)),
-            dispatch({ type: "DIRECTION_CHANGED", payload: direction }),
-            dispatch({ type: "LANGUAGE_CHANGED", payload: language })
+            dispatch({ type: 'DIRECTION_CHANGED', payload: direction }),
+            dispatch({ type: 'LANGUAGE_CHANGED', payload: language })
         ]).then(() => {
             return this.setState({
-                language: language,
+                language,
                 showTheme: false,
                 showLanguage: false,
-                themeSelected: true,
+                themeSelected: true
             });
         }).then(() => this.props.finished());
     }
@@ -87,13 +82,13 @@ class Welcome extends Component {
         const {dispatch} = this.props;
         Promise.all([
             dispatch(updateThemeIntoStorage(theme)),
-            dispatch({ type: "THEME_CHANGED", payload: theme }),
+            dispatch({ type: 'THEME_CHANGED', payload: theme })
         ]).then(() => this.props.finished());
     }
 
 
     renderLanguageSelection() {
-        let {language} = this.props;
+        const {language} = this.props;
 
         return (
             <View>
@@ -106,52 +101,57 @@ class Welcome extends Component {
                         justifyContent: 'center',
                         borderBottomWidth: 1,
                         width: Dimensions.get('window').width,
-                        backgroundColor: themes.dark.backgroundColor,
-                    },
-                ]}>
+                        backgroundColor: themes.dark.backgroundColor
+                    }
+                ]}
+                >
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={[
                             styles.textAccentGreen,
                             getFontFamily(language),
                             { fontSize: 13, alignItems: 'center' }
-                        ]}>
+                        ]}
+                        >
                             {I18n.t('LANGUAGE').toUpperCase() }
                         </Text>
                     </View>
                 </View>
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'en') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 45 * 2, }]}
-                    >
+                    onPress={this.setLanguage.bind(this, 'en')}
+                    underlayColor={getUnderlayColor('light')}
+                    style={[buttonStyle, { bottom: 45 * 2 }]}
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
+                        { fontSize: 13, color: themes.light.textColor },
                         getFontFamily('en')
-                    ]}>
+                    ]}
+                    >
                         English
                     </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'ar') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 45, }]}
-                    >
+                    onPress={this.setLanguage.bind(this, 'ar')}
+                    underlayColor={getUnderlayColor('light')}
+                    style={[buttonStyle, { bottom: 45 }]}
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
+                        { fontSize: 13, color: themes.light.textColor },
                         getFontFamily('ar')
-                    ]}>
+                    ]}
+                    >
                         العربيـة
                     </Text>
                 </TouchableHighlight>
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'fa') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 0, }]}
-                    >
+                    onPress={this.setLanguage.bind(this, 'fa')}
+                    underlayColor={getUnderlayColor('light')}
+                    style={[buttonStyle, { bottom: 0 }]}
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
+                        { fontSize: 13, color: themes.light.textColor },
                         getFontFamily('fa')
-                    ]}>
+                    ]}
+                    >
                         فارسی
                     </Text>
                 </TouchableHighlight>
@@ -172,28 +172,31 @@ class Welcome extends Component {
                         justifyContent: 'center',
                         borderBottomWidth: 1,
                         width: Dimensions.get('window').width,
-                        backgroundColor: themes.dark.backgroundColor,
-                    },
-                ]}>
+                        backgroundColor: themes.dark.backgroundColor
+                    }
+                ]}
+                >
                     <View style={{ justifyContent: 'center' }}>
                         <Text style={[
                             styles.textAccentGreen,
                             getFontFamily(language),
                             { fontSize: 13, alignItems: 'center' }
-                        ]}>
+                        ]}
+                        >
                             {I18n.t('THEME').toUpperCase() }
                         </Text>
                     </View>
                 </View>
                 <TouchableHighlight
-                    onPress={this.setTheme.bind(this, 'light') }
-                    underlayColor={getUnderlayColor('light') }
+                    onPress={this.setTheme.bind(this, 'light')}
+                    underlayColor={getUnderlayColor('light')}
                     style={[buttonStyle, { bottom: 45 }]}
-                    >
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
+                        { fontSize: 13, color: themes.light.textColor },
                         getFontFamily(language)
-                    ]}>
+                    ]}
+                    >
                         {I18n.t('LIGHT') }
                     </Text>
                 </TouchableHighlight>
@@ -201,12 +204,13 @@ class Welcome extends Component {
                     onPress={this.setTheme.bind(this, 'dark')}
                     activeOpacity={0.8}
                     style={[buttonStyle,
-                        { bottom: 0, backgroundColor: themes.dark.toolbarColor, }]}
-                    >
+                        { bottom: 0, backgroundColor: themes.dark.toolbarColor }]}
+                >
                     <Text style={[
                         { fontSize: 13, color: themes.dark.textColor },
                         getFontFamily(language)
-                    ]}>
+                    ]}
+                    >
                         {I18n.t('DARK') }
                     </Text>
                 </TouchableOpacity>
@@ -214,23 +218,21 @@ class Welcome extends Component {
     }
 
     render() {
-        const {theme} = this.props;
-        const {showTheme, showLanguage} = this.state;
+        const {showLanguage} = this.state;
         const logo = require('../assets/splash-screen.png');
 
         return (
             <View style={localStyles.screen}>
                 <View>
                     <Image
-                        source={logo}
                         resizeMode={Image.resizeMode.cover}
+                        source={logo}
                         style={[localStyles.logo]}
-                        />
-                    {showLanguage && this.renderLanguageSelection() }
+                    />
+                    {showLanguage && this.renderLanguageSelection()}
                 </View>
             </View>
-        )
-
+        );
     }
 }
 
@@ -261,7 +263,7 @@ const localStyles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         language: state.language,
-        direction: state.direction,
+        direction: state.direction
     };
 }
 

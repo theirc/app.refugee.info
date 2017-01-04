@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     StyleSheet,
-    TouchableHighlight,
+    TouchableHighlight
 } from 'react-native';
 import {DirectionalText, Icon} from '../components';
 import styles, {
@@ -76,7 +76,8 @@ export class ServiceListItem extends Component {
                                     </DirectionalText>
                                 </View>
                                 <DirectionalText
-                                    style={[styles.textLight, componentStyles.serviceProviderName]}>
+                                    style={[styles.textLight, componentStyles.serviceProviderName]}
+                                >
                                     {service.provider.name.substr(0, 40)}
                                 </DirectionalText>
                             </View>

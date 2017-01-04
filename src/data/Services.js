@@ -36,7 +36,7 @@ export default class Services extends Component {
             await AsyncStorage.setItem('__serviceTypes', JSON.stringify(serviceTypes));
             await Promise.all(serviceTypes.map((c) => {
                 return Promise.all([
-                    AsyncStorage.setItem('__serviceType-' + c.id, JSON.stringify(c)),
+                    AsyncStorage.setItem(`__serviceType-${ c.id}`, JSON.stringify(c))
                 ]);
             }));
         }
@@ -47,7 +47,7 @@ export default class Services extends Component {
 
 
 
-    async pageServices(slug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raiseException = false) {
+    async pageServices(slug, coords = {}, searchCriteria = '', page = 1, pageSize = 10, types, raiseException = false) {
         /*
         How do we go about storing this in the AsyncStorage?
         */

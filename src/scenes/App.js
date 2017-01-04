@@ -3,7 +3,7 @@ import {
     Navigator,
     StatusBar,
     Platform,
-    BackAndroid,
+    BackAndroid
 } from 'react-native';
 import React, {Component} from 'react';
 import Navigation from './Navigation';

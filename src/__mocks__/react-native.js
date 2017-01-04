@@ -24,10 +24,10 @@ ReactNative.StyleSheet = {
 };
 class View extends Component {
     static propTypes = {};
-    render() { return false; }
+    render() { return false }
 }
 class PixelRatio extends Component {
-    static get() { return 1; }
+    static get() { return 1 }
 }
 /**
  * ## Stubs
@@ -37,7 +37,7 @@ class PixelRatio extends Component {
 ReactNative.View = View;
 ReactNative.ScrollView = View;
 ReactNative.ListView = {
-    DataSource: function(params) {
+    DataSource(params) {
         this.cloneWithRows = function(rows) {
             return rows;
         };

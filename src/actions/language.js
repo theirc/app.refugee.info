@@ -1,5 +1,5 @@
 import {AsyncStorage} from 'react-native';
-import I18n from '../constants/Messages'
+import I18n from '../constants/Messages';
 
 function reloadLanguage(language) {
     return {
@@ -14,7 +14,7 @@ export function fetchLanguageFromStorage() {
 
         return await AsyncStorage.getItem('language')
             .then(language => {
-              return dispatch(reloadLanguage(language || currentLocale))
+                return dispatch(reloadLanguage(language || currentLocale));
             });
     };
 }
@@ -22,6 +22,6 @@ export function fetchLanguageFromStorage() {
 
 export function updateLanguageIntoStorage(language) {
     return async dispatch => {
-         return await AsyncStorage.setItem('language', language);
+        return await AsyncStorage.setItem('language', language);
     };
 }

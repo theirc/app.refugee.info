@@ -1,5 +1,5 @@
 import {AsyncStorage} from 'react-native';
-import I18n from '../constants/Messages'
+import I18n from '../constants/Messages';
 
 function reloadDirection(direction) {
     return {
@@ -15,7 +15,7 @@ export function fetchDirectionFromStorage() {
 
         return await AsyncStorage.getItem('direction')
             .then(direction => {
-                return dispatch(reloadDirection(direction || currentDirection))
+                return dispatch(reloadDirection(direction || currentDirection));
             });
     };
 }

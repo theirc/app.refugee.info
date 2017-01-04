@@ -8,7 +8,7 @@ export default class DrawerCommons {
     }
 
     closeDrawer() {
-        this.component.context.drawer.close()
+        this.component.context.drawer.close();
     }
 
     changeScene(path, name, props = {}) {
@@ -19,5 +19,5 @@ export default class DrawerCommons {
             dispatch({type: 'ROUTE_CHANGED', payload: path});
             this.closeDrawer();
         });
-    };
+    }
 }

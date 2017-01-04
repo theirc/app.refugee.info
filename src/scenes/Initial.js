@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {AsyncStorage, Image, StyleSheet, View, Text} from 'react-native';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import {
     fetchCountryFromStorage,
     fetchDirectionFromStorage,
@@ -8,7 +8,7 @@ import {
     fetchLocationsFromStorage,
     fetchRegionFromStorage,
     fetchThemeFromStorage
-} from '../actions'
+} from '../actions';
 
 class Initial extends Component {
 
@@ -32,19 +32,19 @@ class Initial extends Component {
             if (region && region != 'null') {
                 if (region.content && region.content.length == 1) {
                     this.context.navigator.to('infoDetails', null,
-                        {section: region.content[0].section, sectionTitle: region.pageTitle})
+                        {section: region.content[0].section, sectionTitle: region.pageTitle});
                 } else {
                     this.context.navigator.to('info');
                 }
             } else {
                 navigator.to('countryChoice');
             }
-        })
+        });
     }
 
     render() {
         // Nothing to see here, just redirecting to the info page
-        return <View />
+        return <View />;
     }
 }
 

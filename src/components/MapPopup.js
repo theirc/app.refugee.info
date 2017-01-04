@@ -100,7 +100,7 @@ export class MapPopup extends Component {
                     >
                         <View style={[
                             styles.iconContainer,
-                            {justifyContent: 'center', height: 50},
+                            {justifyContent: 'center', height: 50}
                         ]}
                         >
                             {this.renderWidget(cluster)}
@@ -141,7 +141,7 @@ export class MapPopup extends Component {
                     underlayColor="rgba(0, 0, 0, 0.2)"
                 >
                     <View style={[styles.row, {padding: 10}]}>
-                        <View style={[styles.iconContainer, {justifyContent: 'center', height: 48},]}>
+                        <View style={[styles.iconContainer, {justifyContent: 'center', height: 48}]}>
                             {this.renderWidget(marker)}
                         </View>
                         <View style={[styles.container, {justifyContent: 'center'}]}>

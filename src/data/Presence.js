@@ -10,7 +10,7 @@ import ApiClient from '../utils/ApiClient';
 import styles from '../styles';
 import store from '../store';
 import {Icon} from '../components';
-var DeviceInfo = require('react-native-device-info');
+let DeviceInfo = require('react-native-device-info');
 
 export default class Presence extends Component {
     constructor(props, context = null) {
@@ -23,7 +23,7 @@ export default class Presence extends Component {
         return {
             coordinates: [
                 c.longitude, // x
-                c.latitude, // x
+                c.latitude // x
             ],
             type: 'Point'
         };
@@ -54,7 +54,7 @@ export default class Presence extends Component {
         token = JSON.parse(token) || {};
         token.platform = {
             version: Platform.Version,
-            os: Platform.OS,
+            os: Platform.OS
         };
         token.path = navigation;
 
@@ -72,7 +72,7 @@ export default class Presence extends Component {
             coordinates: location ? location : (region ? region.centroid : null),
             region: region ? region.id : null,
             language,
-            token,
+            token
         };
 
         let promise = Promise.resolve(true);

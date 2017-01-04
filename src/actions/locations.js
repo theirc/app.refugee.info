@@ -1,4 +1,4 @@
-import SQLite from 'react-native-sqlite-storage'
+import SQLite from 'react-native-sqlite-storage';
 import store from '../store';
 
 SQLite.enablePromise(true);
@@ -40,7 +40,7 @@ export function updateLocationsIntoStorage(locations) {
         db.transaction((tx) => {
             tx.executeSql('DELETE FROM locations');
             locations.forEach((location) => {
-                tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)])
+                tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
             });
         });
     }).catch((error) => {

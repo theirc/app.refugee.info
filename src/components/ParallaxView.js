@@ -100,7 +100,7 @@ class ParallaxView extends Component {
             <View style={[styles.container, style]}>
                 {this.renderBackground()}
                 <ScrollView
-                    ref={component => {this._scrollView = component;}}
+                    ref={component => {this._scrollView = component}}
                     {...props}
                     onScroll={Animated.event([{nativeEvent: {contentOffset: {y: this.state.scrollY}}}])}
                     scrollEventThrottle={16}

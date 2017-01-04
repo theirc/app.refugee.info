@@ -22,7 +22,8 @@ export class About extends Component {
                     getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
-                ]}>
+                ]}
+                >
                     {I18n.t('ABOUT_HEADER') }
                 </Text>
                 <Text style={[
@@ -30,7 +31,8 @@ export class About extends Component {
                     getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
-                ]}>
+                ]}
+                >
                     {I18n.t('ABOUT_CONTENT_1') }
                 </Text>
                 <Image
@@ -43,7 +45,8 @@ export class About extends Component {
                     getTextColor(theme),
                     getFontFamily(language),
                     getTextAlign(direction)
-                ]}>
+                ]}
+                >
                     {I18n.t('ABOUT_CONTENT_2') }
                 </Text>
             </View>

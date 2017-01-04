@@ -21,7 +21,7 @@ import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 
 if (Platform.OS === 'android') {
-    var Mapbox = require('react-native-mapbox-gl');
+    let Mapbox = require('react-native-mapbox-gl');
     Mapbox.setAccessToken(MAPBOX_TOKEN);
 }
 
