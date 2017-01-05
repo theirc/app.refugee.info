@@ -1,22 +1,8 @@
-import React, {Component, PropTypes} from 'react';
+import {Component} from 'react';
 import {
-    View,
-    Text,
-    AsyncStorage,
-    StyleSheet,
-    ListView,
-    TouchableHighlight,
-    TextInput,
-    ScrollView,
-    RefreshControl
+    AsyncStorage
 } from 'react-native';
-import I18n from '../constants/Messages';
-import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
-import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
-import store from '../store';
-import {Icon} from '../components';
 import Translation from '../utils/Translation';
 
 export default class Services extends Component {

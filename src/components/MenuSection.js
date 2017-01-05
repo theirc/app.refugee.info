@@ -46,13 +46,6 @@ const componentStyles = StyleSheet.create({
     headerWrapper: {
         paddingBottom: 30
     },
-    item: {
-        flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 50,
-        paddingHorizontal: 15
-    },
     text: {
         color: themes.light.greenAccentColor,
         fontWeight: 'bold'

@@ -1,10 +1,7 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     AsyncStorage,
-    Image,
-    StyleSheet,
     View,
-    Text,
     AppState,
     UIManager
 } from 'react-native';
@@ -18,8 +15,7 @@ import {
     fetchDirectionFromStorage,
     fetchLanguageFromStorage,
     fetchLocationsFromStorage,
-    fetchRegionFromStorage,
-    fetchThemeFromStorage
+    fetchRegionFromStorage
 } from '../actions';
 
 let PushNotification = require('react-native-push-notification');
@@ -43,7 +39,7 @@ class Skeleton extends Component {
     }
 
     componentWillMount() {
-        this.languagePromise = this.checkLanguageSelected().then(() => {
+        this.checkLanguageSelected().then(() => {
             this.setState({storageLoaded: true});
         });
 
@@ -71,7 +67,7 @@ class Skeleton extends Component {
             },
 
             // (required) Called when a remote or local notification is opened or received
-            onNotification (notification) {
+            onNotification () {
             },
 
             senderID: '5963561492',
@@ -113,14 +109,12 @@ class Skeleton extends Component {
 
         // Instead of having the app handling the language selection we should
         // let the user override whatever they have set in their device
-        const {language} = this.state;
         await this.reloadStorage();
 
         let firstLoad = await AsyncStorage.getItem('firstLoad');
         let region = await AsyncStorage.getItem('regionCache');
-        let theme = await AsyncStorage.getItem('theme');
 
-        let isFirstLoad = (firstLoad !== 'false' || !(region && theme));
+        let isFirstLoad = (firstLoad !== 'false' || !(region));
 
         this.setState({firstLoad: isFirstLoad});
     }
@@ -132,7 +126,6 @@ class Skeleton extends Component {
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
-        await dispatch(fetchThemeFromStorage());
         await fetchLocationsFromStorage();
     }
 
@@ -144,14 +137,13 @@ class Skeleton extends Component {
         if (this.state.firstLoad) {
             return (
                 <Welcome
-                    theme={this.props.theme}
-                    firstLoad={this.state.firstLoad}
                     finished={() => {
                         this.reloadStorage().then(() => {
                             AsyncStorage.setItem('firstLoad', 'false');
                             this.setState({ firstLoad: false });
                         });
                     }}
+                    firstLoad={this.state.firstLoad}
                 />
             );
         } else {

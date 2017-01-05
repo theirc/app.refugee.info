@@ -1,4 +1,4 @@
-import {Platform, StyleSheet, Dimensions} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 
 
 let Ionicons = require('react-native-vector-icons/Ionicons');
@@ -308,82 +308,6 @@ export function getFontFamily(language = 'en') {
     }
 
     return style;
-}
-
-// theming functions
-
-export function getTextColor(theme) {
-    if (theme === 'light') {
-        return styles.textLight;
-    } else {
-        return styles.textDark;
-    }
-}
-
-export function getBorderColor(theme) {
-    if (theme === 'light') {
-        return styles.borderLight;
-    } else {
-        return styles.borderDark;
-    }
-}
-
-export function getDividerColor(theme) {
-    if (theme === 'light') {
-        return styles.dividerLight;
-    } else {
-        return styles.dividerDark;
-    }
-}
-
-export function getBottomDividerColor(theme) {
-    if (theme === 'light') {
-        return styles.bottomDividerLight;
-    } else {
-        return styles.bottomDividerDark;
-    }
-}
-
-export function getContainerColor(theme) {
-    if (theme === 'light') {
-        return styles.containerLight;
-    } else {
-        return styles.containerDark;
-    }
-}
-
-export function getUnderlayColor(theme = 'light') {
-    if (theme === 'light') {
-        return 'rgba(0, 0, 0, 0.2)';
-    } else {
-        return 'rgba(255, 255, 255, 0.6)';
-    }
-}
-
-// RTL support functions
-
-export function getRowOrdering(direction) {
-    if (direction === 'rtl') {
-        return styles.rowRTL;
-    } else {
-        return styles.row;
-    }
-}
-
-export function getAlignItems(direction) {
-    if (direction === 'rtl') {
-        return {alignItems: 'flex-end'};
-    } else {
-        return {alignItems: 'flex-start'};
-    }
-}
-
-export function getTextAlign(direction) {
-    if (direction === 'rtl') {
-        return {textAlign: 'right'};
-    } else {
-        return {textAlign: 'auto'};
-    }
 }
 
 export function getIconComponent(iconName = '') {

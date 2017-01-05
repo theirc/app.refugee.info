@@ -3,7 +3,6 @@ import React, {
     PropTypes
 } from 'react';
 import {
-    Text,
     Image,
     View,
     ScrollView,
@@ -13,16 +12,12 @@ import {
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import DrawerCommons from '../utils/DrawerCommons';
-import {MenuSection, MenuItem} from '../components';
+import {MenuSection, MenuItem, DirectionalText} from '../components';
 import {
     updateRegionIntoStorage
 } from '../actions';
 import {Icon} from '../components';
-import {
-    getFontFamily,
-    getRowOrdering,
-    themes
-} from '../styles';
+import styles, {themes} from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 import {Regions} from '../data';
 
@@ -139,7 +134,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {route, direction, language, region} = this.props;
+        const {route, language, region} = this.props;
         const {navigator} = this.context;
 
         if (!this.props.region) {
@@ -153,7 +148,6 @@ class Navigation extends Component {
         let nearbyCitiesSection = this.getNearbyCitiesSection();
 
         let logo = themes.light.drawerLogo;
-        let styles = lightNavigationStyles;
 
         let bannerCount = region.banners && region.banners.length;
         let regionName = region.name ? region.name.toUpperCase() : '';
@@ -162,29 +156,27 @@ class Navigation extends Component {
         let s = (scene) => this.drawerCommons.changeScene(scene);
 
         return (
-            <ScrollView style={styles.view}>
-                <View style={[styles.logoContainer, getRowOrdering(direction)]}>
+            <ScrollView style={componentStyles.view}>
+                <View style={[componentStyles.logoContainer, styles.row]}>
                     <Image
                         source={logo}
-                        style={styles.logo}
+                        style={componentStyles.logo}
                     />
                 </View>
 
-                <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
+                <View style={[componentStyles.titleWrapper, styles.row]}>
                     <Icon
                         name="md-locate"
                         style={[
-                            {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
-                            (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
+                            {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5}
                         ]}
                     />
-                    <Text style={[
-                        getFontFamily(language),
-                        styles.cityText
+                    <DirectionalText style={[
+                        componentStyles.cityText
                     ]}
                     >
                         {regionName}
-                    </Text>
+                    </DirectionalText>
                 </View>
 
                 <MenuSection title={I18n.t('REFUGEE_INFO')}>
@@ -234,33 +226,33 @@ class Navigation extends Component {
 
                 <MenuSection>
                     <MenuItem
-                        icon="fa-gear"
                         active={route === 'settings'}
+                        icon="fa-gear"
                         onPress={() => s('settings')}
                     >
-                        {I18n.t('SETTINGS') }
+                        {I18n.t('SETTINGS')}
                     </MenuItem>
                     {aboutUs &&
                     <MenuItem
-                        icon="fa-question"
                         active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
+                        icon="fa-question"
                         onPress={() => this._defaultOrFirst(aboutUs, true)}
                     >
-                        {I18n.t('ABOUT') }
+                        {I18n.t('ABOUT')}
                     </MenuItem>
                     }
                     <MenuItem
                         icon="fa-comment"
                         onPress={() => Linking.openURL(feedbackUrl)}
                     >
-                        {I18n.t('FEEDBACK') }
+                        {I18n.t('FEEDBACK')}
                     </MenuItem>
 
                     <MenuItem
                         icon="fa-facebook-square"
                         onPress={() => Linking.openURL(LIKE_PATH)}
                     >
-                        {I18n.t('LIKE_US') }
+                        {I18n.t('LIKE_US')}
                     </MenuItem>
 
                 </MenuSection>
@@ -278,7 +270,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-const lightNavigationStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
@@ -295,14 +287,7 @@ const lightNavigationStyles = StyleSheet.create({
         flex: 1,
         paddingBottom: 15
     },
-    middleBorder: {
-        borderLeftColor: themes.light.darkerDividerColor,
-        borderLeftWidth: 1
-    },
-    outermostBorder: {
-        borderLeftColor: themes.light.dividerColor,
-        borderLeftWidth: 1
-    },
+
     titleWrapper: {
         flexDirection: 'row',
         alignItems: 'center',

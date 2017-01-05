@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    Text,
     ScrollView,
     Dimensions,
     Alert
@@ -10,15 +9,13 @@ import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import styles, {
     themes,
-    getFontFamily,
-    getRowOrdering,
-    getBottomDividerColor,
     getToolbarHeight
 } from '../styles';
 import {
     Icon,
     LoadingOverlay,
-    ListItem
+    ListItem,
+    DirectionalText
 } from '../components';
 import {
     updateCountryIntoStorage,
@@ -44,6 +41,10 @@ class Settings extends Component {
         this.state = {
             loading: false
         };
+        this.goToCountryChoice = this.goToCountryChoice.bind(this);
+        this.setEnglish = this.updateSettings.bind(this, 'en');
+        this.setArabic = this.updateSettings.bind(this, 'ar');
+        this.setFarsi = this.updateSettings.bind(this, 'fa');
     }
 
 
@@ -110,7 +111,6 @@ class Settings extends Component {
     }
 
     render() {
-        const {theme, language, direction} = this.props;
         const {loading} = this.state;
         return (
             <ScrollView style={styles.container}>
@@ -118,15 +118,14 @@ class Settings extends Component {
                     fontSize={13}
                     icon="ios-flag"
                     iconColor={themes.light.textColor}
-                    onPress={this.goToCountryChoice.bind(this)}
+                    onPress={this.goToCountryChoice}
                     text={I18n.t('CHANGE_COUNTRY')}
                 />
 
                 <View style={[
-                    getRowOrdering(direction),
-                    {marginTop: 30, borderBottomWidth: 1},
-                    getBottomDividerColor(theme)
-                ]}
+                    styles.row,
+                    styles.bottomDividerLight,
+                    {marginTop: 30, borderBottomWidth: 1}]}
                 >
                     <View style={[
                         styles.alignCenter,
@@ -142,33 +141,31 @@ class Settings extends Component {
                         />
                     </View>
                     <View style={{justifyContent: 'center'}}>
-                        <Text style={[
+                        <DirectionalText style={[
                             styles.textAccentGreen,
-                            getFontFamily(language),
                             {fontSize: 13}
                         ]}
                         >
                             {I18n.t('CHANGE_LANGUAGE').toUpperCase()}
-                        </Text>
+                        </DirectionalText>
                     </View>
                 </View>
 
                 <ListItem
+                    onPress={this.setEnglish}
                     text={I18n.t('ENGLISH')}
-                    onPress={this.updateSettings.bind(this, 'en')}
                 />
                 <ListItem
+                    onPress={this.setArabic}
                     text={I18n.t('ARABIC')}
-                    onPress={this.updateSettings.bind(this, 'ar')}
                 />
                 <ListItem
+                    onPress={this.setFarsi}
                     text={I18n.t('FARSI')}
-                    onPress={this.updateSettings.bind(this, 'fa')}
                 />
 
                 {loading &&
                 <LoadingOverlay
-                    theme={theme}
                     height={height - getToolbarHeight()}
                     width={width}
                 />}
