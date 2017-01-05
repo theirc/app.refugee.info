@@ -1,4 +1,3 @@
-import React from 'react';
 import {InteractionManager} from 'react-native';
 
 export default class DrawerCommons {

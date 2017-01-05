@@ -27,7 +27,7 @@ class MenuItem extends Component {
         if (item.icon) {
             return (
                 <Icon
-                    color={componentStyles.itemText.color || themes.light.textColor}
+                    color={themes.light.textColor}
                     name={item.icon}
                     size={22}
                     style={componentStyles.icon}
@@ -135,14 +135,6 @@ const componentStyles = StyleSheet.create({
     itemLine: {
         borderBottomColor: themes.light.dividerColor,
         borderBottomWidth: 1
-    },
-    itemText: {
-        fontSize: 14,
-        color: themes.light.textColor
-    },
-    text: {
-        color: themes.light.greenAccentColor,
-        fontWeight: 'bold'
     }
 });
 

@@ -13,25 +13,21 @@ function receiveLocations(locations) {
 function queryLocations(tx) {
     tx.executeSql('CREATE TABLE IF NOT EXISTS locations (json blob)');
 
-    tx.executeSql('SELECT * FROM locations').then(([tx, results]) => {
+    tx.executeSql('SELECT * FROM locations').then(([, results]) => {
         let len = results.rows.length;
         let locations = [];
         for (let i = 0; i < len; i++) {
             locations.push((JSON.parse(results.rows.item(i).json)));
         }
         store.dispatch(receiveLocations(locations));
-    }).catch((error) => {
-        console.log(error);
-    });
+    }).catch((error) => {});
 }
 
 
 export function fetchLocationsFromStorage() {
     SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
         db.transaction(queryLocations);
-    }).catch((error) => {
-        console.log(error);
-    });
+    }).catch((error) => {});
 }
 
 
@@ -43,9 +39,7 @@ export function updateLocationsIntoStorage(locations) {
                 tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
             });
         });
-    }).catch((error) => {
-        console.log(error);
-    });
+    }).catch((error) => {});
 
     return async dispatch => {
 

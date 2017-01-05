@@ -92,7 +92,7 @@ export default class ApiClient {
     }
 
     getRating(pageSlug) {
-        return this.get(`page/${pageSlug}?rating`, {rating, reason, rating_id});
+        return this.get(`page/${pageSlug}?rating`);
     }
 
 }

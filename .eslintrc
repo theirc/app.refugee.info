@@ -36,7 +36,7 @@
     "no-var": 1,
     "no-this-before-super": 2,
     "no-multi-spaces": 1,
-    "no-unused-vars": 2,
+    "no-unused-vars": [2, {"argsIgnorePattern": "dispatch|error|response"}],
     "object-shorthand": [2, "always"],
     "prefer-spread": 1,
     "prefer-template": 1,
