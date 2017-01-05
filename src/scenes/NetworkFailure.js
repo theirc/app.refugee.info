@@ -37,11 +37,11 @@ class NetworkFailure extends Component {
                     {I18n.t('NETWORK_FAILURE')}
                 </DirectionalText>
                 <Button
+                    buttonStyle={{paddingLeft: 30, paddingRight: 30}}
                     color="green"
-                    text={I18n.t('RETRY')}
                     onPress={() => this._onPress()}
                     style={{marginTop: 15}}
-                    buttonStyle={{paddingLeft: 30, paddingRight: 30}}
+                    text={I18n.t('RETRY')}
                     textStyle={{textAlign: 'center', fontSize: 14}}
                 />
             </View>

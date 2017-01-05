@@ -132,9 +132,9 @@ export class Contact extends Component {
 
                 <Button
                     color="green"
+                    onPress={() => this.onSubmitClick()}
                     text={I18n.t('SUBMIT')}
                     textStyle={{fontSize: 15}}
-                    onPress={() => this.onSubmitClick()}
                 />
             </ScrollView>
         );

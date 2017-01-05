@@ -148,9 +148,7 @@ export class ServiceDetails extends Component {
                     url: `${WEB_PATH}/${region.slug}/services/${service.id}`,
                     title: service.name,
                     subject: service.name
-                }).catch(
-                    error => console.log(error)
-                );
+                }).catch();
             });
         }
     }

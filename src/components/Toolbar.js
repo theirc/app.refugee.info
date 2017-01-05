@@ -103,7 +103,6 @@ export class Toolbar extends Component {
             <View
                 style={[
                     componentStyles.toolbarContainer,
-                    componentStyles.toolbarContainerLight,
                     smallHeader && {height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55}
                 ]}
             >
@@ -151,15 +150,9 @@ const componentStyles = StyleSheet.create({
         paddingLeft: 15,
         flexDirection: 'column',
         height: getToolbarHeight(),
-        borderBottomWidth: 2
-    },
-    toolbarContainerLight: {
+        borderBottomWidth: 2,
         backgroundColor: themes.light.toolbarColor,
         borderBottomColor: themes.light.darkerDividerColor
-    },
-    toolbarContainerDark: {
-        backgroundColor: themes.dark.toolbarColor,
-        borderBottomColor: themes.dark.toolbarColor
     },
     toolbarTop: {
         flexDirection: 'row',
@@ -186,26 +179,17 @@ const componentStyles = StyleSheet.create({
     menuIconLight: {
         color: themes.light.textColor
     },
-    menuIconDark: {
-        color: themes.dark.yellowAccentColor
-    },
     backIcon: {
         fontSize: 28
     },
     backIconLight: {
         color: themes.light.greenAccentColor
     },
-    backIconDark: {
-        color: themes.dark.yellowAccentColor
-    },
     toolbarTitle: {
         fontSize: 20
     },
     toolbarTitleLight: {
         color: themes.light.textColor
-    },
-    toolbarTitleDark: {
-        color: themes.dark.textColor
     },
     titleIconContainer: {
         width: 26,

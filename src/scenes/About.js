@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions} from 'react-native';
+import {Image, StyleSheet, View, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {getFontFamily, getTextAlign, getTextColor} from '../styles';
+import {DirectionalText} from '../components';
+import styles from '../styles';
 
 
 export class About extends Component {
@@ -12,43 +13,27 @@ export class About extends Component {
     };
 
     render() {
-        const {theme, direction, language} = this.props;
         const logoAbout = require('../assets/about.png');
 
         return (
             <View style={styles.detailsContainer}>
-                <Text style={[
-                    styles.sectionHeader,
-                    getTextColor(theme),
-                    getFontFamily(language),
-                    getTextAlign(direction)
-                ]}
-                >
+                <DirectionalText style={[styles.sectionHeader, styles.textLight]}>
                     {I18n.t('ABOUT_HEADER') }
-                </Text>
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language),
-                    getTextAlign(direction)
-                ]}
-                >
+                </DirectionalText>
+
+                <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                     {I18n.t('ABOUT_CONTENT_1') }
-                </Text>
+                </DirectionalText>
+
                 <Image
-                    source={logoAbout}
                     resizeMode={Image.resizeMode.contain}
+                    source={logoAbout}
                     style={localStyles.logoAbout}
                 />
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language),
-                    getTextAlign(direction)
-                ]}
-                >
+
+                <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                     {I18n.t('ABOUT_CONTENT_2') }
-                </Text>
+                </DirectionalText>
             </View>
         );
     }
@@ -62,10 +47,7 @@ const localStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
-        theme: state.theme,
-        language: state.language,
-        direction: state.direction
+        language: state.language
     };
 };
 

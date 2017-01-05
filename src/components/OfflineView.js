@@ -21,7 +21,10 @@ export class OfflineView extends Component {
             return (
                 <View style={[{borderBottomWidth: 1, flex: 1}, styles.bottomDividerLight]}>
                     <View style={componentStyles.offlineModeContainer}>
-                        <Icon style={componentStyles.offlineModeIcon} name="md-warning" />
+                        <Icon
+                            name="md-warning"
+                            style={componentStyles.offlineModeIcon}
+                        />
                         <View style={componentStyles.offlineModeTextContainer}>
                             <DirectionalText style={[
                                 componentStyles.offlineModeText,

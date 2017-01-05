@@ -189,17 +189,6 @@ export class GeneralInformation extends Component {
 
 
 const componentStyles = StyleSheet.create({
-    searchBarContainer: {
-        padding: 5,
-        height: 43,
-        flexDirection: 'row'
-    },
-    searchBarContainerLight: {
-        backgroundColor: themes.light.dividerColor
-    },
-    searchBarContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
-    },
     refreshTextContainer: {
         borderBottomColor: themes.light.lighterDividerColor,
         borderBottomWidth: 1

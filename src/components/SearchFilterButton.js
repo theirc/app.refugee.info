@@ -55,9 +55,6 @@ const componentStyles = StyleSheet.create({
     searchFilterButtonContainerLight: {
         backgroundColor: themes.light.lighterDividerColor
     },
-    searchFilterButtonContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
-    },
     searchFilterButton: {
         height: 44,
         width: 44,
@@ -68,20 +65,11 @@ const componentStyles = StyleSheet.create({
     searchFilterButtonLight: {
         backgroundColor: themes.light.backgroundColor
     },
-    searchFilterButtonDark: {
-        backgroundColor: themes.dark.toolbarColor
-    },
     searchFilterButtonLightActive: {
         backgroundColor: themes.light.lighterDividerColor
     },
-    searchFilterButtonDarkActive: {
-        backgroundColor: themes.dark.backgroundColor
-    },
     searchFilterIcon: {
         fontSize: 26
-    },
-    searchFilterIconDark: {
-        color: themes.dark.textColor
     },
     searchFilterIconLight: {
         color: themes.light.textColor

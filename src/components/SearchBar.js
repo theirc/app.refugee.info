@@ -75,8 +75,8 @@ export class SearchBar extends Component {
                         style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
                     >
                         <Icon
-                            style={{fontSize: 24}}
                             name={'ios-menu'}
+                            style={{fontSize: 24}}
                         />
                     </TouchableOpacity>}
                 </View>
@@ -96,9 +96,6 @@ const componentStyles = StyleSheet.create({
     searchBarContainerLight: {
         backgroundColor: themes.light.lighterDividerColor
     },
-    searchBarContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
-    },
     searchBar: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -108,9 +105,6 @@ const componentStyles = StyleSheet.create({
     },
     searchBarLight: {
         backgroundColor: themes.light.backgroundColor
-    },
-    searchBarDark: {
-        backgroundColor: themes.dark.toolbarColor
     },
     searchBarIconContainer: {
         height: 44,
@@ -124,9 +118,6 @@ const componentStyles = StyleSheet.create({
     },
     searchBarIconLight: {
         color: themes.light.darkerDividerColor
-    },
-    searchBarIconDark: {
-        color: themes.dark.lighterDividerColor
     },
     searchBarInput: {
         flex: 1,

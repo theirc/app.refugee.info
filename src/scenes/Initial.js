@@ -1,13 +1,11 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text} from 'react-native';
+import {AsyncStorage, View} from 'react-native';
 import {connect} from 'react-redux';
 import {
     fetchCountryFromStorage,
     fetchDirectionFromStorage,
     fetchLanguageFromStorage,
-    fetchLocationsFromStorage,
-    fetchRegionFromStorage,
-    fetchThemeFromStorage
+    fetchRegionFromStorage
 } from '../actions';
 
 class Initial extends Component {
@@ -25,8 +23,7 @@ class Initial extends Component {
             dispatch(fetchRegionFromStorage()),
             dispatch(fetchDirectionFromStorage()),
             dispatch(fetchLanguageFromStorage()),
-            dispatch(fetchCountryFromStorage()),
-            dispatch(fetchThemeFromStorage())
+            dispatch(fetchCountryFromStorage())
         ]).then((values) => {
             const region = values[0];
             if (region && region != 'null') {
