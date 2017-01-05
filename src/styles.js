@@ -67,7 +67,8 @@ const styles = StyleSheet.create({
         height: 80,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: themes.light.backgroundColor
     },
     dividerLongInline: {
         marginTop: 17,

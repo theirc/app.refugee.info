@@ -36,6 +36,7 @@
     "no-var": 1,
     "no-this-before-super": 2,
     "no-multi-spaces": 1,
+    "no-unused-vars": 2,
     "object-shorthand": [2, "always"],
     "prefer-spread": 1,
     "prefer-template": 1,
@@ -63,12 +64,12 @@
     "react/prefer-es6-class": 1,
     "react/prop-types": [1, {"skipUndeclared": true}],
     "react/react-in-jsx-scope": 1,
-    "react/require-extension": 1,
     "react/self-closing-comp": 1,
     "react/sort-comp": 1,
     "react/sort-prop-types": 1,
-    "react/wrap-multilines": 1,
-    "react/no-is-mounted": 1
+    "react/jsx-wrap-multilines": 1,
+    "react/no-is-mounted": 1,
+    "react-native/no-unused-styles": 2
   },
   "extends": "eslint:recommended"
 }

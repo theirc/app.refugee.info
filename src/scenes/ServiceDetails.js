@@ -20,8 +20,9 @@ import {WEB_PATH} from '../constants';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 
+let Mapbox;
 if (Platform.OS === 'android') {
-    let Mapbox = require('react-native-mapbox-gl');
+    Mapbox = require('react-native-mapbox-gl');
     Mapbox.setAccessToken(MAPBOX_TOKEN);
 }
 
@@ -418,7 +419,7 @@ export class ServiceDetails extends Component {
                     />
                 }
                 scrollableViewStyle={[styles.container, componentStyles.containerView]}
-                windowHeight={service.image ? screen.width / imageAspectRatio : 40}
+                windowHeight={service.image ? screen.width / imageAspectRatio : 60}
             >
                 <OfflineView
                     offline={this.state.offline}
@@ -479,12 +480,6 @@ export class ServiceDetails extends Component {
     }
 }
 const componentStyles = StyleSheet.create({
-    titleIconContainer: {
-        width: 26,
-        height: 26,
-        marginLeft: 5,
-        marginRight: 5
-    },
     sectionIconContainer: {
         width: 50,
         alignItems: 'center'

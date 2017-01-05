@@ -3,18 +3,17 @@ import {
     View,
     ListView,
     RefreshControl,
-    Platform,
     Dimensions
 } from 'react-native';
 import I18n from '../constants/Messages';
-import ServiceCommons from '../utils/ServiceCommons';
-import {MapButton, ServiceListItem, DirectionalText} from '../components';
 import {
+    DirectionalText,
+    MapButton,
     OfflineView,
     SearchBar,
     SearchFilterButton,
-    SelectableListItem,
-    Button,
+    ServiceListItem,
+    ServiceCategoryListView,
     LoadingOverlay
 } from '../components';
 import {connect} from 'react-redux';
@@ -62,7 +61,6 @@ export class ServiceList extends Component {
             location: {latitude: 0, longitude: 0}
         };
 
-        this.serviceCommons = new ServiceCommons();
         this.filterByTypes = this.filterByTypes.bind(this);
         this.clearFilters = this.clearFilters.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
@@ -134,7 +132,7 @@ export class ServiceList extends Component {
             const types = this.getServiceTypeNumbers(serviceTypes);
             const options = {
                 enableHighAccuracy: false,
-                timeout: 5000,
+                timeout: 3000,
                 maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000
             };
             let {latitude, longitude} = {};
@@ -274,17 +272,6 @@ export class ServiceList extends Component {
         });
     }
 
-    renderServiceTypeRow(type) {
-        return (
-            <SelectableListItem
-                icon={type.vector_icon || null}
-                onPress={type.onPress}
-                selected={type.active}
-                text={type.name}
-            />
-        );
-    }
-
     filterByText(event) {
         if (this.state.region) {
             this.setState({
@@ -338,34 +325,13 @@ export class ServiceList extends Component {
     }
 
     renderFilteringView() {
+        const {serviceTypeDataSource} = this.state;
         return (
-            <View style={styles.container}>
-                <View style={[styles.searchBarContainer, styles.searchBarContainerLight]}>
-                    <Button
-                        buttonStyle={{height: 44, marginRight: 2}}
-                        color="green"
-                        icon="md-close"
-                        iconStyle={Platform.OS === 'ios' ? {top: 2} : {}}
-                        onPress={this.clearFilters}
-                        text={I18n.t('CLEAR_FILTERS').toUpperCase()}
-                    />
-                    <Button
-                        buttonStyle={{height: 44, marginLeft: 2}}
-                        color="green"
-                        icon="md-funnel"
-                        onPress={this.filterByTypes}
-                        text={I18n.t('FILTER_SERVICES').toUpperCase()}
-                    />
-                </View>
-                <ListView
-                    dataSource={this.state.serviceTypeDataSource}
-                    enableEmptySections
-                    keyboardDismissMode="on-drag"
-                    keyboardShouldPersistTaps
-                    renderRow={(type) => this.renderServiceTypeRow(type)}
-                    style={{flex: 1}}
-                />
-            </View>
+            <ServiceCategoryListView
+                dataSource={serviceTypeDataSource}
+                onClear={this.clearFilters}
+                onFilter={this.filterByTypes}
+            />
         );
     }
 

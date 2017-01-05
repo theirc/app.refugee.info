@@ -87,7 +87,7 @@ export class App extends Component {
         return (
             <Drawer
                 acceptTap
-                captureGestures
+                captureGestures={true}
                 closedDrawerOffset={() => 0}
                 content={
                     <Navigation />
@@ -130,8 +130,8 @@ export class App extends Component {
                     initialRoute={Navigate.getInitialRoute()}
                     navigationBar={
                         <Toolbar
-                            onMenuIconPress={this.toggleDrawer}
                             drawerOpen={this.state.drawerOpen}
+                            onMenuIconPress={this.toggleDrawer}
                         />
                     }
                     ref={(navigator) => {

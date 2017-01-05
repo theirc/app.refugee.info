@@ -175,7 +175,7 @@ const componentStyles = StyleSheet.create({
     },
     mapPopupDescription: {
         marginTop: 5,
-        fontSize: 11
+        fontSize: 12
     },
     mapWidgetContainer: {
         flex: 1,
