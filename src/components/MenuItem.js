@@ -26,12 +26,15 @@ class MenuItem extends Component {
         const item = this.props;
         if (item.icon) {
             return (
-                <Icon
-                    color={themes.light.textColor}
-                    name={item.icon}
-                    size={22}
-                    style={componentStyles.icon}
-                />);
+                <View style={componentStyles.iconContainer}>
+                    <Icon
+                        color={themes.light.textColor}
+                        name={item.icon}
+                        size={22}
+                        style={componentStyles.icon}
+                    />
+                </View>
+            );
         } else if (item.image) {
             return (
                 <Image
@@ -45,11 +48,13 @@ class MenuItem extends Component {
         const {badge} = this.props;
         if (badge) {
             return (
+            <View style={componentStyles.iconContainer}>
                 <View style={componentStyles.badge}>
                     <DirectionalText style={{color: themes.dark.textColor, fontWeight: 'bold'}}>
                         {badge}
                     </DirectionalText>
                 </View>
+            </View>
             );
         }
     }
@@ -78,10 +83,7 @@ class MenuItem extends Component {
                 >
                     <View style={componentStyles.item}>
                         {widget}
-                        <View style={[
-                            widget && {paddingHorizontal: 10},
-                            componentStyles.label]}
-                        >
+                        <View style={componentStyles.label}>
                             <DirectionalText>
                                 {item.children}
                             </DirectionalText>
@@ -98,14 +100,16 @@ class MenuItem extends Component {
 const componentStyles = StyleSheet.create({
     item: {
         flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         height: 50,
-        paddingHorizontal: 15,
+        paddingHorizontal: 5,
         flexDirection: 'row'
+
     },
     label: {
-        flexGrow: 1
+        flexGrow: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 10
+
     },
     image: {
         height: 17,
@@ -113,9 +117,12 @@ const componentStyles = StyleSheet.create({
         marginRight: 5,
         marginLeft: 5
     },
+    iconContainer: {
+        width: 40,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     icon: {
-        width: 35,
-        textAlign: 'center',
         fontSize: 20
     },
     badge: {

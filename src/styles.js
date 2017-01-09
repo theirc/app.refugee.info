@@ -310,6 +310,13 @@ export function getFontFamily(language = 'en') {
     return style;
 }
 
+export function getTextDirection(language) {
+    return {
+        textAlign: (Platform.OS == 'ios') ? 'auto' : 'left',
+        writingDirection: (['ar', 'fa'].indexOf(language) > -1) ? 'rtl' : 'ltr'
+    };
+}
+
 export function getIconComponent(iconName = '') {
     if (iconName.indexOf('ion-') == 0) {
         return Ionicons;

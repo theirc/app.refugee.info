@@ -92,7 +92,7 @@ export class Toolbar extends Component {
         const smallHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader;
         const noHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader;
 
-        const toolbarActionIcon = navigator ? this.renderToolbarActionIcon() : null;
+        const toolbarActionIcon = navigator ? this.renderToolbarActionIcon() : <View />;
         const titleIcon = this.renderTitleIcon();
 
         if (noHeader) {
@@ -107,11 +107,11 @@ export class Toolbar extends Component {
                 ]}
             >
                 <View style={componentStyles.toolbarTop}>
+                    {toolbarActionIcon}
                     <Image
                         source={themes.light.logo}
                         style={componentStyles.brandImage}
                     />
-                    {toolbarActionIcon}
                 </View>
 
                 {!smallHeader && (
@@ -120,7 +120,7 @@ export class Toolbar extends Component {
                         <DirectionalText style={[componentStyles.toolbarTitle, componentStyles.toolbarTitleLight]}>
                             {title}
                         </DirectionalText>
-                    </View>) }
+                    </View>)}
             </View>
         );
     }
@@ -131,10 +131,7 @@ const mapStateToProps = (state) => {
     return {
         region: state.region,
         direction: state.direction,
-        language: state.language,
-        toolbarTitle: state.toolbarTitle,
-        toolbarTitleIcon: state.toolbarTitleIcon,
-        toolbarTitleImage: state.toolbarTitleImage
+        toolbarTitle: state.toolbarTitle
     };
 };
 
@@ -170,7 +167,7 @@ const componentStyles = StyleSheet.create({
     },
     toolbarIconContainer: {
         width: 50,
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
         justifyContent: 'center'
     },
     menuIcon: {

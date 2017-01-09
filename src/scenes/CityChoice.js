@@ -9,7 +9,8 @@ import {
     updateRegionIntoStorage,
     updateLocationsIntoStorage
 } from '../actions';
-import {Regions} from '../data';
+import ApiClient from '../utils/ApiClient';
+
 
 export class CityChoice extends Component {
 
@@ -25,7 +26,7 @@ export class CityChoice extends Component {
         super(props);
         this.loadInitialState = this.loadInitialState.bind(this);
 
-        this.regionData = new Regions(props);
+        this.apiClient = new ApiClient(this.context, props);
         this.state = {
             cities: [],
             loaded: false,
@@ -38,9 +39,13 @@ export class CityChoice extends Component {
     }
 
     async loadInitialState() {
+        const {country} = this.props;
         let cities = [];
         try {
-            cities = await this.regionData.listChildren(this.props.country, true, null, true);
+            let children = await this.apiClient.getAllChildrenOf(country.id, true);
+            cities = [{country, ...country}].concat(children);
+            cities = cities.filter((city) => !city.hidden);
+            cities.forEach((city) => {city.country = country});
         } catch (e) {
             return this.setState({offline: true});
         }
@@ -58,15 +63,15 @@ export class CityChoice extends Component {
 
     async onPress(city) {
         const {dispatch, country} = this.props;
-        let regionDetails = await this.regionData.getRegionDetails(city.slug);
-        this.setState({region: regionDetails});
+        const region = await this.apiClient.getLocation(city.slug);
+        this.setState({region});
 
         requestAnimationFrame(() => {
             Promise.all([
                 dispatch(updateCountryIntoStorage(country)),
-                dispatch(updateRegionIntoStorage(regionDetails)),
+                dispatch(updateRegionIntoStorage(region)),
                 dispatch(updateLocationsIntoStorage(this.state.cities)),
-                dispatch({type: 'REGION_CHANGED', payload: regionDetails}),
+                dispatch({type: 'REGION_CHANGED', payload: region}),
                 dispatch({type: 'COUNTRY_CHANGED', payload: country}),
                 dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
             ]);

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text} from 'react-native';
 import {connect} from 'react-redux';
-import {getFontFamily} from '../styles';
+import {getFontFamily, getTextDirection} from '../styles';
 
 export class DirectionalText extends Component {
 
@@ -14,7 +14,7 @@ export class DirectionalText extends Component {
         return (
             <Text
                 {...this.props}
-                style={[this.props.style, getFontFamily(language)]}
+                style={[getFontFamily(language), getTextDirection(language), this.props.style]}
             >
                 {children}
             </Text>

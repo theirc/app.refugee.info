@@ -36,34 +36,4 @@ export default class Regions {
 
         return children;
     }
-
-    async listCountries(raiseException) {
-        return await this.client.getCountries(raiseException);
-    }
-
-    async listChildren(country, region = null, point = null, raiseException) {
-        let countryId = country.id;
-        let children = await this.client.getAllChildrenOf(countryId, raiseException);
-        (children || []).forEach((m) => {
-            m.country = country;
-            m.countryId = countryId;
-        });
-
-        if (region) {
-            children = children.filter(c => c.id != region.id);
-            children = Regions.sortChildren(children, region.centroid);
-        }
-
-        if (point) {
-            children = Regions.sortChildren(children, point);
-        }
-
-        children = [{country, ...country}].concat(children);
-
-        return children.filter((r) => !r.hidden);
-    }
-
-    async getRegionDetails(region) {
-        return await this.client.getLocation(region);
-    }
 }

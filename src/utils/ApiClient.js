@@ -50,16 +50,19 @@ export default class ApiClient {
     }
 
     getCountries(raiseException = false) {
-        return this.fetch('region/?level=1&simple', raiseException);
+        return this.fetch(`region/?level=1&no_content&language=${this.language}`, raiseException);
+    }
+
+    getCountry(slug, raiseException = false, language='en') {
+        return this.fetch(`region/${slug}?no_content&language=${language}`, raiseException);
     }
 
     getAllChildrenOf(parentId, raiseException = false) {
-        return this.fetch(`region/?is_child_of=${parentId}&simple`, raiseException);
+        return this.fetch(`region/?is_child_of=${parentId}&no_content&language=${this.language}`, raiseException);
     }
 
     getLocation(slug, raiseException = false) {
-
-        return this.fetch(`region/${slug}/`, raiseException);
+        return this.fetch(`region/${slug}?language=${this.language}`, raiseException);
     }
 
     getServiceTypes(raise_exception = false) {

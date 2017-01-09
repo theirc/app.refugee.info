@@ -3,7 +3,8 @@ import {
     View,
     ScrollView,
     Dimensions,
-    Alert
+    Alert,
+    I18nManager
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -26,9 +27,8 @@ import {
 } from '../actions';
 
 import ApiClient from '../utils/ApiClient';
-import {Regions} from '../data';
 
-let {width, height} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 class Settings extends Component {
 
@@ -54,38 +54,34 @@ class Settings extends Component {
         });
         const {dispatch, region, country} = this.props;
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-
+        const isRTL = direction === 'rtl';
+        I18nManager.forceRTL(isRTL);
         this.apiClient = new ApiClient(this.context, {language});
 
         let newRegion = null;
         let newCountry = null;
-        let newLocations = null;
 
         Promise.all([
-            this.apiClient.getLocation(region.id, true),
-            this.apiClient.getLocation(country.id, true)
+            this.apiClient.getLocation(region.slug, true),
+            this.apiClient.getCountry(country.slug, true)
         ]).then((values) => {
             newRegion = values[0];
             newCountry = values[1];
-            const regionData = new Regions({language});
-            regionData.listChildren(newCountry, true, newRegion).then((value) => {
-                newLocations = value.filter((c) => c.level != 2);
-                newLocations.forEach((location) => {
-                    if (location && location.metadata) {
-                        location.pageTitle = (location.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-                    }
-                });
+            this.apiClient.getAllChildrenOf(newCountry.id, true).then((children) => {
+                let locations = [{newCountry, ...newCountry}].concat(children);
+                locations = locations.filter((city) => !city.hidden);
+                locations.forEach((city) => {city.country = country});
                 Promise.all([
                     dispatch(updateLanguageIntoStorage(language)),
                     dispatch(updateDirectionIntoStorage(direction)),
                     dispatch(updateCountryIntoStorage(newCountry)),
                     dispatch(updateRegionIntoStorage(newRegion)),
-                    dispatch(updateLocationsIntoStorage(newLocations)),
+                    dispatch(updateLocationsIntoStorage(locations)),
                     dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
                     dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
                     dispatch({type: 'REGION_CHANGED', payload: newRegion}),
                     dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
-                    dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
+                    dispatch({type: 'LOCATIONS_CHANGED', payload: locations}),
                     dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
                 ]).then(() => {
                     this.setState({loading: false});
@@ -98,9 +94,7 @@ class Settings extends Component {
             Alert.alert(
                 I18n.t('CANNOT_CHANGE_LANGUAGE'),
                 `${I18n.t('NETWORK_PROBLEM')}`,
-                [
-                    {text: I18n.t('OK')}
-                ]
+                [{text: I18n.t('OK')}]
             );
         });
     }

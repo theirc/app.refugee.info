@@ -19,7 +19,7 @@ import {
 import {Icon} from '../components';
 import styles, {themes} from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
-import {Regions} from '../data';
+import ApiClient from '../utils/ApiClient';
 
 
 class Navigation extends Component {
@@ -32,7 +32,7 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
-        this.regionData = new Regions(props);
+        this.apiClient = new ApiClient(this.context, props);
     }
 
     _defaultOrFirst(section, showTitle = false) {
@@ -56,7 +56,7 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch} = this.props;
-        let regionDetails = await this.regionData.getRegionDetails(city.slug);
+        let regionDetails = await this.apiClient.getLocation(city.slug);
         this.setState({region: regionDetails});
 
         requestAnimationFrame(() => {

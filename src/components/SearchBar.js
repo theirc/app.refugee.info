@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {View, TouchableOpacity, TextInput, StyleSheet} from 'react-native';
 import {Icon} from '../components';
 import I18n from '../constants/Messages';
+import {connect} from 'react-redux';
 import {getElevation, themes} from '../styles';
 
 export class SearchBar extends Component {
@@ -12,6 +13,7 @@ export class SearchBar extends Component {
         drawerButton: PropTypes.bool,
         floating: PropTypes.bool,
         initialSearchText: PropTypes.string,
+        language: PropTypes.string,
         searchFunction: PropTypes.func
     };
 
@@ -20,12 +22,12 @@ export class SearchBar extends Component {
     };
 
     render() {
-        const {searchFunction, floating, buttonOnPressAction, drawerButton} = this.props;
+        const {searchFunction, floating, buttonOnPressAction, drawerButton, language} = this.props;
+        const isRTL = ['ar', 'fa'].indexOf(language) > -1;
         return (
             <View style={[
                 componentStyles.searchBarContainer,
-                !floating && componentStyles.searchBarContainerLight
-            ]}
+                !floating && componentStyles.searchBarContainerLight]}
             >
                 <View
                     style={[
@@ -34,12 +36,26 @@ export class SearchBar extends Component {
                         componentStyles.searchBarLight
                     ]}
                 >
+                    {drawerButton &&
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => this.context.drawer.open()}
+                        style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
+                    >
+                        <Icon
+                            name={'ios-menu'}
+                            style={{fontSize: 27}}
+                        />
+                    </TouchableOpacity>}
+
+                    {!drawerButton &&
                     <View style={componentStyles.searchBarIconContainer}>
                         <Icon
                             name="ios-search"
                             style={[componentStyles.searchBarIcon, componentStyles.searchBarIconLight]}
                         />
-                    </View>
+                    </View>}
+
                     <TextInput
                         autoCapitalize="none"
                         autoCorrect={false}
@@ -49,7 +65,7 @@ export class SearchBar extends Component {
                         placeholder={I18n.t('SEARCH')}
                         placeholderTextColor={themes.light.darkerDividerColor}
                         returnKeyType={'search'}
-                        style={[componentStyles.searchBarInput, componentStyles.searchBarIconLight]}
+                        style={[componentStyles.searchBarInput, componentStyles.searchBarIconLight, isRTL && {textAlign: 'right'}]}
                         underlineColorAndroid="transparent"
                     />
 
@@ -61,21 +77,6 @@ export class SearchBar extends Component {
                     >
                         <Icon
                             name={'md-funnel'}
-                            style={{fontSize: 24}}
-                        />
-                    </TouchableOpacity>}
-
-                    {buttonOnPressAction && drawerButton &&
-                    <View style={componentStyles.divider}/>}
-
-                    {drawerButton &&
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        onPress={() => this.context.drawer.open()}
-                        style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
-                    >
-                        <Icon
-                            name={'ios-menu'}
                             style={{fontSize: 24}}
                         />
                     </TouchableOpacity>}
@@ -122,14 +123,15 @@ const componentStyles = StyleSheet.create({
     searchBarInput: {
         flex: 1,
         fontSize: 14
-    },
-    divider: {
-        width: 2,
-        height: 32,
-        marginVertical: 8,
-        marginHorizontal: 4,
-        backgroundColor: themes.light.dividerColor
     }
 });
 
-export default SearchBar;
+
+const mapStateToProps = (state) => {
+    return {
+        language: state.language
+    };
+};
+
+export default connect(mapStateToProps)(SearchBar);
+

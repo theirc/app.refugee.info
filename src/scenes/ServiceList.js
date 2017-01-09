@@ -422,7 +422,8 @@ export class ServiceList extends Component {
 const mapStateToProps = (state) => {
     return {
         country: state.country,
-        region: state.region
+        region: state.region,
+        language: state.language
     };
 };
 

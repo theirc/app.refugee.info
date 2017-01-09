@@ -57,9 +57,7 @@ export class GeneralInformation extends Component {
             section.onPress = this.onPress.bind(this, section);
         });
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(
-                region.content
-            ),
+            dataSource: this.state.dataSource.cloneWithRows(region.content),
             region,
             loaded: true,
             offline: false
@@ -67,17 +65,23 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        const {region, dispatch} = this.props;
+        const {region, dispatch, language} = this.props;
         this.setState({refreshing: true}, () => {
             this.apiClient = new ApiClient(this.context, this.props);
-            this.apiClient.getLocation(region.slug, true).then((location) => {
+            this.apiClient.getLocation(region.slug, true, language).then((location) => {
                 let hasChanged = region.updated_at != location.updated_at;
                 if (hasChanged) {
+                    location.content = location.content.filter((content) => {return !content.pop_up});
+                    location.content.forEach((section) => {
+                        section.onPress = this.onPress.bind(this, section);
+                    });
                     Promise.all([
                         dispatch(updateRegionIntoStorage(location)),
                         dispatch({type: 'REGION_CHANGED', payload: location})
                     ]).then(() => {
                         this.setState({
+                            dataSource: this.state.dataSource.cloneWithRows(location.content),
+                            region: location,
                             refreshing: false,
                             dataSourceUpdated: true,
                             offline: false
@@ -90,9 +94,6 @@ export class GeneralInformation extends Component {
                         offline: false
                     });
                 }
-                setTimeout(() => {
-                    this.setState({dataSourceUpdated: undefined});
-                }, 3000);
             }).catch(() => {
                 this.setState({
                     offline: true,

@@ -3,9 +3,9 @@ import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView, OfflineView} from '../components';
 import I18n from '../constants/Messages';
+import ApiClient from '../utils/ApiClient';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
-import {Regions} from '../data';
 
 export class CountryChoice extends Component {
 
@@ -16,7 +16,7 @@ export class CountryChoice extends Component {
     constructor(props) {
         super(props);
         this.loadInitialState = this.loadInitialState.bind(this);
-        this.regionData = new Regions(props);
+        this.apiClient = new ApiClient(this.context, props);
 
         this.state = {
             countries: [],
@@ -33,7 +33,7 @@ export class CountryChoice extends Component {
         const {navigator} = this.context;
         let countries = [];
         try {
-            countries = await this.regionData.listCountries(true);
+            countries = await this.apiClient.getCountries(true);
             countries = countries.filter(x => !x.hidden);
         } catch (e) {
             return this.setState({offline: true});

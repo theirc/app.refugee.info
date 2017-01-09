@@ -1,7 +1,9 @@
-import {AsyncStorage} from 'react-native';
+import {AsyncStorage, I18nManager} from 'react-native';
 import I18n from '../constants/Messages';
 
 function reloadDirection(direction) {
+    const isRTL = direction === 'rtl';
+    I18nManager.forceRTL(isRTL);
     return {
         payload: direction,
         type: 'DIRECTION_CHANGED'

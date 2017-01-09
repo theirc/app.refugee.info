@@ -19,7 +19,7 @@ export class OfflineView extends Component {
         const {offline} = this.props;
         if (offline) {
             return (
-                <View style={[{borderBottomWidth: 1, flex: 1}, styles.bottomDividerLight]}>
+                <View style={[{borderBottomWidth: 1}, styles.bottomDividerLight]}>
                     <View style={componentStyles.offlineModeContainer}>
                         <Icon
                             name="md-warning"

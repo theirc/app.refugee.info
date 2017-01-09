@@ -88,7 +88,7 @@ export class App extends Component {
             <Drawer
                 acceptTap
                 captureGestures={true}
-                closedDrawerOffset={() => 0}
+                closedDrawerOffset={0}
                 content={
                     <Navigation />
                 }
@@ -104,7 +104,7 @@ export class App extends Component {
                 panOpenMask={0.02}
                 panThreshold={0.08}
                 ref={(drawer) => {this.drawer = drawer}}
-                side="right"
+                side="left"
                 styles={drawerStyles}
                 tapToClose
                 tweenDuration={100}
@@ -176,6 +176,7 @@ const drawerStyles = {
         backgroundColor: themes.light.backgroundColor
     },
     drawer: {
+        borderRightWidth: 1,
         borderLeftWidth: 1,
         borderLeftColor: themes.light.dividerColor,
         backgroundColor: themes.light.backgroundColor,
@@ -186,9 +187,7 @@ const drawerStyles = {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme,
-        direction: state.direction,
-        country: state.country
+        direction: state.direction
     };
 };
 
