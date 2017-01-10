@@ -61,7 +61,7 @@ export class SearchBar extends Component {
                         autoCorrect={false}
                         clearButtonMode="always"
                         defaultValue={this.props.initialSearchText}
-                        onEndEditing={searchFunction}
+                        onSubmitEditing={searchFunction}
                         placeholder={I18n.t('SEARCH')}
                         placeholderTextColor={themes.light.darkerDividerColor}
                         returnKeyType={'search'}
