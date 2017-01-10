@@ -6,6 +6,7 @@ import I18n from '../constants/Messages';
 import {updateLanguageIntoStorage} from '../actions/language';
 import {updateDirectionIntoStorage} from '../actions/direction';
 import {DirectionalText} from '../components';
+import RNRestart from 'react-native-restart';
 
 const {width, height} = Dimensions.get('window');
 
@@ -32,16 +33,13 @@ class Welcome extends Component {
         if (!this.props.firstLoad) {
             this.props.finished();
         }
-
-        const {props} = this;
-
-        let {language} = props;
+        const {language} = this.props;
         if (!language || this.state.languageSelected) {
             return;
         }
 
         setTimeout(() => {
-            if (!props.firstLoad) {
+            if (!this.props.firstLoad) {
                 return;
             }
             this.setState({
@@ -64,11 +62,8 @@ class Welcome extends Component {
             dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
             dispatch({type: 'LANGUAGE_CHANGED', payload: language})
         ]).then(() => {
-            return this.setState({
-                language,
-                showLanguage: false
-            });
-        }).then(() => this.props.finished());
+            RNRestart.Restart();
+        });
     }
 
     renderLanguageSelection() {

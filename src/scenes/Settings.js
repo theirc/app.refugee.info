@@ -172,9 +172,7 @@ class Settings extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        route: state.navigation,
         language: state.language,
-        theme: state.theme,
         direction: state.direction,
         region: state.region,
         country: state.country

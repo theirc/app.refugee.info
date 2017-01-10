@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {OfflineView, DirectionalText} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily} from '../styles';
+import styles, {themes} from '../styles';
 import {News} from '../data';
 
 export class NewsThatMoves extends Component {
@@ -45,25 +45,17 @@ export class NewsThatMoves extends Component {
     }
 
     renderRow(data) {
-        const font = getFontFamily(this.props.language);
-        let textStyles = {
-            flexDirection: 'row',
-            textAlign: 'auto',
-            backgroundColor: themes.light.backgroundColor,
-            color: themes.light.textColor
-        };
-
         return (
             <View style={{paddingHorizontal: 5}}>
                 <TouchableOpacity
                     onPress={() => Linking.openURL(data.link)}
-                    style={[localStyles.article, {borderBottomColor: themes.light.dividerColor}]}
+                    style={[componentStyles.article, {borderBottomColor: themes.light.dividerColor}]}
                 >
                     <View>
-                        <DirectionalText style={[textStyles, font, {paddingBottom: 5, fontSize: 16, fontWeight: 'bold'}]}>
+                        <DirectionalText style={componentStyles.title}>
                             {data.title}
                         </DirectionalText>
-                        <DirectionalText style={[textStyles, font, {paddingBottom: 10}]}>
+                        <DirectionalText style={componentStyles.contentSnippet}>
                             {data.contentSnippet}
                         </DirectionalText>
                     </View>
@@ -86,10 +78,10 @@ export class NewsThatMoves extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={{paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF'}}>
+                <View style={componentStyles.logoContainer}>
                     <Image
                         source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
-                        style={{height: 70, resizeMode: 'contain'}}
+                        style={componentStyles.logo}
                     />
                 </View>
                 <ListView
@@ -110,7 +102,24 @@ export class NewsThatMoves extends Component {
     }
 }
 
-const localStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
+    logoContainer: {
+        paddingVertical: 10,
+        marginBottom: 5,
+        backgroundColor: themes.light.backgroundColor
+    },
+    logo: {
+        height: 70,
+        resizeMode: 'contain'
+    },
+    title: {
+        paddingBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    contentSnippet: {
+        paddingBottom: 10
+    },
     article: {
         paddingLeft: 5,
         paddingRight: 5,
@@ -123,12 +132,9 @@ const localStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         language: state.language,
         region: state.region,
-        country: state.country,
-        theme: state.theme,
-        direction: state.direction
+        country: state.country
     };
 };
 

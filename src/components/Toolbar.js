@@ -24,6 +24,7 @@ export class Toolbar extends Component {
     static propTypes = {
         drawerOpen: PropTypes.bool,
         onMenuIconPress: PropTypes.func,
+        region: PropTypes.object,
         toolbarTitle: PropTypes.string,
         toolbarTitleIcon: PropTypes.string
     };
@@ -61,10 +62,12 @@ export class Toolbar extends Component {
 
     renderToolbarActionIcon() {
         const {navigator} = this.context;
-        const {onMenuIconPress, drawerOpen} = this.props;
+        const {onMenuIconPress, drawerOpen, region} = this.props;
         const menuIcon = drawerOpen ? 'md-close' : 'ios-menu';
         const backIcon = 'md-arrow-back';
-
+        if (!region) {
+            return <View />;
+        }
         return (
             <TouchableOpacity
                 onPress={navigator.isChild ? () => this._goBack() : onMenuIconPress}

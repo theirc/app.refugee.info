@@ -59,6 +59,7 @@ export class SearchBar extends Component {
                     <TextInput
                         autoCapitalize="none"
                         autoCorrect={false}
+                        blurOnSubmit
                         clearButtonMode="always"
                         defaultValue={this.props.initialSearchText}
                         onSubmitEditing={searchFunction}

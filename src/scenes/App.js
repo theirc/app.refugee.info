@@ -179,6 +179,7 @@ const drawerStyles = {
         borderRightWidth: 1,
         borderLeftWidth: 1,
         borderLeftColor: themes.light.dividerColor,
+        borderRightColor: themes.light.dividerColor,
         backgroundColor: themes.light.backgroundColor,
         shadowOpacity: 0.8,
         shadowRadius: 3

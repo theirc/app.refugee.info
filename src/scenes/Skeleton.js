@@ -111,10 +111,10 @@ class Skeleton extends Component {
         // let the user override whatever they have set in their device
         await this.reloadStorage();
 
-        let firstLoad = await AsyncStorage.getItem('firstLoad');
-        let region = await AsyncStorage.getItem('regionCache');
-
-        let isFirstLoad = (firstLoad !== 'false' || !(region));
+        const firstLoad = await AsyncStorage.getItem('firstLoad');
+        const region = await AsyncStorage.getItem('regionCache');
+        const language = await AsyncStorage.getItem('language');
+        const isFirstLoad = !language && (firstLoad !== 'false' || !(region));
 
         this.setState({firstLoad: isFirstLoad});
     }

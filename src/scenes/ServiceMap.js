@@ -231,6 +231,9 @@ class ServiceMap extends Component {
 
     filterByText(event) {
         const {regionArea} = this.state;
+        this.setState({
+            activeMarker: null
+        });
         if (this.state.region) {
             this.setState({
                 searchCriteria: event.nativeEvent.text,
