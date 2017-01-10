@@ -56,13 +56,14 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch} = this.props;
-        let regionDetails = await this.apiClient.getLocation(city.slug);
-        this.setState({region: regionDetails});
+        let region = await this.apiClient.getLocation(city.slug);
+        region.allContent = region.content.concat(region.important, region.banners);
+        this.setState({region});
 
         requestAnimationFrame(() => {
             Promise.all([
-                dispatch(updateRegionIntoStorage(regionDetails)),
-                dispatch({type: 'REGION_CHANGED', payload: regionDetails})
+                dispatch(updateRegionIntoStorage(region)),
+                dispatch({type: 'REGION_CHANGED', payload: region})
             ]);
             return this._defaultOrFirst(city);
         });

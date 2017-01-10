@@ -63,7 +63,8 @@ export class CityChoice extends Component {
 
     async onPress(city) {
         const {dispatch, country} = this.props;
-        const region = await this.apiClient.getLocation(city.slug);
+        let region = await this.apiClient.getLocation(city.slug);
+        region.allContent = region.content.concat(region.important, region.banners);
         this.setState({region});
 
         requestAnimationFrame(() => {

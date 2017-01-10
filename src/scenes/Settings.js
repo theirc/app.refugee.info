@@ -68,6 +68,7 @@ class Settings extends Component {
         ]).then((values) => {
             newRegion = values[0];
             newCountry = values[1];
+            newRegion.allContent = newRegion.content.concat(newRegion.important, newRegion.banners);
             this.apiClient.getAllChildrenOf(newCountry.id, true).then((children) => {
                 let locations = [{newCountry, ...newCountry}].concat(children);
                 locations = locations.filter((city) => !city.hidden);

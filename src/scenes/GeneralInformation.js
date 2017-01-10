@@ -9,9 +9,9 @@ import I18n from '../constants/Messages';
 import {OfflineView, ListItem, Button, DirectionalText} from '../components';
 import {connect} from 'react-redux';
 import styles, {themes} from '../styles';
-import {Regions} from '../data';
 import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage} from '../actions/region';
+
 
 export class GeneralInformation extends Component {
 
@@ -37,7 +37,6 @@ export class GeneralInformation extends Component {
         const {region, dispatch} = this.props;
         dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
         this.context.navigator.currentRoute.title = region.name;
-        this.regionData = new Regions(this.props);
         this.loadInitialState();
     }
 
@@ -71,6 +70,7 @@ export class GeneralInformation extends Component {
             this.apiClient.getLocation(region.slug, true, language).then((location) => {
                 let hasChanged = region.updated_at != location.updated_at;
                 if (hasChanged) {
+                    location.allContent = location.content.concat(location.important, location.banners);
                     location.content = location.content.filter((content) => {return !content.pop_up});
                     location.content.forEach((section) => {
                         section.onPress = this.onPress.bind(this, section);

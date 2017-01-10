@@ -4,7 +4,6 @@ import {wrapHtmlContent} from '../utils/htmlUtils';
 import styles from '../styles';
 import {connect} from 'react-redux';
 import {MapButton, Icon, DirectionalText} from '../components';
-import {Regions} from '../data';
 import {RNMail as Mailer} from 'NativeModules';
 import {getAllUrlParams} from '../utils/helpers';
 import I18n from '../constants/Messages';
@@ -46,8 +45,10 @@ export class GeneralInformationDetails extends Component {
         const {dispatch, section, language, region} = this.props;
         if (section.important) {
             dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: section.title});
+            this.context.navigator.currentRoute.title = section.title;
         } else {
             dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
+            this.context.navigator.currentRoute.title = region.name;
         }
         let source = {
             html: wrapHtmlContent(
@@ -58,7 +59,6 @@ export class GeneralInformationDetails extends Component {
                 Platform.OS
             )
         };
-
         this.setState({
             source,
             thumbsUp: section.thumbs_up,
@@ -66,12 +66,87 @@ export class GeneralInformationDetails extends Component {
         });
     }
 
+    getSectionBySlug(slug) {
+        const {region} = this.props;
+        const sections = region.allContent.filter((content) => content.slug == slug);
+        return sections[0];
+    }
+
+    /* open links to other sections in the app */
+    handleInternalLinking(url) {
+        if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
+            let slug = url.split('%23')[1];
+            let section = this.getSectionBySlug(slug);
+            if (section) {
+                return this.context.navigator.to('info.details', null, {section});
+            }
+        }
+    }
+
+    /* open links like phone, email or external http in dedicated app */
+    handleExternalLinking(url) {
+        this.webView.goBack();
+        if (url.indexOf('tel') == 0) {
+            // handle phone number
+        } else if (url.indexOf('mailto') == 0) {
+            //handle mailto
+        } else {
+            this.setState({navigating: true});
+            Linking.openURL(url);
+        }
+    }
+
+    /* open links to service list with active filters in the app */
+    handleServiceLinking(url) {
+        if (url.indexOf('services') > -1) {
+            let urlParams = getAllUrlParams(url);
+            this.setState({navigating: true});
+            return this.context.navigator.to('services', null, {
+                searchCriteria: urlParams.query,
+                serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
+                    ? urlParams.type.map((el) => parseInt(el))
+                    : [parseInt(urlParams.type)]
+            });
+        }
+    }
+
+    /* Image are loaded using this method. So this narrows down to prevent all clicks. */
+    checkNavigationType(state) {
+        if (state.navigationType && state.navigationType === 'click') {
+            this.webView.stopLoading();
+        }
+    }
+
+    onNavigationStateChangeIOS(state) {
+        let url = state.url;
+        if (url === 'about:blank') return;
+        this.handleInternalLinking(url);
+        if (this.webView) {
+            this.checkNavigationType(state);
+            if (url.indexOf('/') == 0) {
+                this.handleServiceLinking(url);
+            } else {
+                this.handleExternalLinking(url);
+            }
+        }
+    }
+
+    onNavigationStateChangeAndroid(state) {
+        let url = state.url;
+        console.warn(url);
+    }
+
     _onNavigationStateChange(state) {
+        if (Platform.OS == 'ios') {
+            return this.onNavigationStateChangeIOS(state);
+        }
+        return this.onNavigationStateChangeAndroid(state);
+    }
+
+    someFunc(state) {
         let url = state.url;
         if (!this.state.navigating || (Platform.Version >= 16 && Platform.Version <= 18)) {
-            if (url === 'about:blank' && Platform.OS === 'ios') {
-                return;
-            }
+
             if (url.indexOf('data:') == 0) {
                 if (Platform.OS === 'android') {
                     //hacky way to get link path
@@ -149,20 +224,6 @@ export class GeneralInformationDetails extends Component {
                 if (state.navigationType && state.navigationType === 'click') {
                     // Image are loaded using this method. So this narrows down to prevent all clicks.
                     this.webView.stopLoading();
-                }
-                // check if it's anchor link with #
-                if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
-                    let fullSlug = url.split('%23')[1];
-                    let info = Regions.searchGeneralInformation(this.props.region, fullSlug);
-                    if (info) {
-                        let payload = {
-                            title: '',
-                            section: info.section,
-                            slug: info.anchor_name,
-                            index: info.index
-                        };
-                        return this.context.navigator.to('info.details', null, payload);
-                    }
                 }
 
                 if (url.indexOf('/') == 0) {
