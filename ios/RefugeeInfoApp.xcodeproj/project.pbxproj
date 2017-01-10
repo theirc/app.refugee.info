@@ -33,6 +33,7 @@
 		43688CCC1D266420002E5F48 /* Montserrat-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCB1D266420002E5F48 /* Montserrat-SemiBold.otf */; };
 		43688CCE1D268F51002E5F48 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */; };
 		4E0F1BAC1D7DB980002D53A3 /* libRCTLinking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E0F1B9B1D7DB938002D53A3 /* libRCTLinking.a */; };
+		4E2315061E250B6000C18D8E /* libRCTRestart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E2314F41E25089B00C18D8E /* libRCTRestart.a */; };
 		4E8F2E091DFF164E0021E6E9 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E8F2DD81DFF161B0021E6E9 /* libRCTAnimation.a */; };
 		64E294D541F9419F836AFD04 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */; };
 		6E4748D9323040E7B23A56CF /* libRNI18n.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 87B7CC5BEA19452D8E916112 /* libRNI18n.a */; };
@@ -165,6 +166,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = RCTLinking;
+		};
+		4E2314F31E25089B00C18D8E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4E2314E01E25089A00C18D8E /* RCTRestart.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3245CDED1BFEE35C00EABF68;
+			remoteInfo = RCTRestart;
 		};
 		4E3A4B8C1D37D02600352D09 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -304,6 +312,7 @@
 		43688CCD1D268F51002E5F48 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roboto-Medium.ttf"; sourceTree = "<group>"; };
 		4D27116C92AA444499ABB45F /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
+		4E2314E01E25089A00C18D8E /* RCTRestart.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTRestart.xcodeproj; path = "/Users/bartosz/Projects/info.refugee.mobile/node_modules/react-native-sqlite-storage/src/ios/../../../react-native-restart/ios/RCTRestart.xcodeproj"; sourceTree = "<absolute>"; };
 		4E8F2DD01DFF161B0021E6E9 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		519B8BAEAAEF44869126EA67 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		52D18292794646A4B80B5F23 /* RNI18n.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNI18n.xcodeproj; path = "../node_modules/react-native-i18n/RNI18n.xcodeproj"; sourceTree = "<group>"; };
@@ -342,6 +351,7 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				4E2315061E250B6000C18D8E /* libRCTRestart.a in Frameworks */,
 				6E4748D9323040E7B23A56CF /* libRNI18n.a in Frameworks */,
 				B460F1B208344467BE748099 /* libAirMaps.a in Frameworks */,
 				7F30DA7AC2F4419F8A2FAB5C /* libRNShare.a in Frameworks */,
@@ -498,6 +508,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4E2314E11E25089A00C18D8E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4E2314F41E25089B00C18D8E /* libRCTRestart.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4E3A4B7D1D37D02600352D09 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -543,6 +561,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4E2314E01E25089A00C18D8E /* RCTRestart.xcodeproj */,
 				4E8F2DD01DFF161B0021E6E9 /* RCTAnimation.xcodeproj */,
 				4E0F1B921D7DB938002D53A3 /* RCTLinking.xcodeproj */,
 				061F3DEC1D31469C0075C1CA /* RCTPushNotification.xcodeproj */,
@@ -703,6 +722,10 @@
 				{
 					ProductGroup = 061F3DED1D31469C0075C1CA /* Products */;
 					ProjectRef = 061F3DEC1D31469C0075C1CA /* RCTPushNotification.xcodeproj */;
+				},
+				{
+					ProductGroup = 4E2314E11E25089A00C18D8E /* Products */;
+					ProjectRef = 4E2314E01E25089A00C18D8E /* RCTRestart.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -874,6 +897,13 @@
 			fileType = archive.ar;
 			path = libRCTLinking.a;
 			remoteRef = 4E0F1B9A1D7DB938002D53A3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4E2314F41E25089B00C18D8E /* libRCTRestart.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTRestart.a;
+			remoteRef = 4E2314F31E25089B00C18D8E /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		4E3A4B8D1D37D02600352D09 /* libRNDeviceInfo.a */ = {
@@ -1056,6 +1086,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
+					"$(SRCROOT)/../node_modules/react-native-restart/**",
 				);
 				INFOPLIST_FILE = RefugeeInfoApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -1088,6 +1119,7 @@
 					"$(SRCROOT)/../node_modules/react-native/Libraries/LinkingIOS",
 					"$(SRCROOT)/../node_modules/react-native-device-info/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/react-native-sqlite-storage/src/ios",
+					"$(SRCROOT)/../node_modules/react-native-restart/**",
 				);
 				INFOPLIST_FILE = RefugeeInfoApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

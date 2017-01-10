@@ -25,10 +25,11 @@ import {
     updateLocationsIntoStorage,
     updateRegionIntoStorage
 } from '../actions';
-
+import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
 
 const {width, height} = Dimensions.get('window');
+
 
 class Settings extends Component {
 
@@ -85,6 +86,7 @@ class Settings extends Component {
                     dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
                 ]).then(() => {
                     this.setState({loading: false});
+                    RNRestart.Restart();
                 });
             });
         }).catch(() => {

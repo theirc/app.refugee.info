@@ -46,8 +46,7 @@ export class LocationListItem extends Component {
                         <DirectionalText
                             style={[
                                 componentStyles.listItemText,
-                                styles.textLight
-                            ]}
+                                styles.textLight]}
                         >
                             {text}
                         </DirectionalText>
@@ -70,11 +69,12 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: 40,
         borderBottomWidth: 1
     },
     listItemText: {
-        fontSize: 15
+        fontSize: 15,
+        textAlign: 'center'
     },
     listItemImageAbsolute: {
         position: 'absolute',
