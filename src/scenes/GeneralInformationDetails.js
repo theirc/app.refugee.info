@@ -29,7 +29,7 @@ export class GeneralInformationDetails extends Component {
     constructor(props) {
         super(props);
         this.webView = null;
-        this.client = new ApiClient(this.context, props);
+        this.apiClient = new ApiClient(this.context, props);
         this.state = {
             loading: false,
             source: false,
@@ -59,11 +59,14 @@ export class GeneralInformationDetails extends Component {
                 Platform.OS
             )
         };
-        this.setState({
-            source,
-            thumbsUp: section.thumbs_up,
-            thumbsDown: section.thumbs_down
+        this.setState({source});
+        this.apiClient.getRating(section.slug).then((response) => {
+            this.setState({
+                thumbsUp: response.thumbs_up,
+                thumbsDown: response.thumbs_down
+            });
         });
+
     }
 
     getSectionBySlug(slug) {
@@ -78,7 +81,8 @@ export class GeneralInformationDetails extends Component {
             let slug = url.split('%23')[1];
             let section = this.getSectionBySlug(slug);
             if (section) {
-                return this.context.navigator.to('info.details', null, {section});
+                this.context.navigator.to('info.details', null, {section});
+                return true;
             }
         }
     }
@@ -120,13 +124,14 @@ export class GeneralInformationDetails extends Component {
     onNavigationStateChangeIOS(state) {
         let url = state.url;
         if (url === 'about:blank') return;
-        this.handleInternalLinking(url);
-        if (this.webView) {
-            this.checkNavigationType(state);
-            if (url.indexOf('/') == 0) {
-                this.handleServiceLinking(url);
-            } else {
-                this.handleExternalLinking(url);
+        if (!this.handleInternalLinking(url)) {
+            if (this.webView) {
+                this.checkNavigationType(state);
+                if (url.indexOf('/') == 0) {
+                    this.handleServiceLinking(url);
+                } else {
+                    this.handleExternalLinking(url);
+                }
             }
         }
     }
@@ -295,7 +300,7 @@ export class GeneralInformationDetails extends Component {
         const ratingStored = `rating-${section.slug}`;
         AsyncStorage.getItem(ratingStored, (error, result) => {
             if (!result) {
-                this.client.setRating(section.slug, rating).then((res) => {
+                this.apiClient.setRating(section.slug, rating).then((res) => {
                     let response = JSON.parse(res._bodyText);
                     this.setState({
                         thumbsUp: response.thumbs_up,
@@ -304,7 +309,7 @@ export class GeneralInformationDetails extends Component {
                     AsyncStorage.setItem(ratingStored, JSON.stringify(response.rating_id));
                 });
             } else {
-                this.client.setRating(section.slug, rating, 'other', result).then((res) => {
+                this.apiClient.setRating(section.slug, rating, 'other', result).then((res) => {
                     let response = JSON.parse(res._bodyText);
                     this.setState({
                         thumbsUp: response.thumbs_up,

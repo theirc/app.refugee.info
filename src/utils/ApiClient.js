@@ -95,7 +95,7 @@ export default class ApiClient {
     }
 
     getRating(pageSlug) {
-        return this.get(`page/${pageSlug}?rating`);
+        return this.fetch(`page/${pageSlug}/rate`);
     }
 
 }
