@@ -27,6 +27,8 @@ import {
 } from '../actions';
 import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
+import {getRegionAllContent} from '../utils/helpers';
+
 
 const {width, height} = Dimensions.get('window');
 
@@ -68,7 +70,7 @@ class Settings extends Component {
         ]).then((values) => {
             newRegion = values[0];
             newCountry = values[1];
-            newRegion.allContent = newRegion.content.concat(newRegion.important, newRegion.banners);
+            newRegion.allContent = getRegionAllContent(newRegion);
             this.apiClient.getAllChildrenOf(newCountry.id, true).then((children) => {
                 let locations = [{newCountry, ...newCountry}].concat(children);
                 locations = locations.filter((city) => !city.hidden);

@@ -11,6 +11,7 @@ import {connect} from 'react-redux';
 import styles, {themes} from '../styles';
 import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage} from '../actions/region';
+import {getRegionAllContent} from '../utils/helpers';
 
 
 export class GeneralInformation extends Component {
@@ -70,7 +71,7 @@ export class GeneralInformation extends Component {
             this.apiClient.getLocation(region.slug, true, language).then((location) => {
                 let hasChanged = region.updated_at != location.updated_at;
                 if (hasChanged) {
-                    location.allContent = location.content.concat(location.important, location.banners);
+                    location.allContent = getRegionAllContent(location);
                     location.content = location.content.filter((content) => {return !content.pop_up});
                     location.content.forEach((section) => {
                         section.onPress = this.onPress.bind(this, section);

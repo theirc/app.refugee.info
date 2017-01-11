@@ -10,6 +10,7 @@ import {
     updateLocationsIntoStorage
 } from '../actions';
 import ApiClient from '../utils/ApiClient';
+import {getRegionAllContent} from '../utils/helpers';
 
 
 export class CityChoice extends Component {
@@ -64,7 +65,7 @@ export class CityChoice extends Component {
     async onPress(city) {
         const {dispatch, country} = this.props;
         let region = await this.apiClient.getLocation(city.slug);
-        region.allContent = region.content.concat(region.important, region.banners);
+        region.allContent = getRegionAllContent(region);
         this.setState({region});
 
         requestAnimationFrame(() => {

@@ -288,3 +288,12 @@ export function getAllUrlParams(url) {
 
     return obj;
 }
+
+export function getRegionAllContent(region) {
+    let allContent = region.content.concat(region.important, region.banners);
+    let subsections = [];
+    allContent.forEach((content) => {
+        subsections = subsections.concat(content.subsections);
+    });
+    return allContent.concat(subsections);
+}

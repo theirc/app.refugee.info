@@ -20,7 +20,7 @@ import {Icon} from '../components';
 import styles, {themes} from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 import ApiClient from '../utils/ApiClient';
-
+import {getRegionAllContent} from '../utils/helpers';
 
 class Navigation extends Component {
 
@@ -57,7 +57,7 @@ class Navigation extends Component {
     async selectCity(city) {
         const {dispatch} = this.props;
         let region = await this.apiClient.getLocation(city.slug);
-        region.allContent = region.content.concat(region.important, region.banners);
+        region.allContent = getRegionAllContent(region);
         this.setState({region});
 
         requestAnimationFrame(() => {
