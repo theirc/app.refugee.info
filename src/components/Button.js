@@ -1,24 +1,21 @@
 import React, {Component, PropTypes} from 'react';
-import {StyleSheet, TouchableHighlight, TouchableOpacity, View, Text} from 'react-native';
+import {StyleSheet, TouchableHighlight, TouchableOpacity, View} from 'react-native';
 import styles, {
     themes,
-    getFontFamily,
-    getRowOrdering,
     getElevation
 } from '../styles';
-import Icon from './Icon'
-import {connect} from 'react-redux';
+import {DirectionalText, Icon} from '../components';
 
 export class Button extends Component {
 
     static propTypes = {
-        text: PropTypes.string,
-        icon: PropTypes.string,
-        textStyle: PropTypes.object,
         buttonStyle: PropTypes.object,
-        iconStyle: PropTypes.object,
         color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
+        icon: PropTypes.string,
+        iconStyle: PropTypes.object,
         onPress: PropTypes.func,
+        text: PropTypes.string,
+        textStyle: PropTypes.object,
         transparent: PropTypes.bool
     };
 
@@ -26,33 +23,35 @@ export class Button extends Component {
         if (color == 'black') return componentStyles.buttonBlack;
         else if (color == 'green') return componentStyles.buttonGreen;
         else if (color == 'yellow') return componentStyles.buttonYellow;
-        else return componentStyles.buttonWhite
+        else return componentStyles.buttonWhite;
     }
 
     getButtonUnderlayColor(color) {
-        if (color == 'black') return "rgba(255,255,255,0.2)";
-        else if (color == 'green') return "rgba(0,150,70,0.8)";
-        else if (color == 'yellow') return "rgba(255,255,255,0.5)";
-        else return "rgba(177,177,177,0.5)";
+        if (color == 'black') return 'rgba(255,255,255,0.2)';
+        else if (color == 'green') return 'rgba(0,150,70,0.8)';
+        else if (color == 'yellow') return 'rgba(255,255,255,0.5)';
+        else return 'rgba(177,177,177,0.5)';
     }
 
     getButtonTextColor(color) {
         if (color == 'black') return componentStyles.buttonTextBlack;
         else if (color == 'green') return componentStyles.buttonTextGreen;
         else if (color == 'yellow') return componentStyles.buttonTextYellow;
-        else return componentStyles.buttonTextWhite
+        else return componentStyles.buttonTextWhite;
     }
 
-    render() {
-        const {text, color, onPress, language, direction, icon, textStyle, buttonStyle, iconStyle, transparent} = this.props;
-
-        let iconImage = icon &&
+    renderIcon() {
+        const {transparent, icon, iconStyle, color} = this.props;
+        if (!icon) {
+            return null;
+        }
+        return (
             <View style={[
-                direction == 'rtl' ? {paddingRight: 10} : {paddingLeft: 10},
+                {paddingLeft: 10},
                 transparent && {paddingLeft: 0, paddingRight: 0},
                 styles.alignCenter,
-                {height: 24}
-            ]}>
+                {height: 24}]}
+            >
                 <Icon
                     name={icon}
                     style={[
@@ -61,38 +60,35 @@ export class Button extends Component {
                         iconStyle
                     ]}
                 />
-            </View>;
+            </View>
+        );
+    }
+
+    render() {
+        const {text, color, onPress, textStyle, buttonStyle, transparent} = this.props;
+        const iconImage = this.renderIcon();
+
         if (transparent) {
             return (
-                <View
-                    style={[
-                        {flex: 1},
-                        buttonStyle
-                    ]}
-                >
+                <View style={[{flex: 1}, buttonStyle]}>
                     <TouchableOpacity
                         activeOpacity={0.5}
-                        style={[{flex: 1, marginLeft: 5, marginRight: 5}]}
                         onPress={onPress}
+                        style={[{flexGrow: 1, marginLeft: 5, marginRight: 5}]}
                     >
                         {iconImage}
-                        <View style={[
-                            {alignItems: 'center', justifyContent: 'center', flexDirection: 'column', flex: 1},
-                        ]}>
-                        <Text style={[
-                            componentStyles.buttonText,
-                            transparent ? {color: themes.light.greenAccentColor} : this.getButtonTextColor(color),
-                            getFontFamily(language),
-                            {flex: null},
-                            textStyle
-                        ]}>
-                            {text}
-                        </Text>
+                        <View style={componentStyles.buttonTextContainer}>
+                            <DirectionalText style={[
+                                componentStyles.buttonText,
+                                {color: themes.light.greenAccentColor},
+                                textStyle]}
+                            >
+                                {text}
+                            </DirectionalText>
                         </View>
-
                     </TouchableOpacity>
                 </View>
-            )
+            );
         }
 
         return (
@@ -110,18 +106,18 @@ export class Button extends Component {
                     underlayColor={this.getButtonUnderlayColor(color)}
                 >
                     <View style={[
-                        componentStyles.buttonInner,
-                        getRowOrdering(direction)
-                    ]}>
+                        componentStyles.buttonTextContainer,
+                        styles.row
+                    ]}
+                    >
                         {iconImage}
-                        <Text style={[
+                        <DirectionalText style={[
                             componentStyles.buttonText,
                             this.getButtonTextColor(color),
-                            getFontFamily(language),
-                            textStyle
-                        ]}>
+                            textStyle]}
+                        >
                             {text}
-                        </Text>
+                        </DirectionalText>
                     </View>
                 </TouchableHighlight>
             </View>
@@ -129,24 +125,11 @@ export class Button extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        region: state.region,
-        direction: state.direction,
-        language: state.language
-    };
-};
-
 const componentStyles = StyleSheet.create({
     button: {
-        flex: 1,
+        flexGrow: 1,
         height: 45,
         borderRadius: 2
-    },
-    buttonInner: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between',
     },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
@@ -160,10 +143,13 @@ const componentStyles = StyleSheet.create({
     buttonYellow: {
         backgroundColor: themes.light.yellowAccentColor
     },
-
+    buttonTextContainer: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexGrow: 1
+    },
     buttonText: {
         fontSize: 13,
-        flex: 1,
         textAlign: 'center'
     },
     buttonIcon: {
@@ -183,4 +169,4 @@ const componentStyles = StyleSheet.create({
     }
 });
 
-export default connect(mapStateToProps)(Button);
+export default Button;

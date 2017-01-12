@@ -32,7 +32,7 @@ export default {
         children: {
             details: {
                 title: () => I18n.t('SERVICE_DETAILS'),
-                component: require('./scenes/ServiceDetails').default,
+                component: require('./scenes/ServiceDetails').default
             }
         }
     },
@@ -44,7 +44,7 @@ export default {
         children: {
             details: {
                 title: () => I18n.t('SERVICE_DETAILS'),
-                component: require('./scenes/ServiceDetails').default,
+                component: require('./scenes/ServiceDetails').default
             }
         }
     },
@@ -61,8 +61,8 @@ export default {
                     // Important information linked from details
                     importantLink: {
                         title: () => I18n.t('GENERAL_INFO'),
-                        component: require('./scenes/GeneralInformation').default,
-                    },
+                        component: require('./scenes/GeneralInformation').default
+                    }
                 }
             }
         }

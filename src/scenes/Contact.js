@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, ScrollView, Text, Dimensions, TextInput} from 'react-native';
+import {View, ScrollView, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {getFontFamily, getBorderColor, getTextAlign, getTextColor} from '../styles';
-import {Button} from '../components';
+import styles from '../styles';
+import {Button, DirectionalText} from '../components';
 import ApiClient from '../utils/ApiClient';
 
 
@@ -37,164 +37,103 @@ export class Contact extends Component {
     }
 
     _isEmailInvalid() {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return this.state.isFormDirty && !re.test(this.state.email);
     }
 
     onSubmitClick() {
         this.setState({isFormDirty: true}, function () {
             if (!this._isNameInvalid() && !this._isSubjectInvalid() && !this._isMessageInvalid() && !this._isEmailInvalid()) {
-                console.log("Mail has been sent!");
+                // console.log("Mail has been sent!");
                 // this.apiClient.sendEmail(this.state.name, this.state.subject, this.state.email, this.state.message)
             }
         });
     }
 
     render() {
-        const {theme, direction, language} = this.props;
-
         return (
             <ScrollView style={styles.detailsContainer}>
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language)
-                ]}>
+                <DirectionalText
+                    style={[styles.sectionContent, styles.textLight]}
+                >
                     {I18n.t('NAME')}
-                </Text>
-                <View style={[
-                    styles.contactBorder,
-                    getBorderColor(theme)
-                ]}>
+                </DirectionalText>
+                <View style={[styles.contactBorder, styles.borderLight]}>
                     <TextInput
+                        autoCorrect={false}
                         onChangeText={
                             (text) => this.setState({name: text})
                         }
+                        style={[styles.textInputModal, styles.textLight]}
+                        underlineColorAndroid="transparent"
                         value={this.state.name}
-                        style={[
-                            styles.textInputModal,
-                            getTextColor(theme),
-                            getTextAlign(direction),
-                            getFontFamily(language)
-                        ]}
-                        underlineColorAndroid='transparent'
-                        autoCorrect={false}
                     />
                 </View>
+
                 {this._isNameInvalid() &&
-                <Text style={[
-                        styles.validationText,
-                        getFontFamily(language)
-                    ]}>
+                <DirectionalText style={styles.validationText}>
                     {I18n.t('FIELD_REQUIRED')}
-                </Text>
+                </DirectionalText>
                 }
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language)
-                ]}>
+
+                <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                     {I18n.t('EMAIL')}
-                </Text>
-                <View style={[
-                    styles.contactBorder,
-                    getBorderColor(theme)
-                ]}>
+                </DirectionalText>
+                <View style={[styles.contactBorder, styles.borderLight]}>
                     <TextInput
-                        onChangeText={
-                            (text) => this.setState({email: text})
-                        }
-                        value={this.state.email}
-                        style={[
-                            styles.textInputModal,
-                            getTextColor(theme),
-                            getTextAlign(direction),
-                            getFontFamily(language)
-                        ]}
-                        underlineColorAndroid='transparent'
-                        autoCorrect={false}
                         autoCapitalize="none"
+                        autoCorrect={false}
+                        onChangeText={(text) => this.setState({email: text})}
+                        style={[styles.textInputModal, styles.textLight]}
+                        underlineColorAndroid="transparent"
+                        value={this.state.email}
                     />
                 </View>
+
                 {this._isEmailInvalid() &&
-                <Text style={[
-                        styles.validationText,
-                        getFontFamily(language)
-                    ]}>
+                <DirectionalText style={[styles.validationText]}>
                     {I18n.t('FIELD_REQUIRED')}
-                </Text>
-                }
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language)
-                ]}>
+                </DirectionalText>}
+
+                <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                     {I18n.t('SUBJECT')}
-                </Text>
-                <View style={[
-                    styles.contactBorder,
-                    getBorderColor(theme)
-                ]}>
+                </DirectionalText>
+                <View style={[styles.contactBorder, styles.borderLight]}>
                     <TextInput
-                        onChangeText={
-                            (text) => this.setState({subject: text})
-                        }
+                        onChangeText={(text) => this.setState({subject: text})}
+                        style={[styles.textInputModal, styles.textLight]}
+                        underlineColorAndroid="transparent"
                         value={this.state.subject}
-                        style={[
-                            styles.textInputModal,
-                            getTextColor(theme),
-                            getTextAlign(direction),
-                            getFontFamily(language)
-                        ]}
-                        underlineColorAndroid='transparent'
                     />
                 </View>
+
                 {this._isSubjectInvalid() &&
-                <Text style={[
-                        styles.validationText,
-                        getFontFamily(language)
-                    ]}>
+                <DirectionalText style={[styles.validationText]}>
                     {I18n.t('FIELD_REQUIRED')}
-                </Text>
-                }
-                <Text style={[
-                    styles.sectionContent,
-                    getTextColor(theme),
-                    getFontFamily(language)
-                ]}>
+                </DirectionalText>}
+
+                <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                     {I18n.t('MESSAGE')}
-                </Text>
-                <View style={[
-                    styles.contactBorder,
-                    theme=='dark' ? styles.borderDark : styles.borderLight
-                ]}>
+                </DirectionalText>
+                <View style={[styles.contactBorder, styles.borderLight]}>
                     <TextInput
                         multiline
-                        onChangeText={
-                            (text) => this.setState({message: text})
-                        }
+                        onChangeText={(text) => this.setState({message: text})}
+                        style={[styles.textInputMultiline, styles.textLight]}
+                        underlineColorAndroid="transparent"
                         value={this.state.message}
-                        style={[
-                            styles.textInputMultiline,
-                            getTextColor(theme),
-                            getTextAlign(direction),
-                            getFontFamily(language)
-                        ]}
-                        underlineColorAndroid='transparent'
                     />
                 </View>
+
                 {this._isMessageInvalid() &&
-                <Text style={[
-                        styles.validationText,
-                        getFontFamily(language)
-                    ]}>
+                <DirectionalText style={styles.validationText}>
                     {I18n.t('FIELD_REQUIRED')}
-                </Text>
-                }
+                </DirectionalText>}
+
                 <Button
                     color="green"
-                    text={I18n.t('SUBMIT')}
                     onPress={() => this.onSubmitClick()}
+                    text={I18n.t('SUBMIT')}
                     textStyle={{fontSize: 15}}
                 />
             </ScrollView>

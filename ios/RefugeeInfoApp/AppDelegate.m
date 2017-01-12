@@ -13,7 +13,7 @@
 #import "RCTRootView.h"
 #import "RCTPushNotificationManager.h"
 #import "RCTLinkingManager.h"
-
+#import "RCTI18nUtil.h"
 
 @implementation AppDelegate
 
@@ -64,6 +64,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   NSURL *jsCodeLocation;
+  [[RCTI18nUtil sharedInstance] allowRTL:YES];
 
   [[RCTBundleURLProvider sharedSettings] setDefaults];
   jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index.ios" fallbackResource:nil];

@@ -1,4 +1,3 @@
-import React from 'react';
 import {InteractionManager} from 'react-native';
 
 export default class DrawerCommons {
@@ -8,16 +7,16 @@ export default class DrawerCommons {
     }
 
     closeDrawer() {
-        this.component.context.drawer.close()
+        this.component.context.drawer.close();
     }
 
     changeScene(path, name, props = {}) {
-        const {drawer, navigator} = this.component.context;
+        const {navigator} = this.component.context;
         const {dispatch} = this.component.props;
         InteractionManager.runAfterInteractions(() => {
             navigator.to(path, name, props);
             dispatch({type: 'ROUTE_CHANGED', payload: path});
             this.closeDrawer();
         });
-    };
+    }
 }

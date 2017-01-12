@@ -1,45 +1,40 @@
 import React, {Component, PropTypes} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import styles, {getElevation, themes} from '../styles';
+import {getElevation, themes} from '../styles';
 import {Icon} from '../components';
 
 
-export default class MapButton extends Component {
-
+class MapButton extends Component {
     static contextTypes = {
         navigator: PropTypes.object.isRequired
     };
 
     static propTypes = {
-        direction: PropTypes.oneOf(['rtl', 'ltr']),
         searchCriteria: PropTypes.string,
         serviceTypes: PropTypes.array,
         ...Component.propTypes
     };
 
-    onClick() {
+    constructor(props) {
+        super(props);
+        this.onPress = this.onPress.bind(this);
+    }
+
+    onPress() {
         const {navigator} = this.context;
         navigator.to('map', null, {searchCriteria: this.props.searchCriteria, serviceTypes: this.props.serviceTypes});
     }
 
     render() {
-        const {direction} = this.props;
         return (
             <TouchableOpacity
-                onPress={() => this.onClick()}
                 activeOpacity={0.8}
-                style={[{
-                    position: 'absolute',
-                    bottom: 20
-                },
-                    direction == 'rtl' ? {left: 20} : {right: 20}
-                ]}
+                onPress={this.onPress}
+                style={componentStyles.mapButtonContainer}
             >
-                <View
-                    style={[
-                        getElevation(),
-                        componentStyles.mapButton
-                    ]}
+                <View style={[
+                    getElevation(),
+                    componentStyles.mapButton]}
                 >
                     <Icon
                         name="fa-map"
@@ -52,6 +47,11 @@ export default class MapButton extends Component {
 }
 
 const componentStyles = StyleSheet.create({
+    mapButtonContainer: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20
+    },
     mapButton: {
         width: 56,
         height: 56,
@@ -65,3 +65,5 @@ const componentStyles = StyleSheet.create({
         fontSize: 18
     }
 });
+
+export default MapButton;

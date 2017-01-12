@@ -64,9 +64,3 @@
 -dontwarn java.nio.file.*
 -dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -dontwarn okio.**
-
-
-# Google
-
--keep class com.google.**
--dontwarn com.google.**

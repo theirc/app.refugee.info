@@ -1,29 +1,23 @@
-import React, {Component, PropTypes} from 'react';
+import {Component} from 'react';
 import {
     AsyncStorage,
     Platform
 } from 'react-native';
-import I18n from '../constants/Messages';
-import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
-import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
 import store from '../store';
-import {Icon} from '../components';
-var DeviceInfo = require('react-native-device-info');
+let DeviceInfo = require('react-native-device-info');
 
 export default class Presence extends Component {
-    constructor(props, context = null) {
-        super();
 
-        this.client = new ApiClient(context, props);
+    static async getToken() {
+        return await AsyncStorage.getItem('notificationToken');
     }
 
     static pointFromDeviceCoords(c) {
         return {
             coordinates: [
-                c.longitude, // x
-                c.latitude, // x
+                c.longitude,
+                c.latitude
             ],
             type: 'Point'
         };
@@ -42,8 +36,10 @@ export default class Presence extends Component {
         return JSON.parse(await AsyncStorage.getItem('deviceCoordinates'));
     }
 
-    static async getToken(deviceCoords) {
-        return await AsyncStorage.getItem('notificationToken');
+    constructor(props, context = null) {
+        super();
+
+        this.client = new ApiClient(context, props);
     }
 
     async recordPresence(region, language) {
@@ -54,7 +50,7 @@ export default class Presence extends Component {
         token = JSON.parse(token) || {};
         token.platform = {
             version: Platform.Version,
-            os: Platform.OS,
+            os: Platform.OS
         };
         token.path = navigation;
 
@@ -63,7 +59,8 @@ export default class Presence extends Component {
             if (deviceId) {
                 token.deviceId = deviceId;
             }
-        } catch (e) {
+        } catch(e) {
+
         }
         token = JSON.stringify(token);
 
@@ -72,11 +69,11 @@ export default class Presence extends Component {
             coordinates: location ? location : (region ? region.centroid : null),
             region: region ? region.id : null,
             language,
-            token,
+            token
         };
 
         let promise = Promise.resolve(true);
-        await this.client.post('/v1/presence/', payload)
+        await this.client.post('/presence/', payload)
             .then(() => promise)
             .catch(() => promise);
 

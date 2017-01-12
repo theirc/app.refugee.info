@@ -1,144 +1,109 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    Text,
     TouchableHighlight,
-    StyleSheet,
-    Image,
-    Platform
+    StyleSheet
 } from 'react-native';
-import {connect} from 'react-redux';
-import styles, {
-    getFontFamily,
-    getUnderlayColor,
-    getRowOrdering,
-    getAlignItems,
-    getTextColor,
-    getContainerColor,
-    getBottomDividerColor,
-    getDividerColor,
-    themes
-} from '../styles';
-import Icon from './Icon';
+import styles, {themes} from '../styles';
+import {Icon, DirectionalText} from '../components';
 
-export class SelectableListItem extends Component {
+
+class SelectableListItem extends Component {
 
     static propTypes = {
+        icon: PropTypes.string,
+        image: PropTypes.string,
         onPress: PropTypes.func,
-        text: PropTypes.string,
-        iconSize: PropTypes.number,
-        iconColor: PropTypes.string,
-        fontSize: PropTypes.number,
+        selected: PropTypes.bool,
+        text: PropTypes.string
     };
 
-    render() {
-        const {theme, onPress, text, language, direction, fontSize, iconSize, selected, icon, image} = this.props;
-        let selectedIcon = (selected &&
+    renderSelectMark() {
+        const {selected} = this.props;
+        return (
             <View
                 style={[componentStyles.listItemIconContainer]}
             >
+                {selected &&
                 <Icon
                     name="ios-checkmark-circle"
                     style={[componentStyles.listItemIcon]}
-                />
+                />}
             </View>
         );
+    }
 
-        const button_icon = (image) ? (
-            <Image
-                source={image}
-                style={[
-                    componentStyles.listItemImageInline,
-                    { width: iconSize || 24, height: iconSize || 24 }
-                ]}
-                />) : (icon) ? (
+
+    renderIcon() {
+        const {icon} = this.props;
+        return (
+            <View>
+                <View
+                    style={[componentStyles.listItemIconContainer]}
+                >
+                    {icon &&
                     <Icon
                         name={icon}
-                        style={[
-                            componentStyles.listItemIcon,
-                            { fontSize: iconSize || 24, color: themes[theme||'light'].textColor },
-                        ]}
-                        />) : null;
+                        style={[componentStyles.listItemIcon, {color: themes.light.textColor}]}
+                    />}
+                </View>
+                <View style={[componentStyles.dividerInline, styles.dividerLight]}/>
+            </View>
+        );
+    }
+
+    render() {
+        const {onPress, text} = this.props;
+        const selectedMark = this.renderSelectMark();
+        const buttonIcon = this.renderIcon();
+
         return (
             <View>
                 <TouchableHighlight
                     onPress={onPress}
-                    underlayColor={getUnderlayColor(theme)}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
                 >
-                    <View
-                        style={[
-                            componentStyles.listItemContainer,
-                            getRowOrdering(direction),
-                            getBottomDividerColor(theme),
-                            getContainerColor(theme),
-                            {borderBottomWidth: 1}
-                        ]}
+                    <View style={[
+                        componentStyles.listItemContainer,
+                        styles.row,
+                        styles.bottomDividerLight,
+                        styles.containerLight,
+                        {borderBottomWidth: 1}]}
                     >
-                        {button_icon && (<View>
-                            <View
-                                style={[
-                                    componentStyles.listItemIconContainer
-                                ]}
-                                >
-                                {button_icon}
-                            </View>
-                            <View style={[
-                                componentStyles.dividerInline,
-                                getDividerColor(theme)
-                            ]}/>
-                        </View>
-                        ) }
-                        <View style={[
-                            componentStyles.listItemTextContainer,
-                            getAlignItems(direction),
-                        ]}>
-                            <Text style={[
-                                componentStyles.listItemText,
-                                getTextColor(theme),
-                                getFontFamily(language),
-                                {fontSize} && {fontSize: fontSize}
-                            ]}>
+                        {buttonIcon}
+                        <View style={componentStyles.listItemTextContainer}>
+                            <DirectionalText style={componentStyles.listItemText}>
                                 {text}
-                            </Text>
+                            </DirectionalText>
                         </View>
-                        {selectedIcon}
+                        {selectedMark}
                     </View>
                 </TouchableHighlight>
             </View>
-        )
+        );
     }
-};
+}
 
-const mapStateToProps = (state) => {
-    return {
-        theme: state.theme,
-        direction: state.direction,
-        language: state.language,
-        selectedTypes: state.selectedTypes
-    };
-};
 
 const componentStyles = StyleSheet.create({
     listItemContainer: {
-        flex: 1,
+        flexGrow: 1,
         height: 50
     },
     listItemTextContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: 20,
-        paddingRight: 20
+        paddingHorizontal: 10
     },
     listItemText: {
+        textAlign: 'center',
         fontSize: 15
     },
     listItemIconContainer: {
-        width: 50,
+        width: 60,
         height: 50,
         padding: 13,
-        marginLeft: 5,
-        marginRight: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center'
@@ -146,8 +111,8 @@ const componentStyles = StyleSheet.create({
     listItemIcon: {
         color: themes.light.greenAccentColor,
         fontSize: 24
-    },
+    }
 
 });
 
-export default connect(mapStateToProps)(SelectableListItem);
+export default SelectableListItem;

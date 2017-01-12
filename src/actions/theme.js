@@ -11,7 +11,7 @@ export function fetchThemeFromStorage() {
     return async (dispatch) => {
         return await AsyncStorage.getItem('theme')
             .then(theme => {
-              return dispatch(receiveTheme(theme || 'dark'))
+                return dispatch(receiveTheme(theme || 'dark'));
             });
     };
 }
