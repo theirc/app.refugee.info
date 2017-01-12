@@ -1,12 +1,20 @@
 import React, {Component, PropTypes} from 'react';
-import {ActivityIndicator, View} from 'react-native';
-import {themes} from '../styles';
+import {ActivityIndicator, View, Dimensions} from 'react-native';
+import {themes, getToolbarHeight} from '../styles';
+
+const {width, height} = Dimensions.get('window');
+
 
 class LoadingOverlay extends Component {
 
     static propTypes = {
-        height: PropTypes.number.isRequired,
-        width: PropTypes.number.isRequired
+        height: PropTypes.number,
+        width: PropTypes.number
+    };
+
+    static defaultProps = {
+        height: height - getToolbarHeight(),
+        width
     };
 
     render() {
@@ -15,7 +23,7 @@ class LoadingOverlay extends Component {
             <View style={{
                 flex: 1,
                 position: 'absolute',
-                top: 0,
+                bottom: 0,
                 left: 0,
                 width,
                 height,

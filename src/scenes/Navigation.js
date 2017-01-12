@@ -7,20 +7,23 @@ import {
     View,
     ScrollView,
     StyleSheet,
-    Linking
+    Linking,
+    Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import DrawerCommons from '../utils/DrawerCommons';
-import {MenuSection, MenuItem, DirectionalText} from '../components';
-import {
-    updateRegionIntoStorage
-} from '../actions';
+import {MenuSection, MenuItem, DirectionalText, LoadingOverlay} from '../components';
+import {updateRegionIntoStorage} from '../actions';
 import {Icon} from '../components';
 import styles, {themes} from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
+
+
+const {width, height} = Dimensions.get('window');
+
 
 class Navigation extends Component {
 
@@ -33,6 +36,9 @@ class Navigation extends Component {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
         this.apiClient = new ApiClient(this.context, props);
+        this.state = {
+            loading: false
+        };
     }
 
     _defaultOrFirst(section, showTitle = false) {
@@ -56,6 +62,7 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch} = this.props;
+        this.setState({loading: true});
         let region = await this.apiClient.getLocation(city.slug);
         region.allContent = getRegionAllContent(region);
         this.setState({region});
@@ -63,7 +70,8 @@ class Navigation extends Component {
         requestAnimationFrame(() => {
             Promise.all([
                 dispatch(updateRegionIntoStorage(region)),
-                dispatch({type: 'REGION_CHANGED', payload: region})
+                dispatch({type: 'REGION_CHANGED', payload: region}),
+                this.setState({loading: false})
             ]);
             return this._defaultOrFirst(city);
         });
@@ -137,6 +145,7 @@ class Navigation extends Component {
     render() {
         const {route, language, region} = this.props;
         const {navigator} = this.context;
+        const {loading} = this.state;
 
         if (!this.props.region) {
             return <View />;
@@ -257,6 +266,11 @@ class Navigation extends Component {
                     </MenuItem>
 
                 </MenuSection>
+                {loading &&
+                <LoadingOverlay
+                    height={height}
+                    width={width}
+                />}
             </ScrollView>);
     }
 }

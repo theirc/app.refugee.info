@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
-import {View} from 'react-native';
+import {View, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
-import {LocationListView, OfflineView} from '../components';
+import {LocationListView, OfflineView, LoadingOverlay} from '../components';
 import I18n from '../constants/Messages';
 import styles from '../styles';
 import {
@@ -11,6 +11,9 @@ import {
 } from '../actions';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
+
+
+const {width, height} = Dimensions.get('window');
 
 
 export class CityChoice extends Component {
@@ -30,7 +33,7 @@ export class CityChoice extends Component {
         this.apiClient = new ApiClient(this.context, props);
         this.state = {
             cities: [],
-            loaded: false,
+            loading: true,
             offline: false
         };
     }
@@ -57,13 +60,14 @@ export class CityChoice extends Component {
         });
         this.setState({
             cities,
-            loaded: true,
+            loading: false,
             offline: false
         });
     }
 
     async onPress(city) {
         const {dispatch, country} = this.props;
+        this.setState({loading: true});
         let region = await this.apiClient.getLocation(city.slug);
         region.allContent = getRegionAllContent(region);
         this.setState({region});
@@ -75,7 +79,8 @@ export class CityChoice extends Component {
                 dispatch(updateLocationsIntoStorage(this.state.cities)),
                 dispatch({type: 'REGION_CHANGED', payload: region}),
                 dispatch({type: 'COUNTRY_CHANGED', payload: country}),
-                dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
+                dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities}),
+                this.setState({loading: false})
             ]);
             if (city.content && city.content.length == 1) {
                 return this.context.navigator.to('infoDetails', null, {
@@ -88,6 +93,7 @@ export class CityChoice extends Component {
     }
 
     render() {
+        const {loading} = this.state;
         if (this.state.offline) {
             return (
                 <OfflineView
@@ -102,7 +108,13 @@ export class CityChoice extends Component {
                     header={I18n.t('SELECT_LOCATION')}
                     rows={this.state.cities}
                 />
+                {loading &&
+                <LoadingOverlay
+                    height={height - 120 - 50}
+                    width={width}
+                />}
             </View>
+
         );
     }
 }
