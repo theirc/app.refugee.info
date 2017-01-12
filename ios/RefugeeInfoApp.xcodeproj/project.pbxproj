@@ -1098,6 +1098,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = info.refugee.app;
 				PRODUCT_NAME = "Refugee Info";
 				PROVISIONING_PROFILE = "";
+				IOS_APP_VERSION = 0.0.1;
 			};
 			name = Debug;
 		};
