@@ -9,16 +9,18 @@ class LoadingOverlay extends Component {
 
     static propTypes = {
         height: PropTypes.number,
+        transparent: PropTypes.bool,
         width: PropTypes.number
     };
 
     static defaultProps = {
         height,
-        width
+        width,
+        transparent: false
     };
 
     render() {
-        const {width, height} = this.props;
+        const {width, height, transparent} = this.props;
         return (
             <View style={{
                 flex: 1,
@@ -27,7 +29,7 @@ class LoadingOverlay extends Component {
                 left: 0,
                 width,
                 height,
-                backgroundColor: 'rgba(255,255,255,0.7)',
+                backgroundColor: transparent ? 'rgba(0,0,0,0)': 'rgba(255,255,255,0.55)',
                 alignItems: 'center',
                 justifyContent: 'center',
                 elevation: 4

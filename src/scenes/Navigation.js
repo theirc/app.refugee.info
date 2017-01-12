@@ -79,7 +79,9 @@ class Navigation extends Component {
 
     navigateToImportantInformation(section) {
         this.drawerCommons.closeDrawer();
-        return this.context.navigator.to('infoDetails', null, {section});
+        requestAnimationFrame(() => {
+            this.context.navigator.to('infoDetails', null, {section});
+        });
     }
 
     getImportantInformation() {
@@ -152,7 +154,7 @@ class Navigation extends Component {
         }
 
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
-        const aboutUs = region.important_information && region.important_information.find(a => a.slug === 'about-us');
+        const aboutUs = region.allContent.find(content => content.slug === 'about-us');
 
         let importantInformationSection = this.getImportantInformationSection();
         let nearbyCitiesSection = this.getNearbyCitiesSection();
@@ -246,7 +248,7 @@ class Navigation extends Component {
                     <MenuItem
                         active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
                         icon="fa-question"
-                        onPress={() => this._defaultOrFirst(aboutUs, true)}
+                        onPress={() => this.navigateToImportantInformation(aboutUs, true)}
                     >
                         {I18n.t('ABOUT')}
                     </MenuItem>

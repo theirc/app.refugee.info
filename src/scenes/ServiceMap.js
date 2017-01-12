@@ -508,7 +508,9 @@ class ServiceMap extends Component {
                             this.redrawMarkers(envelope);
                         });
                     }}
-                    ref={map => {this._mapBox = map}}
+                    ref={map => {
+                        this._mapBox = map;
+                    }}
                     rotateEnabled={false}
                     scrollEnabled
                     showsUserLocation
@@ -558,13 +560,10 @@ class ServiceMap extends Component {
     renderLoadingView() {
         const {loading} = this.state;
         if (!loading) {
-            return null;
+            return <View />;
         }
         return (
-            <LoadingOverlay
-                height={height}
-                width={width}
-            />
+            <LoadingOverlay />
         );
     }
 
@@ -609,14 +608,18 @@ class ServiceMap extends Component {
     }
 
     render() {
-        const {nativeAvailable} = this.state,
+        const {nativeAvailable, loading} = this.state,
             mapView = this.renderMapView(nativeAvailable),
             filteringView = this.renderFilteringView(),
             loadingView = this.renderLoadingView(),
             offlineView = this.renderOfflineView(),
             maxServicesView = this.renderMaxServicesView(),
             activeMarkerView = this.renderActiveMarkerView();
-
+        if (loading) {
+            return (
+                <View>{loadingView}</View>
+            );
+        }
         return (
             <View style={styles.container}>
                 {mapView}

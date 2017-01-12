@@ -2,8 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     ListView,
-    RefreshControl,
-    Dimensions
+    RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
 import {
@@ -19,13 +18,10 @@ import {
 import {connect} from 'react-redux';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Services} from '../data';
-import styles, {
-    themes,
-    getToolbarHeight
-} from '../styles';
+import styles, {themes} from '../styles';
 
-const {width, height} = Dimensions.get('window');
 const PAGE_SIZE = 10;
+
 
 export class ServiceList extends Component {
 
@@ -357,7 +353,7 @@ export class ServiceList extends Component {
     }
 
     render() {
-        const {region, filteringView, loading, refreshing} = this.state;
+        const {region, filteringView, loaded, loading, refreshing} = this.state;
         const viewContent = (!filteringView) ? this.renderServiceList() : this.renderFilteringView();
 
         return (
@@ -408,12 +404,9 @@ export class ServiceList extends Component {
                     <MapButton
                         searchCriteria={this.state.searchCriteria}
                         serviceTypes={this.state.serviceTypes}
-                    />) }
-                {(loading && !refreshing) &&
-                <LoadingOverlay
-                    height={height - getToolbarHeight()}
-                    width={width}
-                />}
+                    />)}
+                {((!loaded || loading) && !refreshing) &&
+                <LoadingOverlay />}
             </View>
         );
     }

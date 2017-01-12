@@ -2,16 +2,11 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     ScrollView,
-    Dimensions,
-    Alert,
-    I18nManager
+    Alert
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import styles, {
-    themes,
-    getToolbarHeight
-} from '../styles';
+import styles, {themes} from '../styles';
 import {
     Icon,
     LoadingOverlay,
@@ -28,9 +23,6 @@ import {
 import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
-
-
-const {width, height} = Dimensions.get('window');
 
 
 class Settings extends Component {
@@ -57,8 +49,6 @@ class Settings extends Component {
         });
         const {dispatch, region, country} = this.props;
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-        const isRTL = direction === 'rtl';
-        I18nManager.forceRTL(isRTL);
         this.apiClient = new ApiClient(this.context, {language});
 
         let newRegion = null;
@@ -164,10 +154,7 @@ class Settings extends Component {
                 />
 
                 {loading &&
-                <LoadingOverlay
-                    height={height - getToolbarHeight()}
-                    width={width}
-                />}
+                <LoadingOverlay />}
             </ScrollView>
         );
     }
