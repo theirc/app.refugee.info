@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Dimensions} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView, OfflineView, LoadingOverlay} from '../components';
 import I18n from '../constants/Messages';
@@ -13,7 +13,6 @@ import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
 
 
-const {width, height} = Dimensions.get('window');
 
 
 export class CityChoice extends Component {
@@ -109,10 +108,7 @@ export class CityChoice extends Component {
                     rows={this.state.cities}
                 />
                 {loading &&
-                <LoadingOverlay
-                    height={height - 120 - 50}
-                    width={width}
-                />}
+                <LoadingOverlay />}
             </View>
 
         );

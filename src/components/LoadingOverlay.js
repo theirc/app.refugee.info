@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {ActivityIndicator, View, Dimensions} from 'react-native';
-import {themes, getToolbarHeight} from '../styles';
+import {themes} from '../styles';
 
 const {width, height} = Dimensions.get('window');
 
@@ -13,7 +13,7 @@ class LoadingOverlay extends Component {
     };
 
     static defaultProps = {
-        height: height - getToolbarHeight(),
+        height,
         width
     };
 

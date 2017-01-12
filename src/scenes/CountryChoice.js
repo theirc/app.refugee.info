@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
-import {LocationListView, OfflineView} from '../components';
+import {LocationListView, OfflineView, LoadingOverlay} from '../components';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import {getCountryFlag} from '../utils/helpers';
 import styles from '../styles';
+
 
 export class CountryChoice extends Component {
 
@@ -20,7 +21,7 @@ export class CountryChoice extends Component {
 
         this.state = {
             countries: [],
-            loaded: false,
+            loading: true,
             offline: false
         };
     }
@@ -48,16 +49,17 @@ export class CountryChoice extends Component {
 
         this.setState({
             countries,
-            loaded: true,
+            loading: false,
             offline: false
         });
     }
 
     render() {
-        if (this.state.offline) {
+        const {offline, loading} = this.state;
+        if (offline) {
             return (
                 <OfflineView
-                    offline={this.state.offline}
+                    offline={offline}
                     onRefresh={this.loadInitialState}
                 />
             );
@@ -68,6 +70,8 @@ export class CountryChoice extends Component {
                     header={I18n.t('SELECT_COUNTRY')}
                     rows={this.state.countries}
                 />
+                {loading &&
+                <LoadingOverlay />}
             </View>
         );
     }

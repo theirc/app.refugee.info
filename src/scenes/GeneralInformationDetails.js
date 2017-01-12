@@ -4,7 +4,6 @@ import {wrapHtmlContent} from '../utils/htmlUtils';
 import styles from '../styles';
 import {connect} from 'react-redux';
 import {MapButton, Icon, DirectionalText} from '../components';
-import {RNMail as Mailer} from 'NativeModules';
 import {getAllUrlParams} from '../utils/helpers';
 import I18n from '../constants/Messages';
 import Share from 'react-native-share';
@@ -85,6 +84,14 @@ export class GeneralInformationDetails extends Component {
                 return true;
             }
         }
+        if (Platform.OS === 'android') {
+            let section = this.getSectionBySlug(url);
+            if (section) {
+                this.setState({navigating: true});
+                this.context.navigator.to('info.details', null, {section});
+                return true;
+            }
+        }
     }
 
     /* open links like phone, email or external http in dedicated app */
@@ -102,7 +109,7 @@ export class GeneralInformationDetails extends Component {
 
     /* open links to service list with active filters in the app */
     handleServiceLinking(url) {
-        if (url.indexOf('services') > -1) {
+        if (url.indexOf('services') > -1 || url.split('/')[1] == 'services') {
             let urlParams = getAllUrlParams(url);
             this.setState({navigating: true});
             return this.context.navigator.to('services', null, {
@@ -112,6 +119,10 @@ export class GeneralInformationDetails extends Component {
                     : [parseInt(urlParams.type)]
             });
         }
+    }
+
+    isJellyBean() {
+        return ([16, 17, 18].indexOf(Platform.Version) > -1);
     }
 
     /* Image are loaded using this method. So this narrows down to prevent all clicks. */
@@ -137,8 +148,31 @@ export class GeneralInformationDetails extends Component {
     }
 
     onNavigationStateChangeAndroid(state) {
+        /* Warning: various Android versions behave differently, so make sure to test everything when making changes */
         let url = state.url;
-        console.warn(url);
+
+        if (!this.state.navigating || this.isJellyBean()) {
+            if (url.indexOf('data:') == 0) {
+                if (url.endsWith('</html>')) {
+                    return;
+                }
+                let temp = url.split('#');
+                if (!temp || temp.length > 2) {
+                    let slug = temp[2];
+                    this.handleServiceLinking(slug);
+                    slug = slug.split('/')[2];
+                    this.handleInternalLinking(slug);
+                }
+                let slug = temp[temp.length - 1];
+                this.handleInternalLinking(slug);
+            }
+        } else {
+            if (url === 'about:blank' || url.indexOf('data:') == 0) {
+                this.setState({navigating: false});
+            }
+            this.webView.goBack();
+        }
+        this.handleExternalLinking(url);
     }
 
     _onNavigationStateChange(state) {
@@ -146,144 +180,6 @@ export class GeneralInformationDetails extends Component {
             return this.onNavigationStateChangeIOS(state);
         }
         return this.onNavigationStateChangeAndroid(state);
-    }
-
-    someFunc(state) {
-        let url = state.url;
-        if (!this.state.navigating || (Platform.Version >= 16 && Platform.Version <= 18)) {
-
-            if (url.indexOf('data:') == 0) {
-                if (Platform.OS === 'android') {
-                    //hacky way to get link path
-                    let suffix = '</html>';
-                    if (url.indexOf(suffix, url.length - suffix.length) !== -1) {
-                        // if it ends with html, it's not a anchor link but wrappedHtml
-                        return;
-                    }
-                    let temp = url.split('#');
-                    if (!temp || temp.length > 2) {
-                        // check if it's info/slug link
-                        let infoUrl = temp[2];
-                        if (infoUrl.split('/')[1] == 'services') {
-                            // check if it's service filter link
-                            let urlParams = getAllUrlParams(infoUrl);
-                            this.setState({navigating: true});
-                            return this.context.navigator.to('services', null, {
-                                searchCriteria: urlParams.query,
-                                serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
-                                    ? urlParams.type.map((el) => parseInt(el))
-                                    : [parseInt(urlParams.type)]
-                            });
-                        }
-                        let fullSlug = infoUrl.split('/')[2];
-                        if (fullSlug && !fullSlug.includes('"')) {
-                            let info = Regions.searchImportantInformation(this.props.region, fullSlug);
-                            if (info) {
-                                this.setState({navigating: true});
-                                let payload = {
-                                    title: '',
-                                    section: info.content[0].section,
-                                    slug: info.slug,
-                                    index: info.index,
-                                    content_slug: info.slug
-                                };
-                                return this.context.navigator.to('info.details', null, payload);
-                            }
-                        }
-                        return;
-                    }
-                    let fullSlug = temp[temp.length - 1];
-                    if (fullSlug && !fullSlug.includes('"')) {
-                        let info = Regions.searchImportantInformation(this.props.region, fullSlug);
-                        if (info) {
-                            this.setState({navigating: true});
-                            let payload = {
-                                title: '',
-                                section: info.content[0].section,
-                                slug: info.slug,
-                                index: info.index,
-                                content_slug: info.slug
-                            };
-                            return this.context.navigator.to('info.details', null, payload);
-                        }
-                        info = Regions.searchGeneralInformation(this.props.region, fullSlug);
-                        if (info) {
-                            this.setState({navigating: true});
-                            let payload = {
-                                title: '',
-                                section: info.section,
-                                slug: info.anchor_name,
-                                index: info.index
-                            };
-                            return this.context.navigator.to('info.details', null, payload);
-                        }
-                    }
-                }
-                return;
-            }
-            if (url.indexOf('refugeeinfo') > -1 || url.indexOf('refugee.info') > -1) {
-                url = url.substr(url.indexOf('://') + 3);
-                url = url.substr(url.indexOf('/'));
-            }
-            if (this.webView) {
-                if (state.navigationType && state.navigationType === 'click') {
-                    // Image are loaded using this method. So this narrows down to prevent all clicks.
-                    this.webView.stopLoading();
-                }
-
-                if (url.indexOf('/') == 0) {
-                    // If we get to this point, we need to point to the app
-
-                    // check if it's a internal link to service filter
-                    if (url.indexOf('services') > -1) {
-                        let urlParams = getAllUrlParams(url);
-                        this.setState({navigating: true});
-                        return this.context.navigator.to('services', null, {
-                            searchCriteria: urlParams.query,
-                            serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
-                                ? urlParams.type.map((el) => parseInt(el))
-                                : [parseInt(urlParams.type)]
-                        });
-                    }
-
-                    // check if it's anchor link or important info link
-                    let slugs = [url.substr(1).split('/')[0], url.substr(1).split('/')[2]];
-                    slugs.forEach((fullSlug) => {
-                        let info = Regions.searchImportantInformation(this.props.region, fullSlug);
-                        if (info) {
-                            let payload = {
-                                title: '',
-                                section: info.content[0].section,
-                                slug: info.slug,
-                                index: info.index,
-                                content_slug: info.slug
-                            };
-                            return this.context.navigator.to('info.details', null, payload);
-                        }
-                    });
-
-                } else {
-                    this.webView.goBack();
-                    if (state.url.indexOf('tel') == 0) {
-                        /* Gotta test this */
-                    } else if (state.url.indexOf('mailto') == 0 && Platform.OS == 'android') {
-                        let email = state.url.split('mailto:')[1];
-                        Mailer.mail({
-                            recipients: [email]
-                        }, () => {
-                        });
-                    } else {
-                        this.setState({navigating: true});
-                        Linking.openURL(state.url);
-                    }
-                }
-            }
-        } else {
-            if (Platform.OS === 'android' && (url === 'about:blank' || url.indexOf('data:') == 0)) {
-                this.setState({navigating: false});
-            }
-            this.webView.goBack();
-        }
     }
 
     onSharePress() {
@@ -340,6 +236,7 @@ export class GeneralInformationDetails extends Component {
                     </DirectionalText>
                 </TouchableOpacity>
 
+                {thumbsUp != undefined &&
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => this.rate(1)}
@@ -352,8 +249,9 @@ export class GeneralInformationDetails extends Component {
                     <DirectionalText style={{width: 30}}>
                         {thumbsUp}
                     </DirectionalText>
-                </TouchableOpacity>
+                </TouchableOpacity>}
 
+                {thumbsDown != undefined &&
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => this.rate(-1)}
@@ -366,7 +264,7 @@ export class GeneralInformationDetails extends Component {
                     <DirectionalText style={{width: 30}}>
                         {thumbsDown}
                     </DirectionalText>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
         );
     }
