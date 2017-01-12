@@ -1,7 +1,7 @@
-import {Platform, StyleSheet, Dimensions} from 'react-native';
+import {Platform} from 'react-native';
 import { NativeModules } from 'react-native';
 
-var native =  NativeModules.GooglePlayServices;
+const native = NativeModules.GooglePlayServices;
 
 async function checkPlayServices() {
     if(Platform.OS === 'android') {

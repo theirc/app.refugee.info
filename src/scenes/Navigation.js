@@ -3,30 +3,26 @@ import React, {
     PropTypes
 } from 'react';
 import {
-    Text,
     Image,
     View,
     ScrollView,
     StyleSheet,
     Linking,
-    Platform
+    Dimensions
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
 import DrawerCommons from '../utils/DrawerCommons';
-import {MenuSection, MenuItem} from '../components';
-import {
-    updateRegionIntoStorage,
-    updateCountryIntoStorage,
-} from '../actions';
+import {MenuSection, MenuItem, DirectionalText, LoadingOverlay} from '../components';
+import {updateRegionIntoStorage} from '../actions';
 import {Icon} from '../components';
-import {
-    getFontFamily,
-    getRowOrdering,
-    themes
-} from '../styles'
-import {RNMail as Mailer} from 'NativeModules';
-import {LIKE_PATH, FEEDBACK_MAP} from '../constants'
+import styles, {themes} from '../styles';
+import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
+import ApiClient from '../utils/ApiClient';
+import {getRegionAllContent} from '../utils/helpers';
+
+
+const {width, height} = Dimensions.get('window');
 
 
 class Navigation extends Component {
@@ -39,318 +35,285 @@ class Navigation extends Component {
     constructor(props) {
         super(props);
         this.drawerCommons = new DrawerCommons(this);
+        this.apiClient = new ApiClient(this.context, props);
+        this.state = {
+            loading: false
+        };
     }
 
-    _getImportantInformation() {
-        const region = this._getRegion();
-        const {route} = this.props;
-        const {navigator} = this.context;
-        if (!region || !region.important_information) {
-            return <View />;
-        }
-
-        let importantInformation = region.important_information;
-        importantInformation = importantInformation.filter((i) => !i.hidden);
-
-        return importantInformation.map((i, index) => {
-            return (
-                <MenuItem
-                    icon={i.icon}
-                    key={index}
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == i.slug}
-                    onPress={() => this._defaultOrFirst(i, true)}
-                >
-                    {i.pageTitle}
-                </MenuItem>
-            );
-        });
-    }
-
-    _getRegion() {
-        const {region} = this.props;
-
-        if (!region) {
-            return null;
-        }
-
-        if (!region.important_information) {
-            return region
-        }
-
-        return {
-            important_information: region.important_information.map((i) => {
-                if (i && i.metadata) {
-                    i.pageTitle = (i.metadata.page_title || '').replace('\u060c', ',').split(',')[0];
-                }
-                i.type = 'info';
-                return i;
-            }),
-            ...region
-        }
-    }
-
-    _sendEmail() {
-        const destination = 'mailto:info@refugee.info';
-
-        if (Platform.OS == 'android') {
-            let email = destination.split('mailto:')[1];
-            Mailer.mail({
-                recipients: [email],
-            }, (error, event) => {
-            });
-        } else {
-            Linking.openURL(destination);
-        }
-    }
-
-    _defaultOrFirst(page, showTitle = false) {
+    _defaultOrFirst(section, showTitle = false) {
         this.drawerCommons.closeDrawer();
-        if (page.content && page.content.length == 1) {
+        if (section.html && section.content.length == 1) {
             return this.context.navigator.to('infoDetails', null, {
-                slug: page.slug || `info${page.index}`,
-                section: page.content[0].section,
-                sectionTitle: page.pageTitle,
-                showTitle: showTitle,
-                index: page.content[0].index,
-                content_slug: page.slug
+                slug: section.slug || `info${section.index}`,
+                section: section.content[0].section,
+                sectionTitle: section.pageTitle,
+                showTitle,
+                index: section.content[0].index,
+                content_slug: section.slug
             });
         } else {
             let payload = {
-                region: page.type != 'info' ? page : null,
-                information: page.type == 'info' ? null : page
+                region: section.type != 'info' ? section : null
             };
             return this.context.navigator.to('info', null, payload);
         }
     }
 
     async selectCity(city) {
-        const {dispatch, country} = this.props;
-        city.country = country;
+        const {dispatch} = this.props;
+        this.setState({loading: true});
+        let region = await this.apiClient.getLocation(city.slug);
+        region.allContent = getRegionAllContent(region);
+        this.setState({region});
 
-        dispatch(updateRegionIntoStorage(city));
-        dispatch(updateCountryIntoStorage(city.country));
-        dispatch({type: 'REGION_CHANGED', payload: city});
-        dispatch({type: 'COUNTRY_CHANGED', payload: city.country});
+        requestAnimationFrame(() => {
+            Promise.all([
+                dispatch(updateRegionIntoStorage(region)),
+                dispatch({type: 'REGION_CHANGED', payload: region}),
+                this.setState({loading: false})
+            ]);
+            return this._defaultOrFirst(city);
+        });
+    }
 
-        return this._defaultOrFirst(city)
+    navigateToImportantInformation(section) {
+        this.drawerCommons.closeDrawer();
+        return this.context.navigator.to('infoDetails', null, {section});
+    }
+
+    getImportantInformation() {
+        const {route, region} = this.props;
+        const {navigator} = this.context;
+        if (!region || !region.important) {
+            return;
+        }
+        return region.important.map((item, index) => {
+            return (
+                <MenuItem
+                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
+                    icon={item.icon}
+                    key={index}
+                    onPress={() => this.navigateToImportantInformation(item)}
+                >
+                    {item.title}
+                </MenuItem>
+            );
+        });
+    }
+
+    getImportantInformationSection() {
+        let importantInformationItems = this.getImportantInformation();
+        if (importantInformationItems) {
+            return (
+                <MenuSection title={I18n.t('IMPORTANT_INFORMATION')}>
+                    {importantInformationItems}
+                </MenuSection>
+            );
+        }
+
+    }
+
+    getNearbyCities() {
+        const {locations, region} = this.props;
+        if (locations) {
+            return locations.map((i, index) => {
+                return (
+                    <MenuItem
+                        active={i.id == region.id}
+                        key={index}
+                        onPress={() => this.selectCity(i)}
+                    >
+                        {i.pageTitle || i.name}
+                    </MenuItem>
+                );
+            });
+        }
+    }
+
+    getNearbyCitiesSection() {
+        let nearbyCitiesItems = this.getNearbyCities();
+        if (nearbyCitiesItems) {
+            return (
+                <MenuSection title={I18n.t('CHANGE_LOCATION')}>
+                    {nearbyCitiesItems}
+                </MenuSection>
+            );
+        }
     }
 
     render() {
-        const {theme, route, country, direction, language, locations} = this.props;
+        const {route, language, region} = this.props;
         const {navigator} = this.context;
-        const region = this._getRegion();
+        const {loading} = this.state;
 
-        if (!this.props.region || !this.props.country) {
-            return <Text>Choose location first</Text>;
+        if (!this.props.region) {
+            return <View />;
         }
+
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
-        const aboutUs = region.important_information.find(a => a.slug === 'about-us');
+        const aboutUs = region.important_information && region.important_information.find(a => a.slug === 'about-us');
 
-        let importantInformationItems = this._getImportantInformation();
-        let nearbyCitiesItems = null;
-        if (locations) {
-            nearbyCitiesItems = locations.map((i, index) => {
-                return <MenuItem
-                    active={i.id == region.id}
-                    key={index}
-                    onPress={() => this.selectCity(i)}
-                >
-                    {i.pageTitle || i.name}
-                </MenuItem>;
-            });
-        }
-        let logo = theme == 'light' ? themes.light.drawerLogo : themes.dark.drawerLogo;
-        let styles = theme == 'light' ? lightNavigationStyles : darkNavigationStyles;
+        let importantInformationSection = this.getImportantInformationSection();
+        let nearbyCitiesSection = this.getNearbyCitiesSection();
+
+        let logo = themes.light.drawerLogo;
+
+        let bannerCount = region.banners && region.banners.length;
+        let regionName = region.name ? region.name.toUpperCase() : '';
 
         // Shorthand to change scene
         let s = (scene) => this.drawerCommons.changeScene(scene);
 
-        let bannerCount = region.metadata.banners.length;
+        return (
+            <ScrollView style={componentStyles.view}>
+                <View style={[componentStyles.logoContainer, styles.row]}>
+                    <Image
+                        source={logo}
+                        style={componentStyles.logo}
+                    />
+                </View>
 
-        return <ScrollView style={styles.view}>
-            <View style={[styles.logoContainer, getRowOrdering(direction)]}>
-                <Image source={logo} style={ styles.logo }/>
-            </View>
-            <View style={[styles.titleWrapper, getRowOrdering(direction)]}>
-                <Icon
-                    name="md-locate"
-                    style={[
-                        {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2},
-                        (direction == 'ltr' ? {marginRight: 10} : {marginLeft: 10})
+                <View style={[componentStyles.titleWrapper, styles.row]}>
+                    <Icon
+                        name="md-locate"
+                        style={[
+                            {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5}
+                        ]}
+                    />
+                    <DirectionalText style={[
+                        componentStyles.cityText
                     ]}
-                />
-                <Text style={[
-                    getFontFamily(language),
-                    styles.cityText
-                ]}>
-                    {(region.pageTitle || region.name).toUpperCase() }
-                </Text>
-            </View>
-            <MenuSection title={I18n.t("REFUGEE_INFO") }>
-                <MenuItem
-                    icon="fa-info"
-                    active={route === 'info'}
-                    onPress={() => this._defaultOrFirst(region) }
-                >
-                    {I18n.t('GENERAL_INFO') }
-                </MenuItem>
-                <MenuItem
-                    icon="fa-list"
-                    active={route === 'services'}
-                    onPress={() => s('services') }
-                >
-                    {I18n.t('SERVICE_LIST') }
-                </MenuItem>
-                <MenuItem
-                    icon="fa-map"
-                    active={route === 'map'}
-                    onPress={() => s('map') }
-                >
-                    {I18n.t('EXPLORE_MAP') }
-                </MenuItem>
-            </MenuSection>
-            <MenuSection>
-                <MenuItem
-                    active={route === 'notifications'}
-                    icon="ios-mail" onPress={() => s('notifications')}
-                    badge={bannerCount}>
-                    {I18n.t('ANNOUNCEMENTS')}
-                </MenuItem>
-                <MenuItem
-                    icon="ios-paper"
-                    active={route === 'news'}
-                    onPress={() => s('news')}>
-                    {I18n.t('NEWS')}
-                </MenuItem>
-            </MenuSection>
-            <MenuSection title={I18n.t("IMPORTANT_INFORMATION") }>
-                {importantInformationItems}
-            </MenuSection>
-            <MenuSection title={I18n.t("CHANGE_LOCATION") }>
-                {nearbyCitiesItems}
-            </MenuSection>
-            <MenuSection>
-                <MenuItem
-                    icon="fa-gear"
-                    active={route === 'settings'}
-                    onPress={() => s('settings') }
-                >
-                    {I18n.t('SETTINGS') }
-                </MenuItem>
-                {aboutUs &&
-                <MenuItem
-                    icon="fa-question"
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
-                    onPress={() => this._defaultOrFirst(aboutUs, true)}
-                >
-                    {I18n.t('ABOUT') }
-                </MenuItem>
-                }
-                <MenuItem
-                    icon="fa-comment"
-                    onPress={() => Linking.openURL(feedbackUrl) }>
-                    {I18n.t('FEEDBACK') }
-                </MenuItem>
+                    >
+                        {regionName}
+                    </DirectionalText>
+                </View>
 
-                <MenuItem
-                    icon="fa-facebook-square"
-                    onPress={() => Linking.openURL(LIKE_PATH) }>
-                    {I18n.t('LIKE_US') }
-                </MenuItem>
+                <MenuSection title={I18n.t('REFUGEE_INFO')}>
+                    <MenuItem
+                        active={route === 'info'}
+                        icon="fa-info"
+                        onPress={() => this._defaultOrFirst(region)}
+                    >
+                        {I18n.t('GENERAL_INFO') }
+                    </MenuItem>
+                    <MenuItem
+                        active={route === 'services'}
+                        icon="fa-list"
+                        onPress={() => s('services')}
+                    >
+                        {I18n.t('SERVICE_LIST') }
+                    </MenuItem>
+                    <MenuItem
+                        active={route === 'map'}
+                        icon="fa-map"
+                        onPress={() => s('map')}
+                    >
+                        {I18n.t('EXPLORE_MAP') }
+                    </MenuItem>
+                </MenuSection>
 
-            </MenuSection>
-            <View style={{paddingBottom: 15}}>
-            </View>
-        </ScrollView>;
+                <MenuSection>
+                    <MenuItem
+                        active={route === 'notifications'}
+                        badge={bannerCount}
+                        icon="ios-mail"
+                        onPress={() => s('notifications')}
+                    >
+                        {I18n.t('ANNOUNCEMENTS')}
+                    </MenuItem>
+                    <MenuItem
+                        active={route === 'news'}
+                        icon="ios-paper"
+                        onPress={() => s('news')}
+                    >
+                        {I18n.t('NEWS')}
+                    </MenuItem>
+                </MenuSection>
+
+                {importantInformationSection}
+                {nearbyCitiesSection}
+
+                <MenuSection>
+                    <MenuItem
+                        active={route === 'settings'}
+                        icon="fa-gear"
+                        onPress={() => s('settings')}
+                    >
+                        {I18n.t('SETTINGS')}
+                    </MenuItem>
+                    {aboutUs &&
+                    <MenuItem
+                        active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
+                        icon="fa-question"
+                        onPress={() => this._defaultOrFirst(aboutUs, true)}
+                    >
+                        {I18n.t('ABOUT')}
+                    </MenuItem>
+                    }
+                    <MenuItem
+                        icon="fa-comment"
+                        onPress={() => Linking.openURL(feedbackUrl)}
+                    >
+                        {I18n.t('FEEDBACK')}
+                    </MenuItem>
+
+                    <MenuItem
+                        icon="fa-facebook-square"
+                        onPress={() => Linking.openURL(LIKE_PATH)}
+                    >
+                        {I18n.t('LIKE_US')}
+                    </MenuItem>
+
+                </MenuSection>
+                {loading &&
+                <LoadingOverlay
+                    height={height}
+                    width={width}
+                />}
+            </ScrollView>);
     }
 }
 
 const mapStateToProps = (state) => {
     return {
+        locations: state.locations,
         route: state.navigation,
         region: state.region,
-        country: state.country,
         language: state.language,
-        direction: state.direction,
-        theme: state.theme,
-        drawerOpen: state.drawerOpen,
-        locations: state.locations
+        drawerOpen: state.drawerOpen
     };
 };
 
-const lightNavigationStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
     logo: {
         width: 150,
         resizeMode: 'contain',
-        marginTop: 40,
+        marginTop: 20
     },
     logoContainer: {
-        flex: 1,
+        flexGrow: 1,
+        height: 100,
         flexDirection: 'row',
         paddingHorizontal: 20
     },
     view: {
         flexDirection: 'column',
-        flex: 1
+        flex: 1,
+        paddingBottom: 15
     },
-    middleBorder: {
-        borderLeftColor: themes.light.darkerDividerColor,
-        borderLeftWidth: 1
-    },
-    outermostBorder: {
-        borderLeftColor: themes.light.dividerColor,
-        borderLeftWidth: 1
-    },
+
     titleWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
         height: 30,
-        marginBottom: 20,
+        marginBottom: 10,
         paddingHorizontal: 20
     },
     cityText: {
         fontSize: 14,
         fontWeight: 'bold',
         color: themes.light.textColor
-    }
-});
-
-const darkNavigationStyles = StyleSheet.create({
-    logo: {
-        width: 150,
-        resizeMode: 'contain',
-        marginTop: 40
-    },
-    logoContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        marginRight: 10,
-        marginTop: 0
-    },
-    view: {
-        flexDirection: 'column',
-        flex: 1,
-        paddingLeft: 20
-    },
-    middleBorder: {
-        borderLeftColor: themes.dark.darkerDividerColor,
-        borderLeftWidth: 1
-    },
-    outermostBorder: {
-        borderLeftColor: themes.dark.dividerColor,
-        borderLeftWidth: 1
-    },
-    titleWrapper: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: 30,
-        marginBottom: 30,
-        paddingRight: 10
-    },
-    cityText: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: themes.dark.textColor
     }
 });
 

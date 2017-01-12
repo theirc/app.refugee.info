@@ -199,11 +199,6 @@ export default class Navigate {
         if (!obj) {
             console.warn(`[Navigate.back()] No component exists for the parent of ${current}`);
         } else {
-            if (!!props) {
-                props['savedState'] = savedInstance;
-            } else {
-                props = {'savedState': savedInstance};
-            }
             this.isChild = path.split('.').length > 1;
             const route = {
                 title: title ? title : (obj.title() || this._getPathPrettyName(path)),

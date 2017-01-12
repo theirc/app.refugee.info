@@ -1,7 +1,6 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     ListView,
     TouchableOpacity,
@@ -9,28 +8,32 @@ import {
     Linking,
     Image
 } from 'react-native';
-import {OfflineView} from '../components';
+import {OfflineView, DirectionalText} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily} from '../styles';
+import styles, {themes} from '../styles';
 import {News} from '../data';
 
 export class NewsThatMoves extends Component {
     static smallHeader = true;
 
-    state = {
-        dataSource: new ListView.DataSource({
-            rowHasChanged: (row1, row2) => row1 !== row2,
-        }),
-        refreshing: false,
-    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2
+            }),
+            refreshing: false
+        };
+        this.onRefresh = this.onRefresh.bind(this);
+    }
 
     componentWillMount() {
-        this.onRefresh().done()
+        this.onRefresh().done();
     }
 
     async onRefresh() {
-        const {region, language} = this.props;
-        const {dispatch} = this.props;
+        const {language} = this.props;
         return new News(language).downloadNews().then((n) => {
             let entries = n.feed.entries;
             return this.setState({
@@ -38,72 +41,85 @@ export class NewsThatMoves extends Component {
                 refreshing: false,
                 offline: false
             });
-        }).catch((e) => this.setState({offline: true}));
+        }).catch(() => this.setState({offline: true}));
     }
 
     renderRow(data) {
-        const theme = themes[this.props.theme];
-        const font = getFontFamily(this.props.language);
-        let textStyles = {
-            flexDirection: this.props.direction == 'rtl' ? 'row-reverse' : 'row',
-            textAlign: this.props.direction == 'rtl' ? 'right' : 'auto',
-            backgroundColor: theme.backgroundColor,
-            color: theme.textColor,
-        };
-
-        return <View style={{
-            paddingLeft: 5,
-            paddingRight: 5,
-        }}>
-            <TouchableOpacity
-                onPress={() => Linking.openURL(data.link)}
-                style={[localStyles.article, {borderBottomColor: theme.dividerColor,}]}>
-                <View>
-                    <Text style={[textStyles, font, {
-                        paddingBottom: 5,
-                        fontSize: 16,
-                        fontWeight: 'bold'
-                    }]}>{data.title}</Text>
-                    <Text style={[textStyles, font, {paddingBottom: 10,}]}>{data.contentSnippet}</Text>
-                </View>
-            </TouchableOpacity>
-        </View>;
+        return (
+            <View style={{paddingHorizontal: 5}}>
+                <TouchableOpacity
+                    onPress={() => Linking.openURL(data.link)}
+                    style={[componentStyles.article, {borderBottomColor: themes.light.dividerColor}]}
+                >
+                    <View>
+                        <DirectionalText style={componentStyles.title}>
+                            {data.title}
+                        </DirectionalText>
+                        <DirectionalText style={componentStyles.contentSnippet}>
+                            {data.contentSnippet}
+                        </DirectionalText>
+                    </View>
+                </TouchableOpacity>
+            </View>);
     }
 
     render() {
         if (this.state.offline) {
-            return <OfflineView
-                offline={this.state.offline}
-                onRefresh={this.onRefresh.bind(this)}
-            />
+            return (
+                <OfflineView
+                    offline={this.state.offline}
+                    onRefresh={this.onRefresh}
+                />
+            );
         }
         if (!this.state.dataSource) {
             return <View />;
         }
 
-        return <View style={styles.container}>
-            <View style={{paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF' }}>
-                <Image source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
-                       style={{height: 70, resizeMode: 'contain'}}/>
-            </View>
-            <ListView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh.bind(this) }
+        return (
+            <View style={styles.container}>
+                <View style={componentStyles.logoContainer}>
+                    <Image
+                        source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
+                        style={componentStyles.logo}
                     />
-                }
-                dataSource={this.state.dataSource}
-                enableEmptySections
-                renderRow={(rowData) => this.renderRow(rowData) }
-                keyboardShouldPersistTaps={true}
-                keyboardDismissMode="on-drag"
-            />
-        </View>
+                </View>
+                <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps
+                    refreshControl={
+                        <RefreshControl
+                            onRefresh={this.onRefresh}
+                            refreshing={this.state.refreshing}
+                        />
+                    }
+                    renderRow={(rowData) => this.renderRow(rowData)}
+                />
+            </View>
+        );
     }
 }
 
-const localStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
+    logoContainer: {
+        paddingVertical: 10,
+        marginBottom: 5,
+        backgroundColor: themes.light.backgroundColor
+    },
+    logo: {
+        height: 70,
+        resizeMode: 'contain'
+    },
+    title: {
+        paddingBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    contentSnippet: {
+        paddingBottom: 10
+    },
     article: {
         paddingLeft: 5,
         paddingRight: 5,
@@ -116,12 +132,9 @@ const localStyles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         language: state.language,
         region: state.region,
-        country: state.country,
-        theme: state.theme,
-        direction: state.direction
+        country: state.country
     };
 };
 

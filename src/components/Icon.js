@@ -1,9 +1,9 @@
-import styles, {
+import {
     getIconComponent,
-    getIconName,
+    getIconName
 } from '../styles';
 import HumanitarianIcon from './HumanitarianIcon';
-import React, {Component, PropTypes, } from 'react';
+import React, {Component} from 'react';
 import {StyleSheet, Platform} from 'react-native';
 
 export default class Icon extends Component {
@@ -24,7 +24,9 @@ export default class Icon extends Component {
                 }
             }
         }
-
-        return (<IconComponent {...props} />)
+        if (!props.name) {
+            return null;
+        }
+        return (<IconComponent {...props} />);
     }
 }
