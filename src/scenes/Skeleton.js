@@ -3,10 +3,10 @@ import {
     AsyncStorage,
     View,
     AppState,
-    UIManager
+    UIManager,
+    I18nManager
 } from 'react-native';
 import {connect} from 'react-redux';
-import I18n from '../constants/Messages';
 import Welcome from './Welcome';
 import App from './App';
 import {Presence} from '../data';
@@ -17,6 +17,7 @@ import {
     fetchLocationsFromStorage,
     fetchRegionFromStorage
 } from '../actions';
+import RNRestart from 'react-native-restart';
 
 let PushNotification = require('react-native-push-notification');
 
@@ -100,13 +101,6 @@ class Skeleton extends Component {
     }
 
     async checkLanguageSelected() {
-        let code = (I18n.currentLocale() || 'en').split('-')[0].split('_')[0];
-        if (!I18n.translations.hasOwnProperty(code)) {
-            // This means we don't have a translation for it
-            // So fallback to English
-            code = 'en';
-        }
-
         // Instead of having the app handling the language selection we should
         // let the user override whatever they have set in their device
         await this.reloadStorage();
@@ -115,18 +109,29 @@ class Skeleton extends Component {
         const region = await AsyncStorage.getItem('regionCache');
         const language = await AsyncStorage.getItem('language');
         const isFirstLoad = !language && (firstLoad !== 'false' || !(region));
-
         this.setState({firstLoad: isFirstLoad});
     }
 
     async reloadStorage() {
         const {dispatch} = this.props;
-
         await dispatch(fetchRegionFromStorage());
-        await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
+        await dispatch(fetchDirectionFromStorage());
         await fetchLocationsFromStorage();
+
+        const direction = await AsyncStorage.getItem('direction');
+        if (direction == 'rtl') {
+            I18nManager.forceRTL(true);
+            if (!I18nManager.isRTL) {
+                RNRestart.Restart();
+            }
+        } else {
+            I18nManager.forceRTL(false);
+            if (I18nManager.isRTL) {
+                RNRestart.Restart();
+            }
+        }
     }
 
     render() {

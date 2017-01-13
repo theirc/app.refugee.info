@@ -21,8 +21,7 @@ class Welcome extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showLanguage: false,
-            languageSelected: false
+            showLanguage: false
         };
         this.setEnglish = this.setLanguage.bind(this, 'en');
         this.setArabic = this.setLanguage.bind(this, 'ar');
@@ -34,7 +33,7 @@ class Welcome extends Component {
             this.props.finished();
         }
         const {language} = this.props;
-        if (!language || this.state.languageSelected) {
+        if (!language) {
             return;
         }
 
@@ -43,7 +42,6 @@ class Welcome extends Component {
                 return;
             }
             this.setState({
-                languageSelected: false,
                 showLanguage: true
             });
         }, 1000);
@@ -52,15 +50,13 @@ class Welcome extends Component {
     async setLanguage(language) {
         const {dispatch} = this.props;
 
-        await this.setState({
-            languageSelected: true
-        });
+
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-        await Promise.all([
+        Promise.all([
             dispatch(updateDirectionIntoStorage(direction)),
             dispatch(updateLanguageIntoStorage(language)),
-            dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
-            dispatch({type: 'LANGUAGE_CHANGED', payload: language})
+            dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
+            dispatch({type: 'DIRECTION_CHANGED', payload: direction})
         ]).then(() => {
             RNRestart.Restart();
         });
