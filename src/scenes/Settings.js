@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     View,
     ScrollView,
@@ -23,13 +23,10 @@ import {
 import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
 
 
 class Settings extends Component {
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -75,8 +72,7 @@ class Settings extends Component {
                     dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
                     dispatch({type: 'REGION_CHANGED', payload: newRegion}),
                     dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
-                    dispatch({type: 'LOCATIONS_CHANGED', payload: locations}),
-                    dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: I18n.t('SETTINGS')})
+                    dispatch({type: 'LOCATIONS_CHANGED', payload: locations})
                 ]).then(() => {
                     this.setState({loading: false});
                     RNRestart.Restart();
@@ -95,8 +91,7 @@ class Settings extends Component {
     }
 
     goToCountryChoice() {
-        const {navigator} = this.context;
-        requestAnimationFrame(() => navigator.to('countryChoice'));
+        requestAnimationFrame(() => Actions.countryChoice());
     }
 
     render() {

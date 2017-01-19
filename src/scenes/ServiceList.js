@@ -19,15 +19,11 @@ import {connect} from 'react-redux';
 import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Services} from '../data';
 import styles, {themes} from '../styles';
+import {Actions} from 'react-native-router-flux';
 
 const PAGE_SIZE = 10;
 
-
 export class ServiceList extends Component {
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     static propTypes = {
         region: PropTypes.object,
@@ -113,7 +109,6 @@ export class ServiceList extends Component {
         this.setState({
             loading: true
         });
-        const {navigator} = this.context;
         const {region} = this.props;
         if (!region) {
             this.setState({
@@ -162,7 +157,7 @@ export class ServiceList extends Component {
                             service.locationName = region.name;
                             service.onPress = () => {
                                 requestAnimationFrame(() => {
-                                    navigator.forward(null, null, {service, location: region}, this.state);
+                                    Actions.serviceDetails({service, location: region});
                                 });
                             };
                         });
@@ -216,7 +211,7 @@ export class ServiceList extends Component {
                 service.locationName = region.name;
                 service.onPress = () => {
                     requestAnimationFrame(() => {
-                        navigator.forward(null, null, {service, location: region}, this.state);
+                        Actions.serviceDetails({service, location: region});
                     });
                 };
             });
@@ -247,8 +242,7 @@ export class ServiceList extends Component {
     }
 
     onPress(params) {
-        const {navigator} = this.context;
-        navigator.forward(null, null, params, this.state);
+        Actions.serviceDetails(params);
     }
 
     renderRow(rowData) {

@@ -49,8 +49,6 @@ class Welcome extends Component {
 
     async setLanguage(language) {
         const {dispatch} = this.props;
-
-
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
         Promise.all([
             dispatch(updateDirectionIntoStorage(direction)),

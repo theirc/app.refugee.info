@@ -18,8 +18,7 @@ import {
     fetchRegionFromStorage
 } from '../actions';
 import RNRestart from 'react-native-restart';
-
-let PushNotification = require('react-native-push-notification');
+import PushNotification from 'react-native-push-notification';
 
 /**
  This class is the skeleton of the app.
@@ -37,13 +36,22 @@ class Skeleton extends Component {
             storageLoaded: false
         };
         this.presenceData = new Presence(props, props.context);
+        AsyncStorage.getItem('language').then((res) => {
+            if (res === 'en') {
+                I18nManager.allowRTL(false);
+            } else {
+                I18nManager.allowRTL(true);
+            }
+            if (I18nManager.isRTL && res === 'en') {
+                RNRestart.Restart();
+            }
+        });
     }
 
     componentWillMount() {
         this.checkLanguageSelected().then(() => {
             this.setState({storageLoaded: true});
         });
-
         this.askForPermissions();
         UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
     }
@@ -119,19 +127,6 @@ class Skeleton extends Component {
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchDirectionFromStorage());
         await fetchLocationsFromStorage();
-
-        const direction = await AsyncStorage.getItem('direction');
-        if (direction == 'rtl') {
-            I18nManager.forceRTL(true);
-            if (!I18nManager.isRTL) {
-                RNRestart.Restart();
-            }
-        } else {
-            I18nManager.forceRTL(false);
-            if (I18nManager.isRTL) {
-                RNRestart.Restart();
-            }
-        }
     }
 
     render() {
@@ -145,7 +140,7 @@ class Skeleton extends Component {
                     finished={() => {
                         this.reloadStorage().then(() => {
                             AsyncStorage.setItem('firstLoad', 'false');
-                            this.setState({ firstLoad: false });
+                            this.setState({firstLoad: false});
                         });
                     }}
                     firstLoad={this.state.firstLoad}
@@ -161,7 +156,6 @@ class Skeleton extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        theme: state.theme,
         ...state
     };
 };

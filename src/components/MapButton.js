@@ -2,12 +2,10 @@ import React, {Component, PropTypes} from 'react';
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import {getElevation, themes} from '../styles';
 import {Icon} from '../components';
+import {Actions} from 'react-native-router-flux';
 
 
 class MapButton extends Component {
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     static propTypes = {
         searchCriteria: PropTypes.string,
@@ -21,8 +19,7 @@ class MapButton extends Component {
     }
 
     onPress() {
-        const {navigator} = this.context;
-        navigator.to('map', null, {searchCriteria: this.props.searchCriteria, serviceTypes: this.props.serviceTypes});
+        Actions.serviceMap({searchCriteria: this.props.searchCriteria, serviceTypes: this.props.serviceTypes});
     }
 
     render() {

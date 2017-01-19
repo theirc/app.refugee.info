@@ -3,8 +3,7 @@ import {
     View,
     Image,
     StyleSheet,
-    TouchableOpacity,
-    Platform
+    TouchableOpacity
 } from 'react-native';
 import {DirectionalText, Icon} from '../components';
 import {connect} from 'react-redux';
@@ -13,102 +12,62 @@ import styles, {
     isStatusBarTranslucent,
     themes
 } from '../styles';
+import {Actions} from 'react-native-router-flux';
 
 
 export class Toolbar extends Component {
 
     static contextTypes = {
-        navigator: PropTypes.object
+        drawer: PropTypes.object
     };
 
     static propTypes = {
+        component: PropTypes.any,
         drawerOpen: PropTypes.bool,
-        onMenuIconPress: PropTypes.func,
+        getTitle: PropTypes.func,
+        navigationState: PropTypes.object,
         region: PropTypes.object,
-        toolbarTitle: PropTypes.string,
-        toolbarTitleIcon: PropTypes.string
+        title: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
     };
 
-    back = false;
-
-    _goBack() {
-        const {navigator} = this.context;
-
-        if (!this.back) {
-            this.back = true;
-            navigator.back();
-
-            setTimeout(() => {
-                this.back = false;
-            }, 1000);
-        }
-    }
-
-    renderTitleIcon() {
-        const {toolbarTitleIcon} = this.props;
-        const iconName = (toolbarTitleIcon || '').trim();
-        if (!iconName) {
-            return <View />;
-        }
-        return (
-            <View style={componentStyles.titleIconContainer}>
-                <Icon
-                    name={iconName}
-                    style={componentStyles.titleIcon}
-                />
-            </View>
-        );
-    }
-
     renderToolbarActionIcon() {
-        const {navigator} = this.context;
-        const {onMenuIconPress, drawerOpen, region} = this.props;
+        const {drawerOpen, region} = this.props;
         const menuIcon = drawerOpen ? 'md-close' : 'ios-menu';
         const backIcon = 'md-arrow-back';
+
+        const state = this.props.navigationState;
+        const childState = state.children[state.index];
+        const backButton = childState.component && childState.component.backButton;
+
         if (!region) {
             return <View />;
         }
         return (
             <TouchableOpacity
-                onPress={navigator.isChild ? () => this._goBack() : onMenuIconPress}
+                onPress={backButton ? Actions.pop : this.context.drawer.open}
                 style={componentStyles.toolbarIconContainer}
             >
                 <Icon
-                    name={navigator.isChild ? backIcon : menuIcon}
-                    style={navigator.isChild
-                        ? [componentStyles.backIcon, componentStyles.backIconLight]
-                        : [componentStyles.menuIcon, componentStyles.menuIconLight]
-                    }
+                    name={backButton ? backIcon : menuIcon}
+                    style={backButton ? componentStyles.backIcon : componentStyles.menuIcon}
                 />
             </TouchableOpacity>
         );
     }
 
     render() {
-        const {navigator} = this.context;
-        const {toolbarTitle} = this.props;
-
-        let title = toolbarTitle ? toolbarTitle : '';
-        if (navigator && navigator.currentRoute) {
-            title = navigator.currentRoute.title;
+        let title = this.props.getTitle ? this.props.getTitle(this.props) : this.props.title;
+        if (title === undefined && this.props.component && this.props.component.title) {
+            title = this.props.component.title;
         }
-        const smallHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.smallHeader;
-        const noHeader = navigator && navigator.currentRoute && navigator.currentRoute.component.noHeader;
-
-        const toolbarActionIcon = navigator ? this.renderToolbarActionIcon() : <View />;
-        const titleIcon = this.renderTitleIcon();
-
-        if (noHeader) {
-            return <View />;
+        if (typeof (title) === 'function') {
+            title = title(this.props);
         }
+
+        const toolbarActionIcon = this.renderToolbarActionIcon();
 
         return (
-            <View
-                style={[
-                    componentStyles.toolbarContainer,
-                    smallHeader && {height: (Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55}
-                ]}
-            >
+            <View style={componentStyles.toolbarContainer}>
                 <View style={componentStyles.toolbarTop}>
                     {toolbarActionIcon}
                     <Image
@@ -117,13 +76,11 @@ export class Toolbar extends Component {
                     />
                 </View>
 
-                {!smallHeader && (
-                    <View style={[componentStyles.toolbarBottom, styles.row]}>
-                        {titleIcon}
-                        <DirectionalText style={[componentStyles.toolbarTitle, componentStyles.toolbarTitleLight]}>
-                            {title}
-                        </DirectionalText>
-                    </View>)}
+                <View style={[componentStyles.toolbarBottom, styles.row]}>
+                    <DirectionalText style={[componentStyles.toolbarTitle, componentStyles.toolbarTitleLight]}>
+                        {title}
+                    </DirectionalText>
+                </View>
             </View>
         );
     }
@@ -174,15 +131,11 @@ const componentStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     menuIcon: {
-        fontSize: 28
-    },
-    menuIconLight: {
+        fontSize: 28,
         color: themes.light.textColor
     },
     backIcon: {
-        fontSize: 28
-    },
-    backIconLight: {
+        fontSize: 28,
         color: themes.light.greenAccentColor
     },
     toolbarTitle: {
@@ -190,24 +143,6 @@ const componentStyles = StyleSheet.create({
     },
     toolbarTitleLight: {
         color: themes.light.textColor
-    },
-    titleIconContainer: {
-        width: 26,
-        height: 26,
-        marginHorizontal: 5,
-        padding: 2,
-        backgroundColor: themes.light.greenAccentColor,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderColor: themes.light.backgroundColor,
-        borderRadius: 7
-    },
-    titleIcon: {
-        fontSize: 18,
-        color: themes.dark.textColor,
-        textAlign: 'center',
-        alignItems: 'center',
-        justifyContent: 'center'
     }
 });
 

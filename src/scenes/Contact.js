@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {View, ScrollView, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -8,10 +8,6 @@ import ApiClient from '../utils/ApiClient';
 
 
 export class Contact extends Component {
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     constructor(props) {
         super(props);

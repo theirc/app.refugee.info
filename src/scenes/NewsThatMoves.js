@@ -63,7 +63,7 @@ export class NewsThatMoves extends Component {
             </View>);
     }
 
-    render() {
+    renderContent() {
         if (this.state.offline) {
             return (
                 <OfflineView
@@ -72,10 +72,28 @@ export class NewsThatMoves extends Component {
                 />
             );
         }
+        return (
+            <ListView
+                dataSource={this.state.dataSource}
+                enableEmptySections
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps
+                refreshControl={
+                    <RefreshControl
+                        onRefresh={this.onRefresh}
+                        refreshing={this.state.refreshing}
+                    />
+                }
+                renderRow={(rowData) => this.renderRow(rowData)}
+            />
+        );
+    }
+
+    render() {
         if (!this.state.dataSource) {
             return <View />;
         }
-
+        const content = this.renderContent();
         return (
             <View style={styles.container}>
                 <View style={componentStyles.logoContainer}>
@@ -84,19 +102,8 @@ export class NewsThatMoves extends Component {
                         style={componentStyles.logo}
                     />
                 </View>
-                <ListView
-                    dataSource={this.state.dataSource}
-                    enableEmptySections
-                    keyboardDismissMode="on-drag"
-                    keyboardShouldPersistTaps
-                    refreshControl={
-                        <RefreshControl
-                            onRefresh={this.onRefresh}
-                            refreshing={this.state.refreshing}
-                        />
-                    }
-                    renderRow={(rowData) => this.renderRow(rowData)}
-                />
+                {content}
+
             </View>
         );
     }

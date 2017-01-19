@@ -8,9 +8,6 @@ import I18n from '../constants/Messages';
 import styles from '../styles';
 
 export class ServiceCategoryListView extends Component {
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     static propTypes = {
         dataSource: PropTypes.object.isRequired,
@@ -32,7 +29,7 @@ export class ServiceCategoryListView extends Component {
     render() {
         const {dataSource, onClear, onFilter} = this.props;
         return (
-            <View style={styles.container}>
+            <View style={{flex: 1}}>
                 <View style={[styles.searchBarContainer, styles.searchBarContainerLight]}>
                     <Button
                         buttonStyle={{height: 44, marginRight: 2}}

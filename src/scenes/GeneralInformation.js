@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
@@ -12,13 +12,10 @@ import styles, {themes} from '../styles';
 import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage} from '../actions/region';
 import {getRegionAllContent} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
 
 
 export class GeneralInformation extends Component {
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -35,22 +32,18 @@ export class GeneralInformation extends Component {
     }
 
     componentDidMount() {
-        const {region, dispatch} = this.props;
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
-        this.context.navigator.currentRoute.title = region.name;
         this.loadInitialState();
     }
 
     async loadInitialState() {
         const {region} = this.props;
-        const {navigator} = this.context;
         if (!region) {
-            return navigator.to('countryChoice');
+            return Actions.countryChoice();
         }
-
+        Actions.refresh({title: region.name});
         if (region.content && region.content.length === 1) {
             const content = region.content[0];
-            return navigator.to('infoDetails', null, {section: content.html, sectionTitle: content.title});
+            return Actions.infoDetails({section: content.html, sectionTitle: content.title});
         }
         region.content = region.content.filter((content) => {return !content.pop_up});
         region.content.forEach((section) => {
@@ -105,10 +98,7 @@ export class GeneralInformation extends Component {
     }
 
     onPress(section) {
-        requestAnimationFrame(() => {
-            const {navigator} = this.context;
-            navigator.forward(null, null, {section}, this.state);
-        });
+        requestAnimationFrame(() => {Actions.infoDetails({section})});
     }
 
     renderRow(rowData) {
@@ -136,8 +126,6 @@ export class GeneralInformation extends Component {
 
     render() {
         const {country} = this.props;
-        const {navigator} = this.context;
-        let s = (scene) => navigator.to(scene);
         let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
@@ -145,7 +133,7 @@ export class GeneralInformation extends Component {
                     <Button
                         color="green"
                         icon="fa-list"
-                        onPress={() => requestAnimationFrame(() => s('services'))}
+                        onPress={Actions.serviceList}
                         text={I18n.t('SERVICE_LIST').toUpperCase()}
                         transparent
                     />
@@ -153,7 +141,7 @@ export class GeneralInformation extends Component {
                         buttonStyle={{flex: 1.66}}
                         color="green"
                         icon="md-locate"
-                        onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country}))}
+                        onPress={() => Actions.cityChoice({country})}
                         text={I18n.t('CHANGE_LOCATION').toUpperCase()}
                         transparent
                     />
@@ -161,7 +149,7 @@ export class GeneralInformation extends Component {
                         color="green"
                         icon="fa-map"
                         iconStyle={{fontSize: 18}}
-                        onPress={() => requestAnimationFrame(() => s('map'))}
+                        onPress={Actions.serviceMap}
                         text={I18n.t('EXPLORE_MAP').toUpperCase()}
                         transparent
                     />

@@ -6,10 +6,6 @@ import {LocationListItem, DirectionalText} from '../components';
 
 export class LocationListView extends Component {
 
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
-
     static propTypes = {
         header: PropTypes.string.isRequired,
         loaded: PropTypes.bool,
@@ -56,7 +52,7 @@ export class LocationListView extends Component {
             customHeaderText = I18n.t('LOADING_LOCATIONS');
         }
         return (
-            <View style={styles.container}>
+            <View style={{flex: 1}}>
                 <ListView
                     dataSource={this.dataSource.cloneWithRows(this.props.rows)}
                     enableEmptySections

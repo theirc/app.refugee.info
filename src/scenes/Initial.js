@@ -1,6 +1,8 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {AsyncStorage, View} from 'react-native';
 import {connect} from 'react-redux';
+import {Actions} from 'react-native-router-flux';
+
 import {
     fetchCountryFromStorage,
     fetchDirectionFromStorage,
@@ -9,14 +11,7 @@ import {
 } from '../actions';
 
 class Initial extends Component {
-
-    static contextTypes = {
-        drawer: PropTypes.object.isRequired,
-        navigator: PropTypes.object.isRequired
-    };
-
     async componentDidMount() {
-        const {navigator} = this.context;
         const {dispatch} = this.props;
         Promise.all([
             AsyncStorage.getItem('regionCache'),
@@ -28,13 +23,13 @@ class Initial extends Component {
             const region = values[0];
             if (region && region != 'null') {
                 if (region.content && region.content.length == 1) {
-                    this.context.navigator.to('infoDetails', null,
-                        {section: region.content[0].section, sectionTitle: region.pageTitle});
+                    // this.context.navigator.to('infoDetails', null,
+                    //     {section: region.content[0].section, sectionTitle: region.pageTitle});
                 } else {
-                    this.context.navigator.to('info');
+                    Actions.info();
                 }
             } else {
-                navigator.to('countryChoice');
+                Actions.countryChoice();
             }
         });
     }

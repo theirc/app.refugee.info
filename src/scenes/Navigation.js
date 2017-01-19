@@ -1,7 +1,4 @@
-import React, {
-    Component,
-    PropTypes
-} from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     Image,
     View,
@@ -12,7 +9,6 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import DrawerCommons from '../utils/DrawerCommons';
 import {MenuSection, MenuItem, DirectionalText, LoadingOverlay} from '../components';
 import {updateRegionIntoStorage} from '../actions';
 import {Icon} from '../components';
@@ -20,7 +16,7 @@ import styles, {themes} from '../styles';
 import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
-
+import {Actions} from 'react-native-router-flux';
 
 const {width, height} = Dimensions.get('window');
 
@@ -28,35 +24,23 @@ const {width, height} = Dimensions.get('window');
 class Navigation extends Component {
 
     static contextTypes = {
-        drawer: PropTypes.object.isRequired,
-        navigator: PropTypes.object
+        drawer: PropTypes.object
     };
 
     constructor(props) {
         super(props);
-        this.drawerCommons = new DrawerCommons(this);
         this.apiClient = new ApiClient(this.context, props);
         this.state = {
             loading: false
         };
     }
 
-    _defaultOrFirst(section, showTitle = false) {
-        this.drawerCommons.closeDrawer();
+    _defaultOrFirst(section) {
+        this.context.drawer.close();
         if (section.html && section.content.length == 1) {
-            return this.context.navigator.to('infoDetails', null, {
-                slug: section.slug || `info${section.index}`,
-                section: section.content[0].section,
-                sectionTitle: section.pageTitle,
-                showTitle,
-                index: section.content[0].index,
-                content_slug: section.slug
-            });
+            return Actions.infoDetails({section});
         } else {
-            let payload = {
-                region: section.type != 'info' ? section : null
-            };
-            return this.context.navigator.to('info', null, payload);
+            return Actions.info();
         }
     }
 
@@ -78,15 +62,14 @@ class Navigation extends Component {
     }
 
     navigateToImportantInformation(section) {
-        this.drawerCommons.closeDrawer();
+        this.context.drawer.close();
         requestAnimationFrame(() => {
-            this.context.navigator.to('infoDetails', null, {section});
+            Actions.infoDetails({section});
         });
     }
 
     getImportantInformation() {
         const {route, region} = this.props;
-        const {navigator} = this.context;
         if (!region || !region.important) {
             return;
         }
@@ -165,8 +148,6 @@ class Navigation extends Component {
         let regionName = region.name ? region.name.toUpperCase() : '';
 
         // Shorthand to change scene
-        let s = (scene) => this.drawerCommons.changeScene(scene);
-
         return (
             <ScrollView style={componentStyles.view}>
                 <View style={[componentStyles.logoContainer, styles.row]}>
@@ -202,14 +183,14 @@ class Navigation extends Component {
                     <MenuItem
                         active={route === 'services'}
                         icon="fa-list"
-                        onPress={() => s('services')}
+                        onPress={() => {Actions.serviceList(); this.context.drawer.close()}}
                     >
                         {I18n.t('SERVICE_LIST') }
                     </MenuItem>
                     <MenuItem
                         active={route === 'map'}
                         icon="fa-map"
-                        onPress={() => s('map')}
+                        onPress={() => {Actions.serviceMap(); this.context.drawer.close()}}
                     >
                         {I18n.t('EXPLORE_MAP') }
                     </MenuItem>
@@ -220,14 +201,14 @@ class Navigation extends Component {
                         active={route === 'notifications'}
                         badge={bannerCount}
                         icon="ios-mail"
-                        onPress={() => s('notifications')}
+                        onPress={() => {Actions.notifications(); this.context.drawer.close()}}
                     >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
                     <MenuItem
                         active={route === 'news'}
                         icon="ios-paper"
-                        onPress={() => s('news')}
+                        onPress={() => {Actions.news(); this.context.drawer.close()}}
                     >
                         {I18n.t('NEWS')}
                     </MenuItem>
@@ -240,7 +221,7 @@ class Navigation extends Component {
                     <MenuItem
                         active={route === 'settings'}
                         icon="fa-gear"
-                        onPress={() => s('settings')}
+                        onPress={() => {Actions.settings(); this.context.drawer.close()}}
                     >
                         {I18n.t('SETTINGS')}
                     </MenuItem>
@@ -280,7 +261,6 @@ class Navigation extends Component {
 const mapStateToProps = (state) => {
     return {
         locations: state.locations,
-        route: state.navigation,
         region: state.region,
         language: state.language,
         drawerOpen: state.drawerOpen

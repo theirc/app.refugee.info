@@ -1,14 +1,13 @@
 import {API_PATH} from '../constants';
+import {Actions} from 'react-native-router-flux';
 
 const InteractionManager = require('InteractionManager');
 
+
 export default class ApiClient {
 
-    constructor(context, props = {language: 'en'}, api_root = API_PATH) {
-        if (context) {
-            this.navigator = context.navigator;
-        }
-        this.apiRoot = api_root;
+    constructor(context, props = {language: 'en'}, apiRoot = API_PATH) {
+        this.apiRoot = apiRoot;
         this.language = props.language || 'en';
     }
 
@@ -30,7 +29,7 @@ export default class ApiClient {
                     throw 'offline';
                 }
                 else {
-                    this.navigator.to('networkFailure');
+                    Actions.networkFailure();
                 }
             });
     }
@@ -45,7 +44,7 @@ export default class ApiClient {
             body: JSON.stringify(data)
         }).then((response) => response)
             .catch(() => {
-                this.navigator.to('networkFailure');
+                Actions.networkFailure();
             });
     }
 
@@ -94,8 +93,8 @@ export default class ApiClient {
         return this.post(`page/${pageSlug}/rate/`, {rating, reason, rating_id});
     }
 
-    getRating(pageSlug) {
-        return this.fetch(`page/${pageSlug}/rate`);
+    getRating(pageSlug, raiseException = false) {
+        return this.fetch(`page/${pageSlug}/rate`, raiseException);
     }
 
 }

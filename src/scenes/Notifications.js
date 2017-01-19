@@ -10,13 +10,13 @@ import {wrapHtmlContent} from '../utils/htmlUtils';
 
 export class Notifications extends Component {
     render() {
-        const {language, theme, region} = this.props;
+        const {language, region} = this.props;
         if (!region) {
             return <View />;
         }
         let html = region.banners.map((banner) => `<div class="banner">${banner.html}</div>`).join('<br />');
         let source = {
-            html: wrapHtmlContent(html, language, '', theme)
+            html: wrapHtmlContent(html, language, '', 'light')
         };
         return (
             <View style={styles.container}>
@@ -28,7 +28,6 @@ export class Notifications extends Component {
 
 function mapStateToProps(state) {
     return {
-        theme: state.theme,
         language: state.language,
         region: state.region
     };

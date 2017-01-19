@@ -9,9 +9,12 @@ import I18n from '../constants/Messages';
 import Share from 'react-native-share';
 import {WEB_PATH} from '../constants';
 import ApiClient from '../utils/ApiClient';
+import {Actions} from 'react-native-router-flux';
 
 
 export class GeneralInformationDetails extends Component {
+    static backButton = true;
+    static title = 'boo';
 
     static propTypes = {
         dispatch: PropTypes.func,
@@ -19,11 +22,6 @@ export class GeneralInformationDetails extends Component {
         region: PropTypes.object,
         section: PropTypes.object.isRequired
     };
-
-    static contextTypes = {
-        navigator: React.PropTypes.object.isRequired
-    };
-
 
     constructor(props) {
         super(props);
@@ -41,13 +39,11 @@ export class GeneralInformationDetails extends Component {
     }
 
     _loadInitialState() {
-        const {dispatch, section, language, region} = this.props;
+        const {section, language, region} = this.props;
         if (section.important) {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: section.title});
-            this.context.navigator.currentRoute.title = section.title;
+            Actions.refresh({title: section.title});
         } else {
-            dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.name});
-            this.context.navigator.currentRoute.title = region.name;
+            Actions.refresh({title: region.name});
         }
         let source = {
             html: wrapHtmlContent(
@@ -59,13 +55,12 @@ export class GeneralInformationDetails extends Component {
             )
         };
         this.setState({source});
-        this.apiClient.getRating(section.slug).then((response) => {
+        this.apiClient.getRating(section.slug, true).then((response) => {
             this.setState({
                 thumbsUp: response.thumbs_up,
                 thumbsDown: response.thumbs_down
             });
-        });
-
+        }).catch(() => {});
     }
 
     getSectionBySlug(slug) {
@@ -80,7 +75,7 @@ export class GeneralInformationDetails extends Component {
             let slug = url.split('%23')[1];
             let section = this.getSectionBySlug(slug);
             if (section) {
-                this.context.navigator.to('info.details', null, {section});
+                Actions.infoDetails({section});
                 return true;
             }
         }
@@ -88,7 +83,7 @@ export class GeneralInformationDetails extends Component {
             let section = this.getSectionBySlug(url);
             if (section) {
                 this.setState({navigating: true});
-                this.context.navigator.to('info.details', null, {section});
+                Actions.infoDetails({section});
                 return true;
             }
         }
@@ -112,7 +107,7 @@ export class GeneralInformationDetails extends Component {
         if (url.indexOf('services') > -1 || url.split('/')[1] == 'services') {
             let urlParams = getAllUrlParams(url);
             this.setState({navigating: true});
-            return this.context.navigator.to('services', null, {
+            return Actions.serviceList({
                 searchCriteria: urlParams.query,
                 serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
                     ? urlParams.type.map((el) => parseInt(el))
@@ -274,7 +269,7 @@ export class GeneralInformationDetails extends Component {
 
         return (
             <View style={styles.container}>
-                <View style={styles.container}>
+                <View style={{flex: 1}}>
                     {this.state.source &&
                     <WebView
                         onNavigationStateChange={(s) => this._onNavigationStateChange(s)}
@@ -293,7 +288,8 @@ export class GeneralInformationDetails extends Component {
 const mapStateToProps = (state) => {
     return {
         language: state.language,
-        region: state.region
+        region: state.region,
+        routes: state.routes
     };
 };
 
