@@ -40,10 +40,12 @@ export class GeneralInformationDetails extends Component {
 
     _loadInitialState() {
         const {section, language, region} = this.props;
-        if (section.important) {
-            Actions.refresh({title: section.title});
-        } else {
-            Actions.refresh({title: region.name});
+        if (!section.notifications) {
+            if (section.important) {
+                Actions.refresh({title: section.title});
+            } else {
+                Actions.refresh({title: region.name});
+            }
         }
         let source = {
             html: wrapHtmlContent(
@@ -215,6 +217,9 @@ export class GeneralInformationDetails extends Component {
 
     renderFeedbackBar() {
         const {thumbsUp, thumbsDown} = this.state;
+        if (this.props.section.notifications) {
+            return <View />;
+        }
         return (
             <View style={styles.feedbackRow}>
                 <TouchableOpacity

@@ -6,7 +6,7 @@ import direction from './direction';
 import country from './country';
 import drawerOpen from './drawerOpen';
 import locations from './locations';
-import routes from '../routes';
+import routes from './routes';
 
 const refugeeApp = combineReducers({
     region,

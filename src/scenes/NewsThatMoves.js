@@ -51,7 +51,7 @@ export class NewsThatMoves extends Component {
 
     renderRow(data) {
         return (
-            <View style={{paddingHorizontal: 5}}>
+            <View style={{paddingHorizontal: 5, flexGrow: 1}}>
                 <TouchableOpacity
                     onPress={() => Linking.openURL(data.link)}
                     style={componentStyles.article}
@@ -137,7 +137,6 @@ const componentStyles = StyleSheet.create({
         paddingRight: 5,
         borderBottomWidth: 1,
         marginBottom: 10,
-        flex: 1,
         flexDirection: 'column',
         borderBottomColor: themes.light.dividerColor
     }

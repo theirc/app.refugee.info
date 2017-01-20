@@ -11,7 +11,6 @@ import GeneralInformation from './scenes/GeneralInformation';
 import AppDrawer from './components/AppDrawer';
 import GeneralInformationDetails from './scenes/GeneralInformationDetails';
 import NetworkFailure from './scenes/NetworkFailure';
-import Notifications from './scenes/Notifications';
 import NewsThatMoves from './scenes/NewsThatMoves';
 import Settings from './scenes/Settings';
 
@@ -65,7 +64,7 @@ const scenes = Actions.create(
                 key="networkFailure"
             />
             <Scene
-                component={Notifications}
+                component={GeneralInformationDetails}
                 hideNavBar={false}
                 key="notifications"
                 title={() => I18n.t('ANNOUNCEMENTS')}

@@ -125,11 +125,7 @@ class Settings extends Component {
                         />
                     </View>
                     <View style={{justifyContent: 'center'}}>
-                        <DirectionalText style={[
-                            styles.textAccentGreen,
-                            {fontSize: 13}
-                        ]}
-                        >
+                        <DirectionalText style={[styles.textAccentGreen, {fontSize: 13}]}>
                             {I18n.t('CHANGE_LANGUAGE').toUpperCase()}
                         </DirectionalText>
                     </View>
