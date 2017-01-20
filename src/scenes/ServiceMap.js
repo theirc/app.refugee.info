@@ -42,16 +42,11 @@ const R = 6371e3; // earth R in metres
 
 
 class ServiceMap extends Component {
-    static noHeader = true;
 
     static propTypes = {
         region: PropTypes.object,
         searchCriteria: PropTypes.string,
         serviceTypes: PropTypes.array
-    };
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
     };
 
     constructor(props) {
@@ -617,11 +612,22 @@ class ServiceMap extends Component {
             activeMarkerView = this.renderActiveMarkerView();
         if (loading) {
             return (
-                <View>{loadingView}</View>
+                <View style={styles.flex}>
+                    <View style={[styles.row, componentStyles.searchBarContainer]}>
+                        <SearchBar
+                            buttonOnPressAction={() => this.searchFilterButtonAction()}
+                            drawerButton
+                            floating={!filteringView}
+                            initialSearchText={this.props.searchCriteria}
+                            searchFunction={(text) => this.filterByText(text)}
+                        />
+                    </View>
+                    {loadingView}
+                </View>
             );
         }
         return (
-            <View style={styles.container}>
+            <View style={styles.flex}>
                 {mapView}
                 {activeMarkerView}
                 {filteringView}

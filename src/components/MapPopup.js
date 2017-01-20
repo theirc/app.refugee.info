@@ -1,12 +1,13 @@
 import React, {Component, PropTypes} from 'react';
 import {View, StyleSheet, TouchableHighlight} from 'react-native';
-import ServiceCommons from '../utils/ServiceCommons';
 import {connect} from 'react-redux';
 import styles, {
     themes
 } from '../styles';
 import {Icon, DirectionalText} from '../components';
 import I18n from '../constants/Messages';
+import {Actions} from 'react-native-router-flux';
+
 
 export class MapPopup extends Component {
 
@@ -15,20 +16,14 @@ export class MapPopup extends Component {
         region: PropTypes.object
     };
 
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
-
     constructor(props) {
         super(props);
-        this.serviceCommons = new ServiceCommons();
     }
 
     navigateToService(marker) {
         const service = marker.service;
         const {region} = this.props;
-        const {navigator} = this.context;
-        requestAnimationFrame(() => navigator.forward(null, null, {service, region, location: region}, this.state));
+        requestAnimationFrame(() => Actions.serviceDetails({service, region, location: region}));
     }
 
     renderWidget(marker) {
@@ -65,11 +60,7 @@ export class MapPopup extends Component {
                     >
                         {this.renderWidget(marker)}
                     </View>
-                    <View style={[
-                        styles.container,
-                        {justifyContent: 'center'}
-                    ]}
-                    >
+                    <View style={[{justifyContent: 'center', flex: 1}]}>
                         <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                             {marker.title}
                         </DirectionalText>
@@ -105,11 +96,7 @@ export class MapPopup extends Component {
                         >
                             {this.renderWidget(cluster)}
                         </View>
-                        <View style={[
-                            styles.container,
-                            {justifyContent: 'center'}
-                        ]}
-                        >
+                        <View style={{justifyContent: 'center', flex: 1}}>
                             <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                                 {cluster.title}
                             </DirectionalText>
@@ -129,7 +116,7 @@ export class MapPopup extends Component {
         if (marker.neighbourCount) {
             let clusterRows = this.getClusterView(marker);
             return (
-                <View style={[styles.container, styles.containerLight]}>
+                <View style={[{flex: 1}, styles.containerLight]}>
                     {clusterRows}
                 </View>
             );
@@ -144,7 +131,7 @@ export class MapPopup extends Component {
                         <View style={[styles.iconContainer, {justifyContent: 'center', height: 48}]}>
                             {this.renderWidget(marker)}
                         </View>
-                        <View style={[styles.container, {justifyContent: 'center'}]}>
+                        <View style={{justifyContent: 'center', flex: 1}}>
                             <DirectionalText style={[componentStyles.mapPopupTitle, styles.textLight]}>
                                 {marker.title}
                             </DirectionalText>

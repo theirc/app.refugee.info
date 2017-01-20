@@ -1,103 +1,89 @@
+/* eslint-disable react/jsx-max-props-per-line */
+import React from 'react';
 import I18n from './constants/Messages';
+import {Actions, Scene} from 'react-native-router-flux';
+import CountryChoice from './scenes/CountryChoice';
+import CityChoice from './scenes/CityChoice';
+import ServiceList from './scenes/ServiceList';
+import ServiceDetails from './scenes/ServiceDetails';
+import ServiceMap from './scenes/ServiceMap';
+import GeneralInformation from './scenes/GeneralInformation';
+import AppDrawer from './components/AppDrawer';
+import GeneralInformationDetails from './scenes/GeneralInformationDetails';
+import NetworkFailure from './scenes/NetworkFailure';
+import Notifications from './scenes/Notifications';
+import NewsThatMoves from './scenes/NewsThatMoves';
+import Settings from './scenes/Settings';
 
-export default {
-    initial: {
-        initialRoute: true,
-        exitOnBackPress: true,
-        title: () => '',
-        component: require('./scenes/Initial').default
-    },
+const scenes = Actions.create(
+    <Scene component={AppDrawer} key="drawer" open={false}>
+        <Scene key="main">
+            <Scene
+                component={GeneralInformation}
+                hideNavBar={false}
+                initial key="info"
+                title={() => I18n.t('GENERAL_INFO')}
+            />
+            <Scene
+                component={GeneralInformationDetails}
+                hideNavBar={false}
+                key="infoDetails"
+                title={() => I18n.t('GENERAL_INFO')}
+            />
+            <Scene
+                component={CountryChoice}
+                hideNavBar={false}
+                key="countryChoice"
+                title={() => I18n.t('WHERE_ARE_YOU')}
+            />
+            <Scene
+                component={CityChoice}
+                hideNavBar={false}
+                key="cityChoice"
+                title={() => I18n.t('WHERE_ARE_YOU')}
+            />
+            <Scene
+                component={ServiceList}
+                hideNavBar={false}
+                key="serviceList"
+                title={() => I18n.t('SERVICE_LIST')}
+            />
+            <Scene
+                component={ServiceDetails}
+                hideNavBar={false}
+                key="serviceDetails"
+                title={() => I18n.t('SERVICE_DETAILS')}
+            />
+            <Scene
+                component={ServiceMap}
+                hideNavBar
+                key="serviceMap"
+            />
+            <Scene
+                component={NetworkFailure}
+                hideNavBar={false}
+                key="networkFailure"
+            />
+            <Scene
+                component={Notifications}
+                hideNavBar={false}
+                key="notifications"
+                title={() => I18n.t('ANNOUNCEMENTS')}
+            />
+            <Scene
+                component={NewsThatMoves}
+                hideNavBar={false}
+                key="news"
+                title={() => I18n.t('NEWS')}
+            />
+            <Scene
+                component={Settings}
+                hideNavBar={false}
+                key="settings"
+                title={() => I18n.t('SETTINGS')}
+            />
+        </Scene>
+    </Scene>
+);
 
-    countryChoice: {
-        title: () => I18n.t('WHERE_ARE_YOU'),
-        component: require('./scenes/CountryChoice').default,
-
-        children: {
-            cityChoice: {
-                title: () => I18n.t('WHERE_ARE_YOU'),
-                component: require('./scenes/CityChoice').default
-            }
-        }
-    },
-
-    cityChoice: {
-        title: () => I18n.t('WHERE_ARE_YOU'),
-        component: require('./scenes/CityChoice').default
-    },
-
-    services: {
-        title: () => I18n.t('SERVICE_LIST'),
-        component: require('./scenes/ServiceList').default,
-
-        children: {
-            details: {
-                title: () => I18n.t('SERVICE_DETAILS'),
-                component: require('./scenes/ServiceDetails').default
-            }
-        }
-    },
-
-    map: {
-        title: () => '',
-        component: require('./scenes/ServiceMap').default,
-
-        children: {
-            details: {
-                title: () => I18n.t('SERVICE_DETAILS'),
-                component: require('./scenes/ServiceDetails').default
-            }
-        }
-    },
-
-    info: {
-        exitOnBackPress: true,
-        title: () => I18n.t('GENERAL_INFO'),
-        component: require('./scenes/GeneralInformation').default,
-        children: {
-            details: {
-                title: () => I18n.t('GENERAL_INFO'),
-                component: require('./scenes/GeneralInformationDetails').default,
-                children: {
-                    // Important information linked from details
-                    importantLink: {
-                        title: () => I18n.t('GENERAL_INFO'),
-                        component: require('./scenes/GeneralInformation').default
-                    }
-                }
-            }
-        }
-    },
-    infoDetails: {
-        title: () => I18n.t('GENERAL_INFO'),
-        component: require('./scenes/GeneralInformationDetails').default
-    },
-
-    networkFailure: {
-        title: () => I18n.t('REFUGEE_INFO'),
-        component: require('./scenes/NetworkFailure').default
-    },
-
-    notifications: {
-        title: () => I18n.t('ANNOUNCEMENTS'),
-        component: require('./scenes/Notifications').default
-    },
-    news: {
-        title: () => I18n.t('NEWS'),
-        component: require('./scenes/NewsThatMoves').default
-    },
-
-    settings: {
-        title: () => I18n.t('SETTINGS'),
-        component: require('./scenes/Settings').default
-    },
-
-    about: {
-        title: () => I18n.t('ABOUT'),
-        component: require('./scenes/About').default
-    },
-
-    contact: {
-        title: () => I18n.t('CONTACT_US'),
-        component: require('./scenes/Contact').default
-    }
-};
+export default scenes;

@@ -33,10 +33,7 @@ const SHOW_SHARE_BUTTON = true;
 
 
 export class ServiceDetails extends Component {
-    static smallHeader = true;
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
+    static backButton = true;
 
     static propTypes = {
         location: PropTypes.shape({
@@ -416,7 +413,8 @@ export class ServiceDetails extends Component {
                         refreshing={this.state.refreshing}
                     />
                 }
-                scrollableViewStyle={[styles.container, componentStyles.containerView]}
+                scrollableViewStyle={[componentStyles.containerView]}
+                style={styles.container}
                 windowHeight={service.image ? screen.width / imageAspectRatio : 60}
             >
                 <OfflineView
@@ -499,6 +497,7 @@ const componentStyles = StyleSheet.create({
         margin: 10
     },
     containerView: {
+        flex: 1,
         backgroundColor: themes.light.backgroundColor
     },
     text: {

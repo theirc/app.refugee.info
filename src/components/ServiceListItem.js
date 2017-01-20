@@ -10,9 +10,6 @@ import styles, {
 } from '../styles';
 
 export class ServiceListItem extends Component {
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     static propTypes = {
         service: PropTypes.object

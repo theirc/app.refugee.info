@@ -11,18 +11,14 @@ import {
 } from '../actions';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
-
-
+import {Actions} from 'react-native-router-flux';
 
 
 export class CityChoice extends Component {
+    static backButton = true;
 
     static propTypes = {
-        country: React.PropTypes.object.isRequired
-    };
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
+        country: PropTypes.object.isRequired
     };
 
     constructor(props) {
@@ -82,12 +78,12 @@ export class CityChoice extends Component {
                 this.setState({loading: false})
             ]);
             if (city.content && city.content.length == 1) {
-                return this.context.navigator.to('infoDetails', null, {
+                return Actions.infoDetails({
                     section: city.content[0].html,
                     sectionTitle: city.title
                 });
             }
-            return this.context.navigator.to('info');
+            return Actions.info();
         });
     }
 

@@ -1,18 +1,15 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
 import {LocationListView, OfflineView, LoadingOverlay} from '../components';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
 import {getCountryFlag} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
 import styles from '../styles';
 
 
 export class CountryChoice extends Component {
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -31,7 +28,6 @@ export class CountryChoice extends Component {
     }
 
     async loadInitialState() {
-        const {navigator} = this.context;
         let countries = [];
         try {
             countries = await this.apiClient.getCountries(true);
@@ -41,7 +37,7 @@ export class CountryChoice extends Component {
         }
         countries.forEach((country) => {
             country.onPress = () => {
-                requestAnimationFrame(() => {navigator.forward(null, null, {country})});
+                requestAnimationFrame(() => {Actions.cityChoice({country})});
             };
             country.title = country.name;
             country.image = getCountryFlag(country.code);

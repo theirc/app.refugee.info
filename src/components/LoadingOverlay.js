@@ -29,7 +29,7 @@ class LoadingOverlay extends Component {
                 left: 0,
                 width,
                 height,
-                backgroundColor: transparent ? 'rgba(0,0,0,0)': 'rgba(255,255,255,0.55)',
+                backgroundColor: transparent ? 'rgba(0,0,0,0)': 'rgba(255,255,255,0.45)',
                 alignItems: 'center',
                 justifyContent: 'center',
                 elevation: 4
