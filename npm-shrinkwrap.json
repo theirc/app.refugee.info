@@ -2665,9 +2665,9 @@
       "resolved": "https://registry.npmjs.org/react-native-experimental-navigation/-/react-native-experimental-navigation-0.26.10.tgz"
     },
     "react-native-i18n": {
-      "version": "1.0.0",
-      "from": "react-native-i18n@1.0.0",
-      "resolved": "https://registry.npmjs.org/react-native-i18n/-/react-native-i18n-1.0.0.tgz"
+      "version": "0.0.8",
+      "from": "react-native-i18n@0.0.8",
+      "resolved": "https://registry.npmjs.org/react-native-i18n/-/react-native-i18n-0.0.8.tgz"
     },
     "react-native-infinite-scroll-view": {
       "version": "0.4.2",

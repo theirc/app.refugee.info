@@ -612,7 +612,7 @@ class ServiceMap extends Component {
             activeMarkerView = this.renderActiveMarkerView();
         if (loading) {
             return (
-                <View>
+                <View style={styles.flex}>
                     <View style={[styles.row, componentStyles.searchBarContainer]}>
                         <SearchBar
                             buttonOnPressAction={() => this.searchFilterButtonAction()}
@@ -623,11 +623,11 @@ class ServiceMap extends Component {
                         />
                     </View>
                     {loadingView}
-                    </View>
+                </View>
             );
         }
         return (
-            <View style={{flex: 1}}>
+            <View style={styles.flex}>
                 {mapView}
                 {activeMarkerView}
                 {filteringView}

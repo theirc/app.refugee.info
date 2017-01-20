@@ -8,7 +8,7 @@ import {
     Linking,
     Image
 } from 'react-native';
-import {OfflineView, DirectionalText} from '../components';
+import {OfflineView, DirectionalText, LoadingOverlay} from '../components';
 import {connect} from 'react-redux';
 import styles, {themes} from '../styles';
 import {News} from '../data';
@@ -23,6 +23,7 @@ export class NewsThatMoves extends Component {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
             }),
+            loading: true,
             refreshing: false
         };
         this.onRefresh = this.onRefresh.bind(this);
@@ -35,11 +36,15 @@ export class NewsThatMoves extends Component {
     async onRefresh() {
         const {language} = this.props;
         return new News(language).downloadNews().then((n) => {
-            let entries = n.feed.entries;
+            let entries = n.items;
+            entries.forEach((entry) => {
+                entry.contentSnippet = entry.description.split('<span')[0];
+            });
             return this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(entries),
                 refreshing: false,
-                offline: false
+                offline: false,
+                loading: false
             });
         }).catch(() => this.setState({offline: true}));
     }
@@ -49,7 +54,7 @@ export class NewsThatMoves extends Component {
             <View style={{paddingHorizontal: 5}}>
                 <TouchableOpacity
                     onPress={() => Linking.openURL(data.link)}
-                    style={[componentStyles.article, {borderBottomColor: themes.light.dividerColor}]}
+                    style={componentStyles.article}
                 >
                     <View>
                         <DirectionalText style={componentStyles.title}>
@@ -90,20 +95,19 @@ export class NewsThatMoves extends Component {
     }
 
     render() {
-        if (!this.state.dataSource) {
-            return <View />;
+        if (this.state.loading) {
+            return <LoadingOverlay />;
         }
         const content = this.renderContent();
         return (
             <View style={styles.container}>
                 <View style={componentStyles.logoContainer}>
                     <Image
-                        source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
+                        source={require('../assets/logo-news.png')}
                         style={componentStyles.logo}
                     />
                 </View>
                 {content}
-
             </View>
         );
     }
@@ -111,12 +115,13 @@ export class NewsThatMoves extends Component {
 
 const componentStyles = StyleSheet.create({
     logoContainer: {
-        paddingVertical: 10,
-        marginBottom: 5,
-        backgroundColor: themes.light.backgroundColor
+        backgroundColor: themes.light.backgroundColor,
+        alignItems: 'center',
+        paddingVertical: 10
     },
     logo: {
-        height: 70,
+        height: 100,
+        width: 187,
         resizeMode: 'contain'
     },
     title: {
@@ -133,7 +138,8 @@ const componentStyles = StyleSheet.create({
         borderBottomWidth: 1,
         marginBottom: 10,
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        borderBottomColor: themes.light.dividerColor
     }
 });
 
