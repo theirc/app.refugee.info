@@ -39,10 +39,18 @@ class Skeleton extends Component {
         AsyncStorage.getItem('language').then((res) => {
             if (res === 'en') {
                 I18nManager.allowRTL(false);
+                I18nManager.forceRTL(false);
             } else {
                 I18nManager.allowRTL(true);
+                I18nManager.forceRTL(true);
             }
             if (I18nManager.isRTL && res === 'en') {
+                I18nManager.allowRTL(false);
+                RNRestart.Restart();
+            }
+            if (!I18nManager.isRTL && (res === 'ar' || res === 'fa')) {
+                I18nManager.allowRTL(true);
+                I18nManager.forceRTL(true);
                 RNRestart.Restart();
             }
         });

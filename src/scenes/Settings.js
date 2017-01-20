@@ -97,7 +97,7 @@ class Settings extends Component {
     render() {
         const {loading} = this.state;
         return (
-            <ScrollView style={styles.container}>
+            <View style={styles.container}>
                 <ListItem
                     fontSize={13}
                     icon="ios-flag"
@@ -150,7 +150,7 @@ class Settings extends Component {
 
                 {loading &&
                 <LoadingOverlay />}
-            </ScrollView>
+            </View>
         );
     }
 }

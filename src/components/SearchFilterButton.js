@@ -20,25 +20,23 @@ export class SearchFilterButton extends Component {
                     !floating && componentStyles.searchFilterButtonContainerLight
                 ]}
             >
-                <View
+                <TouchableOpacity
+                    activeOpacity={0.6}
                     onPress={onPressAction}
-                    style={[
-                        getElevation(),
-                        componentStyles.searchFilterButton,
-                        (active) ? componentStyles.searchFilterButtonLightActive : componentStyles.searchFilterButtonLight
-                    ]}
                 >
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        onPress={onPressAction}
+                    <View
+                        style={[
+                            getElevation(),
+                            componentStyles.searchFilterButton,
+                            (active) ? componentStyles.searchFilterButtonLightActive : componentStyles.searchFilterButtonLight
+                        ]}
                     >
                         <Icon
                             name="md-funnel"
                             style={[componentStyles.searchFilterIcon, componentStyles.searchFilterIconLight]}
                         />
-                    </TouchableOpacity>
-
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         );
     }
