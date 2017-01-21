@@ -14,7 +14,6 @@ import {Actions} from 'react-native-router-flux';
 
 export class GeneralInformationDetails extends Component {
     static backButton = true;
-    static title = 'boo';
 
     static propTypes = {
         dispatch: PropTypes.func,
@@ -28,17 +27,17 @@ export class GeneralInformationDetails extends Component {
         this.webView = null;
         this.apiClient = new ApiClient(this.context, props);
         this.state = {
-            loading: false,
+            loading: true,
             source: false,
             navigating: false
         };
     }
 
-    componentWillMount() {
-        this._loadInitialState();
+    componentDidMount() {
+        this.loadInitialState();
     }
 
-    _loadInitialState() {
+    loadInitialState() {
         const {section, language, region} = this.props;
         if (!section.notifications) {
             if (section.important) {
@@ -56,7 +55,7 @@ export class GeneralInformationDetails extends Component {
                 Platform.OS
             )
         };
-        this.setState({source});
+        this.setState({source, loading: false});
         this.apiClient.getRating(section.slug, true).then((response) => {
             this.setState({
                 thumbsUp: response.thumbs_up,
@@ -270,8 +269,11 @@ export class GeneralInformationDetails extends Component {
     }
 
     render() {
+        const {loading} = this.state;
+        if (loading) {
+            return <View />;
+        }
         const feedbackBar = this.renderFeedbackBar();
-
         return (
             <View style={styles.container}>
                 <View style={{flex: 1}}>

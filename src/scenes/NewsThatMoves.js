@@ -29,7 +29,7 @@ export class NewsThatMoves extends Component {
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.onRefresh().done();
     }
 
