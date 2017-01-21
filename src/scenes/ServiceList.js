@@ -58,7 +58,7 @@ export class ServiceList extends Component {
         this.onRefresh = this.onRefresh.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.serviceData = new Services(this.props);
         if (!this.state.loaded) {
             this.fetchData().then(() => {

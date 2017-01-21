@@ -68,7 +68,7 @@ export class ServiceDetails extends Component {
         this.call = this.call.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.apiClient = new ApiClient(this.context, this.props);
         if (!this.state.loaded) {
             checkPlayServices().then((available) => {
@@ -387,8 +387,11 @@ export class ServiceDetails extends Component {
     }
 
     render() {
+        const {nativeAvailable, loaded} = this.state;
+        if (!loaded) {
+            return <View />;
+        }
         const {service, location} = this.props,
-            {nativeAvailable, loaded} = this.state,
             locationName = (location) ? location.pageTitle || location.name : '',
             hasPhoneNumber = loaded && !!this.state.provider.phone_number,
 

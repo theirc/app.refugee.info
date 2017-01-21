@@ -60,7 +60,7 @@ class ServiceMap extends Component {
             filteringView: false,
             searchCriteria: '',
             initialEnvelope: null,
-            loading: false,
+            loading: true,
             offline: false,
             refreshing: false,
             activeMarker: null,
@@ -603,13 +603,7 @@ class ServiceMap extends Component {
     }
 
     render() {
-        const {nativeAvailable, loading} = this.state,
-            mapView = this.renderMapView(nativeAvailable),
-            filteringView = this.renderFilteringView(),
-            loadingView = this.renderLoadingView(),
-            offlineView = this.renderOfflineView(),
-            maxServicesView = this.renderMaxServicesView(),
-            activeMarkerView = this.renderActiveMarkerView();
+        const {nativeAvailable, loading} = this.state;
         if (loading) {
             return (
                 <View style={styles.flex}>
@@ -626,6 +620,14 @@ class ServiceMap extends Component {
                 </View>
             );
         }
+
+        const mapView = this.renderMapView(nativeAvailable),
+            filteringView = this.renderFilteringView(),
+            loadingView = this.renderLoadingView(),
+            offlineView = this.renderOfflineView(),
+            maxServicesView = this.renderMaxServicesView(),
+            activeMarkerView = this.renderActiveMarkerView();
+
         return (
             <View style={styles.flex}>
                 {mapView}

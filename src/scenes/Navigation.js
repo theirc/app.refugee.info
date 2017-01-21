@@ -68,15 +68,27 @@ class Navigation extends Component {
         });
     }
 
+    navigateToNotifications() {
+        const section = {
+            html: this.props.region.banners.map((banner) => `<div class="banner">${banner.html}</div>`).join('<br />'),
+            notifications: true
+        };
+        this.context.drawer.close();
+        requestAnimationFrame(() => {
+            Actions.notifications({section});
+        });
+
+    }
+
     getImportantInformation() {
-        const {route, region} = this.props;
+        const {routes, region} = this.props;
         if (!region || !region.important) {
             return;
         }
         return region.important.map((item, index) => {
             return (
                 <MenuItem
-                    active={route === 'infoDetails' && navigator.currentRoute.props.slug == item.slug}
+                    active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == item.title}
                     icon={item.icon}
                     key={index}
                     onPress={() => this.navigateToImportantInformation(item)}
@@ -96,20 +108,21 @@ class Navigation extends Component {
                 </MenuSection>
             );
         }
-
     }
+
+
 
     getNearbyCities() {
         const {locations, region} = this.props;
         if (locations) {
-            return locations.map((i, index) => {
+            return locations.map((location, index) => {
                 return (
                     <MenuItem
-                        active={i.id == region.id}
+                        active={location.slug == region.slug}
                         key={index}
-                        onPress={() => this.selectCity(i)}
+                        onPress={() => this.selectCity(location)}
                     >
-                        {i.pageTitle || i.name}
+                        {location.pageTitle || location.name}
                     </MenuItem>
                 );
             });
@@ -128,7 +141,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {route, language, region} = this.props;
+        const {routes, language, region} = this.props;
         const {navigator} = this.context;
         const {loading} = this.state;
 
@@ -174,21 +187,21 @@ class Navigation extends Component {
 
                 <MenuSection title={I18n.t('REFUGEE_INFO')}>
                     <MenuItem
-                        active={route === 'info'}
+                        active={routes.scene.sceneKey === 'info'}
                         icon="fa-info"
                         onPress={() => this._defaultOrFirst(region)}
                     >
                         {I18n.t('GENERAL_INFO') }
                     </MenuItem>
                     <MenuItem
-                        active={route === 'services'}
+                        active={routes.scene.sceneKey === 'serviceList'}
                         icon="fa-list"
                         onPress={() => {Actions.serviceList(); this.context.drawer.close()}}
                     >
                         {I18n.t('SERVICE_LIST') }
                     </MenuItem>
                     <MenuItem
-                        active={route === 'map'}
+                        active={routes.scene.sceneKey === 'serviceMap'}
                         icon="fa-map"
                         onPress={() => {Actions.serviceMap(); this.context.drawer.close()}}
                     >
@@ -198,15 +211,15 @@ class Navigation extends Component {
 
                 <MenuSection>
                     <MenuItem
-                        active={route === 'notifications'}
+                        active={routes.scene.sceneKey === 'notifications'}
                         badge={bannerCount}
                         icon="ios-mail"
-                        onPress={() => {Actions.notifications(); this.context.drawer.close()}}
+                        onPress={() => this.navigateToNotifications()}
                     >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
                     <MenuItem
-                        active={route === 'news'}
+                        active={routes.scene.sceneKey === 'news'}
                         icon="ios-paper"
                         onPress={() => {Actions.news(); this.context.drawer.close()}}
                     >
@@ -219,7 +232,7 @@ class Navigation extends Component {
 
                 <MenuSection>
                     <MenuItem
-                        active={route === 'settings'}
+                        active={routes.scene.sceneKey === 'settings'}
                         icon="fa-gear"
                         onPress={() => {Actions.settings(); this.context.drawer.close()}}
                     >
@@ -227,7 +240,7 @@ class Navigation extends Component {
                     </MenuItem>
                     {aboutUs &&
                     <MenuItem
-                        active={route === 'infoDetails' && navigator.currentRoute.props.slug == aboutUs.slug}
+                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
                         icon="fa-question"
                         onPress={() => this.navigateToImportantInformation(aboutUs, true)}
                     >
@@ -263,7 +276,8 @@ const mapStateToProps = (state) => {
         locations: state.locations,
         region: state.region,
         language: state.language,
-        drawerOpen: state.drawerOpen
+        drawerOpen: state.drawerOpen,
+        routes: state.routes
     };
 };
 
