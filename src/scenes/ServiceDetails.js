@@ -19,6 +19,8 @@ import styles, {themes} from '../styles';
 import {WEB_PATH} from '../constants';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
+import { GA_TRACKER } from '../constants';
+
 
 let Mapbox;
 if (Platform.OS === 'android') {
