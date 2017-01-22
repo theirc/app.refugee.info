@@ -1,22 +1,23 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     Image,
     View,
     ScrollView,
     StyleSheet,
     Linking,
-    Dimensions
+    Dimensions,
+    TouchableWithoutFeedback
 } from 'react-native';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import I18n from '../constants/Messages';
-import {MenuSection, MenuItem, DirectionalText, LoadingOverlay} from '../components';
-import {updateRegionIntoStorage} from '../actions';
-import {Icon} from '../components';
-import styles, {themes} from '../styles';
-import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
+import { MenuSection, MenuItem, DirectionalText, LoadingOverlay } from '../components';
+import { updateRegionIntoStorage } from '../actions';
+import { Icon } from '../components';
+import styles, { themes } from '../styles';
+import { LIKE_PATH, FEEDBACK_MAP } from '../constants';
 import ApiClient from '../utils/ApiClient';
-import {getRegionAllContent} from '../utils/helpers';
-import {Actions} from 'react-native-router-flux';
+import { getRegionAllContent } from '../utils/helpers';
+import { Actions } from 'react-native-router-flux';
 
 const {width, height} = Dimensions.get('window');
 
@@ -38,7 +39,7 @@ class Navigation extends Component {
     _defaultOrFirst(section) {
         this.context.drawer.close();
         if (section.html && section.content.length == 1) {
-            return Actions.infoDetails({section});
+            return Actions.infoDetails({ section });
         } else {
             return Actions.info();
         }
@@ -46,25 +47,33 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch} = this.props;
-        this.setState({loading: true});
+        this.setState({ loading: true });
         let region = await this.apiClient.getLocation(city.slug);
         region.allContent = getRegionAllContent(region);
-        this.setState({region});
+        this.setState({ region });
 
         requestAnimationFrame(() => {
             Promise.all([
                 dispatch(updateRegionIntoStorage(region)),
-                dispatch({type: 'REGION_CHANGED', payload: region}),
-                this.setState({loading: false})
+                dispatch({ type: 'REGION_CHANGED', payload: region }),
+                this.setState({ loading: false })
             ]);
             return this._defaultOrFirst(city);
         });
     }
 
+    navigateToMicroApp(app) {
+        this.context.drawer.close();
+        requestAnimationFrame(() => {
+            Actions.microApp({ app });
+        });
+    }
+
+
     navigateToImportantInformation(section) {
         this.context.drawer.close();
         requestAnimationFrame(() => {
-            Actions.infoDetails({section});
+            Actions.infoDetails({ section });
         });
     }
 
@@ -75,7 +84,7 @@ class Navigation extends Component {
         };
         this.context.drawer.close();
         requestAnimationFrame(() => {
-            Actions.notifications({section});
+            Actions.notifications({ section });
         });
 
     }
@@ -92,7 +101,7 @@ class Navigation extends Component {
                     icon={item.icon}
                     key={index}
                     onPress={() => this.navigateToImportantInformation(item)}
-                >
+                    >
                     {item.title}
                 </MenuItem>
             );
@@ -121,11 +130,33 @@ class Navigation extends Component {
                         active={location.slug == region.slug}
                         key={index}
                         onPress={() => this.selectCity(location)}
-                    >
+                        >
                         {location.pageTitle || location.name}
                     </MenuItem>
                 );
             });
+        }
+    }
+
+    getAvailableApps() {
+        const {region, currentApp} = this.props;
+        if (region && region.apps) {
+            if (region.apps.length == 0) {
+                return null;
+            }
+            return <MenuSection title={I18n.t('MICRO_APPS')}>
+                {region.apps.map((app, index) => {
+                    return (
+                        <MenuItem
+                            active={app.id == (currentApp && currentApp.id)}
+                            key={index}
+                            onPress={() => this.navigateToMicroApp(app)}
+                            >
+                            {app.name}
+                        </MenuItem>
+                    );
+                })}
+            </MenuSection>
         }
     }
 
@@ -150,7 +181,7 @@ class Navigation extends Component {
         }
 
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
-        const aboutUs = region.allContent.find(content => content.slug === 'about-us');
+        const aboutUs = region && region.allContent ? region.allContent.find(content => content.slug === 'about-us') : {};
 
         let importantInformationSection = this.getImportantInformationSection();
         let nearbyCitiesSection = this.getNearbyCitiesSection();
@@ -160,52 +191,57 @@ class Navigation extends Component {
         let bannerCount = region.banners && region.banners.length;
         let regionName = region.name ? region.name.toUpperCase() : '';
 
+        let availableApps = this.getAvailableApps();
+
         // Shorthand to change scene
         return (
             <ScrollView style={componentStyles.view}>
-                <View style={[componentStyles.logoContainer, styles.row]}>
-                    <Image
-                        source={logo}
-                        style={componentStyles.logo}
-                    />
-                </View>
-
-                <View style={[componentStyles.titleWrapper, styles.row]}>
-                    <Icon
-                        name="md-locate"
-                        style={[
-                            {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5}
+                <TouchableWithoutFeedback onPress={() => this._defaultOrFirst(region)}>
+                    <View style={[componentStyles.logoContainer, styles.row]}>
+                        <Image
+                            source={logo}
+                            style={componentStyles.logo}
+                            />
+                    </View>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => this._defaultOrFirst(region)}>
+                    <View style={[componentStyles.titleWrapper, styles.row]}>
+                        <Icon
+                            name="md-locate"
+                            style={[
+                                { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5 }
+                            ]}
+                            />
+                        <DirectionalText style={[
+                            componentStyles.cityText
                         ]}
-                    />
-                    <DirectionalText style={[
-                        componentStyles.cityText
-                    ]}
-                    >
-                        {regionName}
-                    </DirectionalText>
-                </View>
+                            >
+                            {regionName}
+                        </DirectionalText>
+                    </View>
+                </TouchableWithoutFeedback>
 
                 <MenuSection title={I18n.t('REFUGEE_INFO')}>
                     <MenuItem
                         active={routes.scene.sceneKey === 'info'}
                         icon="fa-info"
                         onPress={() => this._defaultOrFirst(region)}
-                    >
-                        {I18n.t('GENERAL_INFO') }
+                        >
+                        {I18n.t('GENERAL_INFO')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'serviceList'}
                         icon="fa-list"
-                        onPress={() => {Actions.serviceList(); this.context.drawer.close()}}
-                    >
-                        {I18n.t('SERVICE_LIST') }
+                        onPress={() => { Actions.serviceList(); this.context.drawer.close() } }
+                        >
+                        {I18n.t('SERVICE_LIST')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'serviceMap'}
                         icon="fa-map"
-                        onPress={() => {Actions.serviceMap(); this.context.drawer.close()}}
-                    >
-                        {I18n.t('EXPLORE_MAP') }
+                        onPress={() => { Actions.serviceMap(); this.context.drawer.close() } }
+                        >
+                        {I18n.t('EXPLORE_MAP')}
                     </MenuItem>
                 </MenuSection>
 
@@ -215,18 +251,18 @@ class Navigation extends Component {
                         badge={bannerCount}
                         icon="ios-mail"
                         onPress={() => this.navigateToNotifications()}
-                    >
+                        >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'news'}
                         icon="ios-paper"
-                        onPress={() => {Actions.news(); this.context.drawer.close()}}
-                    >
+                        onPress={() => { Actions.news(); this.context.drawer.close() } }
+                        >
                         {I18n.t('NEWS')}
                     </MenuItem>
                 </MenuSection>
-
+                {availableApps}
                 {importantInformationSection}
                 {nearbyCitiesSection}
 
@@ -234,39 +270,39 @@ class Navigation extends Component {
                     <MenuItem
                         active={routes.scene.sceneKey === 'settings'}
                         icon="fa-gear"
-                        onPress={() => {Actions.settings(); this.context.drawer.close()}}
-                    >
+                        onPress={() => { Actions.settings(); this.context.drawer.close() } }
+                        >
                         {I18n.t('SETTINGS')}
                     </MenuItem>
                     {aboutUs &&
-                    <MenuItem
-                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
-                        icon="fa-question"
-                        onPress={() => this.navigateToImportantInformation(aboutUs, true)}
-                    >
-                        {I18n.t('ABOUT')}
-                    </MenuItem>
+                        <MenuItem
+                            active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
+                            icon="fa-question"
+                            onPress={() => this.navigateToImportantInformation(aboutUs, true)}
+                            >
+                            {I18n.t('ABOUT')}
+                        </MenuItem>
                     }
                     <MenuItem
                         icon="fa-comment"
                         onPress={() => Linking.openURL(feedbackUrl)}
-                    >
+                        >
                         {I18n.t('FEEDBACK')}
                     </MenuItem>
 
                     <MenuItem
                         icon="fa-facebook-square"
                         onPress={() => Linking.openURL(LIKE_PATH)}
-                    >
+                        >
                         {I18n.t('LIKE_US')}
                     </MenuItem>
 
                 </MenuSection>
                 {loading &&
-                <LoadingOverlay
-                    height={height}
-                    width={width}
-                />}
+                    <LoadingOverlay
+                        height={height}
+                        width={width}
+                        />}
             </ScrollView>);
     }
 }

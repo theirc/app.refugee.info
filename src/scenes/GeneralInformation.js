@@ -13,6 +13,7 @@ import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage} from '../actions/region';
 import {getRegionAllContent} from '../utils/helpers';
 import {Actions} from 'react-native-router-flux';
+import { GA_TRACKER } from '../constants';
 
 
 export class GeneralInformation extends Component {
@@ -41,6 +42,9 @@ export class GeneralInformation extends Component {
             return Actions.countryChoice();
         }
         Actions.refresh({title: region.name});
+
+        GA_TRACKER.trackEvent('page-view', region.slug);
+        
         if (region.content && region.content.length === 1) {
             const content = region.content[0];
             return Actions.infoDetails({section: content.html, sectionTitle: content.title});

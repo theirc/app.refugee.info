@@ -60,9 +60,18 @@ export default class ApiClient {
         return this.fetch(`region/?is_child_of=${parentId}&no_content&language=${this.language}`, raiseException);
     }
 
-    getLocation(slug, raiseException = false) {
-        return this.fetch(`region/${slug}?language=${this.language}`, raiseException);
+   async getLocation(slug, raiseException = false) {
+        let returnRegion = await this.fetch(`region/${slug}/?language=${this.language}`, raiseException);
+
+        // Retrofitting the old with the new:
+        let fullObject = await this.fetch(`regions/${returnRegion.id}/?language=${this.language}`, raiseException);
+
+        returnRegion.apps = (fullObject && fullObject.apps) || [];
+        returnRegion.object = fullObject;
+
+        return {...fullObject, ...returnRegion};
     }
+
 
     getServiceTypes(raise_exception = false) {
         return this.fetch('servicetypes/?format=json', raise_exception);

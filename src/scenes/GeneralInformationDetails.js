@@ -10,6 +10,7 @@ import Share from 'react-native-share';
 import {WEB_PATH} from '../constants';
 import ApiClient from '../utils/ApiClient';
 import {Actions} from 'react-native-router-flux';
+import { GA_TRACKER } from '../constants';
 
 
 export class GeneralInformationDetails extends Component {
@@ -39,6 +40,8 @@ export class GeneralInformationDetails extends Component {
 
     loadInitialState() {
         const {section, language, region} = this.props;
+        GA_TRACKER.trackEvent('info-page-view', section.slug);
+        
         if (!section.notifications) {
             if (section.important) {
                 Actions.refresh({title: section.title});
