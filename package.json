@@ -11,6 +11,8 @@
     "react-native": "^0.39.2",
     "react-native-device-info": "^0.9.3",
     "react-native-drawer": "https://github.com/bklukaczewski/react-native-drawer.git#master",
+    "react-native-fbsdk": "^0.5.0",
+    "react-native-google-analytics-bridge": "^4.0.3",
     "react-native-i18n": "0.0.8",
     "react-native-infinite-scroll-view": "^0.4.2",
     "react-native-mail": "^1.2.0",

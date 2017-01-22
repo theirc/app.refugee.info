@@ -1,3 +1,11 @@
+import {
+  GoogleAnalyticsTracker,
+  GoogleTagManager,
+  GoogleAnalyticsSettings
+} from 'react-native-google-analytics-bridge';
+
+export const GA_TRACKER = new GoogleAnalyticsTracker('UA-68574649-1');
+
 export {default as I18n} from './Messages';
 export const CSS = '';
 export const API_PATH = 'http://api-v2.rescueapp.org/v2/';

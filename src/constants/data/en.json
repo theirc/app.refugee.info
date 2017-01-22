@@ -1,5 +1,6 @@
 {
   "HOME": "Home",
+  "MICRO_APPS": "Apps",
   "GPS_DISABLED": "Unable to determine location. Please enable GPS.",
   "NETWORK_PROBLEM": "There is a problem with your Internet connection",
   "CANT_FIND_LOCATION": "Sorry, we can\"t find your location. Please choose location from the list",

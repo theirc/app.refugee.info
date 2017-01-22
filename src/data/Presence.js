@@ -73,7 +73,7 @@ export default class Presence extends Component {
         };
 
         let promise = Promise.resolve(true);
-        await this.client.post('/presence/', payload)
+        await this.client.post('presence/', payload)
             .then(() => promise)
             .catch(() => promise);
 

@@ -53,7 +53,10 @@ export function wrapHtmlContent(content, language, title = null, theme = 'light'
     let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
     return `
     <html>
+    
     <head>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <style>
         ${cssFonts}
         ${cssStyleSheet}

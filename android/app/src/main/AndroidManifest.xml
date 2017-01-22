@@ -21,6 +21,8 @@
             android:label="@string/app_name"
             android:icon="@drawable/appicon"
             android:theme="@style/AppTheme">
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
                 android:exported="true"
@@ -60,6 +62,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+                
                 <data android:scheme="http" android:host="refugee.info"/>
                 <data android:scheme="https" android:host="refugee.info"/>
                 <data android:scheme="http" android:host="www.refugee.info"/>

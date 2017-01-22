@@ -13,6 +13,7 @@ import GeneralInformationDetails from './scenes/GeneralInformationDetails';
 import NetworkFailure from './scenes/NetworkFailure';
 import NewsThatMoves from './scenes/NewsThatMoves';
 import Settings from './scenes/Settings';
+import MicroApp from './scenes/MicroApp';
 
 const scenes = Actions.create(
     <Scene component={AppDrawer} key="drawer" open={false}>
@@ -80,6 +81,12 @@ const scenes = Actions.create(
                 hideNavBar={false}
                 key="settings"
                 title={() => I18n.t('SETTINGS')}
+            />
+            <Scene
+                component={MicroApp}
+                hideNavBar={true}
+                key="microApp"
+                title={() => I18n.t('MICRO_APPS')}
             />
         </Scene>
     </Scene>
