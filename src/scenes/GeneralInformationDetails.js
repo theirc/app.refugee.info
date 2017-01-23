@@ -34,7 +34,7 @@ export class GeneralInformationDetails extends Component {
         };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.loadInitialState();
     }
 

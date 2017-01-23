@@ -604,6 +604,7 @@ class ServiceMap extends Component {
 
     render() {
         const {nativeAvailable, loading} = this.state;
+        const loadingView = this.renderLoadingView();
         if (loading) {
             return (
                 <View style={styles.flex}>
@@ -623,7 +624,6 @@ class ServiceMap extends Component {
 
         const mapView = this.renderMapView(nativeAvailable),
             filteringView = this.renderFilteringView(),
-            loadingView = this.renderLoadingView(),
             offlineView = this.renderOfflineView(),
             maxServicesView = this.renderMaxServicesView(),
             activeMarkerView = this.renderActiveMarkerView();

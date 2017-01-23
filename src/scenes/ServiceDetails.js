@@ -83,7 +83,7 @@ export class ServiceDetails extends Component {
 
     async fetchData(update) {
         let service = this.props.service;
-        GA_TRACKER.trackEvent('service-view', service.id);
+        GA_TRACKER.trackEvent('service-view', String(service.id));
 
         try {
             if (update) {
