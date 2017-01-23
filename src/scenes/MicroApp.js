@@ -14,6 +14,7 @@ import Share from 'react-native-share';
 import { WEB_PATH } from '../constants';
 import ApiClient from '../utils/ApiClient';
 import { Actions } from 'react-native-router-flux';
+import {Presence} from '../data';
 let DeviceInfo = require('react-native-device-info');
 
 
@@ -80,7 +81,7 @@ export class MicroApp extends Component {
     webViewReady() {
         let isTranslucent = isStatusBarTranslucent();
         let platform = Platform.OS;
-        let deviceId = DeviceInfo.getUniqueID();
+        let deviceId = Presence.getDeviceToken();
         let {region, language} = this.props;
 
         if (this.webView) {
