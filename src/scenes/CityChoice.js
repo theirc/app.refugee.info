@@ -77,10 +77,10 @@ export class CityChoice extends Component {
                 dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities}),
                 this.setState({loading: false})
             ]);
-            if (city.content && city.content.length == 1) {
+            if (region.content && region.content.length == 1) {
                 return Actions.infoDetails({
-                    section: city.content[0].html,
-                    sectionTitle: city.title
+                    section: region.content[0].html,
+                    sectionTitle: region.title
                 });
             }
             return Actions.info();

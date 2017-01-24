@@ -52,7 +52,7 @@ export default class ApiClient {
         return this.fetch(`region/?level=1&no_content&language=${this.language}`, raiseException);
     }
 
-    getCountry(slug, raiseException = false, language='en') {
+    getCountry(slug, raiseException = false, language = 'en') {
         return this.fetch(`region/${slug}?no_content&language=${language}`, raiseException);
     }
 
@@ -60,7 +60,7 @@ export default class ApiClient {
         return this.fetch(`region/?is_child_of=${parentId}&no_content&language=${this.language}`, raiseException);
     }
 
-   async getLocation(slug, raiseException = false) {
+    async getLocation(slug, raiseException = false) {
         let returnRegion = await this.fetch(`region/${slug}/?language=${this.language}`, raiseException);
 
         // Retrofitting the old with the new:

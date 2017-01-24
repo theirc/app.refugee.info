@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage} from 'react-native';
+import {View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage, Alert} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils';
 import styles from '../styles';
 import {connect} from 'react-redux';
@@ -10,7 +10,9 @@ import Share from 'react-native-share';
 import {WEB_PATH} from '../constants';
 import ApiClient from '../utils/ApiClient';
 import {Actions} from 'react-native-router-flux';
-import { GA_TRACKER } from '../constants';
+import {GA_TRACKER} from '../constants';
+import {getRegionAllContent} from '../utils/helpers';
+import {updateRegionIntoStorage} from '../actions';
 
 
 export class GeneralInformationDetails extends Component {
@@ -41,7 +43,7 @@ export class GeneralInformationDetails extends Component {
     loadInitialState() {
         const {section, language, region} = this.props;
         GA_TRACKER.trackEvent('info-page-view', section.slug);
-        
+
         if (!section.notifications) {
             if (section.important) {
                 Actions.refresh({title: section.title});
@@ -64,7 +66,8 @@ export class GeneralInformationDetails extends Component {
                 thumbsUp: response.thumbs_up,
                 thumbsDown: response.thumbs_down
             });
-        }).catch(() => {});
+        }).catch(() => {
+        });
     }
 
     getSectionBySlug(slug) {
@@ -75,6 +78,9 @@ export class GeneralInformationDetails extends Component {
 
     /* open links to other sections in the app */
     handleInternalLinking(url) {
+        if (!url) {
+            return;
+        }
         if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
             let slug = url.split('%23')[1];
             let section = this.getSectionBySlug(slug);
@@ -120,6 +126,43 @@ export class GeneralInformationDetails extends Component {
         }
     }
 
+    /* open links to another location to change app region */
+    handleLocationLinking(url) {
+        url = url.replace(/\//g, '').replace(/,/g, '');
+        this.apiClient.getLocation(url).then((location) => {
+            if (location.slug) {
+                Alert.alert(
+                    I18n.t('CHANGE_LOCATION'),
+                    I18n.t('LOCATION_WILL_CHANGE').replace('{0}', location.name),
+                    [
+                        {text: I18n.t('NO'), onPress: () => {}},
+                        {text: I18n.t('YES'), onPress: () => this.changeRegion(location)}
+                    ]
+                );
+            }
+        }).catch(() => {});
+    }
+
+    changeRegion(region) {
+        const {dispatch} = this.props;
+        region.allContent = getRegionAllContent(region);
+        this.setState({region});
+
+        requestAnimationFrame(() => {
+            Promise.all([
+                dispatch(updateRegionIntoStorage(region)),
+                dispatch({type: 'REGION_CHANGED', payload: region})
+            ]);
+            if (region.content && region.content.length == 1) {
+                return Actions.infoDetails({
+                    section: region.content[0].html,
+                    sectionTitle: region.title
+                });
+            }
+            return Actions.info();
+        });
+    }
+
     isJellyBean() {
         return ([16, 17, 18].indexOf(Platform.Version) > -1);
     }
@@ -135,6 +178,7 @@ export class GeneralInformationDetails extends Component {
         let url = state.url;
         if (url === 'about:blank') return;
         if (!this.handleInternalLinking(url)) {
+            this.handleLocationLinking(url);
             if (this.webView) {
                 this.checkNavigationType(state);
                 if (url.indexOf('/') == 0) {
@@ -164,6 +208,8 @@ export class GeneralInformationDetails extends Component {
                 }
                 let slug = temp[temp.length - 1];
                 this.handleInternalLinking(slug);
+                let location = String(temp).split('"');
+                this.handleLocationLinking(location[location.length - 1]);
             }
         } else {
             if (url === 'about:blank' || url.indexOf('data:') == 0) {
