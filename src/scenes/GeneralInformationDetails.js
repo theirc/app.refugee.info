@@ -89,7 +89,7 @@ export class GeneralInformationDetails extends Component {
                 return true;
             }
         }
-        if (Platform.OS === 'android') {
+        if (Platform.OS === 'android' && !this.state.navigating) {
             let section = this.getSectionBySlug(url);
             if (section) {
                 this.setState({navigating: true});
@@ -101,14 +101,21 @@ export class GeneralInformationDetails extends Component {
 
     /* open links like phone, email or external http in dedicated app */
     handleExternalLinking(url) {
-        this.webView.goBack();
-        if (url.indexOf('tel') == 0) {
-            // handle phone number
-        } else if (url.indexOf('mailto') == 0) {
-            //handle mailto
-        } else {
+        if (Platform.OS === 'android') {
+            if (!this.state.navigating) {
+                Linking.openURL(url);
+            }
             this.setState({navigating: true});
-            Linking.openURL(url);
+        } else {
+            this.webView.goBack();
+            if (url.indexOf('tel') == 0) {
+                // handle phone number
+            } else if (url.indexOf('mailto') == 0) {
+                //handle mailto
+            } else {
+                this.setState({navigating: true});
+                Linking.openURL(url);
+            }
         }
     }
 
@@ -128,10 +135,13 @@ export class GeneralInformationDetails extends Component {
 
     /* open links to another location to change app region */
     handleLocationLinking(url) {
+        if (!url) {
+            return;
+        }
         url = url.replace(/\//g, '').replace(/,/g, '');
-        this.apiClient.getLocation(url).then((location) => {
+        return this.apiClient.getLocation(url, true).then((location) => {
             if (location.slug) {
-                Alert.alert(
+                return Alert.alert(
                     I18n.t('CHANGE_LOCATION'),
                     I18n.t('LOCATION_WILL_CHANGE').replace('{0}', location.name),
                     [
@@ -207,9 +217,15 @@ export class GeneralInformationDetails extends Component {
                     this.handleInternalLinking(slug);
                 }
                 let slug = temp[temp.length - 1];
-                this.handleInternalLinking(slug);
-                let location = String(temp).split('"');
-                this.handleLocationLinking(location[location.length - 1]);
+                if (!this.handleInternalLinking(slug)) {
+                    let location = String(temp).split('"');
+                    return this.handleLocationLinking(location[location.length - 1]);
+                } else {
+                    this.setState({
+                        navigating: false
+                    });
+                    return;
+                }
             }
         } else {
             if (url === 'about:blank' || url.indexOf('data:') == 0) {
