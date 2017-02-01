@@ -177,7 +177,7 @@ class ServiceMap extends Component {
 
             let markers = services.map(service => {
                 let serviceType = serviceTypes.find(function (type) {
-                    return type.url == service.type;
+                    return type.id == service.type;
                 });
                 return {
                     latitude: service.location.coordinates[1],
