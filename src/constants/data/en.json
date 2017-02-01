@@ -103,5 +103,6 @@
   "INFO_WAS_OUTDATED": "Updated!",
   "NO": "No",
   "YES": "Yes",
-  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?"
+  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
+  "SERVICE_PROVIDER": "Service Provider"
 }

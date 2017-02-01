@@ -19,7 +19,7 @@ import styles, {themes} from '../styles';
 import {WEB_PATH} from '../constants';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
-import { GA_TRACKER } from '../constants';
+import {GA_TRACKER} from '../constants';
 
 
 let Mapbox;
@@ -442,8 +442,11 @@ export class ServiceDetails extends Component {
                         </DirectionalText>
                     </View>
                     <View style={[styles.row, {paddingBottom: 5}]}>
-                        <DirectionalText style={{color: themes.light.textColor, fontSize: 12}}>
-                            {service.provider.name}
+                        <DirectionalText style={{color: themes.light.textColor, fontSize: 12, marginHorizontal: 8}}>
+                            {I18n.t('SERVICE_PROVIDER')}:
+                            <DirectionalText style={styles.title}>
+                                {` ${service.provider.name}`}
+                            </DirectionalText>
                         </DirectionalText>
                     </View>
                     <Divider />
