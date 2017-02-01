@@ -152,7 +152,7 @@ export class ServiceList extends Component {
                         let services = serviceResult.results;
                         services.forEach((service) => {
                             service.type = serviceTypes.find(function (type) {
-                                return type.url == service.type;
+                                return type.id == service.type;
                             });
                             service.locationName = region.name;
                             service.onPress = () => {
@@ -206,7 +206,7 @@ export class ServiceList extends Component {
             let newServices = serviceResult.results;
             newServices.forEach((service) => {
                 service.type = serviceTypes.find(function (type) {
-                    return type.url == service.type;
+                    return type.id == service.type;
                 });
                 service.locationName = region.name;
                 service.onPress = () => {
