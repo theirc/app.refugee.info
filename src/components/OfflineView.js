@@ -7,6 +7,7 @@ import styles from '../styles';
 export class OfflineView extends Component {
 
     static propTypes = {
+        floating: PropTypes.bool,
         offline: PropTypes.bool.isRequired,
         onRefresh: PropTypes.func.isRequired
     };
@@ -16,10 +17,10 @@ export class OfflineView extends Component {
     }
 
     render() {
-        const {offline} = this.props;
+        const {offline, floating} = this.props;
         if (offline) {
             return (
-                <View style={[{borderBottomWidth: 1}, styles.bottomDividerLight]}>
+                <View style={!floating && [{borderBottomWidth: 1}, styles.bottomDividerLight]}>
                     <View style={componentStyles.offlineModeContainer}>
                         <Icon
                             name="md-warning"

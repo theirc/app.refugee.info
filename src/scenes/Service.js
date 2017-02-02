@@ -1,31 +1,34 @@
 import React, {Component, PropTypes} from 'react';
 import {
     View,
-    ListView,
-    RefreshControl
+    StyleSheet,
+    Dimensions
 } from 'react-native';
 import I18n from '../constants/Messages';
 import {
-    DirectionalText,
-    MapButton,
     OfflineView,
     SearchBar,
-    SearchFilterButton,
     ServiceListItem,
     ServiceCategoryListView,
-    LoadingOverlay
+    LoadingOverlay,
+    ServiceList,
+    ServiceMap,
+    ToggleButton
 } from '../components';
 import {connect} from 'react-redux';
-import InfiniteScrollView from 'react-native-infinite-scroll-view';
 import {Services} from '../data';
-import styles, {themes} from '../styles';
+import styles, {themes, isStatusBarTranslucent, getElevation} from '../styles';
 import {Actions} from 'react-native-router-flux';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 25;
+const {width} = Dimensions.get('window');
 
-export class ServiceList extends Component {
+
+export class Service extends Component {
 
     static propTypes = {
+        list: PropTypes.bool,
+        map: PropTypes.bool,
         region: PropTypes.object,
         searchCriteria: PropTypes.string,
         serviceTypeIds: PropTypes.array
@@ -35,27 +38,27 @@ export class ServiceList extends Component {
         super(props);
 
         this.state = {
-            dataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1.id !== row2.id
-            }),
-            serviceTypeDataSource: new ListView.DataSource({
-                rowHasChanged: (row1, row2) => row1.id !== row2.id
-            }),
             loaded: false,
             refreshing: false,
             offline: false,
             canLoadMoreContent: true,
             pageNumber: 1,
-            filteringView: false,
+            filtering: false,
+            list: props.list,
+            map: props.map,
+            services: [],
             searchCriteria: props.searchCriteria || '',
             serviceTypeIds: props.serviceTypeIds,
-            loading: false,
+            loading: true,
             location: {latitude: 0, longitude: 0}
         };
 
         this.filterByTypes = this.filterByTypes.bind(this);
         this.clearFilters = this.clearFilters.bind(this);
         this.onRefresh = this.onRefresh.bind(this);
+        this.toggleFilteringView = this.toggleFilteringView.bind(this);
+        this.toggleListView = this.toggleListView.bind(this);
+        this.toggleMapView = this.toggleMapView.bind(this);
     }
 
     componentDidMount() {
@@ -84,7 +87,6 @@ export class ServiceList extends Component {
             serviceTypes.forEach((type) => {
                 type.active = false;
                 type.onPress = this.toggleServiceType.bind(this, type);
-
             });
             return serviceTypes;
         }
@@ -152,7 +154,7 @@ export class ServiceList extends Component {
                         let services = serviceResult.results;
                         services.forEach((service) => {
                             service.type = serviceTypes.find(function (type) {
-                                return type.id == service.type;
+                                return type.number == service.type;
                             });
                             service.locationName = region.name;
                             service.onPress = () => {
@@ -163,8 +165,6 @@ export class ServiceList extends Component {
                         });
 
                         this.setState({
-                            dataSource: this.state.dataSource.cloneWithRows(services),
-                            serviceTypeDataSource: this.state.serviceTypeDataSource.cloneWithRows(serviceTypes),
                             loaded: true,
                             serviceTypes,
                             services,
@@ -175,6 +175,7 @@ export class ServiceList extends Component {
                             offline: false,
                             loading: false
                         });
+                        this._loadMoreContentAsync();
                     }, (() => {
                         this.setOffline(true);
                     }));
@@ -206,7 +207,7 @@ export class ServiceList extends Component {
             let newServices = serviceResult.results;
             newServices.forEach((service) => {
                 service.type = serviceTypes.find(function (type) {
-                    return type.id == service.type;
+                    return type.url == service.type;
                 });
                 service.locationName = region.name;
                 service.onPress = () => {
@@ -219,13 +220,12 @@ export class ServiceList extends Component {
             let allServices = services.concat(newServices);
 
             this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(allServices),
                 services: allServices,
                 pageNumber: pageNumber + 1,
                 searchCriteria,
                 canLoadMoreContent: (!!serviceResult.next)
             });
-
+            this._loadMoreContentAsync();
         } catch (e) {
             this.setOffline(true);
         }
@@ -257,27 +257,53 @@ export class ServiceList extends Component {
             return obj.number === type.number;
         });
         serviceTypes[index].active = !serviceTypes[index].active;
-        this.setState({
-            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
-        });
+        this.setState({serviceTypes});
     }
 
     filterByText(event) {
         if (this.state.region) {
             this.setState({
                 searchCriteria: event.nativeEvent.text,
-                filteringView: false
+                filtering: false
             }, () => {
                 this.fetchData().done();
             });
         }
     }
 
-    searchFilterButtonAction() {
+    toggleFilteringView() {
         requestAnimationFrame(() => {
             if (this.state.region) {
                 this.setState({
-                    filteringView: !this.state.filteringView
+                    filtering: true,
+                    map: false,
+                    list: false
+                });
+            }
+        });
+    }
+
+    toggleListView() {
+        this.filterByTypes();
+        requestAnimationFrame(() => {
+            if (this.state.region) {
+                this.setState({
+                    filtering: false,
+                    map: false,
+                    list: true
+                });
+            }
+        });
+    }
+
+    toggleMapView() {
+        this.filterByTypes();
+        requestAnimationFrame(() => {
+            if (this.state.region) {
+                this.setState({
+                    filtering: false,
+                    map: true,
+                    list: false
                 });
             }
         });
@@ -289,8 +315,7 @@ export class ServiceList extends Component {
             serviceTypes[i].active = false;
         }
         this.setState({
-            serviceTypes,
-            serviceTypeDataSource: this.state.dataSource.cloneWithRows(serviceTypes)
+            serviceTypes
         }, () => {
             this.fetchData().done();
         });
@@ -309,102 +334,197 @@ export class ServiceList extends Component {
     filterByTypes() {
         this.fetchData().then(() =>
             this.setState({
-                filteringView: false
+                filtering: false
             })
         );
     }
 
     renderFilteringView() {
-        const {serviceTypeDataSource} = this.state;
+        const {serviceTypes, filtering} = this.state;
+        if (!filtering) {
+            return <View />;
+        }
         return (
             <ServiceCategoryListView
-                dataSource={serviceTypeDataSource}
                 onClear={this.clearFilters}
                 onFilter={this.filterByTypes}
+                serviceTypes={serviceTypes}
             />
         );
     }
 
     renderServiceList() {
+        const {services, list} = this.state;
+        if (!list || !services) {
+            return (<View />);
+        }
         return (
-            <ListView
-                canLoadMore={this.state.canLoadMoreContent}
-                dataSource={this.state.dataSource}
-                enableEmptySections
-                keyboardDismissMode="on-drag"
-                keyboardShouldPersistTaps
-                onLoadMoreAsync={() => {this._loadMoreContentAsync()}}
-                refreshControl={
-                    <RefreshControl
-                        onRefresh={this.onRefresh}
-                        refreshing={this.state.refreshing}
-                    />
-                }
-                renderRow={(service) => this.renderRow(service)}
-                renderScrollComponent={props => <InfiniteScrollView {...props} />}
+            <ServiceList services={services}/>
+        );
+    }
+
+    renderServiceMap() {
+        const {services, map} = this.state;
+        const {region} = this.props;
+        if (!map || !services) {
+            return (<View />);
+        }
+        return (
+            <ServiceMap
+                region={region}
+                services={services}
             />
         );
     }
 
-    render() {
-        const {region, filteringView, loaded, loading, refreshing} = this.state;
-        const viewContent = (!filteringView) ? this.renderServiceList() : this.renderFilteringView();
-
+    renderLoadingView() {
+        const {loading} = this.state;
+        if (!loading) {
+            return <View />;
+        }
         return (
-            <View style={styles.container}>
-                <View style={[
-                    styles.row, {paddingHorizontal: 5},
-                    {backgroundColor: themes.light.lighterDividerColor}]}
-                >
-                    <SearchBar
-                        initialSearchText={this.state.searchCriteria}
-                        searchFunction={(event) => this.filterByText(event)}
-                        searchText={this.state.searchCriteria}
-                    />
-                    <SearchFilterButton
-                        active={filteringView}
-                        onPressAction={() => this.searchFilterButtonAction()}
-                    />
-                </View>
-                <View
-                    style={[
-                        styles.viewHeaderContainer,
-                        {backgroundColor: themes.light.lighterDividerColor},
-                        {paddingTop: 10}
-                    ]}
-                >
-                    <DirectionalText
-                        style={[
-                            styles.viewHeaderText,
-                            styles.viewHeaderTextLight
-                        ]}
-                    >
-                        {(!region)
-                            ? I18n.t('LOADING_SERVICES').toUpperCase()
-                            : (filteringView)
-                                ? I18n.t('FILTER_BY_CATEGORY').toUpperCase()
-                                : (this.state.dataSource._dataBlob.s1.length > 0)
-                                    ? I18n.t('NEAREST_SERVICES').toUpperCase()
-                                    : I18n.t('NO_SERVICES_FOUND').toUpperCase()
-                        }
-                    </DirectionalText>
-                </View>
+            <LoadingOverlay />
+        );
+    }
+
+    renderOfflineView() {
+        const {offline} = this.state;
+        if (!offline) {
+            return null;
+        }
+        return (
+            <View style={[getElevation(), componentStyles.offlineViewContainer]}>
                 <OfflineView
-                    offline={this.state.offline}
+                    floating
+                    offline={offline}
                     onRefresh={this.onRefresh}
                 />
-                {viewContent}
-                {!filteringView && (
-                    <MapButton
-                        searchCriteria={this.state.searchCriteria}
-                        serviceTypes={this.state.serviceTypes}
-                    />)}
-                {((!loaded || loading) && !refreshing) &&
-                <LoadingOverlay />}
+            </View>
+        );
+    }
+
+    renderHeaderView() {
+        const {filtering, list, map} = this.state;
+        const opaqueHeader = filtering || list;
+        const offlineView = this.renderOfflineView();
+
+        return (
+            <View style={[
+                componentStyles.header,
+                opaqueHeader && componentStyles.opaqueHeader
+            ]}
+            >
+                <View style={[
+                    styles.row,
+                    componentStyles.searchBarContainer
+                ]}
+                >
+                    <SearchBar
+                        drawerButton
+                        floating
+                        initialSearchText={this.props.searchCriteria}
+                        searchFunction={(text) => this.filterByText(text)}
+                    />
+                </View>
+                <View style={[
+                    styles.row,
+                    componentStyles.toggleBarContainer
+                ]}
+                >
+                    <View style={[componentStyles.toggleButtonsContainer, getElevation()]}>
+                        <ToggleButton
+                            active={filtering}
+                            icon="md-funnel"
+                            onPress={this.toggleFilteringView}
+                            text={I18n.t('FILTER').toUpperCase()}
+                        />
+                        <ToggleButton
+                            active={list}
+                            icon="fa-list"
+                            iconStyle={{fontSize: 17}}
+                            onPress={this.toggleListView}
+                            text={I18n.t('LIST').toUpperCase()}
+                        />
+                        <ToggleButton
+                            active={map}
+                            icon="fa-map"
+                            iconStyle={{fontSize: 17}}
+                            onPress={this.toggleMapView}
+                            text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                        />
+                    </View>
+                </View>
+                {offlineView}
+            </View>
+        );
+    }
+
+    render() {
+        const {loading} = this.state;
+
+        const headerView = this.renderHeaderView(),
+            loadingView = this.renderLoadingView();
+        if (loading) {
+            return (
+                <View style={styles.flex}>
+                    {headerView}
+                    {loadingView}
+                </View>
+            );
+        }
+        const filteringView = this.renderFilteringView(),
+            listView = this.renderServiceList(),
+            mapView = this.renderServiceMap();
+        return (
+            <View style={styles.flex}>
+                {mapView}
+                {headerView}
+                {filteringView}
+                {listView}
+                {loadingView}
             </View>
         );
     }
 }
+
+
+const componentStyles = StyleSheet.create({
+    header: {
+        position: 'absolute',
+        top: 0,
+        paddingTop: isStatusBarTranslucent() ? 25 : 0,
+        flexDirection: 'column',
+        width
+    },
+    opaqueHeader: {
+        backgroundColor: themes.light.lighterDividerColor
+    },
+    searchBarContainer: {
+        height: 60,
+        paddingHorizontal: 5
+    },
+    toggleBarContainer: {
+        height: 50,
+        paddingHorizontal: 5
+    },
+    toggleButtonsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 44,
+        borderRadius: 2,
+        flex: 1
+    },
+    offlineViewContainer: {
+        backgroundColor: themes.light.backgroundColor,
+        position: 'absolute',
+        left: 0,
+        top: isStatusBarTranslucent() ? 25 : 0,
+        width: width - 10,
+        height: 105,
+        marginHorizontal: 5
+    }
+});
 
 const mapStateToProps = (state) => {
     return {
@@ -414,4 +534,4 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps)(ServiceList);
+export default connect(mapStateToProps)(Service);

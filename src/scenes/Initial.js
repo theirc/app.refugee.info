@@ -22,12 +22,7 @@ class Initial extends Component {
         ]).then((values) => {
             const region = values[0];
             if (region && region != 'null') {
-                if (region.content && region.content.length == 1) {
-                    // this.context.navigator.to('infoDetails', null,
-                    //     {section: region.content[0].section, sectionTitle: region.pageTitle});
-                } else {
-                    Actions.info();
-                }
+                Actions.info();
             } else {
                 Actions.countryChoice();
             }

@@ -85,7 +85,7 @@ export default class ApiClient {
             url += `&closest=${latitude},${longitude}`;
         }
         if (searchCriteria) {
-            url += `&name=${searchCriteria}`;
+            url += `&search=${searchCriteria}`;
         }
         if (types) {
             url += `&type_numbers=${types}`;

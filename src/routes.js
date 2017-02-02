@@ -4,9 +4,8 @@ import I18n from './constants/Messages';
 import {Actions, Scene} from 'react-native-router-flux';
 import CountryChoice from './scenes/CountryChoice';
 import CityChoice from './scenes/CityChoice';
-import ServiceList from './scenes/ServiceList';
+import Service from './scenes/Service';
 import ServiceDetails from './scenes/ServiceDetails';
-import ServiceMap from './scenes/ServiceMap';
 import GeneralInformation from './scenes/GeneralInformation';
 import AppDrawer from './components/AppDrawer';
 import GeneralInformationDetails from './scenes/GeneralInformationDetails';
@@ -17,7 +16,7 @@ import MicroApp from './scenes/MicroApp';
 
 const scenes = Actions.create(
     <Scene component={AppDrawer} key="drawer" open={false}>
-        <Scene key="main">
+        <Scene key="main" panHandlers={null}>
             <Scene
                 component={GeneralInformation}
                 hideNavBar={false}
@@ -43,21 +42,15 @@ const scenes = Actions.create(
                 title={() => I18n.t('WHERE_ARE_YOU')}
             />
             <Scene
-                component={ServiceList}
-                hideNavBar={false}
-                key="serviceList"
-                title={() => I18n.t('SERVICE_LIST')}
-            />
-            <Scene
                 component={ServiceDetails}
                 hideNavBar={false}
                 key="serviceDetails"
                 title={() => I18n.t('SERVICE_DETAILS')}
             />
             <Scene
-                component={ServiceMap}
-                hideNavBar
-                key="serviceMap"
+                component={Service}
+                hideNavBar={true}
+                key="service"
             />
             <Scene
                 component={NetworkFailure}

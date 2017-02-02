@@ -19,3 +19,6 @@ export {default as Icon} from './Icon';
 export {default as ParallaxView} from './ParallaxView';
 export {default as ServiceListItem} from './ServiceListItem';
 export {default as ServiceCategoryListView} from './ServiceCategoryListView';
+export {default as ServiceList} from './ServiceList';
+export {default as ServiceMap} from './ServiceMap';
+export {default as ToggleButton} from './ToggleButton';

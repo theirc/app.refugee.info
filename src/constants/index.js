@@ -1,7 +1,5 @@
 import {
-  GoogleAnalyticsTracker,
-  GoogleTagManager,
-  GoogleAnalyticsSettings
+  GoogleAnalyticsTracker
 } from 'react-native-google-analytics-bridge';
 
 export const GA_TRACKER = new GoogleAnalyticsTracker('UA-68574649-1');

@@ -17,7 +17,7 @@ export class ServiceListItem extends Component {
 
     renderWidget() {
         const {service} = this.props;
-        const iconName = ((service.type && service.type.vector_icon) || '').trim();
+        const iconName = (service.type && service.type.vector_icon || '').trim();
         return (
             <View
                 style={componentStyles.widgetContainer}

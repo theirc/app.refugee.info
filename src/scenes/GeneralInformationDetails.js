@@ -124,7 +124,8 @@ export class GeneralInformationDetails extends Component {
         if (url.indexOf('services') > -1 || url.split('/')[1] == 'services') {
             let urlParams = getAllUrlParams(url);
             this.setState({navigating: true});
-            return Actions.serviceList({
+            return Actions.service({
+                list: true,
                 searchCriteria: urlParams.query,
                 serviceTypeIds: urlParams.type && urlParams.type.constructor === Array
                     ? urlParams.type.map((el) => parseInt(el))
