@@ -1,21 +1,12 @@
-import React, { Component, PropTypes } from 'react';
-import { View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage, Dimensions, StyleSheet } from 'react-native';
-import { wrapHtmlContent } from '../utils/htmlUtils';
-import styles, {
-    themes,
-    getElevation,
+import React, {Component, PropTypes} from 'react';
+import {View, Platform, WebView, Dimensions, StyleSheet} from 'react-native';
+import {
     isStatusBarTranslucent
 } from '../styles';
-import { connect } from 'react-redux';
-import { MapButton, Icon, DirectionalText } from '../components';
-import { getAllUrlParams } from '../utils/helpers';
-import I18n from '../constants/Messages';
-import Share from 'react-native-share';
-import { WEB_PATH } from '../constants';
+import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import { Actions } from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
 import {Presence} from '../data';
-let DeviceInfo = require('react-native-device-info');
 
 
 const {width, height} = Dimensions.get('window');
@@ -27,10 +18,10 @@ export class MicroApp extends Component {
         drawer: PropTypes.object
     };
     static propTypes = {
+        app: PropTypes.object.isRequired,
         dispatch: PropTypes.func.isRequired,
         language: PropTypes.string,
-        region: PropTypes.object,
-        app: PropTypes.object.isRequired
+        region: PropTypes.object
     };
 
     constructor(props) {
@@ -42,17 +33,16 @@ export class MicroApp extends Component {
             source: false,
             navigating: false
         };
+        this.onMessage = this.onMessage.bind(this);
     }
 
     componentDidMount() {
         let {app} = this.props;
 
-        Actions.refresh({ title: app.name });
+        Actions.refresh({title: app.name});
     }
 
     onMessage(event) {
-        let {dispatch} = this.props;
-
         if (event.nativeEvent.data) {
             let data = JSON.parse(event.nativeEvent.data);
             if (data && data.action) {
@@ -75,7 +65,7 @@ export class MicroApp extends Component {
         serviceMap: () => {
             Actions.serviceMap();
         }
-    }
+    };
 
 
     webViewReady() {
@@ -94,29 +84,31 @@ export class MicroApp extends Component {
 
     postMessage = () => {
         if (this.webView) {
-            this.webView.postMessage("Post message from react native");
+            this.webView.postMessage('Post message from react native');
         }
-    }
+    };
 
     render() {
         let {app} = this.props;
         let url = `${app.app_base_url}`;
 
-        this.webView = <WebView
-            ref="webView"
-            onMessage={this.onMessage.bind(this)}
-            scalesPageToFit={false}
-            ref={(v) => this.webView = v}
-            source={{ uri: url }}
-            domStorageEnabled={true}
-            onLoadEnd={() => this.webViewReady()}
-            />;
-        return (<View
-            style={componentStyles.microAppContainer}>
-            <View style={{ flex: 1 }}>
-                {this.webView}
-            </View>
-        </View>);
+        this.webView = (
+            <WebView
+                domStorageEnabled={true}
+                onLoadEnd={() => this.webViewReady()}
+                onMessage={this.onMessage}
+                ref={(v) => this.webView = v}
+                scalesPageToFit={false}
+                source={{uri: url}}
+            />);
+        return (
+            <View
+                style={componentStyles.microAppContainer}
+            >
+                <View style={{flex: 1}}>
+                    {this.webView}
+                </View>
+            </View>);
     }
 }
 

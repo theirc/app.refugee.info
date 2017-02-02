@@ -33,8 +33,8 @@
   "ADDRESS": "آدرس",
   "SELECT_COUNTRY": "کشور خود را انتخاب کن",
   "SELECT_LOCATION": "موقعیت خود را انتخاب کن",
-  "SERVICE_LIST": "فهرست راهنما",
-  "SERVICES": "فهرست راهنما",
+  "SERVICE_LIST": "خدمات",
+  "SERVICES": "خدمات",
   "EXPLORE_MAP": "نقشه",
   "GENERAL_INFO": "خانه",
   "SERVICE_DETAILS": "جزییات خدمات",
@@ -97,5 +97,13 @@
   "CANNOT_CHANGE_LANGUAGE": "نمی توان زبان را عوض کرد",
   "SHOW_MORE": "بیشتر نشان بده",
   "CLUSTER_POPUP_TITLE": "در این منطقه  {0} سرویس وجود دارد. برای جزئیات بیشتر روی خدمات پایین کلیک کنید. ",
-  "LIKE_US": "ما را در فیس بوک لایک کنید"
+  "LIKE_US": "ما را در فیس بوک لایک کنید",
+  "INFO_WAS_UP_TO_DATE": "Up-to-date",
+  "INFO_WAS_OUTDATED": "Updated!",
+  "NO": "No",
+  "YES": "Yes",
+  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
+  "SERVICE_PROVIDER": "Service Provider",
+  "LIST": "List",
+  "FILTER": "Filter"
 }

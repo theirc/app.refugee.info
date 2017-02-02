@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import {
     Image,
     View,
@@ -8,16 +8,16 @@ import {
     Dimensions,
     TouchableWithoutFeedback
 } from 'react-native';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
-import { MenuSection, MenuItem, DirectionalText, LoadingOverlay } from '../components';
-import { updateRegionIntoStorage } from '../actions';
-import { Icon } from '../components';
-import styles, { themes } from '../styles';
-import { LIKE_PATH, FEEDBACK_MAP } from '../constants';
+import {MenuSection, MenuItem, DirectionalText, LoadingOverlay} from '../components';
+import {updateRegionIntoStorage} from '../actions';
+import {Icon} from '../components';
+import styles, {themes} from '../styles';
+import {LIKE_PATH, FEEDBACK_MAP} from '../constants';
 import ApiClient from '../utils/ApiClient';
-import { getRegionAllContent } from '../utils/helpers';
-import { Actions } from 'react-native-router-flux';
+import {getRegionAllContent} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
 
 const {width, height} = Dimensions.get('window');
 
@@ -39,7 +39,7 @@ class Navigation extends Component {
     _defaultOrFirst(section) {
         this.context.drawer.close();
         if (section.html && section.content.length == 1) {
-            return Actions.infoDetails({ section });
+            return Actions.infoDetails({section});
         } else {
             return Actions.info();
         }
@@ -47,16 +47,16 @@ class Navigation extends Component {
 
     async selectCity(city) {
         const {dispatch} = this.props;
-        this.setState({ loading: true });
+        this.setState({loading: true});
         let region = await this.apiClient.getLocation(city.slug);
         region.allContent = getRegionAllContent(region);
-        this.setState({ region });
+        this.setState({region});
 
         requestAnimationFrame(() => {
             Promise.all([
                 dispatch(updateRegionIntoStorage(region)),
-                dispatch({ type: 'REGION_CHANGED', payload: region }),
-                this.setState({ loading: false })
+                dispatch({type: 'REGION_CHANGED', payload: region}),
+                this.setState({loading: false})
             ]);
             return this._defaultOrFirst(city);
         });
@@ -65,7 +65,7 @@ class Navigation extends Component {
     navigateToMicroApp(app) {
         this.context.drawer.close();
         requestAnimationFrame(() => {
-            Actions.microApp({ app });
+            Actions.microApp({app});
         });
     }
 
@@ -73,7 +73,7 @@ class Navigation extends Component {
     navigateToImportantInformation(section) {
         this.context.drawer.close();
         requestAnimationFrame(() => {
-            Actions.infoDetails({ section });
+            Actions.infoDetails({section});
         });
     }
 
@@ -84,7 +84,7 @@ class Navigation extends Component {
         };
         this.context.drawer.close();
         requestAnimationFrame(() => {
-            Actions.notifications({ section });
+            Actions.notifications({section});
         });
 
     }
@@ -101,7 +101,7 @@ class Navigation extends Component {
                     icon={item.icon}
                     key={index}
                     onPress={() => this.navigateToImportantInformation(item)}
-                    >
+                >
                     {item.title}
                 </MenuItem>
             );
@@ -120,7 +120,6 @@ class Navigation extends Component {
     }
 
 
-
     getNearbyCities() {
         const {locations, region} = this.props;
         if (locations) {
@@ -130,7 +129,7 @@ class Navigation extends Component {
                         active={location.slug == region.slug}
                         key={index}
                         onPress={() => this.selectCity(location)}
-                        >
+                    >
                         {location.pageTitle || location.name}
                     </MenuItem>
                 );
@@ -144,19 +143,21 @@ class Navigation extends Component {
             if (region.apps.length == 0) {
                 return null;
             }
-            return <MenuSection title={I18n.t('MICRO_APPS')}>
-                {region.apps.map((app, index) => {
-                    return (
-                        <MenuItem
-                            active={app.id == (currentApp && currentApp.id)}
-                            key={index}
-                            onPress={() => this.navigateToMicroApp(app)}
+            return (
+                <MenuSection title={I18n.t('MICRO_APPS')}>
+                    {region.apps.map((app, index) => {
+                        return (
+                            <MenuItem
+                                active={app.id == (currentApp && currentApp.id)}
+                                key={index}
+                                onPress={() => this.navigateToMicroApp(app)}
                             >
-                            {app.name}
-                        </MenuItem>
-                    );
-                })}
-            </MenuSection>
+                                {app.name}
+                            </MenuItem>
+                        );
+                    })}
+                </MenuSection>
+            );
         }
     }
 
@@ -173,7 +174,6 @@ class Navigation extends Component {
 
     render() {
         const {routes, language, region} = this.props;
-        const {navigator} = this.context;
         const {loading} = this.state;
 
         if (!this.props.region) {
@@ -201,7 +201,7 @@ class Navigation extends Component {
                         <Image
                             source={logo}
                             style={componentStyles.logo}
-                            />
+                        />
                     </View>
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={() => this._defaultOrFirst(region)}>
@@ -209,13 +209,13 @@ class Navigation extends Component {
                         <Icon
                             name="md-locate"
                             style={[
-                                { fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5 }
+                                {fontSize: 20, color: themes.light.greenAccentColor, marginTop: 2, marginHorizontal: 5}
                             ]}
-                            />
+                        />
                         <DirectionalText style={[
                             componentStyles.cityText
                         ]}
-                            >
+                        >
                             {regionName}
                         </DirectionalText>
                     </View>
@@ -226,21 +226,27 @@ class Navigation extends Component {
                         active={routes.scene.sceneKey === 'info'}
                         icon="fa-info"
                         onPress={() => this._defaultOrFirst(region)}
-                        >
+                    >
                         {I18n.t('GENERAL_INFO')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'serviceList'}
                         icon="fa-list"
-                        onPress={() => { Actions.serviceList(); this.context.drawer.close() } }
-                        >
+                        onPress={() => {
+                            Actions.service({list: true});
+                            this.context.drawer.close();
+                        }}
+                    >
                         {I18n.t('SERVICE_LIST')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'serviceMap'}
                         icon="fa-map"
-                        onPress={() => { Actions.serviceMap(); this.context.drawer.close() } }
-                        >
+                        onPress={() => {
+                            Actions.service({map: true});
+                            this.context.drawer.close();
+                        }}
+                    >
                         {I18n.t('EXPLORE_MAP')}
                     </MenuItem>
                 </MenuSection>
@@ -251,14 +257,17 @@ class Navigation extends Component {
                         badge={bannerCount}
                         icon="ios-mail"
                         onPress={() => this.navigateToNotifications()}
-                        >
+                    >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
                     <MenuItem
                         active={routes.scene.sceneKey === 'news'}
                         icon="ios-paper"
-                        onPress={() => { Actions.news(); this.context.drawer.close() } }
-                        >
+                        onPress={() => {
+                            Actions.news();
+                            this.context.drawer.close();
+                        }}
+                    >
                         {I18n.t('NEWS')}
                     </MenuItem>
                 </MenuSection>
@@ -270,39 +279,42 @@ class Navigation extends Component {
                     <MenuItem
                         active={routes.scene.sceneKey === 'settings'}
                         icon="fa-gear"
-                        onPress={() => { Actions.settings(); this.context.drawer.close() } }
-                        >
+                        onPress={() => {
+                            Actions.settings();
+                            this.context.drawer.close();
+                        }}
+                    >
                         {I18n.t('SETTINGS')}
                     </MenuItem>
                     {aboutUs &&
-                        <MenuItem
-                            active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
-                            icon="fa-question"
-                            onPress={() => this.navigateToImportantInformation(aboutUs, true)}
-                            >
-                            {I18n.t('ABOUT')}
-                        </MenuItem>
+                    <MenuItem
+                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
+                        icon="fa-question"
+                        onPress={() => this.navigateToImportantInformation(aboutUs, true)}
+                    >
+                        {I18n.t('ABOUT')}
+                    </MenuItem>
                     }
                     <MenuItem
                         icon="fa-comment"
                         onPress={() => Linking.openURL(feedbackUrl)}
-                        >
+                    >
                         {I18n.t('FEEDBACK')}
                     </MenuItem>
 
                     <MenuItem
                         icon="fa-facebook-square"
                         onPress={() => Linking.openURL(LIKE_PATH)}
-                        >
+                    >
                         {I18n.t('LIKE_US')}
                     </MenuItem>
 
                 </MenuSection>
                 {loading &&
-                    <LoadingOverlay
-                        height={height}
-                        width={width}
-                        />}
+                <LoadingOverlay
+                    height={height}
+                    width={width}
+                />}
             </ScrollView>);
     }
 }

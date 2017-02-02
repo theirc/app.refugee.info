@@ -153,7 +153,8 @@ const componentStyles = StyleSheet.create({
         textAlign: 'center'
     },
     buttonIcon: {
-        fontSize: 22
+        fontSize: 22,
+        paddingHorizontal: 5
     },
     buttonTextWhite: {
         color: themes.light.textColor

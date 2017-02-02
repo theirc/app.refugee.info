@@ -34,8 +34,8 @@
   "ADDRESS": "Address",
   "SELECT_COUNTRY": "Choose your country",
   "SELECT_LOCATION": "Choose your location",
-  "SERVICE_LIST": "Directory",
-  "SERVICES": "Directory",
+  "SERVICE_LIST": "Services",
+  "SERVICES": "Services",
   "EXPLORE_MAP": "Map",
   "GENERAL_INFO": "Home",
   "SERVICE_DETAILS": "Service Details",
@@ -104,5 +104,7 @@
   "NO": "No",
   "YES": "Yes",
   "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
-  "SERVICE_PROVIDER": "Service Provider"
+  "SERVICE_PROVIDER": "Service Provider",
+  "LIST": "List",
+  "FILTER": "Filter"
 }

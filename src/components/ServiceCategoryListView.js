@@ -3,17 +3,23 @@ import {
     View,
     ListView
 } from 'react-native';
-import {Button, SelectableListItem} from '../components';
-import I18n from '../constants/Messages';
-import styles from '../styles';
+import {SelectableListItem} from '../components';
+import {isStatusBarTranslucent} from '../styles';
 
 export class ServiceCategoryListView extends Component {
 
     static propTypes = {
-        dataSource: PropTypes.object.isRequired,
         onClear: PropTypes.func,
-        onFilter: PropTypes.func
+        onFilter: PropTypes.func,
+        serviceTypes: PropTypes.array.isRequired
     };
+
+    constructor(props) {
+        super(props);
+        this.dataSource = new ListView.DataSource({
+            rowHasChanged: (row1, row2) => row1.id !== row2.id
+        });
+    }
 
     renderServiceTypeRow(type) {
         return (
@@ -27,27 +33,11 @@ export class ServiceCategoryListView extends Component {
     }
 
     render() {
-        const {dataSource, onClear, onFilter} = this.props;
+        const {serviceTypes} = this.props;
         return (
-            <View style={{flex: 1}}>
-                <View style={[styles.searchBarContainer, styles.searchBarContainerLight]}>
-                    <Button
-                        buttonStyle={{height: 44, marginRight: 2}}
-                        color="green"
-                        icon="md-close"
-                        onPress={onClear}
-                        text={I18n.t('CLEAR_FILTERS').toUpperCase()}
-                    />
-                    <Button
-                        buttonStyle={{height: 44, marginLeft: 2}}
-                        color="green"
-                        icon="md-funnel"
-                        onPress={onFilter}
-                        text={I18n.t('FILTER_SERVICES').toUpperCase()}
-                    />
-                </View>
+            <View style={{flex: 1, marginTop: isStatusBarTranslucent() ? 25 + 110 : 110}}>
                 <ListView
-                    dataSource={dataSource}
+                    dataSource={this.dataSource.cloneWithRows(serviceTypes)}
                     enableEmptySections
                     keyboardDismissMode="on-drag"
                     keyboardShouldPersistTaps

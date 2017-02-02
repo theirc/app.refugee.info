@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {
     View,
-    ScrollView,
     Alert
 } from 'react-native';
 import {connect} from 'react-redux';

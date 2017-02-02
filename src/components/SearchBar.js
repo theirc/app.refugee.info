@@ -8,8 +8,6 @@ import {getElevation, themes} from '../styles';
 export class SearchBar extends Component {
 
     static propTypes = {
-        buttonActive: PropTypes.bool,
-        buttonOnPressAction: PropTypes.func,
         drawerButton: PropTypes.bool,
         floating: PropTypes.bool,
         initialSearchText: PropTypes.string,
@@ -22,7 +20,7 @@ export class SearchBar extends Component {
     };
 
     render() {
-        const {searchFunction, floating, buttonOnPressAction, drawerButton, language} = this.props;
+        const {searchFunction, floating, drawerButton, language} = this.props;
         const isRTL = ['ar', 'fa'].indexOf(language) > -1;
         return (
             <View style={[
@@ -69,18 +67,6 @@ export class SearchBar extends Component {
                         style={[componentStyles.searchBarInput, componentStyles.searchBarIconLight, isRTL && {textAlign: 'right'}]}
                         underlineColorAndroid="transparent"
                     />
-
-                    {buttonOnPressAction &&
-                    <TouchableOpacity
-                        activeOpacity={0.6}
-                        onPress={buttonOnPressAction}
-                        style={{height: 48, width: 48, alignItems: 'center', justifyContent: 'center'}}
-                    >
-                        <Icon
-                            name={'md-funnel'}
-                            style={{fontSize: 24}}
-                        />
-                    </TouchableOpacity>}
                 </View>
             </View>
         );

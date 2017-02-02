@@ -11,7 +11,7 @@ export default class Icon extends Component {
     };
 
     render() {
-        let props = {...this.props };
+        let props = {...this.props};
         const IconComponent = getIconComponent(props.name);
         props.name = getIconName(props.name);
         let style = StyleSheet.flatten([props.style]);

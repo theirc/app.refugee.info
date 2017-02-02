@@ -345,8 +345,8 @@ export function getElevation(level = 3) {
     if (Platform.OS == 'ios') {
         return {
             shadowColor: 'black',
-            shadowOffset: {width: 0, height: 2},
-            shadowOpacity: 0.33,
+            shadowOffset: {width: 0, height: 1},
+            shadowOpacity: 0.25,
             shadowRadius: level > 1 ? level - 1 : level
         };
     }

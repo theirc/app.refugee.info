@@ -13,7 +13,7 @@ import ApiClient from '../utils/ApiClient';
 import {updateRegionIntoStorage} from '../actions/region';
 import {getRegionAllContent} from '../utils/helpers';
 import {Actions} from 'react-native-router-flux';
-import { GA_TRACKER } from '../constants';
+import {GA_TRACKER} from '../constants';
 
 
 export class GeneralInformation extends Component {
@@ -137,7 +137,7 @@ export class GeneralInformation extends Component {
                     <Button
                         color="green"
                         icon="fa-list"
-                        onPress={Actions.serviceList}
+                        onPress={() => Actions.service({list: true})}
                         text={I18n.t('SERVICE_LIST').toUpperCase()}
                         transparent
                     />
@@ -153,7 +153,7 @@ export class GeneralInformation extends Component {
                         color="green"
                         icon="fa-map"
                         iconStyle={{fontSize: 18}}
-                        onPress={Actions.serviceMap}
+                        onPress={() => Actions.service({map: true})}
                         text={I18n.t('EXPLORE_MAP').toUpperCase()}
                         transparent
                     />
