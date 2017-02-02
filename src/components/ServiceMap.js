@@ -8,14 +8,8 @@ import {
     StyleSheet
 } from 'react-native';
 import MapView from 'react-native-maps';
-import styles, {
-    themes
-} from '../styles';
-import {
-    MapPopup,
-    Icon,
-    DirectionalText
-} from '../components';
+import styles, {themes} from '../styles';
+import {MapPopup, Icon} from '../components';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 
@@ -28,7 +22,6 @@ if (Platform.OS === 'android') {
 const {width, height} = Dimensions.get('window');
 
 const RADIUS_MULTIPLIER = 1.2;
-const R = 6371e3; // earth R in metres
 
 
 class ServiceMap extends Component {
@@ -62,40 +55,13 @@ class ServiceMap extends Component {
             const {region, services} = this.props;
             let currentEnvelope = this.getInitialRegion(region);
 
-            let markers = services.map(service => {
-                return {
-                    latitude: service.location.coordinates[1],
-                    longitude: service.location.coordinates[0],
-                    description: service.description,
-                    title: service.name,
-                    service
-                };
-            });
             this.setState({
                 initialEnvelope: currentEnvelope,
                 regionArea: currentEnvelope,
-                markers,
                 region,
                 services
             });
-            this.redrawMarkers(currentEnvelope);
         });
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.services != this.props.services) {
-            let markers = nextProps.services.map(service => {
-                return {
-                    latitude: service.location.coordinates[1],
-                    longitude: service.location.coordinates[0],
-                    description: service.description,
-                    title: service.name,
-                    service
-                };
-            });
-            this.setState({markers});
-            this.redrawMarkers(this.state.regionArea);
-        }
     }
 
     getInitialRegion(region) {
@@ -125,11 +91,6 @@ class ServiceMap extends Component {
     onMarkerPress(marker) {
         this.setState({
             activeMarker: marker
-        }, () => {
-            // redrawing causes visual glitches on Android, because it center the view automatically at selected marker
-            if (Platform.OS === 'ios') {
-                this.redrawMarkers(this.state.regionArea);
-            }
         });
         if (this.activeMarkerScrollViewRef && Platform.OS === 'android') {
             // hacky way to make sure that ScrollView content renders when switching active marker on Android
@@ -143,158 +104,9 @@ class ServiceMap extends Component {
         });
     }
 
-    /** returns distance between two markers in meters */
-    getDistanceBetweenMarkers(marker1, marker2) {
-        Math.radians = function (degrees) {
-            return degrees * Math.PI / 180;
-        };
-        const lat1 = marker1.latitude;
-        const lon1 = marker1.longitude;
-        const lat2 = marker2.latitude;
-        const lon2 = marker2.longitude;
-
-        const φ1 = lat1 * Math.PI / 180;
-        const φ2 = lat2 * Math.PI / 180;
-        const Δφ = (lat2 - lat1) * Math.PI / 180;
-        const Δλ = (lon2 - lon1) * Math.PI / 180;
-
-        const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-
-    redrawMarkers(region) {
-        let {nativeAvailable} = this.state;
-        if (nativeAvailable) {
-            return this.redrawNativeMarkers(region);
-        } else {
-            return this.redrawMapboxMarkers(region);
-        }
-    }
-
-    redrawNativeMarkers(region) {
-        let {markers, activeMarker} = this.state;
-
-        let clusterRadius = region.longitudeDelta * R / 180 / 4;
-
-        // sort markers by neighbourCount count
-
-        for (let i = 0; i < markers.length; i += 1) {
-            let counter = 0;
-            markers[i].neighbours = [];
-            markers[i].hidden = false;
-            for (let j = 0; j < markers.length; j += 1) {
-                if ((this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) && (i != j)) {
-                    counter += 1;
-                    markers[i].neighbours.push(markers[j]);
-                }
-            }
-            markers[i].neighbourCount = counter;
-        }
-        markers.sort((a, b) => b.neighbourCount - a.neighbourCount);
-
-        // do clustering
-
-        markers.forEach((marker) => {
-            if (!marker.hidden) {
-                marker.neighbours.forEach((neighbour) => {
-                    markers[markers.indexOf(neighbour)].hidden = true;
-                });
-            }
-        });
-        let markerElements = markers.map((marker, i) => (!marker.hidden &&
-            <MapView.Marker
-                coordinate={{
-                    latitude: marker.latitude,
-                    longitude: marker.longitude
-                }}
-                key={i}
-                onPress={() => this.onMarkerPress(marker)}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: 48,
-                        height: 48,
-                        backgroundColor: (marker == activeMarker && Platform.OS === 'ios')
-                            ? '#009440'
-                            : themes.light.greenAccentColor,
-                        borderColor: themes.light.backgroundColor,
-                        borderRadius: 10,
-                        borderWidth: 1
-                    }}
-                >
-                    {(marker.neighbourCount) ?
-                        <DirectionalText
-                            style={{
-                                fontSize: 20,
-                                color: themes.dark.textColor,
-                                textAlign: 'center'
-                            }}
-                        >
-                            {marker.neighbourCount + 1}
-                        </DirectionalText> : marker.service.type && (
-                            <Icon
-                                name={(marker.service.type.vector_icon || '').trim()}
-                                style={{
-                                    fontSize: 24,
-                                    color: themes.dark.textColor,
-                                    textAlign: 'center'
-                                }}
-                            />
-                        )}
-                </View>
-            </MapView.Marker>
-        ));
-        this.setState({markerElements});
-    }
-
-    redrawMapboxMarkers(region) {
-        let {markers} = this.state;
-        let clusterRadius = region.longitudeDelta * R / 180 / 4;
-        // sort markers by neighbourCount count
-        for (let i = 0; i < markers.length; i += 1) {
-            let counter = 0;
-            markers[i].neighbours = [];
-            markers[i].hidden = false;
-            for (let j = 0; j < markers.length; j += 1) {
-                if ((this.getDistanceBetweenMarkers(markers[i], markers[j]) < clusterRadius) && (i != j)) {
-                    counter += 1;
-                    markers[i].neighbours.push(markers[j]);
-                }
-            }
-            markers[i].neighbourCount = counter;
-        }
-        markers.sort((a, b) => b.neighbourCount - a.neighbourCount);
-        // do clustering
-        markers.forEach((marker) => {
-            if (!marker.hidden) {
-                marker.neighbours.forEach((neighbour) => {
-                    markers[markers.indexOf(neighbour)].hidden = true;
-                });
-            }
-        });
-        let annotations = markers.map((marker, i) => (!marker.hidden &&
-            {
-                coordinates: [
-                    marker.latitude,
-                    marker.longitude
-                ],
-                type: 'point',
-                id: `marker_${marker.service.id}`,
-                markerIndex: i
-            }
-        )).filter((x) => x);
-        this.setState({annotations});
-    }
-
     renderMapView(nativeAvailable) {
-        let {initialEnvelope, markerElements, markers} = this.state;
+        let {initialEnvelope, activeMarker} = this.state;
+        const {services} = this.props;
         if (!initialEnvelope) {
             return <View />;
         }
@@ -304,7 +116,6 @@ class ServiceMap extends Component {
                     initialRegion={this.state.initialEnvelope}
                     onPress={() => Platform.OS != 'ios' && this.clearActiveMarker()}
                     onRegionChange={(region) => this.onRegionChange(region)}
-                    onRegionChangeComplete={(region) => this.redrawMarkers(region)}
                     pitchEnabled={false}
                     rotateEnabled={false}
                     showsCompass={false}
@@ -314,7 +125,30 @@ class ServiceMap extends Component {
                     style={styles.flex}
                     toolbarEnabled={false}
                 >
-                    {markerElements}
+                    {services.map((service, i) => !service.hidden &&
+                        <MapView.Marker
+                            coordinate={{
+                                latitude: service.location.coordinates[1],
+                                longitude: service.location.coordinates[0]
+                            }}
+                            key={i}
+                            onPress={() => this.onMarkerPress(service)}
+                        >
+                            <View
+                                style={[
+                                    componentStyles.marker,
+                                    service == activeMarker && Platform.OS === 'ios' && {backgroundColor: '#009440'}
+                                ]}
+                            >
+                                {service.type && (
+                                    <Icon
+                                        name={(service.type.vector_icon || '').trim()}
+                                        style={componentStyles.markerIcon}
+                                    />
+                                )}
+                            </View>
+                        </MapView.Marker>
+                    )}
                 </MapView>);
         } else {
             const latitudeMultiplier = initialEnvelope.latitude > 0 ? 1 : -1,
@@ -322,10 +156,19 @@ class ServiceMap extends Component {
                 latSW = initialEnvelope.latitude - (initialEnvelope.latitudeDelta * latitudeMultiplier),
                 longSW = initialEnvelope.longitude - (initialEnvelope.longitudeDelta * longitudeMultiplier),
                 latNE = initialEnvelope.latitude + (initialEnvelope.latitudeDelta * latitudeMultiplier),
-                longNE = initialEnvelope.longitude + (initialEnvelope.longitudeDelta * longitudeMultiplier);
+                longNE = initialEnvelope.longitude + (initialEnvelope.longitudeDelta * longitudeMultiplier),
+                annotations = services.map((service, i) => (!service.hidden && {
+                    coordinates: [
+                        service.location.coordinates[1],
+                        service.location.coordinates[0]
+                    ],
+                    type: 'point',
+                    id: `marker_${service.id}`,
+                    markerIndex: i
+                })).filter((x) => x);
             return (
                 <Mapbox.MapView
-                    annotations={this.state.annotations}
+                    annotations={annotations}
                     initialCenterCoordinate={this.state.initialEnvelope}
                     initialZoomLevel={4}
                     onFinishLoadingMap={() => {
@@ -333,8 +176,8 @@ class ServiceMap extends Component {
                         this._mapBox.setVisibleCoordinateBounds(latSW, longSW, latNE, longNE);
                     }}
                     onOpenAnnotation={(m) => {
-                        let markerIndex = this.state.annotations.find((a) => a.id == m.id).markerIndex;
-                        let marker = markers[markerIndex];
+                        let markerIndex = annotations.find((a) => a.id == m.id).markerIndex;
+                        let marker = services[markerIndex];
                         this.onMarkerPress(marker);
                     }}
                     onRegionDidChange={(change) => {
@@ -351,7 +194,6 @@ class ServiceMap extends Component {
                                 longitudeDelta
                             };
                             this.onRegionChange(envelope);
-                            this.redrawMarkers(envelope);
                         });
                     }}
                     ref={map => {
@@ -393,11 +235,27 @@ class ServiceMap extends Component {
                 {activeMarkerView}
             </View>
         );
-
     }
 }
 
 const componentStyles = StyleSheet.create({
+    marker: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 48,
+        height: 48,
+        backgroundColor: themes.light.greenAccentColor,
+        borderColor: themes.light.backgroundColor,
+        borderRadius: 10,
+        borderWidth: 1
+    },
+    markerIcon: {
+        fontSize: 24,
+        color: themes.dark.textColor,
+        textAlign: 'center'
+    },
     activeMarkerContainer: {
         borderColor: themes.light.darkerDividerColor,
         position: 'absolute',
@@ -405,7 +263,7 @@ const componentStyles = StyleSheet.create({
         bottom: 0,
         width,
         borderTopWidth: 2,
-        height: (height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55)) / 2.5
+        height: (height - ((Platform.Version >= 21 || Platform.OS === 'ios') ? 80 : 55)) / 3
     }
 });
 

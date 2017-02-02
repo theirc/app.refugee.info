@@ -207,7 +207,7 @@ export class Service extends Component {
             let newServices = serviceResult.results;
             newServices.forEach((service) => {
                 service.type = serviceTypes.find(function (type) {
-                    return type.url == service.type;
+                    return type.number == service.type;
                 });
                 service.locationName = region.name;
                 service.onPress = () => {
