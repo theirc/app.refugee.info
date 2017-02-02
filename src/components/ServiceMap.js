@@ -5,7 +5,8 @@ import {
     Dimensions,
     Platform,
     ScrollView,
-    StyleSheet
+    StyleSheet,
+    Image
 } from 'react-native';
 import MapView from 'react-native-maps';
 import styles, {themes} from '../styles';
@@ -135,13 +136,9 @@ class ServiceMap extends Component {
                             onPress={() => this.onMarkerPress(service)}
                         >
                             <View style={componentStyles.marker}>
-                                {service.type && (
-                                    <Icon
-                                        name="md-pin"
-                                        style={[componentStyles.markerIcon,
-                                            service == activeMarker && Platform.OS === 'ios' && {color: '#009440'}]}
-                                    />
-                                )}
+                                <Image
+                                    source={require('../assets/marker.png')}
+                                />
                             </View>
                         </MapView.Marker>
                     )}
