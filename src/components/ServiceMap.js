@@ -134,16 +134,12 @@ class ServiceMap extends Component {
                             key={i}
                             onPress={() => this.onMarkerPress(service)}
                         >
-                            <View
-                                style={[
-                                    componentStyles.marker,
-                                    service == activeMarker && Platform.OS === 'ios' && {backgroundColor: '#009440'}
-                                ]}
-                            >
+                            <View style={componentStyles.marker}>
                                 {service.type && (
                                     <Icon
-                                        name={(service.type.vector_icon || '').trim()}
-                                        style={componentStyles.markerIcon}
+                                        name="md-pin"
+                                        style={[componentStyles.markerIcon,
+                                            service == activeMarker && Platform.OS === 'ios' && {color: '#009440'}]}
                                     />
                                 )}
                             </View>
@@ -243,17 +239,11 @@ const componentStyles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center',
-        width: 48,
-        height: 48,
-        backgroundColor: themes.light.greenAccentColor,
-        borderColor: themes.light.backgroundColor,
-        borderRadius: 10,
-        borderWidth: 1
+        alignItems: 'center'
     },
     markerIcon: {
-        fontSize: 24,
-        color: themes.dark.textColor,
+        fontSize: 60,
+        color: themes.dark.greenAccentColor,
         textAlign: 'center'
     },
     activeMarkerContainer: {

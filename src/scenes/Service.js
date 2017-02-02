@@ -129,57 +129,53 @@ export class Service extends Component {
                 maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000
             };
             let {latitude, longitude} = {};
-            this.getPosition(options)
-                .then((position) => {
-                    // when position was determined
-                    latitude = position.coords.latitude;
-                    longitude = position.coords.longitude;
-                    this.setState({
-                        location: {latitude, longitude}
-                    });
-                })
-                .catch(() => {
-                    // when position cannot be determined
-                })
-                .finally(() => {
-                    this.serviceData.pageServices(
-                        region.slug,
-                        {latitude, longitude},
-                        criteria,
-                        1,
-                        PAGE_SIZE,
-                        types,
-                        true
-                    ).then((serviceResult) => {
-                        let services = serviceResult.results;
-                        services.forEach((service) => {
-                            service.type = serviceTypes.find(function (type) {
-                                return type.number == service.type;
-                            });
-                            service.locationName = region.name;
-                            service.onPress = () => {
-                                requestAnimationFrame(() => {
-                                    Actions.serviceDetails({service, location: region});
-                                });
-                            };
-                        });
-
-                        this.setState({
-                            loaded: true,
-                            serviceTypes,
-                            services,
-                            searchCriteria: criteria,
-                            region,
-                            canLoadMoreContent: (!!serviceResult.next),
-                            pageNumber: 1,
-                            offline: false,
-                            loading: false
-                        });
-                        this._loadMoreContentAsync();
-                    }, (() => {
-                        this.setOffline(true);
-                    }));
+            this.getPosition(options).then((position) => {
+                // when position was determined
+                latitude = position.coords.latitude;
+                longitude = position.coords.longitude;
+                this.setState({
+                    location: {latitude, longitude}
                 });
+            }).catch(() => {
+                // when position cannot be determined
+            }).finally(() => {
+                this.serviceData.pageServices(
+                    region.slug,
+                    {latitude, longitude},
+                    criteria,
+                    1,
+                    PAGE_SIZE,
+                    types,
+                    true
+                ).then((serviceResult) => {
+                    let services = serviceResult.results;
+                    services.forEach((service) => {
+                        service.type = serviceTypes.find(function (type) {
+                            return type.number == service.type;
+                        });
+                        service.locationName = region.name;
+                        service.onPress = () => {
+                            requestAnimationFrame(() => {
+                                Actions.serviceDetails({service, location: region});
+                            });
+                        };
+                    });
+
+                    this.setState({
+                        loaded: true,
+                        serviceTypes,
+                        services,
+                        searchCriteria: criteria,
+                        region,
+                        canLoadMoreContent: (!!serviceResult.next),
+                        pageNumber: 1,
+                        offline: false,
+                        loading: false
+                    });
+                }, (() => {
+                    this.setOffline(true);
+                }));
+            });
         } catch (e) {
             this.setOffline(true);
         }
@@ -263,8 +259,7 @@ export class Service extends Component {
     filterByText(event) {
         if (this.state.region) {
             this.setState({
-                searchCriteria: event.nativeEvent.text,
-                filtering: false
+                searchCriteria: event.nativeEvent.text
             }, () => {
                 this.fetchData().done();
             });
@@ -424,6 +419,7 @@ export class Service extends Component {
                         floating
                         initialSearchText={this.props.searchCriteria}
                         searchFunction={(text) => this.filterByText(text)}
+                        searchText={this.state.searchCriteria}
                     />
                 </View>
                 <View style={[
