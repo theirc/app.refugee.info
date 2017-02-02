@@ -20,7 +20,7 @@ import {Services} from '../data';
 import styles, {themes, isStatusBarTranslucent, getElevation} from '../styles';
 import {Actions} from 'react-native-router-flux';
 
-const PAGE_SIZE = 25;
+const PAGE_SIZE = 100000;
 const {width} = Dimensions.get('window');
 
 
