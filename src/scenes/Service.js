@@ -38,7 +38,6 @@ export class Service extends Component {
         super(props);
 
         this.state = {
-            loaded: false,
             refreshing: false,
             offline: false,
             canLoadMoreContent: true,
@@ -63,11 +62,7 @@ export class Service extends Component {
 
     componentDidMount() {
         this.serviceData = new Services(this.props);
-        if (!this.state.loaded) {
-            this.fetchData().then(() => {
-                this.setState({loading: false});
-            });
-        }
+        this.fetchData();
     }
 
     async getServiceTypes() {
@@ -96,7 +91,6 @@ export class Service extends Component {
         this.setState({
             offline: flag,
             loading: !flag,
-            loaded: true,
             refreshing: false
         });
     }
@@ -113,11 +107,9 @@ export class Service extends Component {
         });
         const {region} = this.props;
         if (!region) {
-            this.setState({
-                loaded: true,
+            return this.setState({
                 loading: false
             });
-            return;
         }
         const criteria = this.state.searchCriteria;
         try {
@@ -125,7 +117,7 @@ export class Service extends Component {
             const types = this.getServiceTypeNumbers(serviceTypes);
             const options = {
                 enableHighAccuracy: false,
-                timeout: 3000,
+                timeout: 1,
                 maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000
             };
             let {latitude, longitude} = {};
@@ -162,7 +154,6 @@ export class Service extends Component {
                     });
 
                     this.setState({
-                        loaded: true,
                         serviceTypes,
                         services,
                         searchCriteria: criteria,
@@ -257,50 +248,42 @@ export class Service extends Component {
     }
 
     filterByText(event) {
-        if (this.state.region) {
-            this.setState({
-                searchCriteria: event.nativeEvent.text
-            }, () => {
-                this.fetchData().done();
-            });
-        }
+        this.setState({
+            searchCriteria: event.nativeEvent.text
+        }, () => {
+            this.fetchData().done();
+        });
     }
 
     toggleFilteringView() {
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: true,
-                    map: false,
-                    list: false
-                });
-            }
+            this.setState({
+                filtering: true,
+                map: false,
+                list: false
+            });
         });
     }
 
     toggleListView() {
         this.filterByTypes();
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: false,
-                    map: false,
-                    list: true
-                });
-            }
+            this.setState({
+                filtering: false,
+                map: false,
+                list: true
+            });
         });
     }
 
     toggleMapView() {
         this.filterByTypes();
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: false,
-                    map: true,
-                    list: false
-                });
-            }
+            this.setState({
+                filtering: false,
+                map: true,
+                list: false
+            });
         });
     }
 
@@ -417,9 +400,8 @@ export class Service extends Component {
                     <SearchBar
                         drawerButton
                         floating
-                        initialSearchText={this.props.searchCriteria}
+                        initialSearchText={this.state.searchCriteria}
                         searchFunction={(text) => this.filterByText(text)}
-                        searchText={this.state.searchCriteria}
                     />
                 </View>
                 <View style={[
@@ -457,7 +439,6 @@ export class Service extends Component {
 
     render() {
         const {loading} = this.state;
-
         const headerView = this.renderHeaderView(),
             loadingView = this.renderLoadingView();
         if (loading) {

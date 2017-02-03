@@ -6,7 +6,8 @@ import {
     View,
     Linking,
     Platform,
-    Dimensions
+    Dimensions,
+    Image
 } from 'react-native';
 import {Icon, ParallaxView, DirectionalText} from '../components';
 import MapView from 'react-native-maps';
@@ -280,7 +281,13 @@ export class ServiceDetails extends Component {
                     scrollEnabled={false}
                     style={styles.map}
                 >
-                    <MapView.Marker coordinate={coordinate}/>
+                    <MapView.Marker coordinate={coordinate}>
+                        <View style={componentStyles.marker}>
+                            <Image
+                                source={require('../assets/marker.png')}
+                            />
+                        </View>
+                    </MapView.Marker>
                 </MapView>
             );
         }
@@ -515,6 +522,12 @@ const componentStyles = StyleSheet.create({
         textShadowOffset: {width: -1, height: 1},
         textShadowRadius: 1,
         textShadowColor: themes.light.darkBackgroundColor
+    },
+    marker: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 

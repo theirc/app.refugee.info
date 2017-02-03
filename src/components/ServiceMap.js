@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import MapView from 'react-native-maps';
 import styles, {themes} from '../styles';
-import {MapPopup, Icon} from '../components';
+import {MapPopup} from '../components';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 
@@ -106,7 +106,7 @@ class ServiceMap extends Component {
     }
 
     renderMapView(nativeAvailable) {
-        let {initialEnvelope, activeMarker} = this.state;
+        let {initialEnvelope} = this.state;
         const {services} = this.props;
         if (!initialEnvelope) {
             return <View />;
@@ -237,11 +237,6 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    markerIcon: {
-        fontSize: 60,
-        color: themes.dark.greenAccentColor,
-        textAlign: 'center'
     },
     activeMarkerContainer: {
         borderColor: themes.light.darkerDividerColor,

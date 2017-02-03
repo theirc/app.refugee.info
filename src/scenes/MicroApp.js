@@ -60,10 +60,10 @@ export class MicroApp extends Component {
             Actions.info();
         },
         serviceList: () => {
-            Actions.serviceList();
+            Actions.service({list: true});
         },
         serviceMap: () => {
-            Actions.serviceMap();
+            Actions.service({map: true});
         }
     };
 
