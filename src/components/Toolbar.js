@@ -1,18 +1,18 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import {
     View,
     Image,
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import {DirectionalText, Icon} from '../components';
-import {connect} from 'react-redux';
+import { DirectionalText, Icon } from '../components';
+import { connect } from 'react-redux';
 import styles, {
     getToolbarHeight,
     isStatusBarTranslucent,
     themes
 } from '../styles';
-import {Actions} from 'react-native-router-flux';
+import { Actions } from 'react-native-router-flux';
 
 
 export class Toolbar extends Component {
@@ -31,9 +31,10 @@ export class Toolbar extends Component {
     };
 
     renderToolbarActionIcon() {
-        const {drawerOpen, region} = this.props;
+        const {drawerOpen, region, language} = this.props;
         const menuIcon = drawerOpen ? 'md-close' : 'ios-menu';
-        const backIcon = 'md-arrow-back';
+        const isRTL = ['ar', 'fa'].indexOf(language) > -1;
+        const backIcon = isRTL ? 'md-arrow-forward' : 'md-arrow-back';
 
         const state = this.props.navigationState;
         const childState = state.children[state.index];
@@ -46,11 +47,11 @@ export class Toolbar extends Component {
             <TouchableOpacity
                 onPress={backButton ? Actions.pop : this.context.drawer.open}
                 style={componentStyles.toolbarIconContainer}
-            >
+                >
                 <Icon
                     name={backButton ? backIcon : menuIcon}
                     style={backButton ? componentStyles.backIcon : componentStyles.menuIcon}
-                />
+                    />
             </TouchableOpacity>
         );
     }
@@ -73,7 +74,7 @@ export class Toolbar extends Component {
                     <Image
                         source={themes.light.logo}
                         style={componentStyles.brandImage}
-                    />
+                        />
                 </View>
 
                 <View style={[componentStyles.toolbarBottom, styles.row]}>
@@ -91,7 +92,8 @@ const mapStateToProps = (state) => {
     return {
         region: state.region,
         direction: state.direction,
-        toolbarTitle: state.toolbarTitle
+        toolbarTitle: state.toolbarTitle,
+        language: state.language
     };
 };
 

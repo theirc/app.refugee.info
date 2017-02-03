@@ -6,7 +6,7 @@ export const GA_TRACKER = new GoogleAnalyticsTracker('UA-68574649-1');
 
 export {default as I18n} from './Messages';
 export const CSS = '';
-export const API_PATH = 'http://api-v2.rescueapp.org/v2/';
+export const API_PATH = 'http://admin.refugee.info/e/production/v2/';
 export const WEB_PATH = 'http://refugee.info/';
 export const LIKE_PATH = 'https://www.facebook.com/refugee.info/';
 export const MAPBOX_TOKEN = 'pk.eyJ1IjoicmV5cm9kcmlndWVzIiwiYSI6ImNpcWNydXlxYzAyM3ZmdG5lZTBldG1keDYifQ.qJw9kvEDi8Xyri9D7u1JZA';
