@@ -117,7 +117,7 @@ export class Service extends Component {
             const types = this.getServiceTypeNumbers(serviceTypes);
             const options = {
                 enableHighAccuracy: false,
-                timeout: 3000,
+                timeout: 1,
                 maximumAge: forceRefresh ? 1000 : 30 * 60 * 1000
             };
             let {latitude, longitude} = {};
@@ -248,50 +248,42 @@ export class Service extends Component {
     }
 
     filterByText(event) {
-        if (this.state.region) {
-            this.setState({
-                searchCriteria: event.nativeEvent.text
-            }, () => {
-                this.fetchData().done();
-            });
-        }
+        this.setState({
+            searchCriteria: event.nativeEvent.text
+        }, () => {
+            this.fetchData().done();
+        });
     }
 
     toggleFilteringView() {
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: true,
-                    map: false,
-                    list: false
-                });
-            }
+            this.setState({
+                filtering: true,
+                map: false,
+                list: false
+            });
         });
     }
 
     toggleListView() {
         this.filterByTypes();
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: false,
-                    map: false,
-                    list: true
-                });
-            }
+            this.setState({
+                filtering: false,
+                map: false,
+                list: true
+            });
         });
     }
 
     toggleMapView() {
         this.filterByTypes();
         requestAnimationFrame(() => {
-            if (this.state.region) {
-                this.setState({
-                    filtering: false,
-                    map: true,
-                    list: false
-                });
-            }
+            this.setState({
+                filtering: false,
+                map: true,
+                list: false
+            });
         });
     }
 
@@ -408,9 +400,8 @@ export class Service extends Component {
                     <SearchBar
                         drawerButton
                         floating
-                        initialSearchText={this.props.searchCriteria}
+                        initialSearchText={this.state.searchCriteria}
                         searchFunction={(text) => this.filterByText(text)}
-                        searchText={this.state.searchCriteria}
                     />
                 </View>
                 <View style={[
