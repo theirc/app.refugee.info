@@ -1,7 +1,6 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     ListView,
     TouchableOpacity,
@@ -9,119 +8,145 @@ import {
     Linking,
     Image
 } from 'react-native';
-import {OfflineView} from '../components';
+import {OfflineView, DirectionalText, LoadingOverlay} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily} from '../styles';
+import styles, {themes} from '../styles';
 import {News} from '../data';
 
 export class NewsThatMoves extends Component {
     static smallHeader = true;
 
-    state = {
-        dataSource: new ListView.DataSource({
-            rowHasChanged: (row1, row2) => row1 !== row2,
-        }),
-        refreshing: false,
-    };
 
-    componentWillMount() {
-        this.onRefresh().done()
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (row1, row2) => row1 !== row2
+            }),
+            loading: true,
+            refreshing: false
+        };
+        this.onRefresh = this.onRefresh.bind(this);
+    }
+
+    componentDidMount() {
+        this.onRefresh().done();
     }
 
     async onRefresh() {
-        const {region, language} = this.props;
-        const {dispatch} = this.props;
+        const {language} = this.props;
         return new News(language).downloadNews().then((n) => {
-            let entries = n.feed.entries;
+            let entries = n.items;
+            entries.forEach((entry) => {
+                entry.contentSnippet = entry.description.split('<span')[0];
+            });
             return this.setState({
                 dataSource: this.state.dataSource.cloneWithRows(entries),
                 refreshing: false,
-                offline: false
+                offline: false,
+                loading: false
             });
-        }).catch((e) => this.setState({offline: true}));
+        }).catch(() => this.setState({offline: true}));
     }
 
     renderRow(data) {
-        const theme = themes[this.props.theme];
-        const font = getFontFamily(this.props.language);
-        let textStyles = {
-            flexDirection: this.props.direction == 'rtl' ? 'row-reverse' : 'row',
-            textAlign: this.props.direction == 'rtl' ? 'right' : 'auto',
-            backgroundColor: theme.backgroundColor,
-            color: theme.textColor,
-        };
+        return (
+            <View style={{paddingHorizontal: 5, flexGrow: 1}}>
+                <TouchableOpacity
+                    onPress={() => Linking.openURL(data.link)}
+                    style={componentStyles.article}
+                >
+                    <View>
+                        <DirectionalText style={componentStyles.title}>
+                            {data.title}
+                        </DirectionalText>
+                        <DirectionalText style={componentStyles.contentSnippet}>
+                            {data.contentSnippet}
+                        </DirectionalText>
+                    </View>
+                </TouchableOpacity>
+            </View>);
+    }
 
-        return <View style={{
-            paddingLeft: 5,
-            paddingRight: 5,
-        }}>
-            <TouchableOpacity
-                onPress={() => Linking.openURL(data.link)}
-                style={[localStyles.article, {borderBottomColor: theme.dividerColor,}]}>
-                <View>
-                    <Text style={[textStyles, font, {
-                        paddingBottom: 5,
-                        fontSize: 16,
-                        fontWeight: 'bold'
-                    }]}>{data.title}</Text>
-                    <Text style={[textStyles, font, {paddingBottom: 10,}]}>{data.contentSnippet}</Text>
-                </View>
-            </TouchableOpacity>
-        </View>;
+    renderContent() {
+        if (this.state.offline) {
+            return (
+                <OfflineView
+                    offline={this.state.offline}
+                    onRefresh={this.onRefresh}
+                />
+            );
+        }
+        return (
+            <ListView
+                dataSource={this.state.dataSource}
+                enableEmptySections
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps
+                refreshControl={
+                    <RefreshControl
+                        onRefresh={this.onRefresh}
+                        refreshing={this.state.refreshing}
+                    />
+                }
+                renderRow={(rowData) => this.renderRow(rowData)}
+            />
+        );
     }
 
     render() {
-        if (this.state.offline) {
-            return <OfflineView
-                offline={this.state.offline}
-                onRefresh={this.onRefresh.bind(this)}
-            />
+        if (this.state.loading) {
+            return <LoadingOverlay />;
         }
-        if (!this.state.dataSource) {
-            return <View />;
-        }
-
-        return <View style={styles.container}>
-            <View style={{paddingVertical: 10, marginBottom: 5, backgroundColor: '#FFFFFF' }}>
-                <Image source={{uri: 'https://newsthatmoves.org/wp-content/uploads/2016/02/LOGO.png'}}
-                       style={{height: 70, resizeMode: 'contain'}}/>
-            </View>
-            <ListView
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this.onRefresh.bind(this) }
+        const content = this.renderContent();
+        return (
+            <View style={styles.container}>
+                <View style={componentStyles.logoContainer}>
+                    <Image
+                        source={require('../assets/logo-news.png')}
+                        style={componentStyles.logo}
                     />
-                }
-                dataSource={this.state.dataSource}
-                enableEmptySections
-                renderRow={(rowData) => this.renderRow(rowData) }
-                keyboardShouldPersistTaps={true}
-                keyboardDismissMode="on-drag"
-            />
-        </View>
+                </View>
+                {content}
+            </View>
+        );
     }
 }
 
-const localStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
+    logoContainer: {
+        backgroundColor: themes.light.backgroundColor,
+        alignItems: 'center',
+        paddingVertical: 10
+    },
+    logo: {
+        height: 100,
+        width: 187,
+        resizeMode: 'contain'
+    },
+    title: {
+        paddingBottom: 5,
+        fontSize: 16,
+        fontWeight: 'bold'
+    },
+    contentSnippet: {
+        paddingBottom: 10
+    },
     article: {
         paddingLeft: 5,
         paddingRight: 5,
         borderBottomWidth: 1,
         marginBottom: 10,
-        flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        borderBottomColor: themes.light.dividerColor
     }
 });
 
 const mapStateToProps = (state) => {
     return {
-        primary: state.theme.primary,
         language: state.language,
         region: state.region,
-        country: state.country,
-        theme: state.theme,
-        direction: state.direction
+        country: state.country
     };
 };
 

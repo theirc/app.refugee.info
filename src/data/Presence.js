@@ -1,29 +1,46 @@
-import React, {Component, PropTypes} from 'react';
+import {Component} from 'react';
 import {
     AsyncStorage,
     Platform
 } from 'react-native';
-import I18n from '../constants/Messages';
-import {MapButton, OfflineView, DirectionalText, SearchBar} from '../components';
-import {connect} from 'react-redux';
 import ApiClient from '../utils/ApiClient';
-import styles from '../styles';
 import store from '../store';
-import {Icon} from '../components';
-var DeviceInfo = require('react-native-device-info');
+let DeviceInfo = require('react-native-device-info');
 
 export default class Presence extends Component {
-    constructor(props, context = null) {
-        super();
+    static createUUID() {
+        // http://www.ietf.org/rfc/rfc4122.txt
+        let s = [];
+        let hexDigits = '0123456789abcdef';
+        for (let i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+        s[8] = s[13] = s[18] = s[23] = '-';
 
-        this.client = new ApiClient(context, props);
+        let uuid = s.join('');
+        return uuid;
+    }
+
+    static async getDeviceToken() {
+        let token = await AsyncStorage.getItem('deviceToken');
+        if(!token) {
+            token = Presence.createUUID();
+            await AsyncStorage.setItem('deviceToken', token);
+        }
+        return token;
+    }
+
+    static async getToken() {
+        return await AsyncStorage.getItem('notificationToken');
     }
 
     static pointFromDeviceCoords(c) {
         return {
             coordinates: [
-                c.longitude, // x
-                c.latitude, // x
+                c.longitude,
+                c.latitude
             ],
             type: 'Point'
         };
@@ -42,8 +59,10 @@ export default class Presence extends Component {
         return JSON.parse(await AsyncStorage.getItem('deviceCoordinates'));
     }
 
-    static async getToken(deviceCoords) {
-        return await AsyncStorage.getItem('notificationToken');
+    constructor(props, context = null) {
+        super();
+
+        this.client = new ApiClient(context, props);
     }
 
     async recordPresence(region, language) {
@@ -54,9 +73,10 @@ export default class Presence extends Component {
         token = JSON.parse(token) || {};
         token.platform = {
             version: Platform.Version,
-            os: Platform.OS,
+            os: Platform.OS
         };
         token.path = navigation;
+        token.deviceToken = await Presence.getDeviceToken();
 
         try {
             let deviceId = DeviceInfo.getUniqueID();
@@ -64,6 +84,7 @@ export default class Presence extends Component {
                 token.deviceId = deviceId;
             }
         } catch (e) {
+
         }
         token = JSON.stringify(token);
 
@@ -72,11 +93,11 @@ export default class Presence extends Component {
             coordinates: location ? location : (region ? region.centroid : null),
             region: region ? region.id : null,
             language,
-            token,
+            token
         };
 
         let promise = Promise.resolve(true);
-        await this.client.post('/v1/presence/', payload)
+        await this.client.post('presence/', payload)
             .then(() => promise)
             .catch(() => promise);
 

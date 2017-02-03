@@ -1,28 +1,31 @@
-import React, { Component, PropTypes } from 'react';
-import { Text, Image, View } from 'react-native';
+import React, {Component} from 'react';
+import {Text} from 'react-native';
+import {connect} from 'react-redux';
+import {getFontFamily, getTextDirection} from '../styles';
 
-export default class DirectionalText extends Component {
+export class DirectionalText extends Component {
 
     static propTypes = {
-        direction: PropTypes.oneOf(['rtl', 'ltr']),
         ...Text.propTypes
     };
 
-    constructor(props) {
-        super(props);
-        if(!props.direction) {
-          this.props.direction = 'ltr';
-        }
-    }
-
     render() {
-          let textAlign =  this.props.direction === 'ltr' ? 'flex-start' : 'flex-end';
-
-          return <View style={{ flexDirection: 'column', flex: 1, alignItems: textAlign }}>
+        const {language, children} = this.props;
+        return (
             <Text
-              {...this.props}>
-              {this.props.children}
+                {...this.props}
+                style={[getFontFamily(language), getTextDirection(language), this.props.style]}
+            >
+                {children}
             </Text>
-          </View>
+        );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        language: state.language
+    };
+};
+
+export default connect(mapStateToProps)(DirectionalText);

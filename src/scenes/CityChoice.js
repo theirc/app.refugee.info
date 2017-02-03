@@ -1,114 +1,119 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, View, StyleSheet, Image} from 'react-native';
+import {View} from 'react-native';
 import {connect} from 'react-redux';
-import {LocationListView, OfflineView} from '../components';
+import {LocationListView, OfflineView, LoadingOverlay} from '../components';
 import I18n from '../constants/Messages';
 import styles from '../styles';
-import store from '../store';
 import {
     updateCountryIntoStorage,
     updateRegionIntoStorage,
     updateLocationsIntoStorage
 } from '../actions';
-import {Regions} from '../data'
+import ApiClient from '../utils/ApiClient';
+import {getRegionAllContent} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
+
 
 export class CityChoice extends Component {
+    static backButton = true;
 
     static propTypes = {
-        country: React.PropTypes.object.isRequired
-    };
-
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
+        country: PropTypes.object.isRequired
     };
 
     constructor(props) {
         super(props);
-        this.state = Object.assign({}, store.getState(), {
+        this.loadInitialState = this.loadInitialState.bind(this);
+
+        this.apiClient = new ApiClient(this.context, props);
+        this.state = {
             cities: [],
-            loaded: false,
+            loading: true,
             offline: false
-        });
+        };
     }
 
     async componentDidMount() {
-        const regionData = new Regions(this.props);
-        let cities;
+        this.loadInitialState();
+    }
+
+    async loadInitialState() {
+        const {country} = this.props;
+        let cities = [];
         try {
-            cities = (await regionData.listChildren(this.props.country, true)).filter((c) => c.level != 2);
-
-            cities.forEach((c) => {
-                if (c && c.metadata) {
-                    c.pageTitle = (c.metadata.page_title || '').replace('\u060c', ',').split(',')[0]
-                }
-            });
+            let children = await this.apiClient.getAllChildrenOf(country.id, true);
+            cities = [{country, ...country}].concat(children);
+            cities = cities.filter((city) => !city.hidden);
+            cities.forEach((city) => {city.country = country});
         } catch (e) {
-            this.setState({offline: true});
-            return;
+            return this.setState({offline: true});
         }
-
+        cities.forEach((city) => {
+            city.onPress = this.onPress.bind(this, city);
+            city.title = city.name;
+            city.image = null;
+        });
         this.setState({
             cities,
-            loaded: true,
+            loading: false,
             offline: false
         });
     }
 
-    async _onPress(city) {
-        const {dispatch} = this.props;
-
-        city.detected = false;
-        city.coords = {};
+    async onPress(city) {
+        const {dispatch, country} = this.props;
+        this.setState({loading: true});
+        let region = await this.apiClient.getLocation(city.slug);
+        region.allContent = getRegionAllContent(region);
+        this.setState({region});
 
         requestAnimationFrame(() => {
             Promise.all([
-                dispatch(updateCountryIntoStorage(city.country)),
-                dispatch(updateRegionIntoStorage(city)),
+                dispatch(updateCountryIntoStorage(country)),
+                dispatch(updateRegionIntoStorage(region)),
                 dispatch(updateLocationsIntoStorage(this.state.cities)),
-                dispatch({type: 'REGION_CHANGED', payload: city}),
-                dispatch({type: 'COUNTRY_CHANGED', payload: city.country}),
-                dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities})
+                dispatch({type: 'REGION_CHANGED', payload: region}),
+                dispatch({type: 'COUNTRY_CHANGED', payload: country}),
+                dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities}),
+                this.setState({loading: false})
             ]);
-            if (city.content && city.content.length == 1) {
-                return this.context.navigator.to('infoDetails', null, {
-                    section: city.content[0].section,
-                    sectionTitle: city.pageTitle
+            if (region.content && region.content.length == 1) {
+                return Actions.infoDetails({
+                    section: region.content[0].html,
+                    sectionTitle: region.title
                 });
-            } else {
-                return this.context.navigator.to('info', null, null, store.getState());
             }
-        })
+            return Actions.info();
+        });
     }
 
     render() {
+        const {loading} = this.state;
         if (this.state.offline) {
             return (
                 <OfflineView
-                    onRefresh={this.componentDidMount.bind(this)}
                     offline={this.state.offline}
+                    onRefresh={this.loadInitialState}
                 />
-            )
+            );
         }
         return (
             <View style={styles.container}>
                 <LocationListView
-                    loaded={this.state.loaded}
-                    header={I18n.t('SELECT_LOCATION') }
-                    onPress={(rowData) => {
-                        this._onPress(rowData)
-                    } }
+                    header={I18n.t('SELECT_LOCATION')}
                     rows={this.state.cities}
                 />
+                {loading &&
+                <LoadingOverlay />}
             </View>
+
         );
     }
 }
 
 const mapStateToProps = (state) => {
     return {
-        language: state.language,
-        direction: state.direction,
-        theme: state.theme
+        language: state.language
     };
 };
 

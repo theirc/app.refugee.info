@@ -1,250 +1,140 @@
 import React, {Component, PropTypes} from 'react';
-import {AsyncStorage, Image, StyleSheet, View, Text, Dimensions, TouchableOpacity, TouchableHighlight} from 'react-native';
+import {Image, StyleSheet, View, Text, Dimensions, TouchableHighlight} from 'react-native';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily, getUnderlayColor} from '../styles';
-import I18n from '../constants/Messages'
+import styles, {themes, getFontFamily} from '../styles';
+import I18n from '../constants/Messages';
+import {updateLanguageIntoStorage} from '../actions/language';
+import {updateDirectionIntoStorage} from '../actions/direction';
+import {DirectionalText} from '../components';
+import RNRestart from 'react-native-restart';
 
-import {updateLanguageIntoStorage} from '../actions/language'
-import {updateDirectionIntoStorage} from '../actions/direction'
-import {updateRegionIntoStorage} from '../actions/region'
-import {updateCountryIntoStorage} from '../actions/country'
-import {updateThemeIntoStorage} from '../actions/theme'
+const {width, height} = Dimensions.get('window');
 
 class Welcome extends Component {
     static propTypes = {
-        firstLoad: React.PropTypes.bool,
-        finished: React.PropTypes.func
+        dispatch: PropTypes.func,
+        finished: PropTypes.func,
+        firstLoad: PropTypes.bool,
+        language: PropTypes.string
     };
-    state = {
-        showTheme: false,
-        showLanguage: false,
-        languageSelected: false,
-        themeSelected: false,
-    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            showLanguage: false
+        };
+        this.setEnglish = this.setLanguage.bind(this, 'en');
+        this.setArabic = this.setLanguage.bind(this, 'ar');
+        this.setFarsi = this.setLanguage.bind(this, 'fa');
+    }
 
     componentDidMount() {
         if (!this.props.firstLoad) {
             this.props.finished();
         }
-
-        const {props} = this;
-
-        let {language} = props;
-        if (!language || this.state.languageSelected) {
+        const {language} = this.props;
+        if (!language) {
             return;
         }
 
-        if (['ar', 'fa'].indexOf(language) > -1) {
-            /* Showing theme selection to arabic and farsi speakers
-            TODO: Make this a little more dynamic */
-            setTimeout(() => {
-                if (!props.firstLoad) {
-                    return;
-                }
-                
-                this.setLanguage(language);
-            }, 1000);
-        } else {
-            setTimeout(() => {
-                if (!props.firstLoad) {
-                    return;
-                }
-
-                this.setState({
-                    showTheme: false,
-                    languageSelected: false,
-                    showLanguage: true,
-                    themeSelected: true,
-                });
-            }, 1000);
-        }
+        setTimeout(() => {
+            if (!this.props.firstLoad) {
+                return;
+            }
+            this.setState({
+                showLanguage: true
+            });
+        }, 1000);
     }
 
     async setLanguage(language) {
         const {dispatch} = this.props;
-
-        await this.setState({
-            languageSelected: true,
-        });
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-        this.setTheme('light');
-        await Promise.all([
+        Promise.all([
             dispatch(updateDirectionIntoStorage(direction)),
             dispatch(updateLanguageIntoStorage(language)),
-            dispatch({ type: "DIRECTION_CHANGED", payload: direction }),
-            dispatch({ type: "LANGUAGE_CHANGED", payload: language })
+            dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
+            dispatch({type: 'DIRECTION_CHANGED', payload: direction})
         ]).then(() => {
-            return this.setState({
-                language: language,
-                showTheme: false,
-                showLanguage: false,
-                themeSelected: true,
-            });
-        }).then(() => this.props.finished());
+            RNRestart.Restart();
+        });
     }
-
-    setTheme(theme) {
-        const {dispatch} = this.props;
-        Promise.all([
-            dispatch(updateThemeIntoStorage(theme)),
-            dispatch({ type: "THEME_CHANGED", payload: theme }),
-        ]).then(() => this.props.finished());
-    }
-
 
     renderLanguageSelection() {
-        let {language} = this.props;
-
         return (
-            <View>
-                <View style={[
-                    {
-                        flexDirection: 'row',
-                        position: 'absolute',
-                        bottom: 45 * 3,
-                        height: 45,
-                        justifyContent: 'center',
-                        borderBottomWidth: 1,
-                        width: Dimensions.get('window').width,
-                        backgroundColor: themes.dark.backgroundColor,
-                    },
-                ]}>
-                    <View style={{ justifyContent: 'center' }}>
-                        <Text style={[
+            <View style={componentStyles.languageChoiceContainer}>
+                <View style={componentStyles.languageChoiceHeader}>
+                    <View style={{justifyContent: 'center'}}>
+                        <DirectionalText style={[
                             styles.textAccentGreen,
-                            getFontFamily(language),
-                            { fontSize: 13, alignItems: 'center' }
-                        ]}>
-                            {I18n.t('LANGUAGE').toUpperCase() }
-                        </Text>
+                            {fontSize: 13, alignItems: 'center'}]}
+                        >
+                            {I18n.t('LANGUAGE').toUpperCase()}
+                        </DirectionalText>
                     </View>
                 </View>
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'en') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 45 * 2, }]}
-                    >
+                    onPress={this.setEnglish}
+                    style={componentStyles.button}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
-                        getFontFamily('en')
-                    ]}>
+                        {fontSize: 13, color: themes.light.textColor},
+                        getFontFamily('en')]}
+                    >
                         English
                     </Text>
                 </TouchableHighlight>
+
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'ar') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 45, }]}
-                    >
+                    onPress={this.setArabic}
+                    style={componentStyles.button}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
-                        getFontFamily('ar')
-                    ]}>
+                        {fontSize: 13, color: themes.light.textColor},
+                        getFontFamily('ar')]}
+                    >
                         العربيـة
                     </Text>
                 </TouchableHighlight>
+
                 <TouchableHighlight
-                    onPress={this.setLanguage.bind(this, 'fa') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 0, }]}
-                    >
+                    onPress={this.setFarsi}
+                    style={componentStyles.button}
+                    underlayColor="rgba(0, 0, 0, 0.2)"
+                >
                     <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
-                        getFontFamily('fa')
-                    ]}>
+                        {fontSize: 13, color: themes.light.textColor},
+                        getFontFamily('fa')]}
+                    >
                         فارسی
                     </Text>
                 </TouchableHighlight>
             </View>);
     }
 
-    renderThemeSelection() {
-        let {language} = this.props;
-
-        return (
-            <View>
-                <View style={[
-                    {
-                        flexDirection: 'row',
-                        position: 'absolute',
-                        bottom: 90,
-                        height: 45,
-                        justifyContent: 'center',
-                        borderBottomWidth: 1,
-                        width: Dimensions.get('window').width,
-                        backgroundColor: themes.dark.backgroundColor,
-                    },
-                ]}>
-                    <View style={{ justifyContent: 'center' }}>
-                        <Text style={[
-                            styles.textAccentGreen,
-                            getFontFamily(language),
-                            { fontSize: 13, alignItems: 'center' }
-                        ]}>
-                            {I18n.t('THEME').toUpperCase() }
-                        </Text>
-                    </View>
-                </View>
-                <TouchableHighlight
-                    onPress={this.setTheme.bind(this, 'light') }
-                    underlayColor={getUnderlayColor('light') }
-                    style={[buttonStyle, { bottom: 45 }]}
-                    >
-                    <Text style={[
-                        { fontSize: 13, color: themes.light.textColor, },
-                        getFontFamily(language)
-                    ]}>
-                        {I18n.t('LIGHT') }
-                    </Text>
-                </TouchableHighlight>
-                <TouchableOpacity
-                    onPress={this.setTheme.bind(this, 'dark')}
-                    activeOpacity={0.8}
-                    style={[buttonStyle,
-                        { bottom: 0, backgroundColor: themes.dark.toolbarColor, }]}
-                    >
-                    <Text style={[
-                        { fontSize: 13, color: themes.dark.textColor },
-                        getFontFamily(language)
-                    ]}>
-                        {I18n.t('DARK') }
-                    </Text>
-                </TouchableOpacity>
-            </View>);
-    }
 
     render() {
-        const {theme} = this.props;
-        const {showTheme, showLanguage} = this.state;
+        const {showLanguage} = this.state;
         const logo = require('../assets/splash-screen.png');
 
         return (
-            <View style={localStyles.screen}>
+            <View style={componentStyles.screen}>
                 <View>
                     <Image
-                        source={logo}
                         resizeMode={Image.resizeMode.cover}
-                        style={[localStyles.logo]}
-                        />
-                    {showLanguage && this.renderLanguageSelection() }
+                        source={logo}
+                        style={[componentStyles.logo]}
+                    />
+                    {showLanguage && this.renderLanguageSelection()}
                 </View>
             </View>
-        )
-
+        );
     }
 }
 
-
-
-const buttonStyle = {
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 45,
-    width: Dimensions.get('window').width
-};
-
-const localStyles = StyleSheet.create({
+const componentStyles = StyleSheet.create({
     screen: {
         flex: 1,
         alignItems: 'center',
@@ -253,15 +143,33 @@ const localStyles = StyleSheet.create({
         backgroundColor: '#000000'
     },
     logo: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height
+        width,
+        height
+    },
+    languageChoiceContainer: {
+        flexDirection: 'column',
+        position: 'absolute',
+        bottom: 0,
+        width
+    },
+    languageChoiceHeader: {
+        height: 45,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: themes.dark.backgroundColor
+    },
+    button: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: 45,
+        width
     }
 });
 
 function mapStateToProps(state) {
     return {
         language: state.language,
-        direction: state.direction,
+        direction: state.direction
     };
 }
 

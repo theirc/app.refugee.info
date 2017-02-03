@@ -1,28 +1,26 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
     ListView,
-    RefreshControl,
-    Text
+    RefreshControl
 } from 'react-native';
 import I18n from '../constants/Messages';
-import {OfflineView, ListItem, Button} from '../components';
+import {OfflineView, ListItem, Button, DirectionalText} from '../components';
 import {connect} from 'react-redux';
-import styles, {themes, getFontFamily} from '../styles';
-import {Regions} from '../data';
+import styles, {themes} from '../styles';
 import ApiClient from '../utils/ApiClient';
-import {updateRegionIntoStorage, updateLocationsIntoStorage} from '../actions';
+import {updateRegionIntoStorage} from '../actions/region';
+import {getRegionAllContent} from '../utils/helpers';
+import {Actions} from 'react-native-router-flux';
+import {GA_TRACKER} from '../constants';
 
 
 export class GeneralInformation extends Component {
 
-    static contextTypes = {
-        navigator: PropTypes.object.isRequired
-    };
-
     constructor(props) {
         super(props);
+        this.onRefresh = this.onRefresh.bind(this);
         this.state = {
             dataSource: new ListView.DataSource({
                 rowHasChanged: (row1, row2) => row1 !== row2
@@ -30,88 +28,63 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            loading: false,
-            dataSourceUpdated: undefined
+            loading: false
         };
     }
 
     componentDidMount() {
-        const {region, dispatch} = this.props;
-        dispatch({type: 'TOOLBAR_TITLE_CHANGED', payload: region.pageTitle || region.name});
-        this.context.navigator.currentRoute.title = region.pageTitle;
-        this.regionData = new Regions(this.props);
-        this._loadInitialState();
+        this.loadInitialState();
     }
 
-    componentWillReceiveProps(nextProps, nextState) {
-        let {region, information} = this.props;
-        if (information) {
-            region = information;
-        }
-        if (region != nextProps.region) {
-            this.setState({
-                dataSource: this.state.dataSource.cloneWithRows(
-                    nextProps.region.content
-                        .filter((info) => !info.hide_from_toc && !info.hide_from_app)
-                ),
-            });
-        }
-    }
-
-    async _loadInitialState() {
-        let {region, information} = this.props;
-        const {navigator} = this.context;
-
-        if (information) {
-            region = information;
-        }
-
+    async loadInitialState() {
+        const {region} = this.props;
         if (!region) {
-            navigator.to('countryChoice');
-            return;
+            return Actions.countryChoice();
         }
+        Actions.refresh({title: region.name});
 
+        GA_TRACKER.trackEvent('page-view', region.slug);
+        
         if (region.content && region.content.length === 1) {
-            let c = region.content[0];
-            setTimeout(() => {
-                navigator.to('infoDetails', null, {section: c.section, sectionTitle: region.pageTitle});
-            }, 100);
-            return;
+            const content = region.content[0];
+            return Actions.infoDetails({section: content.html, sectionTitle: content.title});
         }
+        region.content = region.content.filter((content) => {return !content.pop_up});
+        region.content.forEach((section) => {
+            section.onPress = this.onPress.bind(this, section);
+        });
         this.setState({
-            dataSource: this.state.dataSource.cloneWithRows(
-                region.content
-                    .filter((info) => !info.hide_from_toc && !info.hide_from_app)
-            ),
-            generalInfo: region.content,
-            region: region,
+            dataSource: this.state.dataSource.cloneWithRows(region.content),
+            region,
             loaded: true,
-            offline: false,
+            offline: false
         });
     }
 
     onRefresh() {
-        const {region, dispatch, locations} = this.props;
+        const {region, dispatch, language} = this.props;
         this.setState({refreshing: true}, () => {
             this.apiClient = new ApiClient(this.context, this.props);
-            this.apiClient.getLocation(region.id, true).then((location) => {
-                let hasChanged = JSON.stringify(region.content) != JSON.stringify(location.content);
+            this.apiClient.getLocation(region.slug, true, language).then((location) => {
+                let hasChanged = region.updated_at != location.updated_at;
                 if (hasChanged) {
-                    let locationToChange = locations.filter((filtered) => filtered.id == location.id)[0];
-                    let newLocations = locations;
-                    newLocations[(locations.indexOf(locationToChange))] = location;
+                    location.allContent = getRegionAllContent(location);
+                    location.content = location.content.filter((content) => {return !content.pop_up});
+                    location.content.forEach((section) => {
+                        section.onPress = this.onPress.bind(this, section);
+                    });
                     Promise.all([
                         dispatch(updateRegionIntoStorage(location)),
-                        dispatch(updateLocationsIntoStorage(newLocations)),
-                        dispatch({type: 'REGION_CHANGED', payload: location}),
-                        dispatch({type: 'LOCATIONS_CHANGED', payload: newLocations}),
+                        dispatch({type: 'REGION_CHANGED', payload: location})
                     ]).then(() => {
                         this.setState({
+                            dataSource: this.state.dataSource.cloneWithRows(location.content),
+                            region: location,
                             refreshing: false,
                             dataSourceUpdated: true,
                             offline: false
                         });
-                    })
+                    });
                 } else {
                     this.setState({
                         refreshing: false,
@@ -119,134 +92,116 @@ export class GeneralInformation extends Component {
                         offline: false
                     });
                 }
-            }).catch((e) => {
+            }).catch(() => {
                 this.setState({
                     offline: true,
                     refreshing: false
-                })
+                });
             });
         });
     }
 
-    onClick(title, section, slug, index, content_slug) {
-        requestAnimationFrame(() => {
-            const {navigator} = this.context;
-            navigator.forward(null, null, {section, sectionTitle: title, slug, index, content_slug}, this.state);
-        })
+    onPress(section) {
+        requestAnimationFrame(() => {Actions.infoDetails({section})});
     }
 
     renderRow(rowData) {
-        let slug = rowData.slug ? `info/${rowData.slug}` : rowData.anchor_name || `info${rowData.index}`;
         return (
             <ListItem
-                icon={rowData.vector_icon}
-                onPress={this.onClick.bind(this, rowData.title, rowData.section, slug, rowData.index, rowData.slug)}
-                text={rowData.title.trim()}
+                icon={rowData.icon}
+                onPress={rowData.onPress}
+                text={rowData.title}
             />
-        )
+        );
     }
 
     renderRefreshText(updated) {
-        const {language} = this.props;
-        if (updated === undefined) {
-
-        } else {
+        if (updated != undefined) {
             let text = ((updated) ? I18n.t('INFO_WAS_OUTDATED') : I18n.t('INFO_WAS_UP_TO_DATE')).toUpperCase();
             return (
                 <View style={componentStyles.refreshTextContainer}>
-                    <Text style={[componentStyles.refreshText, getFontFamily(language)]}>
+                    <DirectionalText style={componentStyles.refreshText}>
                         {text}
-                    </Text>
+                    </DirectionalText>
                 </View>
-            )
+            );
         }
     }
 
     render() {
-        const {theme, direction, language, region, country} = this.props;
-        const {navigator} = this.context;
-        const {loading, refreshing} = this.state;
-        let s = (scene, props) => navigator.to(scene);
+        const {country} = this.props;
         let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
-                <View style={[{
-                    paddingHorizontal: 5, paddingVertical: 10, height: 80, flexDirection: 'row',
-                    borderBottomWidth: 1, borderBottomColor: themes.light.lighterDividerColor
-                },
-                ]}>
-
+                <View style={componentStyles.buttonsContainer}>
                     <Button
                         color="green"
                         icon="fa-list"
+                        onPress={() => Actions.service({list: true})}
                         text={I18n.t('SERVICE_LIST').toUpperCase()}
-                        onPress={() => requestAnimationFrame(() => s('services'))}
-                        transparent={true}
+                        transparent
                     />
                     <Button
+                        buttonStyle={{flex: 1.66}}
                         color="green"
                         icon="md-locate"
+                        onPress={() => Actions.cityChoice({country})}
                         text={I18n.t('CHANGE_LOCATION').toUpperCase()}
-                        onPress={() => requestAnimationFrame(() => navigator.to('cityChoice', null, {country: country}))}
-                        transparent={true}
+                        transparent
                     />
                     <Button
                         color="green"
                         icon="fa-map"
-                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
-                        onPress={() => requestAnimationFrame(() => s('map'))}
                         iconStyle={{fontSize: 18}}
-                        transparent={true}
+                        onPress={() => Actions.service({map: true})}
+                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                        transparent
                     />
                 </View>
                 <OfflineView
                     offline={this.state.offline}
-                    onRefresh={this.onRefresh.bind(this) }
+                    onRefresh={this.onRefresh}
                 />
                 { !this.state.offline && refreshText }
                 <ListView
+                    dataSource={this.state.dataSource}
+                    enableEmptySections
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps
                     refreshControl={
                         <RefreshControl
+                            onRefresh={this.onRefresh}
                             refreshing={this.state.refreshing}
-                            onRefresh={this.onRefresh.bind(this) }
                         />
                     }
-                    dataSource={this.state.dataSource}
-                    enableEmptySections={true}
-                    renderRow={(rowData) => this.renderRow(rowData) }
-                    keyboardShouldPersistTaps={true}
-                    keyboardDismissMode="on-drag"
+                    renderRow={(rowData) => this.renderRow(rowData)}
                 />
             </View>
-
         );
     }
 }
 
 
 const componentStyles = StyleSheet.create({
-    searchBarContainer: {
-        padding: 5,
-        height: 43,
-        flexDirection: 'row'
-    },
-    searchBarContainerLight: {
-        backgroundColor: themes.light.dividerColor
-    },
-    searchBarContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
-    },
     refreshTextContainer: {
         borderBottomColor: themes.light.lighterDividerColor,
-        borderBottomWidth: 1,
-
+        borderBottomWidth: 1
     },
     refreshText: {
-        paddingVertical: 15,
+        paddingVertical: 10,
         fontSize: 13,
         color: themes.light.greenAccentColor,
-        backgroundColor: themes.light.backgroundColor,
+        backgroundColor: themes.light.lighterDividerColor,
         textAlign: 'center'
+    },
+    buttonsContainer: {
+        paddingHorizontal: 5,
+        paddingVertical: 10,
+        height: 70,
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: themes.light.lighterDividerColor,
+        backgroundColor: themes.light.lighterDividerColor
     }
 
 });
@@ -255,10 +210,7 @@ const mapStateToProps = (state) => {
     return {
         language: state.language,
         region: state.region,
-        country: state.country,
-        theme: state.theme,
-        direction: state.direction,
-        locations: state.locations
+        country: state.country
     };
 };
 

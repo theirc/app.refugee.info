@@ -33,8 +33,8 @@
   "ADDRESS": "العـنوان",
   "SELECT_COUNTRY": "اختر بلدك",
   "SELECT_LOCATION": "اختر موقعك",
-  "SERVICE_LIST": "دليل",
-  "SERVICES": "دليل",
+  "SERVICE_LIST": "خدمات",
+  "SERVICES": "خدمات",
   "EXPLORE_MAP": "الخريطة",
   "GENERAL_INFO": "الصفحة الرئيسية",
   "SERVICE_DETAILS": "تفاصيل الخدمة",
@@ -97,5 +97,13 @@
   "CANNOT_CHANGE_LANGUAGE": "لا يمكن تغيير اللغة",
   "SHOW_MORE": "أظهر المزيد",
   "CLUSTER_POPUP_TITLE": "هناك خدمات عدد {0} في المكان المحدد. انقر على الخدمة أدناه للحصول على مزيد من التفاصيل.",
-  "LIKE_US": "تابعنا على الفيسبوك"
+  "LIKE_US": "تابعنا على الفيسبوك",
+  "INFO_WAS_UP_TO_DATE": "تحديث جديد",
+  "INFO_WAS_OUTDATED": "حديثة",
+  "NO": "لا",
+  "YES": "نعم",
+  "LOCATION_WILL_CHANGE": "هل تريد تغيير موقع ل{0}?",
+  "SERVICE_PROVIDER": "مقدم خدمات ",
+  "LIST": "قائمة",
+  "FILTER": "فلتر"
 }

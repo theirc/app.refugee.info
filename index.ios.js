@@ -1,20 +1,15 @@
 import {
-    AppRegistry,
-    Text,
-    View,
-    Navigator,
-    StatusBar
+    AppRegistry
 } from 'react-native';
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
 import {Provider} from 'react-redux';
 import store from './src/store';
-
-import Skeleton from './src/scenes/Skeleton'
+import Skeleton from './src/scenes/Skeleton';
 
 class RefugeeInfoApp extends Component {
 
     render() {
-      return <Provider store={store}><Skeleton /></Provider>
+        return <Provider store={store}><Skeleton /></Provider>;
     }
 }
 

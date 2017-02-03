@@ -1,38 +1,48 @@
 import React, {Component, PropTypes} from 'react';
-import {ActivityIndicator, View, LayoutAnimation} from 'react-native';
-import styles, {themes} from '../styles';
+import {ActivityIndicator, View, Dimensions} from 'react-native';
+import {themes} from '../styles';
 
-export default class LoadingOverlay extends Component {
+const {width, height} = Dimensions.get('window');
+
+
+class LoadingOverlay extends Component {
 
     static propTypes = {
-        theme: PropTypes.oneOf(['light', 'dark']),
-        height: PropTypes.number.isRequired,
-        width: PropTypes.number.isRequired
+        height: PropTypes.number,
+        transparent: PropTypes.bool,
+        width: PropTypes.number
+    };
+
+    static defaultProps = {
+        height,
+        width,
+        transparent: false
     };
 
     render() {
-        const {theme, width, height} = this.props;
+        const {width, height, transparent} = this.props;
         return (
-            <View
-                style={{
-                    flex: 1,
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: width,
-                    height: height,
-                    backgroundColor: theme=='dark' ? 'rgba(33,33,33,0.7)' : 'rgba(255,255,255,0.7)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    elevation: 4
-                }}
+            <View style={{
+                flex: 1,
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                width,
+                height,
+                backgroundColor: transparent ? 'rgba(0,0,0,0)': 'rgba(255,255,255,0.45)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                elevation: 4
+            }}
             >
                 <ActivityIndicator
-                    animating={true}
+                    animating
+                    color={themes.light.textColor}
                     size="large"
-                    color={theme=='dark' ? themes.dark.textColor : themes.light.textColor}
                 />
             </View>
         );
     }
 }
+
+export default LoadingOverlay;

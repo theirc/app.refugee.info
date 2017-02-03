@@ -11,7 +11,7 @@ export function fetchCountryFromStorage() {
     return async dispatch => {
         return await AsyncStorage.getItem('countryCache')
             .then(country => {
-              return dispatch(receiveCountry(JSON.parse(country)))
+                return dispatch(receiveCountry(JSON.parse(country)));
             });
     };
 }

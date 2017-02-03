@@ -1,5 +1,4 @@
 import {AsyncStorage} from 'react-native';
-import {Regions} from '../data'
 
 function receiveRegion(region) {
     return {
@@ -12,14 +11,14 @@ export function fetchRegionFromStorage() {
     return async dispatch => {
         return await AsyncStorage.getItem('regionCache')
             .then(region => {
-                return dispatch(receiveRegion(JSON.parse(region)))
+                return dispatch(receiveRegion(JSON.parse(region)));
             });
     };
 }
 
 
 export function updateRegionIntoStorage(region) {
-    return async dispatch => {
+    return async () => {
         return await AsyncStorage.setItem('regionCache', JSON.stringify(region));
     };
 }

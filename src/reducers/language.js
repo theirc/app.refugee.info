@@ -1,4 +1,3 @@
-import { AsyncStorage } from 'react-native'
 import I18n from '../constants/Messages';
 
 export default (state = null, action) => {

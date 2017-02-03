@@ -5,6 +5,7 @@ import android.util.Log;
 import android.content.Intent;
 
 import com.facebook.react.ReactApplication;
+import com.idehub.GoogleAnalyticsBridge.GoogleAnalyticsBridgePackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -15,12 +16,11 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import cl.json.RNSharePackage;
 
 import com.airbnb.android.react.maps.MapsPackage;
-//import com.AirMaps.AirPackage;
 import com.i18n.reactnativei18n.ReactNativeI18n;
-import com.chirag.RNMail.*;  // <--- import
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;  // <--- Import Package
-import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage; // <-- import
-
+import com.chirag.RNMail.*;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
 import org.pgsqlite.SQLitePluginPackage;
 
 import java.util.Arrays;
@@ -40,6 +40,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                     new MainReactPackage(),
+            new GoogleAnalyticsBridgePackage(),
                     new VectorIconsPackage(),
                     new RNSharePackage(),
                     new MapsPackage(),
@@ -48,6 +49,7 @@ public class MainApplication extends Application implements ReactApplication {
                     new SQLitePluginPackage(),
                     new ReactNativeMapboxGLPackage(),
                     new ReactNativePushNotificationPackage(),
+                    new ReactNativeRestartPackage(),
                     new GooglePlayServicesPackage()
             );
         }

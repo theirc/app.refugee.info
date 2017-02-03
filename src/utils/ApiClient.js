@@ -1,21 +1,20 @@
-import {API_PATH} from '../constants'
+import {API_PATH} from '../constants';
+import {Actions} from 'react-native-router-flux';
 
 const InteractionManager = require('InteractionManager');
 
+
 export default class ApiClient {
 
-    constructor(context, props = {language: 'en'}, api_root = API_PATH) {
-        if (context) {
-            this.navigator = context.navigator;
-        }
-        this.apiRoot = api_root;
+    constructor(context, props = {language: 'en'}, apiRoot = API_PATH) {
+        this.apiRoot = apiRoot;
         this.language = props.language || 'en';
     }
 
-    async fetch(relativeUrl, raise_exception = false) {
+    async fetch(relativeUrl, raiseException = false) {
         await InteractionManager.runAfterInteractions();
-        var languageCode = this.language;
-        var headers = {
+        const languageCode = this.language;
+        const headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         };
@@ -23,14 +22,14 @@ export default class ApiClient {
         if (languageCode) {
             headers['Accept-Language'] = languageCode;
         }
-        return fetch(`${this.apiRoot}${relativeUrl}`, {headers: headers})
+        return fetch(`${this.apiRoot}${relativeUrl}`, {headers})
             .then((response) => response.json())
-            .catch((error) => {
-                if (raise_exception) {
-                    throw 'offline'
+            .catch(() => {
+                if (raiseException) {
+                    throw 'offline';
                 }
                 else {
-                    this.navigator.to('networkFailure');
+                    Actions.networkFailure();
                 }
             });
     }
@@ -44,127 +43,67 @@ export default class ApiClient {
             },
             body: JSON.stringify(data)
         }).then((response) => response)
-            .catch((error) => {
-                this.navigator.to('networkFailure');
+            .catch(() => {
+                Actions.networkFailure();
             });
     }
 
-    getRootLocations() {
-        return this.fetch('/v1/region/?format=json&level=1');
+    getCountries(raiseException = false) {
+        return this.fetch(`region/?level=1&no_content&language=${this.language}`, raiseException);
     }
 
-    getAllChildrenOf(parentId, raise_exception = false) {
-        return this.fetch(`/v1/region/?format=json&is_child_of=${parentId}`, raise_exception);
+    getCountry(slug, raiseException = false, language = 'en') {
+        return this.fetch(`region/${slug}?no_content&language=${language}`, raiseException);
     }
 
-    getLocations(parentId, raise_exception = false) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}`, raise_exception);
+    getAllChildrenOf(parentId, raiseException = false) {
+        return this.fetch(`region/?is_child_of=${parentId}&no_content&language=${this.language}`, raiseException);
     }
 
-    getLocation(id, raise_exception = false) {
-        return this.fetch(`/v1/region/${id}/?format=json&`, raise_exception);
+    async getLocation(slug, raiseException = false) {
+        let returnRegion = await this.fetch(`region/${slug}/?language=${this.language}`, raiseException);
+
+        // Retrofitting the old with the new:
+        let fullObject = await this.fetch(`regions/${returnRegion.id}/?language=${this.language}`, raiseException);
+
+        returnRegion.apps = (fullObject && fullObject.apps) || [];
+        returnRegion.object = fullObject;
+
+        return {...fullObject, ...returnRegion};
     }
 
-    getRegions(parentId) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=2`);
-    }
-
-    getCities(parentId) {
-        return this.fetch(`/v1/region/?format=json&parent=${parentId}&level=3`);
-    }
-
-    getLocationByPosition(longitude, latitude, level) {
-        return this.fetch(`/v1/region/?format=json&point=${latitude},${longitude}&level=${level}`);
-    }
 
     getServiceTypes(raise_exception = false) {
-        return this.fetch('/v1/servicetypes/?format=json', raise_exception);
+        return this.fetch('servicetypes/?format=json', raise_exception);
     }
 
-    getServicePage(locationSlug, coords = {}, searchCriteria = "", page = 1, pageSize = 10, types, raise_exception = false) {
-        let url = `/v1/services/search/?format=json&geographic_region=${locationSlug}`;
+    getServicePage(locationSlug, coords = {}, searchCriteria = '', page = 1, pageSize = 10, types, raiseException = false) {
+        let url = `services/search/?format=json&geographic_region=${locationSlug}`;
 
         if (coords.hasOwnProperty('latitude')) {
             const {latitude, longitude} = coords;
             url += `&closest=${latitude},${longitude}`;
         }
-        if (!!searchCriteria) {
-            url += `&name=${searchCriteria}`;
+        if (searchCriteria) {
+            url += `&search=${searchCriteria}`;
         }
-        if (!!types) {
+        if (types) {
             url += `&type_numbers=${types}`;
         }
         url += `&page=${page}&page_size=${pageSize}`;
-        return this.fetch(url, raise_exception);
-    }
-
-    getServices(locationSlug, latitude, longitude, raise_exception = false, page = 1, pageSize = 10) {
-        let paging = `page=${page}&page_size=${pageSize}`;
-        let map = (res) => {
-            return res.results;
-        };
-        if (latitude && longitude) {
-            return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}
-        &closest=${latitude},${longitude}`, raise_exception).then(map);
-        }
-        else return this.fetch(`/v1/services/search/?format=json&geographic_region=${locationSlug}&${paging}`, raise_exception).then(map);
-    }
-
-    getFeedbacks(service, raise_exception = false) {
-        return this.fetch(`/v1/feedback/?format=json&service=${service}&extra_comments=2`, raise_exception);
+        return this.fetch(url, raiseException);
     }
 
     getService(id, raise_exception = false) {
-        return this.fetch(`/v1/services/search/?format=json&id=${id}`, raise_exception);
+        return this.fetch(`services/search/?format=json&id=${id}`, raise_exception);
     }
 
-    postFeedback(service, name, rating, comment) {
-        return this.post('/v1/feedback/?format=json', {
-            name,
-            phone_number: '',
-            nationality: null,
-            area_of_residence: null,
-            service: service.url,
-            delivered: null,
-            quality: rating,
-            non_delivery_explained: null,
-            wait_time: null,
-            wait_time_satisfaction: null,
-            difficulty_contacting: 'no',
-            other_difficulties: '',
-            staff_satisfaction: null,
-            extra_comments: comment,
-            anonymous: false
-        });
+    setRating(pageSlug, rating, reason, rating_id) {
+        return this.post(`page/${pageSlug}/rate/`, {rating, reason, rating_id});
     }
 
-    sendEmail(name, subject, email, message) {
-        return this.post('/send_email/', {
-            name,
-            subject,
-            email,
-            message
-        });
+    getRating(pageSlug, raiseException = false) {
+        return this.fetch(`page/${pageSlug}/rate`, raiseException);
     }
 
-    getRating(region, index, content_slug) {
-        let identifier = content_slug ? `&content_slug=${content_slug}` : `&index=${index}`;
-        return this.fetch(`/v1/region/get_rate/?region_slug=${region.slug}${identifier}`);
-    }
-    setRating(region, index, content_slug, rating) {
-        return this.post(`/v1/region/add_rate/?format=json`, {
-            region_slug: region.slug,
-            index: index,
-            info_slug: content_slug,
-            rate: rating
-        });
-    }
-    removeRating(region, index, content_slug, rating) {
-        return this.post(`/v1/region/remove_rate/?format=json`, {
-            region_slug: region.slug,
-            index: index,
-            info_slug: content_slug,
-            rate: rating
-        });
-    }
 }

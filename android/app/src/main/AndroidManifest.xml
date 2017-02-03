@@ -3,16 +3,17 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
     <permission
             android:name="${applicationId}.permission.C2D_MESSAGE"
             android:protectionLevel="signature"/>
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="25" />
 
     <application
             android:name=".MainApplication"
@@ -20,6 +21,8 @@
             android:label="@string/app_name"
             android:icon="@drawable/appicon"
             android:theme="@style/AppTheme">
+                <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
         <receiver
                 android:name="com.google.android.gms.gcm.GcmReceiver"
                 android:exported="true"
@@ -39,8 +42,8 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE"/>
             </intent-filter>
         </service>
-<service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService"/>
 
+        <service android:name="com.mapbox.mapboxsdk.telemetry.TelemetryService" />
 
         <meta-data
                 android:name="com.google.android.geo.API_KEY"
@@ -59,6 +62,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+                
                 <data android:scheme="http" android:host="refugee.info"/>
                 <data android:scheme="https" android:host="refugee.info"/>
                 <data android:scheme="http" android:host="www.refugee.info"/>
