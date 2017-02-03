@@ -98,12 +98,12 @@
   "SHOW_MORE": "بیشتر نشان بده",
   "CLUSTER_POPUP_TITLE": "در این منطقه  {0} سرویس وجود دارد. برای جزئیات بیشتر روی خدمات پایین کلیک کنید. ",
   "LIKE_US": "ما را در فیس بوک لایک کنید",
-  "INFO_WAS_UP_TO_DATE": "Up-to-date",
-  "INFO_WAS_OUTDATED": "Updated!",
-  "NO": "No",
-  "YES": "Yes",
-  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
-  "SERVICE_PROVIDER": "Service Provider",
-  "LIST": "List",
-  "FILTER": "Filter"
+  "INFO_WAS_UP_TO_DATE": "به روز رسانی",
+  "INFO_WAS_OUTDATED": "به روز رسانی!",
+  "NO": "نه",
+  "YES": "بله",
+  "LOCATION_WILL_CHANGE": "?{آیا شما می خواهید به تغییر محل به {0",
+  "SERVICE_PROVIDER": "ارائه دهنده خدمات",
+  "LIST": "فهرست",
+  "FILTER": "صافی"
 }
