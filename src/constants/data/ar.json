@@ -98,12 +98,12 @@
   "SHOW_MORE": "أظهر المزيد",
   "CLUSTER_POPUP_TITLE": "هناك خدمات عدد {0} في المكان المحدد. انقر على الخدمة أدناه للحصول على مزيد من التفاصيل.",
   "LIKE_US": "تابعنا على الفيسبوك",
-  "INFO_WAS_UP_TO_DATE": "Up-to-date",
-  "INFO_WAS_OUTDATED": "Updated!",
-  "NO": "No",
-  "YES": "Yes",
-  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
-  "SERVICE_PROVIDER": "Service Provider",
-  "LIST": "List",
-  "FILTER": "Filter"
+  "INFO_WAS_UP_TO_DATE": "تحديث جديد",
+  "INFO_WAS_OUTDATED": "حديثة",
+  "NO": "لا",
+  "YES": "نعم",
+  "LOCATION_WILL_CHANGE": "هل تريد تغيير موقع ل{0}?",
+  "SERVICE_PROVIDER": "مقدم خدمات ",
+  "LIST": "قائمة",
+  "FILTER": "فلتر"
 }
