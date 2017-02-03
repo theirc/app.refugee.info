@@ -38,7 +38,6 @@ export class Service extends Component {
         super(props);
 
         this.state = {
-            loaded: false,
             refreshing: false,
             offline: false,
             canLoadMoreContent: true,
@@ -63,11 +62,7 @@ export class Service extends Component {
 
     componentDidMount() {
         this.serviceData = new Services(this.props);
-        if (!this.state.loaded) {
-            this.fetchData().then(() => {
-                this.setState({loading: false});
-            });
-        }
+        this.fetchData();
     }
 
     async getServiceTypes() {
@@ -96,7 +91,6 @@ export class Service extends Component {
         this.setState({
             offline: flag,
             loading: !flag,
-            loaded: true,
             refreshing: false
         });
     }
@@ -113,11 +107,9 @@ export class Service extends Component {
         });
         const {region} = this.props;
         if (!region) {
-            this.setState({
-                loaded: true,
+            return this.setState({
                 loading: false
             });
-            return;
         }
         const criteria = this.state.searchCriteria;
         try {
@@ -162,7 +154,6 @@ export class Service extends Component {
                     });
 
                     this.setState({
-                        loaded: true,
                         serviceTypes,
                         services,
                         searchCriteria: criteria,
@@ -457,7 +448,6 @@ export class Service extends Component {
 
     render() {
         const {loading} = this.state;
-
         const headerView = this.renderHeaderView(),
             loadingView = this.renderLoadingView();
         if (loading) {
