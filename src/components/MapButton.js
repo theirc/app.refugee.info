@@ -19,7 +19,7 @@ class MapButton extends Component {
     }
 
     onPress() {
-        Actions.serviceMap({searchCriteria: this.props.searchCriteria, serviceTypes: this.props.serviceTypes});
+        Actions.service({map: true});
     }
 
     render() {
