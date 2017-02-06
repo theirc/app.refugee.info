@@ -230,7 +230,7 @@ export class ServiceDetails extends Component {
                                 style={[
                                     styles.row,
                                     styles.bottomDividerLight,
-                                    {borderBottomWidth: 1, paddingVertical: 5},
+                                    {borderBottomWidth: 1, padding: 5},
                                     (day === weekDay)
                                         ? styles.dividerLight
                                         : null
