@@ -28,7 +28,8 @@ export class GeneralInformation extends Component {
             loaded: false,
             offline: false,
             refreshing: false,
-            loading: false
+            loading: false,
+            region: props.region
         };
     }
 
@@ -36,8 +37,16 @@ export class GeneralInformation extends Component {
         this.loadInitialState();
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.region != this.props.region) {
+            this.setState({region: nextProps.region}, () => {
+                this.loadInitialState(nextProps.region);
+            });
+        }
+    }
+
     async loadInitialState() {
-        const {region} = this.props;
+        const {region} = this.state;
         Actions.refresh({title: region.name});
 
         GA_TRACKER.trackEvent('page-view', region.slug);
@@ -59,7 +68,8 @@ export class GeneralInformation extends Component {
     }
 
     onRefresh() {
-        const {region, dispatch, language} = this.props;
+        const {dispatch, language} = this.props;
+        const {region} = this.state;
         this.setState({refreshing: true}, () => {
             this.apiClient = new ApiClient(this.context, this.props);
             this.apiClient.getLocation(region.slug, true, language).then((location) => {

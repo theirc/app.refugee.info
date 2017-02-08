@@ -39,7 +39,7 @@ class Settings extends Component {
     }
 
 
-    updateSettings(language) {
+    async updateSettings(language) {
         this.setState({
             loading: true
         });
@@ -61,20 +61,14 @@ class Settings extends Component {
                 let locations = [{newCountry, ...newCountry}].concat(children);
                 locations = locations.filter((city) => !city.hidden);
                 locations.forEach((city) => {city.country = country});
-                Promise.all([
+                return Promise.all([
                     dispatch(updateLanguageIntoStorage(language)),
                     dispatch(updateDirectionIntoStorage(direction)),
                     dispatch(updateCountryIntoStorage(newCountry)),
                     dispatch(updateRegionIntoStorage(newRegion)),
-                    dispatch(updateLocationsIntoStorage(locations)),
-                    dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
-                    dispatch({type: 'DIRECTION_CHANGED', payload: direction}),
-                    dispatch({type: 'REGION_CHANGED', payload: newRegion}),
-                    dispatch({type: 'COUNTRY_CHANGED', payload: newCountry}),
-                    dispatch({type: 'LOCATIONS_CHANGED', payload: locations})
+                    dispatch(updateLocationsIntoStorage(locations))
                 ]).then(() => {
-                    this.setState({loading: false});
-                    RNRestart.Restart();
+                    return RNRestart.Restart();
                 });
             });
         }).catch(() => {
