@@ -120,9 +120,8 @@ class Skeleton extends Component {
         // Instead of having the app handling the language selection we should
         // let the user override whatever they have set in their device
         await this.reloadStorage();
-
         const firstLoad = await AsyncStorage.getItem('firstLoad');
-        const region = await AsyncStorage.getItem('regionCache');
+        const region = this.state.region;
         const language = await AsyncStorage.getItem('language');
         const isFirstLoad = !language && (firstLoad !== 'false' || !(region));
         this.setState({firstLoad: isFirstLoad});
@@ -130,11 +129,12 @@ class Skeleton extends Component {
 
     async reloadStorage() {
         const {dispatch} = this.props;
-        await dispatch(fetchRegionFromStorage());
+
         await dispatch(fetchLanguageFromStorage());
         await dispatch(fetchCountryFromStorage());
         await dispatch(fetchDirectionFromStorage());
-        await fetchLocationsFromStorage();
+        await dispatch(fetchRegionFromStorage());
+        await dispatch(fetchLocationsFromStorage());
     }
 
     render() {
