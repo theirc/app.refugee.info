@@ -5,6 +5,7 @@ import {
 export const GA_TRACKER = new GoogleAnalyticsTracker('UA-68574649-1');
 
 export {default as I18n} from './Messages';
+export const APP_DATA_VERSION = 'v2';
 export const CSS = '';
 export const API_PATH = 'http://admin.refugee.info/e/production/v2/';
 export const WEB_PATH = 'http://refugee.info/';
