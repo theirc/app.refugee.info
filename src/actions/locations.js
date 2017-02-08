@@ -25,23 +25,24 @@ function queryLocations(tx) {
 
 
 export function fetchLocationsFromStorage() {
-    SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
-        db.transaction(queryLocations);
-    }).catch((error) => {});
+    return async dispatch => {
+        return await SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
+            return db.transaction(queryLocations);
+        }).catch((error) => {
+        });
+    };
 }
 
 
 export function updateLocationsIntoStorage(locations) {
-    SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
-        db.transaction((tx) => {
-            tx.executeSql('DELETE FROM locations');
-            locations.forEach((location) => {
-                tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
-            });
-        });
-    }).catch((error) => {});
-
     return async dispatch => {
-
+        return await SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
+            return db.transaction((tx) => {
+                tx.executeSql('DELETE FROM locations');
+                locations.forEach((location) => {
+                    tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
+                });
+            });
+        }).catch((error) => {});
     };
 }

@@ -38,9 +38,6 @@ export class GeneralInformation extends Component {
 
     async loadInitialState() {
         const {region} = this.props;
-        if (!region) {
-            return Actions.countryChoice();
-        }
         Actions.refresh({title: region.name});
 
         GA_TRACKER.trackEvent('page-view', region.slug);

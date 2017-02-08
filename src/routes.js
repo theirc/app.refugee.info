@@ -13,14 +13,23 @@ import NetworkFailure from './scenes/NetworkFailure';
 import NewsThatMoves from './scenes/NewsThatMoves';
 import Settings from './scenes/Settings';
 import MicroApp from './scenes/MicroApp';
+import Initial from './scenes/Initial';
+
 
 const scenes = Actions.create(
     <Scene component={AppDrawer} key="drawer" open={false}>
         <Scene key="main" panHandlers={null}>
             <Scene
+                component={Initial}
+                hideNavBar={false}
+                initial
+                key="initial"
+                title={() => I18n.t('REFUGEE_INFO')}
+            />
+            <Scene
                 component={GeneralInformation}
                 hideNavBar={false}
-                initial key="info"
+                key="info"
                 title={() => I18n.t('GENERAL_INFO')}
             />
             <Scene
