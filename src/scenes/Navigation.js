@@ -57,8 +57,7 @@ class Navigation extends Component {
                 dispatch(updateRegionIntoStorage(region)),
                 dispatch({type: 'REGION_CHANGED', payload: region}),
                 this.setState({loading: false})
-            ]);
-            return this._defaultOrFirst(city);
+            ]).then(() => this._defaultOrFirst(city));
         });
     }
 
