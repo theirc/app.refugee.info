@@ -412,7 +412,7 @@ export class Service extends Component {
                     <View style={[componentStyles.toggleButtonsContainer, getElevation()]}>
                         <ToggleButton
                             active={filtering}
-                            icon="md-funnel"
+                            icon="fa-filter"
                             onPress={this.toggleFilteringView}
                             text={I18n.t('FILTER').toUpperCase()}
                         />
@@ -428,7 +428,7 @@ export class Service extends Component {
                             icon="fa-map"
                             iconStyle={{fontSize: 17}}
                             onPress={this.toggleMapView}
-                            text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                            text={I18n.t('MAP').toUpperCase()}
                         />
                     </View>
                 </View>

@@ -149,7 +149,7 @@ export class GeneralInformation extends Component {
                         transparent
                     />
                     <Button
-                        buttonStyle={{flex: 1.66}}
+                        buttonStyle={{flex: 1.3}}
                         color="green"
                         icon="md-locate"
                         onPress={() => Actions.cityChoice({country})}
@@ -161,7 +161,7 @@ export class GeneralInformation extends Component {
                         icon="fa-map"
                         iconStyle={{fontSize: 18}}
                         onPress={() => Actions.service({map: true})}
-                        text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                        text={I18n.t('SERVICE_MAP').toUpperCase()}
                         transparent
                     />
                 </View>

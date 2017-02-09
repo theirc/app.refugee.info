@@ -34,8 +34,6 @@
   "SELECT_COUNTRY": "اختر بلدك",
   "SELECT_LOCATION": "اختر موقعك",
   "SERVICE_LIST": "خدمات",
-  "SERVICES": "خدمات",
-  "EXPLORE_MAP": "الخريطة",
   "GENERAL_INFO": "الصفحة الرئيسية",
   "SERVICE_DETAILS": "تفاصيل الخدمة",
   "SERVICE_MAP": "خريطة الخدمة",
@@ -75,8 +73,6 @@
   "FEEDBACK": "تقيـيم محتـوى المـوقع",
   "ABOUT": "معلومات عنا",
   "ABOUT_HEADER": "العنوان",
-  "ABOUT_CONTENT_1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  "ABOUT_CONTENT_2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "WHERE_ARE_YOU": "أين أنت؟",
   "EMAIL": "البريـد الإلكـتروني",
   "SUBJECT": "الموضوع",
@@ -105,5 +101,6 @@
   "LOCATION_WILL_CHANGE": "?{هل تريد تغيير موقع ل{0",
   "SERVICE_PROVIDER": "مقدم خدمات ",
   "LIST": "قائمة",
-  "FILTER": "فلتر"
+  "FILTER": "فلتر",
+  "MAP": "Map"
 }
