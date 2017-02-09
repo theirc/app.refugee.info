@@ -3,8 +3,10 @@ import {
     View,
     ListView
 } from 'react-native';
-import {SelectableListItem} from '../components';
-import {isStatusBarTranslucent} from '../styles';
+import {SelectableListItem, DirectionalText} from '../components';
+import styles, {isStatusBarTranslucent} from '../styles';
+import I18n from '../constants/Messages';
+
 
 export class ServiceCategoryListView extends Component {
 
@@ -35,7 +37,12 @@ export class ServiceCategoryListView extends Component {
     render() {
         const {serviceTypes} = this.props;
         return (
-            <View style={{flex: 1, marginTop: isStatusBarTranslucent() ? 25 + 110 : 110}}>
+            <View style={{flex: 1, marginTop: isStatusBarTranslucent() ? 25 + 105 : 105}}>
+                <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
+                    <DirectionalText style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
+                        {I18n.t('FILTER_BY_CATEGORY').toUpperCase()}
+                        </DirectionalText>
+                </View>
                 <ListView
                     dataSource={this.dataSource.cloneWithRows(serviceTypes)}
                     enableEmptySections
@@ -48,5 +55,6 @@ export class ServiceCategoryListView extends Component {
         );
     }
 }
+
 
 export default ServiceCategoryListView;

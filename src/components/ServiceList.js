@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {View, ListView} from 'react-native';
-import {ServiceListItem} from '../components';
+import {ServiceListItem, DirectionalText} from '../components';
 import {isStatusBarTranslucent} from '../styles';
+import I18n from '../constants/Messages';
+import styles from '../styles';
 
 
 export class ServiceList extends Component {
@@ -26,7 +28,12 @@ export class ServiceList extends Component {
 
     render() {
         return (
-            <View style={{flex: 1, marginTop: isStatusBarTranslucent() ? 25 + 110 : 110}}>
+            <View style={{flex: 1, marginTop: isStatusBarTranslucent() ? 25 + 105 : 105}}>
+                <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
+                    <DirectionalText style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
+                        {I18n.t('NEAREST_SERVICES').toUpperCase()}
+                    </DirectionalText>
+                </View>
                 <ListView
                     dataSource={this.dataSource.cloneWithRows(this.props.services)}
                     enableEmptySections
