@@ -496,7 +496,7 @@ const componentStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        height: 44,
+        height: 43,
         borderRadius: 2,
         flex: 1
     },
