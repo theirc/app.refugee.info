@@ -19,7 +19,8 @@ import {
 } from '../actions';
 import RNRestart from 'react-native-restart';
 import PushNotification from 'react-native-push-notification';
-
+import {APP_DATA_VERSION} from '../constants';
+import {updateRegionIntoStorage, updateLocationsIntoStorage} from '../actions';
 /**
  This class is the skeleton of the app.
 
@@ -52,6 +53,19 @@ class Skeleton extends Component {
                 I18nManager.allowRTL(true);
                 I18nManager.forceRTL(true);
                 RNRestart.Restart();
+            }
+        });
+        AsyncStorage.getItem('appDataVersion').then((res) => {
+            const dispatch = props.dispatch;
+            if (res != APP_DATA_VERSION) {
+                Promise.all([
+                    dispatch(updateRegionIntoStorage(null)),
+                    dispatch(updateLocationsIntoStorage(null)),
+                    AsyncStorage.setItem('language', ''),
+                    AsyncStorage.setItem('firstLoad', '')
+                ]).then(() => {
+                    AsyncStorage.setItem('appDataVersion', APP_DATA_VERSION);
+                });
             }
         });
     }
