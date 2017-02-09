@@ -13,7 +13,8 @@ import {
     LoadingOverlay,
     ServiceList,
     ServiceMap,
-    ToggleButton
+    ToggleButton,
+    DirectionalText
 } from '../components';
 import {connect} from 'react-redux';
 import {Services} from '../data';
@@ -382,7 +383,7 @@ export class Service extends Component {
     }
 
     renderHeaderView() {
-        const {filtering, list, map} = this.state;
+        const {filtering, list, map, loading} = this.state;
         const opaqueHeader = filtering || list;
         const offlineView = this.renderOfflineView();
 
@@ -432,6 +433,13 @@ export class Service extends Component {
                         />
                     </View>
                 </View>
+                {list &&
+                <View style={[styles.viewHeaderContainer, styles.viewHeaderContainerLight]}>
+                    <DirectionalText style={[styles.viewHeaderText, styles.viewHeaderTextLight]}>
+                        {loading && I18n.t('LOADING_SERVICES').toUpperCase()}
+                    </DirectionalText>
+                </View>
+                }
                 {offlineView}
             </View>
         );
@@ -481,7 +489,7 @@ const componentStyles = StyleSheet.create({
         paddingHorizontal: 5
     },
     toggleBarContainer: {
-        height: 50,
+        height: 45,
         paddingHorizontal: 5
     },
     toggleButtonsContainer: {

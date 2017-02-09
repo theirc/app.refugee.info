@@ -41,10 +41,10 @@ const styles = StyleSheet.create({
     // reusable view header
 
     viewHeaderContainer: {
-        padding: 15
+        padding: 12
     },
     viewHeaderContainerLight: {
-        backgroundColor: themes.light.dividerColor
+        backgroundColor: themes.light.lighterDividerColor
     },
     viewHeaderContainerDark: {
         backgroundColor: themes.dark.dividerColor
