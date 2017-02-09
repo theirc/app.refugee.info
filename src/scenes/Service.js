@@ -428,7 +428,7 @@ export class Service extends Component {
                             icon="fa-map"
                             iconStyle={{fontSize: 17}}
                             onPress={this.toggleMapView}
-                            text={I18n.t('EXPLORE_MAP').toUpperCase()}
+                            text={I18n.t('MAP').toUpperCase()}
                         />
                     </View>
                 </View>

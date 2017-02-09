@@ -246,7 +246,7 @@ class Navigation extends Component {
                             this.context.drawer.close();
                         }}
                     >
-                        {I18n.t('EXPLORE_MAP')}
+                        {I18n.t('SERVICE_MAP')}
                     </MenuItem>
                 </MenuSection>
 
