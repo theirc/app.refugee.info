@@ -3,7 +3,7 @@ import {View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage, Alert}
 import {wrapHtmlContent} from '../utils/htmlUtils';
 import styles from '../styles';
 import {connect} from 'react-redux';
-import {MapButton, Icon, DirectionalText} from '../components';
+import {Icon, DirectionalText} from '../components';
 import {getAllUrlParams} from '../utils/helpers';
 import I18n from '../constants/Messages';
 import Share from 'react-native-share';
@@ -349,7 +349,6 @@ export class GeneralInformationDetails extends Component {
                         ref={(v) => this.webView = v}
                         source={this.state.source}
                     />}
-                    <MapButton />
                 </View>
                 {feedbackBar}
             </View>
