@@ -81,12 +81,21 @@ export class GeneralInformationDetails extends Component {
         if (!url) {
             return;
         }
-        if (url.indexOf('%23') > -1 && Platform.OS === 'ios') {
-            let slug = url.split('%23')[1];
-            let section = this.getSectionBySlug(slug);
-            if (section) {
-                Actions.infoDetails({section});
-                return true;
+        if (Platform.OS === 'ios') {
+            if (url.indexOf('%23') > -1) {
+                let slug = url.split('%23')[1];
+                let section = this.getSectionBySlug(slug);
+                if (section) {
+                    Actions.infoDetails({section});
+                    return true;
+                }
+            } else if (url.indexOf('/') > -1 && url.split('/').length >= 2) {
+                let slug = url.split('/')[url.split('/').length - 2];
+                let section = this.getSectionBySlug(slug);
+                if (section) {
+                    Actions.infoDetails({section});
+                    return true;
+                }
             }
         }
         if (Platform.OS === 'android' && !this.state.navigating) {
