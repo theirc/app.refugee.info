@@ -251,6 +251,7 @@ class Navigation extends Component {
                 </MenuSection>
 
                 <MenuSection>
+                    {!!bannerCount &&
                     <MenuItem
                         active={routes.scene.sceneKey === 'notifications'}
                         badge={bannerCount}
@@ -259,6 +260,7 @@ class Navigation extends Component {
                     >
                         {I18n.t('ANNOUNCEMENTS')}
                     </MenuItem>
+                    }
                     <MenuItem
                         active={routes.scene.sceneKey === 'news'}
                         icon="ios-paper"
