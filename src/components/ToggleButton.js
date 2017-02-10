@@ -20,7 +20,6 @@ export class ToggleButton extends Component {
         }
         return (
             <View style={[
-                {paddingLeft: 10},
                 styles.alignCenter,
                 {height: 24}]}
             >
@@ -90,7 +89,7 @@ const componentStyles = StyleSheet.create({
     },
     buttonIcon: {
         fontSize: 22,
-        paddingRight: 10,
+        paddingHorizontal: 10,
         color: themes.light.darkerDividerColor
     }
 });
