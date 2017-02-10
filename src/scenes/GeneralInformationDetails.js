@@ -101,7 +101,7 @@ export class GeneralInformationDetails extends Component {
         if (Platform.OS === 'android' && !this.state.navigating) {
             let section = this.getSectionBySlug(url);
             if (section) {
-                this.setState({navigating: true});
+                this.setState({navigating: false});
                 Actions.infoDetails({section});
                 return true;
             }
