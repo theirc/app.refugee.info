@@ -34,24 +34,39 @@ export class Toolbar extends Component {
     renderToolbarActionIcon() {
         const {drawerOpen, region} = this.props;
         const menuIcon = drawerOpen ? 'md-close' : 'ios-menu';
-        const isRTL = I18nManager.isRTL;
-        const backIcon = isRTL ? 'md-arrow-forward' : 'md-arrow-back';
-
-        const state = this.props.navigationState;
-        const childState = state.children[state.index];
-        const backButton = childState.component && childState.component.backButton;
-
         if (!region) {
             return <View />;
         }
         return (
             <TouchableOpacity
-                onPress={backButton ? Actions.pop : this.context.drawer.open}
+                onPress={this.context.drawer.open}
                 style={componentStyles.toolbarIconContainer}
             >
                 <Icon
-                    name={backButton ? backIcon : menuIcon}
-                    style={backButton ? componentStyles.backIcon : componentStyles.menuIcon}
+                    name={menuIcon}
+                    style={componentStyles.menuIcon}
+                />
+            </TouchableOpacity>
+        );
+    }
+
+    renderBackIcon() {
+        const isRTL = I18nManager.isRTL;
+        const backIcon = isRTL ? 'md-arrow-forward' : 'md-arrow-back';
+        const state = this.props.navigationState;
+        const childState = state.children[state.index];
+        const backButton = childState.component && childState.component.backButton;
+        if (!backButton) {
+            return <View style={componentStyles.backIconContainer}/>;
+        }
+        return (
+            <TouchableOpacity
+                onPress={Actions.pop}
+                style={componentStyles.backIconContainer}
+            >
+                <Icon
+                    name={backIcon}
+                    style={componentStyles.backIcon}
                 />
             </TouchableOpacity>
         );
@@ -67,15 +82,20 @@ export class Toolbar extends Component {
         }
 
         const toolbarActionIcon = this.renderToolbarActionIcon();
+        const backButton = this.renderBackIcon();
 
         return (
             <View style={componentStyles.toolbarContainer}>
                 <View style={componentStyles.toolbarTop}>
                     {toolbarActionIcon}
-                    <Image
-                        source={themes.light.logo}
-                        style={componentStyles.brandImage}
-                    />
+                    <View style={styles.row}>
+                        <Image
+                            source={themes.light.logo}
+                            style={componentStyles.brandImage}
+                        />
+                        {backButton}
+                    </View>
+                    {}
                 </View>
 
                 <View style={[componentStyles.toolbarBottom, styles.row]}>
@@ -130,6 +150,11 @@ const componentStyles = StyleSheet.create({
     toolbarIconContainer: {
         width: 50,
         alignItems: 'flex-start',
+        justifyContent: 'center'
+    },
+    backIconContainer: {
+        width: 20,
+        alignItems: 'flex-end',
         justifyContent: 'center'
     },
     menuIcon: {

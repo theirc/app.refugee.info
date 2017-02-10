@@ -1,11 +1,12 @@
 import React, {Component, PropTypes} from 'react';
-import {View, TouchableOpacity, TextInput, StyleSheet} from 'react-native';
+import {View, TouchableOpacity, TextInput, StyleSheet, I18nManager} from 'react-native';
 import {Icon} from '../components';
 import I18n from '../constants/Messages';
-import {connect} from 'react-redux';
 import {getElevation, themes} from '../styles';
+import {Actions} from 'react-native-router-flux';
 
-export class SearchBar extends Component {
+
+export default class SearchBar extends Component {
 
     static propTypes = {
         drawerButton: PropTypes.bool,
@@ -20,8 +21,9 @@ export class SearchBar extends Component {
     };
 
     render() {
-        const {searchFunction, floating, drawerButton, language} = this.props;
-        const isRTL = ['ar', 'fa'].indexOf(language) > -1;
+        const {searchFunction, floating, drawerButton} = this.props;
+        const isRTL = I18nManager.isRTL;
+        const backIcon = isRTL ? 'md-arrow-forward' : 'md-arrow-back';
         return (
             <View style={[
                 componentStyles.searchBarContainer,
@@ -67,6 +69,17 @@ export class SearchBar extends Component {
                         style={[componentStyles.searchBarInput, componentStyles.searchBarIconLight, isRTL && {textAlign: 'right'}]}
                         underlineColorAndroid="transparent"
                     />
+                    {drawerButton &&
+                    <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={() => Actions.info()}
+                        style={componentStyles.searchBarIconContainer}
+                    >
+                        <Icon
+                            name={backIcon}
+                            style={[componentStyles.searchBarIcon, componentStyles.searchBarIconLight]}
+                        />
+                    </TouchableOpacity>}
                 </View>
             </View>
         );
@@ -112,13 +125,4 @@ const componentStyles = StyleSheet.create({
         fontSize: 14
     }
 });
-
-
-const mapStateToProps = (state) => {
-    return {
-        language: state.language
-    };
-};
-
-export default connect(mapStateToProps)(SearchBar);
 
