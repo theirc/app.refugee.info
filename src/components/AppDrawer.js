@@ -6,12 +6,14 @@ import React, {Component, PropTypes} from 'react';
 import Drawer from 'react-native-drawer';
 import {connect} from 'react-redux';
 import Navigation from '../scenes/Navigation';
-import {Actions, DefaultRenderer} from 'react-native-router-flux';
+import {DefaultRenderer} from 'react-native-router-flux';
 import {themes} from '../styles';
 
 
 class AppDrawer extends Component {
     static propTypes = {
+        dispatch: PropTypes.func,
+        drawerOpen: PropTypes.bool,
         navigationState: PropTypes.object,
         onNavigate: PropTypes.func
     };
@@ -36,15 +38,16 @@ class AppDrawer extends Component {
     render() {
         const state = this.props.navigationState;
         const children = state.children;
-
+        const {dispatch} = this.props;
         return (
             <Drawer
                 acceptTap
                 captureGestures={true}
                 closedDrawerOffset={0}
                 content={<Navigation />}
-                onClose={() => Actions.refresh({open: false})}
-                onOpen={() => Actions.refresh({open: true})}
+                onClose={() => dispatch({type: 'DRAWER_CHANGED', payload: false})}
+                onOpen={() => dispatch({type: 'DRAWER_CHANGED', payload: true})}
+                open={this.props.drawerOpen}
                 openDrawerOffset={0.2}
                 panOpenMask={0.02}
                 panThreshold={0.08}
