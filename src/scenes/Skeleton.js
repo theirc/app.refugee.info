@@ -150,7 +150,7 @@ class Skeleton extends Component {
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchRegionFromStorage());
         await dispatch(fetchLocationsFromStorage());
-        await dispatch(fetchAboutFromStorage())
+        await dispatch(fetchAboutFromStorage());
     }
 
     render() {
