@@ -106,4 +106,8 @@ export default class ApiClient {
         return this.fetch(`page/${pageSlug}/rate`, raiseException);
     }
 
+    getAbout(raiseException = false) {
+        return this.fetch(`about/${this.language}`, raiseException);
+    }
+
 }

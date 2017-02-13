@@ -7,6 +7,7 @@ import country from './country';
 import drawerOpen from './drawerOpen';
 import locations from './locations';
 import routes from './routes';
+import about from './about';
 
 const refugeeApp = combineReducers({
     region,
@@ -15,7 +16,8 @@ const refugeeApp = combineReducers({
     country,
     drawerOpen,
     locations,
-    routes
+    routes,
+    about
 });
 
 export default refugeeApp;

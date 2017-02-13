@@ -172,7 +172,7 @@ class Navigation extends Component {
     }
 
     render() {
-        const {routes, language, region} = this.props;
+        const {routes, language, region, about} = this.props;
         const {loading} = this.state;
 
         if (!this.props.region) {
@@ -180,7 +180,6 @@ class Navigation extends Component {
         }
 
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
-        const aboutUs = region && region.allContent ? region.allContent.find(content => content.slug === 'about-us') : {};
 
         let importantInformationSection = this.getImportantInformationSection();
         let nearbyCitiesSection = this.getNearbyCitiesSection();
@@ -192,7 +191,6 @@ class Navigation extends Component {
 
         let availableApps = this.getAvailableApps();
 
-        // Shorthand to change scene
         return (
             <ScrollView style={componentStyles.view}>
                 <TouchableWithoutFeedback onPress={() => this._defaultOrFirst(region)}>
@@ -287,11 +285,11 @@ class Navigation extends Component {
                     >
                         {I18n.t('SETTINGS')}
                     </MenuItem>
-                    {aboutUs &&
+                    {about &&
                     <MenuItem
-                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == aboutUs.title}
+                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == about.title}
                         icon="fa-question"
-                        onPress={() => this.navigateToImportantInformation(aboutUs, true)}
+                        onPress={() => this.navigateToImportantInformation(about, true)}
                     >
                         {I18n.t('ABOUT')}
                     </MenuItem>
@@ -326,7 +324,8 @@ const mapStateToProps = (state) => {
         region: state.region,
         language: state.language,
         drawerOpen: state.drawerOpen,
-        routes: state.routes
+        routes: state.routes,
+        about: state.about
     };
 };
 

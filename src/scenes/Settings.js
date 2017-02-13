@@ -17,7 +17,8 @@ import {
     updateDirectionIntoStorage,
     updateLanguageIntoStorage,
     updateLocationsIntoStorage,
-    updateRegionIntoStorage
+    updateRegionIntoStorage,
+    updateAboutIntoStorage
 } from '../actions';
 import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
@@ -47,15 +48,14 @@ class Settings extends Component {
         const direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
         this.apiClient = new ApiClient(this.context, {language});
 
-        let newRegion = null;
-        let newCountry = null;
-
         Promise.all([
             this.apiClient.getLocation(region.slug, true),
-            this.apiClient.getCountry(country.slug, true)
+            this.apiClient.getCountry(country.slug, true),
+            this.apiClient.getAbout(true)
         ]).then((values) => {
-            newRegion = values[0];
-            newCountry = values[1];
+            let newRegion = values[0],
+                newCountry = values[1],
+                newAbout = values[2];
             newRegion.allContent = getRegionAllContent(newRegion);
             this.apiClient.getAllChildrenOf(newCountry.id, true).then((children) => {
                 let locations = [{newCountry, ...newCountry}].concat(children);
@@ -66,7 +66,8 @@ class Settings extends Component {
                     dispatch(updateDirectionIntoStorage(direction)),
                     dispatch(updateCountryIntoStorage(newCountry)),
                     dispatch(updateRegionIntoStorage(newRegion)),
-                    dispatch(updateLocationsIntoStorage(locations))
+                    dispatch(updateLocationsIntoStorage(locations)),
+                    dispatch(updateAboutIntoStorage(newAbout))
                 ]).then(() => {
                     return RNRestart.Restart();
                 });

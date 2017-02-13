@@ -7,7 +7,8 @@ import styles from '../styles';
 import {
     updateCountryIntoStorage,
     updateRegionIntoStorage,
-    updateLocationsIntoStorage
+    updateLocationsIntoStorage,
+    updateAboutIntoStorage
 } from '../actions';
 import ApiClient from '../utils/ApiClient';
 import {getRegionAllContent} from '../utils/helpers';
@@ -64,6 +65,7 @@ export class CityChoice extends Component {
         const {dispatch, country} = this.props;
         this.setState({loading: true});
         let region = await this.apiClient.getLocation(city.slug);
+        let about = await this.apiClient.getAbout();
         region.allContent = getRegionAllContent(region);
         this.setState({region});
 
@@ -72,9 +74,11 @@ export class CityChoice extends Component {
                 dispatch(updateCountryIntoStorage(country)),
                 dispatch(updateRegionIntoStorage(region)),
                 dispatch(updateLocationsIntoStorage(this.state.cities)),
+                dispatch(updateAboutIntoStorage(about)),
                 dispatch({type: 'REGION_CHANGED', payload: region}),
                 dispatch({type: 'COUNTRY_CHANGED', payload: country}),
                 dispatch({type: 'LOCATIONS_CHANGED', payload: this.state.cities}),
+                dispatch({type: 'ABOUT_CHANGED', payload: about}),
                 this.setState({loading: false})
             ]);
             if (region.content && region.content.length == 1) {

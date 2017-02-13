@@ -15,7 +15,8 @@ import {
     fetchDirectionFromStorage,
     fetchLanguageFromStorage,
     fetchLocationsFromStorage,
-    fetchRegionFromStorage
+    fetchRegionFromStorage,
+    fetchAboutFromStorage
 } from '../actions';
 import RNRestart from 'react-native-restart';
 import PushNotification from 'react-native-push-notification';
@@ -149,6 +150,7 @@ class Skeleton extends Component {
         await dispatch(fetchDirectionFromStorage());
         await dispatch(fetchRegionFromStorage());
         await dispatch(fetchLocationsFromStorage());
+        await dispatch(fetchAboutFromStorage())
     }
 
     render() {
