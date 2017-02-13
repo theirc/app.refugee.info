@@ -52,7 +52,7 @@
   "LOADING_SERVICES": "بارگداری سرویس ها، لطفا منتظر بمانید...",
   "FILTER_BY_CATEGORY" : "سرویس ها را بر اساس دسته بندی ها فیلتر کن",
   "CLEAR_FILTERS": "فیلترها را پاک کن",
-  "FILTER_SERVICES": "Filter services",
+  "FILTER_SERVICES": "خدمات فیلتر",
   "NO_LOCATIONS_FOUND": "مکانی پیدا نشد",
   "OFFLINE_MODE": "شما در وضعیت آف لاین هستید! \nممکن است اطلاعاتتان منقضی شده باشد!",
   "TRY_TO_REFRESH": "تلاش برای به روز کردن",
