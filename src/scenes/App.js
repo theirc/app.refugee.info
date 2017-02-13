@@ -7,7 +7,7 @@ import React, {Component} from 'react';
 import {Toolbar} from '../components';
 import {connect} from 'react-redux';
 import scenes from '../routes';
-import {Router, Reducer} from 'react-native-router-flux';
+import {Router, Reducer, Actions} from 'react-native-router-flux';
 import {GA_TRACKER} from '../constants';
 
 const RouterWithRedux = connect()(Router);
@@ -42,11 +42,27 @@ export class App extends Component {
             };
         };
 
+        const backAndroidHandler = () => {
+            const {drawerOpen, dispatch} = this.props;
+            if (drawerOpen) {
+                dispatch({type: 'DRAWER_CHANGED', payload: false});
+            } else {
+                try {
+                    Actions.androidBack();
+                    return true;
+                } catch (err) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
         const statusBar = this.renderStatusBar();
         return (
             <View style={{flex: 1}}>
                 {statusBar}
                 <RouterWithRedux
+                    backAndroidHandler={backAndroidHandler}
                     createReducer={reducerCreate}
                     navBar={Toolbar}
                     scenes={scenes}
@@ -57,7 +73,10 @@ export class App extends Component {
 }
 
 const mapStateToProps = (state) => {
-    return {...state};
+    return {
+        drawerOpen: state.drawerOpen,
+        ...state
+    };
 };
 
 export default connect(mapStateToProps)(App);
