@@ -1,4 +1,4 @@
-import {CSS} from '../constants'
+import {CSS} from '../constants';
 
 const cssStyleSheet = `
 body, html {
@@ -40,20 +40,23 @@ function parseContent(content, platform) {
         return content;
     } else {
         // links starting with "/" gives about:blank in Android webview
-        var regExp = new RegExp('href="/', 'g');
-        return content.replace(regExp, 'href="##')
+        let regExp = new RegExp('href="/', 'g');
+        return content.replace(regExp, 'href="##');
     }
 }
-export function wrapHtmlContent(content, language, title = null, theme = "light", platform) {
+export function wrapHtmlContent(content, language, title = null, theme = 'light', platform) {
     language = language || 'en';
 
     let parsedContent = parseContent(content, platform);
 
     let titleHtml = title || false ? `<h2>${title}</h2>` : '';
     let direction = ['ar', 'fa'].indexOf(language) > -1 ? 'rtl' : 'ltr';
-    return htmlWrap = `
+    return `
     <html>
+    
     <head>
+
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <style>
         ${cssFonts}
         ${cssStyleSheet}

@@ -1,5 +1,6 @@
 {
   "HOME": "Home",
+  "MICRO_APPS": "Apps",
   "GPS_DISABLED": "Unable to determine location. Please enable GPS.",
   "NETWORK_PROBLEM": "There is a problem with your Internet connection",
   "CANT_FIND_LOCATION": "Sorry, we can\"t find your location. Please choose location from the list",
@@ -33,9 +34,7 @@
   "ADDRESS": "Address",
   "SELECT_COUNTRY": "Choose your country",
   "SELECT_LOCATION": "Choose your location",
-  "SERVICE_LIST": "Directory",
-  "SERVICES": "Directory",
-  "EXPLORE_MAP": "Map",
+  "SERVICE_LIST": "Service List",
   "GENERAL_INFO": "Home",
   "SERVICE_DETAILS": "Service Details",
   "SERVICE_MAP": "Service Map",
@@ -75,8 +74,6 @@
   "FEEDBACK": "Feedback",
   "ABOUT": "About",
   "ABOUT_HEADER": "Headline",
-  "ABOUT_CONTENT_1": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  "ABOUT_CONTENT_2": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "WHERE_ARE_YOU": "Where are you?",
   "EMAIL": "Email",
   "SUBJECT": "Subject",
@@ -99,5 +96,12 @@
   "CLUSTER_POPUP_TITLE": "There are {0} services in this location. Click on the service below for more details.",
   "LIKE_US": "Like us on Facebook",
   "INFO_WAS_UP_TO_DATE": "Up-to-date",
-  "INFO_WAS_OUTDATED": "Updated!"
+  "INFO_WAS_OUTDATED": "Updated!",
+  "NO": "No",
+  "YES": "Yes",
+  "LOCATION_WILL_CHANGE": "Do you want to change location to {0}?",
+  "SERVICE_PROVIDER": "Service Provider",
+  "LIST": "List",
+  "FILTER": "Filter",
+  "MAP": "Map"
 }

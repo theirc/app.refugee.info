@@ -1,66 +1,58 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, AsyncStorage, StyleSheet} from 'react-native';
-import {Icon, Button} from '../components';
+import {View, StyleSheet} from 'react-native';
+import {Icon, Button, DirectionalText} from '../components';
 import I18n from '../constants/Messages';
-import {connect} from 'react-redux';
-import {getFontFamily, getBottomDividerColor, getTextColor} from '../styles';
+import styles from '../styles';
 
 export class OfflineView extends Component {
 
     static propTypes = {
-        onRefresh: PropTypes.func.isRequired,
-        offline: PropTypes.bool.isRequired
+        floating: PropTypes.bool,
+        offline: PropTypes.bool.isRequired,
+        onRefresh: PropTypes.func.isRequired
     };
 
     onRefreshHandler() {
         this.props.onRefresh();
-    };
+    }
 
     render() {
-        const {theme, offline, language} = this.props;
+        const {offline, floating} = this.props;
         if (offline) {
             return (
-                <View style={[
-                    componentStyles.offlineModeContainer,
-                    {borderBottomWidth: 0},
-                    getBottomDividerColor(theme)
-
-                ]}>
-                    <Icon style={componentStyles.offlineModeIcon} name="md-warning"/>
-                    <View style={componentStyles.offlineModeTextContainer}>
-                        <Text style={[
-                            componentStyles.offlineModeText,
-                            getFontFamily(language),
-                            getTextColor(theme)
-                        ]}
-                        >
-                            {I18n.t('OFFLINE_MODE')}
-                        </Text>
+                <View style={!floating && [{borderBottomWidth: 1}, styles.bottomDividerLight]}>
+                    <View style={componentStyles.offlineModeContainer}>
+                        <Icon
+                            name="md-warning"
+                            style={componentStyles.offlineModeIcon}
+                        />
+                        <View style={componentStyles.offlineModeTextContainer}>
+                            <DirectionalText style={[
+                                componentStyles.offlineModeText,
+                                styles.textLight
+                            ]}
+                            >
+                                {I18n.t('OFFLINE_MODE')}
+                            </DirectionalText>
+                        </View>
                     </View>
                     <View style={componentStyles.offlineModeButtonContainer}>
                         <Button
-                            text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
-                            onPress={()=> this.onRefreshHandler()}
                             buttonStyle={{height: 35, marginTop: 15, marginBottom: 5}}
-                            textStyle={{fontSize: 14}}
                             color="green"
+                            onPress={() => this.onRefreshHandler()}
+                            text={I18n.t('TRY_TO_REFRESH').toUpperCase()}
+                            textStyle={{fontSize: 14}}
+                            transparent
                         />
                     </View>
                 </View>
-            )
+            );
         }
-        return null
+        return <View />;
     }
-};
+}
 
-const mapStateToProps = (state) => {
-    return {
-        region: state.region,
-        direction: state.direction,
-        language: state.language,
-        theme: state.theme
-    };
-};
 
 const componentStyles = StyleSheet.create({
     offlineModeContainer: {
@@ -82,11 +74,12 @@ const componentStyles = StyleSheet.create({
         fontSize: 36
     },
     offlineModeButtonContainer: {
+        flexGrow: 1,
         width: 180,
-        alignSelf: 'center',
-        marginRight: -15
+        height: 50,
+        alignSelf: 'center'
     }
 });
 
-export default connect(mapStateToProps)(OfflineView);
+export default OfflineView;
 

@@ -1,69 +1,46 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Text, TextInput, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {Icon} from '../components';
-import {connect} from 'react-redux';
-import {getUnderlayColor, getElevation, themes} from '../styles';
+import {getElevation, themes} from '../styles';
 
 export class SearchFilterButton extends Component {
 
     static propTypes = {
-        theme: PropTypes.oneOf(['light', 'dark']),
         active: PropTypes.bool,
-        onPressAction: PropTypes.func,
-        floating: PropTypes.bool
+        floating: PropTypes.bool,
+        onPressAction: PropTypes.func
     };
 
     render() {
-        const {theme, onPressAction, active, floating} = this.props;
+        const {onPressAction, active, floating} = this.props;
         return (
             <View
                 style={[
                     componentStyles.searchFilterButtonContainer,
-                    floating
-                        ? {}
-                        : theme == 'dark' ? componentStyles.searchFilterButtonContainerDark : componentStyles.searchFilterButtonContainerLight
+                    !floating && componentStyles.searchFilterButtonContainerLight
                 ]}
             >
-                <View
+                <TouchableOpacity
+                    activeOpacity={0.6}
                     onPress={onPressAction}
-                    style={[
-                        getElevation(),
-                        componentStyles.searchFilterButton,
-                        theme == 'dark'
-                            ? (active)
-                            ? componentStyles.searchFilterButtonDarkActive
-                            : componentStyles.searchFilterButtonDark
-                            : (active)
-                            ? componentStyles.searchFilterButtonLightActive
-                            : componentStyles.searchFilterButtonLight
-                    ]}
                 >
-                    <TouchableOpacity
-                        onPress={onPressAction}
-                        activeOpacity={0.6}
+                    <View
+                        style={[
+                            getElevation(),
+                            componentStyles.searchFilterButton,
+                            (active) ? componentStyles.searchFilterButtonLightActive : componentStyles.searchFilterButtonLight
+                        ]}
                     >
                         <Icon
-                            name={"md-funnel"}
-                            style={[
-                                componentStyles.searchFilterIcon,
-                                theme == 'dark' ? componentStyles.searchFilterIconDark : componentStyles.searchFilterIconLight
-                            ]}
+                            name="md-funnel"
+                            style={[componentStyles.searchFilterIcon, componentStyles.searchFilterIconLight]}
                         />
-                    </TouchableOpacity>
-
-                </View>
+                    </View>
+                </TouchableOpacity>
             </View>
-        )
+        );
     }
-};
-
-const mapStateToProps = (state) => {
-    return {
-        region: state.region,
-        direction: state.direction,
-        language: state.language
-    };
-};
+}
 
 const componentStyles = StyleSheet.create({
     searchFilterButtonContainer: {
@@ -74,10 +51,7 @@ const componentStyles = StyleSheet.create({
         justifyContent: 'center'
     },
     searchFilterButtonContainerLight: {
-        backgroundColor: themes.light.dividerColor
-    },
-    searchFilterButtonContainerDark: {
-        backgroundColor: themes.dark.menuBackgroundColor
+        backgroundColor: themes.light.lighterDividerColor
     },
     searchFilterButton: {
         height: 44,
@@ -89,24 +63,15 @@ const componentStyles = StyleSheet.create({
     searchFilterButtonLight: {
         backgroundColor: themes.light.backgroundColor
     },
-    searchFilterButtonDark: {
-        backgroundColor: themes.dark.toolbarColor
-    },
     searchFilterButtonLightActive: {
         backgroundColor: themes.light.lighterDividerColor
     },
-    searchFilterButtonDarkActive: {
-        backgroundColor: themes.dark.backgroundColor
-    },
     searchFilterIcon: {
         fontSize: 26
-    },
-    searchFilterIconDark: {
-        color: themes.dark.textColor
     },
     searchFilterIconLight: {
         color: themes.light.textColor
     }
 });
 
-export default connect(mapStateToProps)(SearchFilterButton);
+export default SearchFilterButton;
