@@ -48,7 +48,7 @@ export class App extends Component {
                 dispatch({type: 'DRAWER_CHANGED', payload: false});
             } else {
                 try {
-                    Actions.androidBack();
+                    Actions.pop();
                     return true;
                 } catch (err) {
                     return false;
