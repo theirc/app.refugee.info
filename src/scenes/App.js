@@ -43,12 +43,15 @@ export class App extends Component {
         };
 
         const backAndroidHandler = () => {
-            const {drawerOpen, dispatch} = this.props;
+            const {drawerOpen, dispatch, region, routes} = this.props;
             if (drawerOpen) {
                 dispatch({type: 'DRAWER_CHANGED', payload: false});
+            } else if (!region && routes.scene.sceneKey == 'countryChoice') {
+                // close app at initialize screen, when region is not set yet
+                return false;
             } else {
                 try {
-                    Actions.androidBack();
+                    Actions.pop();
                     return true;
                 } catch (err) {
                     return false;
@@ -75,6 +78,8 @@ export class App extends Component {
 const mapStateToProps = (state) => {
     return {
         drawerOpen: state.drawerOpen,
+        region: state.region,
+        routes: state.routes,
         ...state
     };
 };
