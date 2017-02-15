@@ -2,14 +2,13 @@ import React, {Component, PropTypes} from 'react';
 import {
     StyleSheet,
     ListView,
-    RefreshControl,
     View,
     Linking,
     Platform,
-    Dimensions,
-    Image
+    Image,
+    ScrollView
 } from 'react-native';
-import {Icon, ParallaxView, DirectionalText} from '../components';
+import {Icon, DirectionalText} from '../components';
 import MapView from 'react-native-maps';
 import I18n from '../constants/Messages';
 import ApiClient from '../utils/ApiClient';
@@ -21,7 +20,7 @@ import {WEB_PATH} from '../constants';
 import {MAPBOX_TOKEN} from '../constants';
 import {checkPlayServices} from '../utils/GooglePlayServices';
 import {GA_TRACKER} from '../constants';
-
+import {Actions} from 'react-native-router-flux';
 
 let Mapbox;
 if (Platform.OS === 'android') {
@@ -29,7 +28,6 @@ if (Platform.OS === 'android') {
     Mapbox.setAccessToken(MAPBOX_TOKEN);
 }
 
-const screen = Dimensions.get('window');
 const RADIUS = 0.01;
 const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const SHOW_SHARE_BUTTON = true;
@@ -46,6 +44,7 @@ export class ServiceDetails extends Component {
         region: PropTypes.object,
         service: PropTypes.shape({
             id: PropTypes.number,
+            name: PropTypes.string,
             provider_fetch_url: PropTypes.string.isRequired
         }),
         serviceType: PropTypes.shape({
@@ -69,6 +68,10 @@ export class ServiceDetails extends Component {
         };
         this.onRefresh = this.onRefresh.bind(this);
         this.call = this.call.bind(this);
+    }
+
+    componentWillMount() {
+        Actions.refresh({title: this.props.service.name});
     }
 
     componentDidMount() {
@@ -283,9 +286,7 @@ export class ServiceDetails extends Component {
                 >
                     <MapView.Marker coordinate={coordinate}>
                         <View style={componentStyles.marker}>
-                            <Image
-                                source={require('../assets/marker.png')}
-                            />
+                            <Image source={require('../assets/marker.png')}/>
                         </View>
                     </MapView.Marker>
                 </MapView>
@@ -327,20 +328,6 @@ export class ServiceDetails extends Component {
             />
         );
 
-    }
-
-    renderHeader() {
-        const {service} = this.props;
-        const textStyle = !service.image ? {color: themes.light.textColor} : componentStyles.text;
-        const fontSize = service.name.length > 35 ? (service.name.length > 45 ? 12 : 20) : 24;
-
-        return (
-            <View style={[componentStyles.headerView, styles.row]}>
-                <DirectionalText style={[textStyle, {fontSize}]}>
-                    {service.name}
-                </DirectionalText>
-            </View>
-        );
     }
 
     renderServiceDescription() {
@@ -409,36 +396,20 @@ export class ServiceDetails extends Component {
             lat = parseFloat(service.location.coordinates[1]),
             long = parseFloat(service.location.coordinates[0]),
 
-            backgroundImage = service.image ? {uri: service.image} : require('../assets/service-placeholder-light.png'),
-            imageAspectRatio = Math.sqrt(5),
-
             mapView = this.renderMapView(nativeAvailable),
             openingHoursView = this.renderOpeningHours(),
             serviceDescriptionView = this.renderServiceDescription(),
             serviceAddressView = this.renderServiceAddress();
 
         return (
-            <ParallaxView
-                backgroundSource={backgroundImage}
-                header={this.renderHeader()}
-                refreshControl={
-                    <RefreshControl
-                        onRefresh={this.onRefresh}
-                        refreshing={this.state.refreshing}
-                    />
-                }
-                scrollableViewStyle={[componentStyles.containerView]}
-                style={styles.container}
-                windowHeight={service.image ? screen.width / imageAspectRatio : 60}
-            >
+
+            <ScrollView style={styles.container}>
                 <OfflineView
                     offline={this.state.offline}
                     onRefresh={this.onRefresh}
                 />
-
                 {mapView}
-
-                <View style={styles.detailsContainer}>
+                <View style={[styles.detailsContainer, {paddingBottom: 0}]}>
                     <View style={[styles.row, {paddingBottom: 5}]}>
                         <Icon
                             name="ios-pin"
@@ -458,7 +429,14 @@ export class ServiceDetails extends Component {
                     </View>
                     <Divider />
                 </View>
-
+                {service.image &&
+                <View style={componentStyles.imageContainer}>
+                    <Image
+                        resizeMode="cover"
+                        source={{uri: service.image}}
+                        style={componentStyles.image}
+                    />
+                </View>}
                 {serviceDescriptionView}
                 {serviceAddressView}
                 {openingHoursView}
@@ -488,7 +466,7 @@ export class ServiceDetails extends Component {
                         textStyle={{fontSize: 15}}
                     />}
                 </View>
-            </ParallaxView>
+            </ScrollView>
         );
     }
 }
@@ -507,27 +485,18 @@ const componentStyles = StyleSheet.create({
         fontWeight: 'bold',
         color: themes.light.textColor
     },
-    headerView: {
-        flex: 1,
-        alignItems: 'flex-end',
-        justifyContent: 'flex-start',
-        margin: 10
-    },
-    containerView: {
-        flex: 1,
-        backgroundColor: themes.light.backgroundColor
-    },
-    text: {
-        color: themes.light.darkBackgroundColor,
-        textShadowOffset: {width: -1, height: 1},
-        textShadowRadius: 1,
-        textShadowColor: themes.light.darkBackgroundColor
-    },
     marker: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    imageContainer: {
+        paddingHorizontal: 10
+    },
+    image: {
+        flexGrow: 1,
+        height: 200
     }
 });
 

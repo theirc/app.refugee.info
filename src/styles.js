@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row-reverse'
     },
     container: {
-        paddingTop: getToolbarHeight(),
+        marginTop: getToolbarHeight(),
         flexGrow: 1,
         flexDirection: 'column'
     },
