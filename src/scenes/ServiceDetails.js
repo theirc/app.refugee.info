@@ -378,6 +378,10 @@ export class ServiceDetails extends Component {
                         <DirectionalText style={[styles.sectionContent, styles.textLight]}>
                             {(service.address || service.provider.address) }
                         </DirectionalText>
+                        {service.address_in_country_language &&
+                        <DirectionalText style={[styles.sectionContent, styles.textLight]}>
+                            {service.address_in_country_language}
+                        </DirectionalText>}
                     </View>
                 </View>
             </View>
