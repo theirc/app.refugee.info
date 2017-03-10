@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {View, Linking, Platform, WebView, TouchableOpacity, AsyncStorage, Alert} from 'react-native';
+import {View, Linking, Platform, WebView, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import {wrapHtmlContent} from '../utils/htmlUtils';
 import styles from '../styles';
 import {connect} from 'react-redux';
@@ -13,6 +13,7 @@ import {Actions} from 'react-native-router-flux';
 import {GA_TRACKER} from '../constants';
 import {getRegionAllContent} from '../utils/helpers';
 import {updateRegionIntoStorage} from '../actions';
+import {themes} from '../styles';
 
 
 export class GeneralInformationDetails extends Component {
@@ -61,13 +62,6 @@ export class GeneralInformationDetails extends Component {
             )
         };
         this.setState({source, loading: false});
-        this.apiClient.getRating(section.slug, true).then((response) => {
-            this.setState({
-                thumbsUp: response.thumbs_up,
-                thumbsDown: response.thumbs_down
-            });
-        }).catch(() => {
-        });
     }
 
     getSectionBySlug(slug) {
@@ -258,87 +252,28 @@ export class GeneralInformationDetails extends Component {
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${section.title || ''}`,
             url: `${WEB_PATH}/${region.slug}/${section.slug}`
-        });
-    }
-
-    rate(rating) {
-        const {section} = this.props;
-
-        const ratingStored = `rating-${section.slug}`;
-        AsyncStorage.getItem(ratingStored, (error, result) => {
-            if (!result) {
-                this.apiClient.setRating(section.slug, rating).then((res) => {
-                    let response = JSON.parse(res._bodyText);
-                    this.setState({
-                        thumbsUp: response.thumbs_up,
-                        thumbsDown: response.thumbs_down
-                    });
-                    AsyncStorage.setItem(ratingStored, JSON.stringify(response.rating_id));
-                });
-            } else {
-                this.apiClient.setRating(section.slug, rating, 'other', result).then((res) => {
-                    let response = JSON.parse(res._bodyText);
-                    this.setState({
-                        thumbsUp: response.thumbs_up,
-                        thumbsDown: response.thumbs_down
-                    });
-                    AsyncStorage.setItem(ratingStored, JSON.stringify(response.rating_id));
-                });
-            }
-        });
-
+        }).catch(() => {});
     }
 
     renderFeedbackBar() {
-        const {thumbsUp, thumbsDown} = this.state;
         if (this.props.section.notifications) {
             return <View />;
         }
         return (
-            <View style={styles.feedbackRow}>
+            <View style={componentStyles.bottomBar}>
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => this.onSharePress()}
-                    style={styles.feedbackRowFacebookContainer}
+                    style={componentStyles.shareButton}
                 >
                     <Icon
                         name="fa-share"
-                        style={styles.feedbackRowIcon}
+                        style={componentStyles.shareIcon}
                     />
-                    <DirectionalText style={styles.feedbackRowShare}>
+                    <DirectionalText style={componentStyles.shareText}>
                         {I18n.t('SHARE')}
                     </DirectionalText>
                 </TouchableOpacity>
-
-                {thumbsUp != undefined &&
-                <TouchableOpacity
-                    activeOpacity={0.5}
-                    onPress={() => this.rate(1)}
-                    style={styles.feedbackRowIconContainer}
-                >
-                    <Icon
-                        name="fa-thumbs-up"
-                        style={styles.feedbackRowIcon}
-                    />
-                    <DirectionalText style={{width: 30}}>
-                        {thumbsUp}
-                    </DirectionalText>
-                </TouchableOpacity>}
-
-                {thumbsDown != undefined &&
-                <TouchableOpacity
-                    activeOpacity={0.5}
-                    onPress={() => this.rate(-1)}
-                    style={styles.feedbackRowIconContainer}
-                >
-                    <Icon
-                        name="fa-thumbs-down"
-                        style={styles.feedbackRowIcon}
-                    />
-                    <DirectionalText style={{width: 30}}>
-                        {thumbsDown}
-                    </DirectionalText>
-                </TouchableOpacity>}
             </View>
         );
     }
@@ -365,6 +300,30 @@ export class GeneralInformationDetails extends Component {
     }
 }
 
+const componentStyles = StyleSheet.create({
+    bottomBar: {
+        height: 48,
+        flexDirection: 'row',
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: themes.light.toolbarColor
+    },
+    shareButton: {
+        height: 48,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    shareText: {
+        fontSize: 16,
+        color: themes.light.textColor
+    },
+    shareIcon: {
+        color: themes.light.textColor,
+        paddingLeft: 10,
+        paddingRight: 10,
+        fontSize: 24
+    }
+});
 
 const mapStateToProps = (state) => {
     return {

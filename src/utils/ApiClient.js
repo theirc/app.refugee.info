@@ -98,14 +98,6 @@ export default class ApiClient {
         return this.fetch(`services/search/?format=json&id=${id}`, raise_exception);
     }
 
-    setRating(pageSlug, rating, reason, rating_id) {
-        return this.post(`page/${pageSlug}/rate/`, {rating, reason, rating_id});
-    }
-
-    getRating(pageSlug, raiseException = false) {
-        return this.fetch(`page/${pageSlug}/rate`, raiseException);
-    }
-
     getAbout(raiseException = false) {
         return this.fetch(`about/${this.language}`, raiseException);
     }
