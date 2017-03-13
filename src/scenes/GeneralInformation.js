@@ -206,7 +206,6 @@ const componentStyles = StyleSheet.create({
     },
     buttonsContainer: {
         paddingHorizontal: 5,
-        paddingVertical: 10,
         height: 70,
         flexDirection: 'row',
         borderBottomWidth: 1,
