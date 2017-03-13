@@ -47,8 +47,8 @@ export class Button extends Component {
         }
         return (
             <View style={[
-                {paddingLeft: 10},
-                transparent && {paddingLeft: 0, paddingRight: 0},
+                !transparent && {paddingLeft: 10},
+                transparent && {paddingHorizontal: 0, marginBottom: 5},
                 styles.alignCenter,
                 {height: 24}]}
             >
@@ -74,7 +74,7 @@ export class Button extends Component {
                     <TouchableOpacity
                         activeOpacity={0.5}
                         onPress={onPress}
-                        style={[{flexGrow: 1, marginLeft: 5, marginRight: 5}]}
+                        style={componentStyles.buttonInner}
                     >
                         {iconImage}
                         <View style={componentStyles.buttonTextContainer}>
@@ -131,6 +131,12 @@ const componentStyles = StyleSheet.create({
         height: 45,
         borderRadius: 2
     },
+    buttonInner: {
+        flexGrow: 1,
+        marginHorizontal: 5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
     buttonWhite: {
         backgroundColor: themes.light.backgroundColor
     },
@@ -144,9 +150,7 @@ const componentStyles = StyleSheet.create({
         backgroundColor: themes.light.yellowAccentColor
     },
     buttonTextContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexGrow: 1
+        alignItems: 'center'
     },
     buttonText: {
         fontSize: 13,
