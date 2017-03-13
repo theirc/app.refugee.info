@@ -259,36 +259,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginBottom: 5,
         borderWidth: 0.5
-    },
-    feedbackRow: {
-        height: 48,
-        flexDirection: 'row',
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: themes.light.toolbarColor
-    },
-    feedbackRowFacebookContainer: {
-        height: 48,
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
-    feedbackRowShare: {
-        fontSize: 16,
-        color: themes.light.textColor
-    },
-    feedbackRowIconContainer: {
-        height: 48,
-        width: 80,
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row'
-    },
-    feedbackRowIcon: {
-        color: themes.light.textColor,
-        paddingLeft: 10,
-        paddingRight: 10,
-        fontSize: 24
     }
 });
 
