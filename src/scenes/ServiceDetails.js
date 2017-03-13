@@ -158,6 +158,11 @@ export class ServiceDetails extends Component {
         }
     }
 
+    formatDateTime(datetime) {
+        const date = new Date(datetime);
+        return ` ${date.toLocaleString().replace(',', '')}`;
+    }
+
     renderOpeningHoursRow(day) {
         const {service} = this.props;
         let open = service[`${day}_open`];
@@ -406,7 +411,6 @@ export class ServiceDetails extends Component {
             serviceAddressView = this.renderServiceAddress();
 
         return (
-
             <ScrollView style={styles.container}>
                 <OfflineView
                     offline={this.state.offline}
@@ -441,6 +445,14 @@ export class ServiceDetails extends Component {
                         style={componentStyles.image}
                     />
                 </View>}
+                <View style={componentStyles.updateTextContainer}>
+                    <DirectionalText style={componentStyles.updateText}>
+                        {I18n.t('LAST_UPDATED_ON')}:
+                    </DirectionalText>
+                    <DirectionalText style={componentStyles.updateText}>
+                        {this.formatDateTime(service.updated_at)}
+                    </DirectionalText>
+                </View>
                 {serviceDescriptionView}
                 {serviceAddressView}
                 {openingHoursView}
@@ -501,6 +513,17 @@ const componentStyles = StyleSheet.create({
     image: {
         flexGrow: 1,
         height: 200
+    },
+    updateTextContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 20
+    },
+    updateText: {
+        fontSize: 12,
+        color: themes.light.textColor
     }
 });
 

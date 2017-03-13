@@ -255,10 +255,17 @@ export class GeneralInformationDetails extends Component {
         }).catch(() => {});
     }
 
+    formatDateTime(datetime) {
+        const date = new Date(datetime);
+        return date.toLocaleString().replace(',', '');
+    }
+
     renderFeedbackBar() {
-        if (this.props.section.notifications) {
+        const {section} = this.props;
+        if (section.notifications) {
             return <View />;
         }
+
         return (
             <View style={componentStyles.bottomBar}>
                 <TouchableOpacity
@@ -274,6 +281,14 @@ export class GeneralInformationDetails extends Component {
                         {I18n.t('SHARE')}
                     </DirectionalText>
                 </TouchableOpacity>
+                <View style={componentStyles.updateTextContainer}>
+                    <DirectionalText style={componentStyles.updateText}>
+                        {I18n.t('LAST_UPDATED_ON')}:
+                    </DirectionalText>
+                    <DirectionalText style={componentStyles.updateText}>
+                    {this.formatDateTime(section.updated_at)}
+                    </DirectionalText>
+                </View>
             </View>
         );
     }
@@ -322,6 +337,15 @@ const componentStyles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
         fontSize: 24
+    },
+    updateTextContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    },
+    updateText: {
+        fontSize: 14,
+        color: themes.light.textColor
     }
 });
 

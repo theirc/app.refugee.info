@@ -103,5 +103,6 @@
   "SERVICE_PROVIDER": "Service Provider",
   "LIST": "List",
   "FILTER": "Filter",
-  "MAP": "Map"
+  "MAP": "Map",
+  "LAST_UPDATED_ON": "Last updated on"
 }

@@ -98,9 +98,10 @@
   "INFO_WAS_OUTDATED": "به روز رسانی!",
   "NO": "نه",
   "YES": "بله",
-  "LOCATION_WILL_CHANGE": "?{آیا شما می خواهید به تغییر محل به {0",
+  "LOCATION_WILL_CHANGE": "?آیا شما می خواهید به تغییر محل به {0}",
   "SERVICE_PROVIDER": "ارائه دهنده خدمات",
   "LIST": "فهرست",
   "FILTER": "صافی",
-  "MAP": "نقشه"
+  "MAP": "نقشه",
+  "LAST_UPDATED_ON": "Last updated on"
 }
