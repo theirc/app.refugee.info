@@ -164,9 +164,9 @@ export class Service extends Component {
                         offline: false,
                         loading: false
                     });
-                }, (() => {
+                }).catch((error) => {
                     this.setOffline(true);
-                }));
+                });
             });
         } catch (e) {
             this.setOffline(true);
