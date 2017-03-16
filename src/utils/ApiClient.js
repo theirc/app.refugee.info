@@ -73,8 +73,8 @@ export default class ApiClient {
     }
 
 
-    getServiceTypes(raise_exception = false) {
-        return this.fetch('servicetypes/?format=json', raise_exception);
+    getServiceTypes(raiseException = false) {
+        return this.fetch('servicetypes/?format=json', raiseException);
     }
 
     getServicePage(locationSlug, coords = {}, searchCriteria = '', page = 1, pageSize = 10, types, raiseException = false) {
@@ -94,8 +94,8 @@ export default class ApiClient {
         return this.fetch(url, raiseException);
     }
 
-    getService(id, raise_exception = false) {
-        return this.fetch(`services/search/?format=json&id=${id}`, raise_exception);
+    getService(id, raiseException = false) {
+        return this.fetch(`services/search/?format=json&id=${id}`, raiseException);
     }
 
     getAbout(raiseException = false) {

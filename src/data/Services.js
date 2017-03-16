@@ -14,18 +14,8 @@ export default class Services extends Component {
     }
 
 
-    async listServiceTypes(network = false) {
-        let serviceTypes = JSON.parse(await AsyncStorage.getItem('__serviceTypes'));
-
-        if (!serviceTypes || network) {
-            serviceTypes = await this.client.getServiceTypes();
-            await AsyncStorage.setItem('__serviceTypes', JSON.stringify(serviceTypes));
-            await Promise.all(serviceTypes.map((c) => {
-                return Promise.all([
-                    AsyncStorage.setItem(`__serviceType-${ c.id}`, JSON.stringify(c))
-                ]);
-            }));
-        }
+    async listServiceTypes() {
+        let serviceTypes = await this.client.getServiceTypes(true);
         serviceTypes.forEach(s => Translation.addTranslatedProperties(s, this.language, 'name', 'comments'));
 
         return serviceTypes; 
