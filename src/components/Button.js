@@ -10,7 +10,7 @@ export class Button extends Component {
 
     static propTypes = {
         buttonStyle: PropTypes.object,
-        color: PropTypes.oneOf(['white', 'black', 'green', 'yellow']),
+        color: PropTypes.oneOf(['white', 'black', 'green', 'facebook']),
         icon: PropTypes.string,
         iconStyle: PropTypes.object,
         onPress: PropTypes.func,
@@ -22,21 +22,20 @@ export class Button extends Component {
     getButtonColor(color) {
         if (color == 'black') return componentStyles.buttonBlack;
         else if (color == 'green') return componentStyles.buttonGreen;
-        else if (color == 'yellow') return componentStyles.buttonYellow;
+        else if (color == 'facebook') return componentStyles.buttonFacebook;
         else return componentStyles.buttonWhite;
     }
 
     getButtonUnderlayColor(color) {
         if (color == 'black') return 'rgba(255,255,255,0.2)';
         else if (color == 'green') return 'rgba(0,150,70,0.8)';
-        else if (color == 'yellow') return 'rgba(255,255,255,0.5)';
         else return 'rgba(177,177,177,0.5)';
     }
 
     getButtonTextColor(color) {
         if (color == 'black') return componentStyles.buttonTextBlack;
         else if (color == 'green') return componentStyles.buttonTextGreen;
-        else if (color == 'yellow') return componentStyles.buttonTextYellow;
+        else if (color == 'facebook') return componentStyles.buttonTextFacebook;
         else return componentStyles.buttonTextWhite;
     }
 
@@ -102,7 +101,7 @@ export class Button extends Component {
             >
                 <TouchableHighlight
                     onPress={onPress}
-                    style={[styles.flex]}
+                    style={[componentStyles.buttonInner, {marginHorizontal: 0}]}
                     underlayColor={this.getButtonUnderlayColor(color)}
                 >
                     <View style={[
@@ -146,8 +145,8 @@ const componentStyles = StyleSheet.create({
     buttonGreen: {
         backgroundColor: themes.light.greenAccentColor
     },
-    buttonYellow: {
-        backgroundColor: themes.light.yellowAccentColor
+    buttonFacebook: {
+        backgroundColor: '#3b5998'
     },
     buttonTextContainer: {
         alignItems: 'center'
@@ -169,8 +168,8 @@ const componentStyles = StyleSheet.create({
     buttonTextGreen: {
         color: themes.dark.textColor
     },
-    buttonTextYellow: {
-        color: themes.light.textColor
+    buttonTextFacebook: {
+        color: themes.dark.textColor
     }
 });
 

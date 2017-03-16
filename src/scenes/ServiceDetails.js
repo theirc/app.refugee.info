@@ -140,6 +140,17 @@ export class ServiceDetails extends Component {
         }
     }
 
+    findOnFacebook() {
+        if (!this.state.loaded) {
+            return;
+        }
+        const {service} = this.props;
+        let prefix = service.facebook_page.startsWith('http') ? '' : 'http://';
+        requestAnimationFrame(() => {
+            return Linking.openURL(`${prefix}${service.facebook_page}`);
+        });
+    }
+
     onShareClick() {
         if (this.state.loaded) {
             const {provider, service} = this.state;
@@ -401,6 +412,7 @@ export class ServiceDetails extends Component {
         const {service, location} = this.props,
             locationName = (location) ? location.pageTitle || location.name : '',
             hasPhoneNumber = loaded && !!this.state.provider.phone_number,
+            hasFacebookPage = loaded && !!service.facebook_page,
 
             lat = parseFloat(service.location.coordinates[1]),
             long = parseFloat(service.location.coordinates[0]),
@@ -459,24 +471,37 @@ export class ServiceDetails extends Component {
 
                 <View style={styles.detailsContainer}>
                     <Button
-                        buttonStyle={{marginBottom: 10}}
+                        buttonStyle={{marginBottom: 5}}
                         color="green"
+                        icon="fa-map"
+                        iconStyle={{fontSize: 20}}
                         onPress={() => this.getDirections(lat, long)}
                         text={I18n.t('GET_DIRECTIONS')}
                         textStyle={{fontSize: 15}}
                     />
+                    {hasFacebookPage &&
+                    <Button
+                        buttonStyle={{marginBottom: 5}}
+                        color="facebook"
+                        icon="fa-facebook-f"
+                        onPress={() => this.findOnFacebook()}
+                        text={I18n.t('FIND_US_ON_FACEBOOK')}
+                        textStyle={{fontSize: 15}}
+                    />}
                     {hasPhoneNumber &&
                     <Button
-                        buttonStyle={{marginBottom: 10}}
+                        buttonStyle={{marginBottom: 5}}
                         color="black"
+                        icon="fa-phone"
                         onPress={this.call}
                         text={I18n.t('CALL')}
                         textStyle={{fontSize: 15}}
                     />}
                     {SHOW_SHARE_BUTTON &&
                     <Button
-                        buttonStyle={{marginBottom: 10}}
+                        buttonStyle={{marginBottom: 5}}
                         color="white"
+                        icon="fa-share"
                         onPress={() => this.onShareClick()}
                         text={I18n.t('SHARE')}
                         textStyle={{fontSize: 15}}
