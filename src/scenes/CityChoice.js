@@ -46,6 +46,9 @@ export class CityChoice extends Component {
             cities = [{country, ...country}].concat(children);
             cities = cities.filter((city) => !city.hidden);
             cities.forEach((city) => {city.country = country});
+            if (cities.length == 1) {
+                return this.onPress(cities[0]);
+            }
         } catch (e) {
             return this.setState({offline: true});
         }

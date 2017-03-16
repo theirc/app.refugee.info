@@ -139,7 +139,6 @@ export class GeneralInformation extends Component {
     }
 
     render() {
-        const {country} = this.props;
         let refreshText = this.renderRefreshText(this.state.dataSourceUpdated);
         return (
             <View style={styles.container}>
@@ -155,7 +154,7 @@ export class GeneralInformation extends Component {
                         buttonStyle={{flex: 1.3}}
                         color="green"
                         icon="md-locate"
-                        onPress={() => Actions.cityChoice({country})}
+                        onPress={() => Actions.countryChoice()}
                         text={I18n.t('CHANGE_LOCATION').toUpperCase()}
                         transparent
                     />
