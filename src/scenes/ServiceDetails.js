@@ -151,6 +151,28 @@ export class ServiceDetails extends Component {
         });
     }
 
+    openWebsite() {
+        if (!this.state.loaded) {
+            return;
+        }
+        const {service} = this.props;
+        let prefix = service.website.startsWith('http') ? '' : 'http://';
+        requestAnimationFrame(() => {
+            return Linking.openURL(`${prefix}${service.website}`);
+        });
+    }
+
+    sendEmail() {
+        if (!this.state.loaded) {
+            return;
+        }
+        const {service} = this.props;
+        let prefix = 'mailto:';
+        requestAnimationFrame(() => {
+            return Linking.openURL(`${prefix}${service.email}`);
+        });
+    }
+
     onShareClick() {
         if (this.state.loaded) {
             const {provider, service} = this.state;
@@ -373,6 +395,30 @@ export class ServiceDetails extends Component {
         );
     }
 
+    renderServiceAdditionalInfo() {
+        const {service} = this.props;
+        if (!service.additional_info) {
+            return <View />;
+        }
+        return (
+            <View style={[styles.detailsContainer]}>
+                <View style={styles.row}>
+                    <View style={[componentStyles.sectionIconContainer]}>
+
+                    </View>
+                    <View style={styles.flex}>
+                        <DirectionalText style={[componentStyles.sectionHeader, styles.textLight]}>
+                            {I18n.t('ADDITIONAL_INFORMATION') }
+                        </DirectionalText>
+                        <DirectionalText style={[styles.sectionContent, styles.textLight]}>
+                            {service.additional_info}
+                        </DirectionalText>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
     renderServiceAddress() {
         const {service} = this.props;
         if (!service.address && !service.provider.address) {
@@ -413,6 +459,8 @@ export class ServiceDetails extends Component {
             locationName = (location) ? location.pageTitle || location.name : '',
             hasPhoneNumber = loaded && !!this.state.provider.phone_number,
             hasFacebookPage = loaded && !!service.facebook_page,
+            hasEmail = loaded && !!service.email,
+            hasWebsite = loaded && !!service.website,
 
             lat = parseFloat(service.location.coordinates[1]),
             long = parseFloat(service.location.coordinates[0]),
@@ -420,6 +468,7 @@ export class ServiceDetails extends Component {
             mapView = this.renderMapView(nativeAvailable),
             openingHoursView = this.renderOpeningHours(),
             serviceDescriptionView = this.renderServiceDescription(),
+            serviceAdditionalInfoView = this.renderServiceAdditionalInfo(),
             serviceAddressView = this.renderServiceAddress();
 
         return (
@@ -465,7 +514,9 @@ export class ServiceDetails extends Component {
                         {this.formatDateTime(service.updated_at)}
                     </DirectionalText>
                 </View>
+
                 {serviceDescriptionView}
+                {serviceAdditionalInfoView}
                 {serviceAddressView}
                 {openingHoursView}
 
@@ -474,16 +525,37 @@ export class ServiceDetails extends Component {
                         buttonStyle={{marginBottom: 5}}
                         color="green"
                         icon="fa-map"
-                        iconStyle={{fontSize: 20}}
+                        iconStyle={{fontSize: 20, marginHorizontal: 5}}
                         onPress={() => this.getDirections(lat, long)}
                         text={I18n.t('GET_DIRECTIONS')}
                         textStyle={{fontSize: 15}}
                     />
+                    {hasEmail &&
+                    <Button
+                        buttonStyle={{marginBottom: 5}}
+                        color="green"
+                        icon="fa-envelope"
+                        iconStyle={{fontSize: 20, marginHorizontal: 5}}
+                        onPress={() => this.sendEmail()}
+                        text={service.email}
+                        textStyle={{fontSize: 15}}
+                    />}
+                    {hasWebsite &&
+                    <Button
+                        buttonStyle={{marginBottom: 5}}
+                        color="green"
+                        icon="fa-external-link"
+                        iconStyle={{fontSize: 20, marginHorizontal: 5}}
+                        onPress={() => this.openWebsite()}
+                        text={service.website}
+                        textStyle={{fontSize: 15}}
+                    />}
                     {hasFacebookPage &&
                     <Button
                         buttonStyle={{marginBottom: 5}}
                         color="facebook"
                         icon="fa-facebook-f"
+                        iconStyle={{marginHorizontal: 5}}
                         onPress={() => this.findOnFacebook()}
                         text={I18n.t('FIND_US_ON_FACEBOOK')}
                         textStyle={{fontSize: 15}}
@@ -493,6 +565,7 @@ export class ServiceDetails extends Component {
                         buttonStyle={{marginBottom: 5}}
                         color="black"
                         icon="fa-phone"
+                        iconStyle={{marginHorizontal: 5}}
                         onPress={this.call}
                         text={I18n.t('CALL')}
                         textStyle={{fontSize: 15}}
@@ -502,6 +575,7 @@ export class ServiceDetails extends Component {
                         buttonStyle={{marginBottom: 5}}
                         color="white"
                         icon="fa-share"
+                        iconStyle={{marginHorizontal: 5}}
                         onPress={() => this.onShareClick()}
                         text={I18n.t('SHARE')}
                         textStyle={{fontSize: 15}}
