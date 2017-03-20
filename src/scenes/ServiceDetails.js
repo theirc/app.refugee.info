@@ -403,9 +403,7 @@ export class ServiceDetails extends Component {
         return (
             <View style={[styles.detailsContainer]}>
                 <View style={styles.row}>
-                    <View style={[componentStyles.sectionIconContainer]}>
-
-                    </View>
+                    <View style={[componentStyles.sectionIconContainer]} />
                     <View style={styles.flex}>
                         <DirectionalText style={[componentStyles.sectionHeader, styles.textLight]}>
                             {I18n.t('ADDITIONAL_INFORMATION') }
@@ -451,16 +449,16 @@ export class ServiceDetails extends Component {
     }
 
     render() {
-        const {nativeAvailable, loaded} = this.state;
+        const {nativeAvailable, loaded, provider} = this.state;
         if (!loaded) {
             return <View />;
         }
         const {service, location} = this.props,
             locationName = (location) ? location.pageTitle || location.name : '',
-            hasPhoneNumber = loaded && !!this.state.provider.phone_number,
-            hasFacebookPage = loaded && !!service.facebook_page,
-            hasEmail = loaded && !!service.email,
-            hasWebsite = loaded && !!service.website,
+            hasPhoneNumber = loaded && !!provider.phone_number,
+            hasFacebookPage = loaded && service.facebook_page,
+            hasEmail = loaded && service.email,
+            hasWebsite = loaded && service.website,
 
             lat = parseFloat(service.location.coordinates[1]),
             long = parseFloat(service.location.coordinates[0]),
