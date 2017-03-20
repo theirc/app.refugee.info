@@ -1,7 +1,4 @@
 import {Component} from 'react';
-import {
-    AsyncStorage
-} from 'react-native';
 import ApiClient from '../utils/ApiClient';
 import Translation from '../utils/Translation';
 
