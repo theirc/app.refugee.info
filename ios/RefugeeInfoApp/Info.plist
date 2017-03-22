@@ -43,17 +43,9 @@
     <key>UIAppFonts</key>
     <array>
       <string>icomoon.ttf</string>
-      <string>FontAwesome.ttf</string>
-      <string>Ionicons.ttf</string>
       <string>Montserrat-SemiBold.otf</string>
       <string>Montserrat-Regular.otf</string>
       <string>Roboto-Medium.ttf</string>
-      <string>Entypo.ttf</string>
-      <string>EvilIcons.ttf</string>
-      <string>Foundation.ttf</string>
-      <string>MaterialIcons.ttf</string>
-      <string>Octicons.ttf</string>
-      <string>Zocial.ttf</string>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>Launch Screen</string>

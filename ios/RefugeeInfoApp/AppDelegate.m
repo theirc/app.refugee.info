@@ -9,11 +9,11 @@
 
 #import "AppDelegate.h"
 
-#import "RCTBundleURLProvider.h"
-#import "RCTRootView.h"
-#import "RCTPushNotificationManager.h"
-#import "RCTLinkingManager.h"
-#import "RCTI18nUtil.h"
+#import <React/RCTBundleURLProvider.h>
+#import <React/RCTRootView.h>
+#import <React/RCTPushNotificationManager.h>
+#import <React/RCTLinkingManager.h>
+#import <React/RCTI18nUtil.h>
 
 @implementation AppDelegate
 

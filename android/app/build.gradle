@@ -124,6 +124,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fbsdk')
     compile project(':react-native-mapbox-gl')
     compile project(':react-native-device-info')
     compile project(':react-native-mail')
