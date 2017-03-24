@@ -251,8 +251,7 @@ const glyphMap = {
     'wash_potable_water': 59123
 };
 
-let HumanitarianIcon = createIconSet(glyphMap, 'icomoon', 'icomoon.ttf');
+const HumanitarianIcon = createIconSet(glyphMap, 'icomoon', 'icomoon.ttf');
 
-module.exports = HumanitarianIcon;
-module.exports.glyphMap = glyphMap;
+export default HumanitarianIcon;
 

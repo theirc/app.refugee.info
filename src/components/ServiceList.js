@@ -38,7 +38,7 @@ export class ServiceList extends Component {
                     dataSource={this.dataSource.cloneWithRows(this.props.services)}
                     enableEmptySections
                     keyboardDismissMode="on-drag"
-                    keyboardShouldPersistTaps
+                    keyboardShouldPersistTaps="always"
                     renderRow={(service) => this.renderRow(service)}
                 />
             </View>

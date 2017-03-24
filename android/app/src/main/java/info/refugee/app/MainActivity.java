@@ -1,9 +1,6 @@
 package info.refugee.app;
 
 import com.facebook.react.ReactActivity;
-import com.mapbox.reactnativemapboxgl.ReactNativeMapboxGLPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
-import com.chirag.RNMail.RNMail;
 import android.content.Intent;
 
 public class MainActivity extends ReactActivity {

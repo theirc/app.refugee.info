@@ -47,7 +47,7 @@ export class ServiceCategoryListView extends Component {
                     dataSource={this.dataSource.cloneWithRows(serviceTypes)}
                     enableEmptySections
                     keyboardDismissMode="on-drag"
-                    keyboardShouldPersistTaps
+                    keyboardShouldPersistTaps="always"
                     renderRow={(type) => this.renderServiceTypeRow(type)}
                     style={{flex: 1}}
                 />
