@@ -45,12 +45,10 @@ export class GeneralInformationDetails extends Component {
         const {section, language, region} = this.props;
         GA_TRACKER.trackEvent('info-page-view', section.slug);
 
-        if (!section.notifications) {
-            if (section.important) {
-                Actions.refresh({title: section.title});
-            } else {
-                Actions.refresh({title: region.name});
-            }
+        if (section.important) {
+            Actions.refresh({title: section.title});
+        } else {
+            Actions.refresh({title: region.name});
         }
         let source = {
             html: wrapHtmlContent(
@@ -147,14 +145,14 @@ export class GeneralInformationDetails extends Component {
             if (location.slug) {
                 return Alert.alert(
                     I18n.t('CHANGE_LOCATION'),
-                    I18n.t('LOCATION_WILL_CHANGE').replace('{0}', location.name),
-                    [
+                    I18n.t('LOCATION_WILL_CHANGE').replace('{0}', location.name), [
                         {text: I18n.t('NO'), onPress: () => {}},
                         {text: I18n.t('YES'), onPress: () => this.changeRegion(location)}
                     ]
                 );
             }
-        }).catch(() => {});
+        }).catch(() => {
+        });
     }
 
     changeRegion(region) {
@@ -252,7 +250,8 @@ export class GeneralInformationDetails extends Component {
         Share.open({
             message: `${I18n.t('REFUGEE_INFO')} ${section.title || ''}`,
             url: `${WEB_PATH}/${region.slug}/${section.slug}`
-        }).catch(() => {});
+        }).catch(() => {
+        });
     }
 
     formatDateTime(datetime) {
@@ -262,10 +261,6 @@ export class GeneralInformationDetails extends Component {
 
     renderFeedbackBar() {
         const {section} = this.props;
-        if (section.notifications) {
-            return <View />;
-        }
-
         return (
             <View style={componentStyles.bottomBar}>
                 <TouchableOpacity
@@ -286,7 +281,7 @@ export class GeneralInformationDetails extends Component {
                         {I18n.t('LAST_UPDATED_ON')}:
                     </DirectionalText>
                     <DirectionalText style={componentStyles.updateText}>
-                    {this.formatDateTime(section.updated_at)}
+                        {this.formatDateTime(section.updated_at)}
                     </DirectionalText>
                 </View>
             </View>
