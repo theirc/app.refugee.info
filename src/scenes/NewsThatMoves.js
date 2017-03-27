@@ -82,7 +82,7 @@ export class NewsThatMoves extends Component {
                 dataSource={this.state.dataSource}
                 enableEmptySections
                 keyboardDismissMode="on-drag"
-                keyboardShouldPersistTaps
+                keyboardShouldPersistTaps="always"
                 refreshControl={
                     <RefreshControl
                         onRefresh={this.onRefresh}

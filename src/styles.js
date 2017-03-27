@@ -1,9 +1,8 @@
 import {Platform, StyleSheet} from 'react-native';
 
-
-let Ionicons = require('react-native-vector-icons/Ionicons');
-let FontAwesome = require('react-native-vector-icons/FontAwesome');
-let HumanitarianIcon = require('./components/HumanitarianIcon');
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import HumanitarianIcon from './components/HumanitarianIcon';
 
 export const themes = {
     light: {
