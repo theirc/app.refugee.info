@@ -2,18 +2,55 @@ import React, {Component, PropTypes} from 'react';
 import {
     View,
     StyleSheet,
-    TouchableHighlight
+    TouchableHighlight,
+    Animated,
+    Easing,
+    Dimensions
 } from 'react-native';
 import {DirectionalText, Icon} from '../components';
 import styles, {
     themes
 } from '../styles';
 
+
+const {width} = Dimensions.get('window');
+
 export class ServiceListItem extends Component {
 
     static propTypes = {
         service: PropTypes.object
     };
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            offsetXValue: new Animated.Value(width),
+            opacityValue: new Animated.Value(0)
+        };
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            Animated.parallel([
+                Animated.timing(
+                    this.state.offsetXValue,
+                    {
+                        toValue: 0,
+                        duration: 400,
+                        easing: Easing.out(Easing.quad)
+                    }
+                ),
+                Animated.timing(
+                    this.state.opacityValue,
+                    {
+                        toValue: 1,
+                        duration: 400,
+                        easing: Easing.out(Easing.quad)
+                    }
+                )
+            ]).start();
+        }, this.props.service.order < 10 ? this.props.service.order * 100 : 0);
+    }
 
     renderWidget() {
         const {service} = this.props;
@@ -39,10 +76,16 @@ export class ServiceListItem extends Component {
                 onPress={service.onPress}
                 underlayColor="rgba(0, 0, 0, 0.2)"
             >
-                <View
+                <Animated.View
                     style={[
                         styles.containerLight,
-                        componentStyles.serviceListItemContainer
+                        componentStyles.serviceListItemContainer,
+                        {
+                            transform: [
+                                {translateX: this.state.offsetXValue}
+                            ],
+                            opacity: this.state.opacityValue
+                        }
                     ]}
                 >
                     <View style={[styles.row, styles.flex]}>
@@ -57,11 +100,11 @@ export class ServiceListItem extends Component {
                         >
                             <View style={{marginHorizontal: 10}}>
                                 <View style={componentStyles.serviceNameWrapper}>
-                                <DirectionalText
-                                    style={[styles.textLight, componentStyles.serviceName]}
-                                >
-                                    {service.name}
-                                </DirectionalText>
+                                    <DirectionalText
+                                        style={[styles.textLight, componentStyles.serviceName]}
+                                    >
+                                        {service.name}
+                                    </DirectionalText>
                                 </View>
                                 <View style={[styles.row, {paddingBottom: 2}]}>
                                     <Icon
@@ -80,7 +123,7 @@ export class ServiceListItem extends Component {
                             </View>
                         </View>
                     </View>
-                </View>
+                </Animated.View>
             </TouchableHighlight>
         );
     }
