@@ -76,18 +76,6 @@ class Navigation extends Component {
         });
     }
 
-    navigateToNotifications() {
-        const section = {
-            html: this.props.region.banners.map((banner) => `<div class="banner">${banner.html}</div>`).join('<br />'),
-            notifications: true
-        };
-        this.context.drawer.close();
-        requestAnimationFrame(() => {
-            Actions.notifications({section});
-        });
-
-    }
-
     getImportantInformation() {
         const {routes, region} = this.props;
         if (!region || !region.important) {
@@ -246,19 +234,6 @@ class Navigation extends Component {
                     >
                         {I18n.t('SERVICE_MAP')}
                     </MenuItem>
-                </MenuSection>
-
-                <MenuSection>
-                    {!!bannerCount &&
-                    <MenuItem
-                        active={routes.scene.sceneKey === 'notifications'}
-                        badge={bannerCount}
-                        icon="ios-mail"
-                        onPress={() => this.navigateToNotifications()}
-                    >
-                        {I18n.t('ANNOUNCEMENTS')}
-                    </MenuItem>
-                    }
                     <MenuItem
                         active={routes.scene.sceneKey === 'news'}
                         icon="ios-paper"
