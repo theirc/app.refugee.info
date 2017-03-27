@@ -38,7 +38,7 @@ class Navigation extends Component {
 
     _defaultOrFirst(section) {
         this.context.drawer.close();
-        if (section.html && section.content.length == 1) {
+        if (section.html && section.content.length === 1) {
             return Actions.infoDetails({section});
         } else {
             return Actions.info();
@@ -68,7 +68,6 @@ class Navigation extends Component {
         });
     }
 
-
     navigateToImportantInformation(section) {
         this.context.drawer.close();
         requestAnimationFrame(() => {
@@ -76,44 +75,13 @@ class Navigation extends Component {
         });
     }
 
-    getImportantInformation() {
-        const {routes, region} = this.props;
-        if (!region || !region.important) {
-            return;
-        }
-        return region.important.map((item, index) => {
-            return (
-                <MenuItem
-                    active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == item.title}
-                    icon={item.icon}
-                    key={index}
-                    onPress={() => this.navigateToImportantInformation(item)}
-                >
-                    {item.title}
-                </MenuItem>
-            );
-        });
-    }
-
-    getImportantInformationSection() {
-        let importantInformationItems = this.getImportantInformation();
-        if (importantInformationItems) {
-            return (
-                <MenuSection title={I18n.t('IMPORTANT_INFORMATION')}>
-                    {importantInformationItems}
-                </MenuSection>
-            );
-        }
-    }
-
-
     getNearbyCities() {
         const {locations, region} = this.props;
         if (locations) {
             return locations.map((location, index) => {
                 return (
                     <MenuItem
-                        active={location.slug == region.slug}
+                        active={location.slug === region.slug}
                         key={index}
                         onPress={() => this.selectCity(location)}
                     >
@@ -127,7 +95,7 @@ class Navigation extends Component {
     getAvailableApps() {
         const {region, currentApp} = this.props;
         if (region && region.apps) {
-            if (region.apps.length == 0) {
+            if (region.apps.length === 0) {
                 return null;
             }
             return (
@@ -135,7 +103,7 @@ class Navigation extends Component {
                     {region.apps.map((app, index) => {
                         return (
                             <MenuItem
-                                active={app.id == (currentApp && currentApp.id)}
+                                active={app.id === (currentApp && currentApp.id)}
                                 key={index}
                                 onPress={() => this.navigateToMicroApp(app)}
                             >
@@ -163,18 +131,16 @@ class Navigation extends Component {
         const {routes, language, region, about} = this.props;
         const {loading} = this.state;
 
-        if (!this.props.region) {
+        if (!region) {
             return <View />;
         }
 
         let feedbackUrl = (FEEDBACK_MAP[language] || FEEDBACK_MAP.en) + (region && region.slug);
 
-        let importantInformationSection = this.getImportantInformationSection();
         let nearbyCitiesSection = this.getNearbyCitiesSection();
 
         let logo = themes.light.drawerLogo;
 
-        let bannerCount = region.banners && region.banners.length;
         let regionName = region.name ? region.name.toUpperCase() : '';
 
         let availableApps = this.getAvailableApps();
@@ -246,7 +212,6 @@ class Navigation extends Component {
                     </MenuItem>
                 </MenuSection>
                 {availableApps}
-                {importantInformationSection}
                 {nearbyCitiesSection}
 
                 <MenuSection>
@@ -262,7 +227,7 @@ class Navigation extends Component {
                     </MenuItem>
                     {about &&
                     <MenuItem
-                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title == about.title}
+                        active={routes.scene.sceneKey === 'infoDetails' && routes.scene.title === about.title}
                         icon="fa-question"
                         onPress={() => this.navigateToImportantInformation(about, true)}
                     >
