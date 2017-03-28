@@ -38,6 +38,7 @@ export function updateRegionIntoStorage(region) {
     return async dispatch => {
         return await SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
             return db.transaction((tx) => {
+                tx.executeSql('CREATE TABLE IF NOT EXISTS regions (json blob)');
                 tx.executeSql('DELETE FROM regions');
                 tx.executeSql('INSERT INTO regions values (?)', [JSON.stringify(region)]);
             });

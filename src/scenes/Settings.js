@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {
     View,
-    Alert
+    Alert,
+    I18nManager
 } from 'react-native';
 import {connect} from 'react-redux';
 import I18n from '../constants/Messages';
@@ -22,7 +23,7 @@ import {
 } from '../actions';
 import RNRestart from 'react-native-restart';
 import ApiClient from '../utils/ApiClient';
-import {getRegionAllContent} from '../utils/helpers';
+import {getRegionAllContent, isLanguageRTL} from '../utils/helpers';
 import {Actions} from 'react-native-router-flux';
 
 
@@ -69,6 +70,8 @@ class Settings extends Component {
                     dispatch(updateLocationsIntoStorage(locations)),
                     dispatch(updateAboutIntoStorage(newAbout))
                 ]).then(() => {
+                    I18nManager.allowRTL(isLanguageRTL(language));
+                    I18nManager.forceRTL(isLanguageRTL(language));
                     return RNRestart.Restart();
                 });
             });

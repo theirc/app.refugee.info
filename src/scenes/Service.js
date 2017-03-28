@@ -142,7 +142,7 @@ export class Service extends Component {
                     true
                 ).then((serviceResult) => {
                     let services = serviceResult.results;
-                    services.forEach((service) => {
+                    services.forEach((service, i) => {
                         service.type = serviceTypes.find(function (type) {
                             return type.number == service.type;
                         });
@@ -152,6 +152,7 @@ export class Service extends Component {
                                 Actions.serviceDetails({service, location: region});
                             });
                         };
+                        service.order = i;
                     });
 
                     this.setState({

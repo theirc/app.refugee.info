@@ -4,7 +4,8 @@ import {
     View,
     AppState,
     UIManager,
-    I18nManager
+    I18nManager,
+    Platform
 } from 'react-native';
 import {connect} from 'react-redux';
 import Welcome from './Welcome';
@@ -38,27 +39,31 @@ class Skeleton extends Component {
             storageLoaded: false
         };
         this.presenceData = new Presence(props, props.context);
-        AsyncStorage.getItem('language').then((res) => {
-            if (res === 'en') {
-                I18nManager.allowRTL(false);
-                I18nManager.forceRTL(false);
-            } else {
-                I18nManager.allowRTL(true);
-                I18nManager.forceRTL(true);
-            }
-            if (I18nManager.isRTL && res === 'en') {
-                I18nManager.allowRTL(false);
-                RNRestart.Restart();
-            }
-            if (!I18nManager.isRTL && (res === 'ar' || res === 'fa')) {
-                I18nManager.allowRTL(true);
-                I18nManager.forceRTL(true);
-                RNRestart.Restart();
-            }
-        });
+        if (Platform.OS === 'ios') {
+            const isRTL = I18nManager.isRTL;
+            AsyncStorage.getItem('language').then((res) => {
+                if (res === 'en') {
+                    I18nManager.allowRTL(false);
+                    I18nManager.forceRTL(false);
+                } else {
+                    I18nManager.allowRTL(true);
+                    I18nManager.forceRTL(true);
+                }
+                if (I18nManager.isRTL && res === 'en') {
+                    I18nManager.allowRTL(false);
+                    I18nManager.forceRTL(false);
+                    RNRestart.Restart();
+                }
+                if (!isRTL && (res === 'ar' || res === 'fa')) {
+                    I18nManager.allowRTL(true);
+                    I18nManager.forceRTL(true);
+                    RNRestart.Restart();
+                }
+            });
+        }
         AsyncStorage.getItem('appDataVersion').then((res) => {
-            const dispatch = props.dispatch;
-            if (res != APP_DATA_VERSION) {
+            if (res !== APP_DATA_VERSION) {
+                const dispatch = props.dispatch;
                 Promise.all([
                     dispatch(updateRegionIntoStorage(null)),
                     dispatch(updateLocationsIntoStorage(null)),
