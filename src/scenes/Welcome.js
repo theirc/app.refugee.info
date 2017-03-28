@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {Image, StyleSheet, View, Text, Dimensions, TouchableHighlight} from 'react-native';
+import {Image, StyleSheet, View, Text, Dimensions, TouchableHighlight, I18nManager} from 'react-native';
 import {connect} from 'react-redux';
 import styles, {themes, getFontFamily} from '../styles';
 import I18n from '../constants/Messages';
@@ -7,6 +7,7 @@ import {updateLanguageIntoStorage} from '../actions/language';
 import {updateDirectionIntoStorage} from '../actions/direction';
 import {DirectionalText} from '../components';
 import RNRestart from 'react-native-restart';
+import {isLanguageRTL} from '../utils/helpers';
 
 const {width, height} = Dimensions.get('window');
 
@@ -56,6 +57,8 @@ class Welcome extends Component {
             dispatch({type: 'LANGUAGE_CHANGED', payload: language}),
             dispatch({type: 'DIRECTION_CHANGED', payload: direction})
         ]).then(() => {
+            I18nManager.allowRTL(isLanguageRTL(language));
+            I18nManager.forceRTL(isLanguageRTL(language));
             RNRestart.Restart();
         });
     }

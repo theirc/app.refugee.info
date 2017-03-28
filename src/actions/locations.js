@@ -20,7 +20,8 @@ function queryLocations(tx) {
             locations.push((JSON.parse(results.rows.item(i).json)));
         }
         store.dispatch(receiveLocations(locations));
-    }).catch((error) => {});
+    }).catch((error) => {
+    });
 }
 
 
@@ -38,11 +39,15 @@ export function updateLocationsIntoStorage(locations) {
     return async dispatch => {
         return await SQLite.openDatabase({name: 'sqllite.db', location: 'default'}).then((db) => {
             return db.transaction((tx) => {
+                tx.executeSql('CREATE TABLE IF NOT EXISTS locations (json blob)');
                 tx.executeSql('DELETE FROM locations');
-                locations.forEach((location) => {
-                    tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
-                });
+                if (locations && locations.length) {
+                    locations.forEach((location) => {
+                        tx.executeSql('INSERT INTO locations values (?)', [JSON.stringify(location)]);
+                    });
+                }
             });
-        }).catch((error) => {});
+        }).catch((error) => {
+        });
     };
 }

@@ -244,19 +244,19 @@ export function getAllUrlParams(url) {
         // split our query string into its component parts
         let arr = queryString.split('&');
 
-        for (let i=0; i<arr.length; i++) {
+        for (let i = 0; i < arr.length; i++) {
             // separate the keys and the values
             let a = arr[i].split('=');
 
             // in case params look like: list[]=thing1&list[]=thing2
             let paramNum = undefined;
-            let paramName = a[0].replace(/\[\d*\]/, function(v) {
-                paramNum = v.slice(1,-1);
+            let paramName = a[0].replace(/\[\d*\]/, function (v) {
+                paramNum = v.slice(1, -1);
                 return '';
             });
 
             // set parameter value (use 'true' if empty)
-            let paramValue = typeof(a[1])==='undefined' ? true : a[1];
+            let paramValue = typeof(a[1]) === 'undefined' ? true : a[1];
 
             // (optional) keep case consistent
             paramName = paramName.toLowerCase();
@@ -296,4 +296,8 @@ export function getRegionAllContent(region) {
         subsections = subsections.concat(content.subsections);
     });
     return allContent.concat(subsections);
+}
+
+export function isLanguageRTL(language) {
+    return ['ar', 'fa'].indexOf(language) > -1;
 }
