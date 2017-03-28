@@ -78,7 +78,7 @@ export default class ApiClient {
     }
 
     getServicePage(locationSlug, coords = {}, searchCriteria = '', page = 1, pageSize = 10, types, raiseException = false) {
-        let url = `services/search/?format=json&geographic_region=${locationSlug}`;
+        let url = `services/search/?format=json&geographic_region=${locationSlug}&filter=wide`;
 
         if (coords.hasOwnProperty('latitude')) {
             const {latitude, longitude} = coords;
