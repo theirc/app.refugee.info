@@ -69,7 +69,7 @@ export class ServiceListItem extends Component {
                                         style={componentStyles.servicePinIcon}
                                     />
                                     <DirectionalText style={componentStyles.serviceLocationName}>
-                                        {service.locationName}
+                                        {service.region.title}
                                     </DirectionalText>
                                 </View>
                                 <DirectionalText

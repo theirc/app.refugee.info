@@ -60,12 +60,6 @@ const scenes = Actions.create(
                 key="networkFailure"
             />
             <Scene
-                component={GeneralInformationDetails}
-                hideNavBar={false}
-                key="notifications"
-                title={() => I18n.t('ANNOUNCEMENTS')}
-            />
-            <Scene
                 component={NewsThatMoves}
                 hideNavBar={false}
                 key="news"

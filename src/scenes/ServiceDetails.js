@@ -453,12 +453,12 @@ export class ServiceDetails extends Component {
         if (!loaded) {
             return <View />;
         }
-        const {service, location} = this.props,
-            locationName = (location) ? location.pageTitle || location.name : '',
+        const {service} = this.props,
+            locationName = loaded && (service.region.title || ''),
             hasPhoneNumber = loaded && !!provider.phone_number,
-            hasFacebookPage = loaded && service.facebook_page,
-            hasEmail = loaded && service.email,
-            hasWebsite = loaded && service.website,
+            hasFacebookPage = loaded && !!service.facebook_page,
+            hasEmail = loaded && !!service.email,
+            hasWebsite = loaded && !!service.website,
 
             lat = parseFloat(service.location.coordinates[1]),
             long = parseFloat(service.location.coordinates[0]),
