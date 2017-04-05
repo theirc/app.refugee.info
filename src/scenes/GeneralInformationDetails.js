@@ -262,7 +262,6 @@ export class GeneralInformationDetails extends Component {
     renderFeedbackBar() {
         const {section} = this.props;
 
-        console.log(section);
         let lastUpdated = <View style={componentStyles.updateTextContainer}>
                     <DirectionalText style={componentStyles.updateText}>
                         {I18n.t('LAST_UPDATED_ON')}:
