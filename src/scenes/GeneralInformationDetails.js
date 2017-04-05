@@ -261,6 +261,15 @@ export class GeneralInformationDetails extends Component {
 
     renderFeedbackBar() {
         const {section} = this.props;
+
+        console.log(section);
+        let lastUpdated = <View style={componentStyles.updateTextContainer}>
+                    <DirectionalText style={componentStyles.updateText}>
+                        {I18n.t('LAST_UPDATED_ON')}:
+                    </DirectionalText><DirectionalText style={componentStyles.updateText}>
+                        {this.formatDateTime(section.updated_at)}
+                    </DirectionalText>
+                </View>;
         return (
             <View style={componentStyles.bottomBar}>
                 <TouchableOpacity
@@ -276,14 +285,7 @@ export class GeneralInformationDetails extends Component {
                         {I18n.t('SHARE')}
                     </DirectionalText>
                 </TouchableOpacity>
-                <View style={componentStyles.updateTextContainer}>
-                    <DirectionalText style={componentStyles.updateText}>
-                        {I18n.t('LAST_UPDATED_ON')}:
-                    </DirectionalText>
-                    <DirectionalText style={componentStyles.updateText}>
-                        {this.formatDateTime(section.updated_at)}
-                    </DirectionalText>
-                </View>
+                    {!section.hide_last_updated && lastUpdated}
             </View>
         );
     }
